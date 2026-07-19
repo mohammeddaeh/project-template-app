@@ -1,0 +1,867 @@
+---
+description: CRUD patterns — Add/Edit unified screen, Delete flow, form state, list refresh. Read before building any create/edit/delete feature.
+alwaysApply: false
+---
+
+# CRUD Patterns (Template)
+
+---
+
+## 🔗 ترابط القواعد — اقرأ قبل البناء
+
+| قرأت هذا الملف؟ | اقرأ أيضاً |
+|----------------|-----------|
+| تبني Form داخل الـ Feature | `forms-guide.mdc` — validators، submit، dirty state |
+| تستخدم Widgets في الشاشات | `widgets-guide.mdc` — parameters كل widget |
+| تحتاج Navigation بعد النجاح | `navigation-patterns.mdc` — push/pop/result |
+| تريد فهم الطبقات (Repository/UseCase/Cubit) | `core-architecture.mdc` — Architecture |
+
+> **الجذر:** `core-architecture.mdc` يحكم كل شيء — تأكد قراءته أولاً.
+
+---
+
+## القاعدة الذهبية
+
+**شاشة الإضافة = شاشة التعديل.**
+نفس الملف · نفس الـ Cubit · نفس الـ Form.
+المُعامل `String? id` هو الفارق الوحيد:
+- `id == null` → إضافة جديدة
+- `id != null` → تعديل موجود
+
+---
+
+## هيكل الملفات — Feature CRUD كاملة
+
+```
+lib/Features/{feature}/
+  ├── domain/
+  │   ├── entities/
+  │   │   └── {entity}.dart
+  │   ├── repositories/
+  │   │   └── {feature}_repository.dart
+  │   └── usecases/
+  │       ├── get_{feature}_list.dart   ← pagination
+  │       ├── get_{feature}_detail.dart ← تفاصيل واحد
+  │       ├── create_{feature}.dart
+  │       ├── update_{feature}.dart
+  │       └── delete_{feature}.dart
+  ├── data/  ← كالمعتاد (models / datasources / repositories)
+  └── presentation/
+      ├── cubits/
+      │   ├── {feature}_list_cubit.dart   ← extends PaginationCubit
+      │   ├── {feature}_form_cubit.dart   ← إضافة + تعديل معاً
+      │   └── {feature}_form_state.dart
+      └── pages/
+          ├── {feature}_list_screen.dart
+          ├── {feature}_detail_screen.dart  ← اختياري
+          └── {feature}_form_screen.dart    ← إضافة + تعديل
+```
+
+---
+
+## 0 · Imports الإلزامية في كل Screen
+
+```dart
+// ─── كل Screen يستخدم context.feedback يحتاج هذا الـ import صراحةً ───────
+import 'package:flutter_base_template/presentation/feedback/feedback_extension.dart';
+
+// ─── Widgets ────────────────────────────────────────────────────────────────
+import 'package:flutter_base_template/shared/widgets/widgets.dart';
+
+// ─── Theme ──────────────────────────────────────────────────────────────────
+import 'package:flutter_base_template/presentation/theme/theme_extensions.dart';
+
+// ─── Extensions (dialog, screen size, etc.) ─────────────────────────────────
+import 'package:flutter_base_template/presentation/extensions/extensions.dart';
+
+// ─── Locale Keys ────────────────────────────────────────────────────────────
+import 'package:flutter_base_template/resources/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+// ─── DI ─────────────────────────────────────────────────────────────────────
+import 'package:flutter_base_template/core/di/injection.dart';
+```
+
+> **⚠️ تنبيه:** `feedback_extension.dart` لا يُصدَّر من `extensions.dart` — يجب استيراده صراحةً.
+
+---
+
+## 1 · FormCubit — الإضافة والتعديل في Cubit واحد
+
+```dart
+// lib/Features/{feature}/presentation/cubits/{feature}_form_cubit.dart
+import 'package:flutter_base_template/Features/{feature}/domain/entities/{entity}.dart';
+import 'package:flutter_base_template/Features/{feature}/domain/usecases/create_{feature}.dart';
+import 'package:flutter_base_template/Features/{feature}/domain/usecases/update_{feature}.dart';
+import 'package:flutter_base_template/presentation/error/failure_ui_mapper.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
+
+part '{feature}_form_cubit.freezed.dart';
+part '{feature}_form_state.dart';
+
+@injectable
+class {Feature}FormCubit extends Cubit<{Feature}FormState> {
+  {Feature}FormCubit(
+    this._create{Feature},
+    this._update{Feature},
+  ) : super(const {Feature}FormState.initial());
+
+  final Create{Feature} _create{Feature};
+  final Update{Feature} _update{Feature};
+
+  // isEditing يُحدَّد من الشاشة بناءً على وجود id
+  void submit({
+    required String? id,
+    required String field1,
+    required String? field2,
+  }) async {
+    emit(const {Feature}FormState.loading());
+
+    final res = id == null
+        ? await _create{Feature}(
+            Create{Feature}Params(field1: field1, field2: field2),
+          )
+        : await _update{Feature}(
+            Update{Feature}Params(id: id, field1: field1, field2: field2),
+          );
+
+    res.fold(
+      (failure) {
+        switch (FailureUiMapper.toAction(failure)) {
+          case ShowError(:final message):
+            emit({Feature}FormState.error(errorMessage: message));
+          case NavigateToLogin():
+            AuthEventBus.instance.emit(AuthEvent.sessionExpired);
+          case Silent():
+            break;
+        }
+      },
+      (_) => emit(const {Feature}FormState.success()),
+    );
+  }
+}
+```
+
+```dart
+// lib/Features/{feature}/presentation/cubits/{feature}_form_state.dart
+part of '{feature}_form_cubit.dart';
+
+@freezed
+abstract class {Feature}FormState with _${Feature}FormState {
+  const factory {Feature}FormState.initial()                             = {Feature}FormInitial;
+  const factory {Feature}FormState.loading()                             = {Feature}FormLoading;
+  const factory {Feature}FormState.success()                             = {Feature}FormSuccess;
+  const factory {Feature}FormState.error({required String errorMessage}) = {Feature}FormError;
+}
+```
+
+---
+
+## 2 · FormScreen — شاشة واحدة للإضافة والتعديل
+
+```dart
+// lib/Features/{feature}/presentation/pages/{feature}_form_screen.dart
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_base_template/resources/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+@RoutePage()
+class {Feature}FormScreen extends StatefulWidget {
+  const {Feature}FormScreen({
+    super.key,
+    // null = إضافة جديدة  /  موجود = تعديل
+    @PathParam('id') this.id,
+    // entity تُمرَّر للتعديل لملء الحقول مسبقاً
+    this.initialEntity,
+  });
+
+  final String? id;
+  final {Entity}? initialEntity;
+
+  @override
+  State<{Feature}FormScreen> createState() => _{Feature}FormScreenState();
+}
+
+class _{Feature}FormScreenState extends State<{Feature}FormScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _field1Controller;
+  late final TextEditingController _field2Controller;
+
+  bool get _isEditing => widget.id != null;
+
+  @override
+  void initState() {
+    super.initState();
+    // في حالة التعديل: ملء الحقول من الـ entity المُمرَّرة
+    _field1Controller = TextEditingController(
+      text: widget.initialEntity?.field1 ?? '',
+    );
+    _field2Controller = TextEditingController(
+      text: widget.initialEntity?.field2 ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _field1Controller.dispose();
+    _field2Controller.dispose();
+    super.dispose();
+  }
+
+  void _submit(BuildContext context) {
+    if (!_formKey.currentState!.validate()) return;
+    context.read<{Feature}FormCubit>().submit(
+          id: widget.id,
+          field1: _field1Controller.text.trim(),
+          field2: _field2Controller.text.trim(),
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<{Feature}FormCubit>(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _isEditing
+                ? LocaleKeys.edit{Feature}.tr()
+                : LocaleKeys.add{Feature}.tr(),
+          ),
+        ),
+        body: BlocConsumer<{Feature}FormCubit, {Feature}FormState>(
+          listener: (context, state) {
+            state.maybeWhen(
+              success: () {
+                context.feedback.success(
+                  _isEditing
+                      ? LocaleKeys.updatedSuccessfully.tr()
+                      : LocaleKeys.addedSuccessfully.tr(),
+                );
+                context.router.pop(true); // true = يُخبر الشاشة السابقة بالتحديث
+              },
+              error: (msg) => context.feedback.error(msg),
+              orElse: () {},
+            );
+          },
+          builder: (context, state) {
+            final isLoading = state is {Feature}FormLoading;
+            return Form(
+              key: _formKey,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  CustomTextField(
+                    controller: _field1Controller,
+                    labelText: LocaleKeys.field1Label.tr(),
+                    validator: (v) => v == null || v.isEmpty
+                        ? LocaleKeys.fieldRequired.tr()
+                        : null,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    controller: _field2Controller,
+                    labelText: LocaleKeys.field2Label.tr(),
+                  ),
+                  const SizedBox(height: 24),
+                  PrimaryButton(
+                    text: _isEditing
+                        ? LocaleKeys.save.tr()
+                        : LocaleKeys.add.tr(),
+                    isLoading: isLoading,
+                    onTap: () => _submit(context),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
+### الإضافة من شاشة القائمة
+
+```dart
+// من ListScreen — فتح شاشة الإضافة
+final didAdd = await context.router.push<bool>(
+  const {Feature}FormRoute(),
+);
+if (didAdd == true && context.mounted) {
+  context.read<{Feature}ListCubit>().refresh();
+}
+```
+
+### التعديل من شاشة التفاصيل أو القائمة
+
+```dart
+// فتح شاشة التعديل مع تمرير id + entity
+final didUpdate = await context.router.push<bool>(
+  {Feature}FormRoute(
+    id: entity.id,
+    initialEntity: entity,
+  ),
+);
+if (didUpdate == true && context.mounted) {
+  // خيار 1: تحديث العنصر في الـ list بدون re-fetch كامل
+  context.read<{Feature}ListCubit>().replaceEntityItem(updatedEntity);
+  // خيار 2: إعادة تحميل الصفحة الحالية كاملاً
+  // context.read<{Feature}ListCubit>().refresh();
+}
+```
+
+---
+
+## 3 · نمط الحذف — Delete Flow
+
+### الخطوات الإلزامية
+```
+confirm → execute → feedback → pop / remove from list
+```
+
+### في الـ ListCubit أو DetailCubit
+
+```dart
+// {feature}_list_cubit.dart (إضافة دالة delete)
+Future<void> delete{Feature}(String id) async {
+  // 1. Optimistic: أزل العنصر فوراً من الـ list
+  final backup = List<{Entity}>.from(data);
+  removeItemWhere((e) => e.id == id); // PaginationCubit helper
+
+  // 2. نفّذ الحذف
+  final res = await _delete{Feature}(Delete{Feature}Params(id: id));
+
+  res.fold(
+    (failure) {
+      // 3. Rollback عند الفشل
+      restoreItems(backup);
+      switch (FailureUiMapper.toAction(failure)) {
+        case ShowError(:final message): emitError(message);
+        case NavigateToLogin(): AuthEventBus.instance.emit(AuthEvent.sessionExpired);
+        case Silent(): break;
+      }
+    },
+    (_) {
+      // 4. النجاح — العنصر حُذف من الـ list مسبقاً (optimistic)
+    },
+  );
+}
+```
+
+### AppConfirmDialog — في الشاشة قبل الحذف
+
+```dart
+// في {feature}_list_screen.dart أو {feature}_detail_screen.dart
+void _onDeleteTap(BuildContext context, String id) {
+  AppConfirmDialog.show(
+    context,
+    titleKey: LocaleKeys.deleteConfirmTitle,
+    messageKey: LocaleKeys.deleteConfirmMessage,
+    isDestructive: true,
+    onConfirm: () => context.read<{Feature}ListCubit>().delete{Feature}(id),
+  );
+}
+```
+
+> **لا تُنفّذ الحذف بدون تأكيد** — دائماً `AppConfirmDialog` قبل أي عملية حذف.
+
+---
+
+## 4 · متى Form + GlobalKey ومتى Controller مباشرة
+
+| الحالة | الاستخدام |
+|--------|-----------|
+| أكثر من حقل + تحقق inline | `Form` + `GlobalKey<FormState>` + `validator` في كل حقل |
+| حقل واحد بسيط (مثل بحث) | `TextEditingController` مباشرة، بدون `Form` |
+| تحقق فوري عند الكتابة | `TextEditingController` + `addListener` + `RefreshCubit` |
+| Form مع rebuild عند تغيير قيمة | `RefreshCubit` + `BlocBuilder` يلف الـ Form |
+
+```dart
+// RefreshCubit — لإعادة بناء الـ UI عند تغيير قيمة حقل (مثل: تفعيل/تعطيل زر الإرسال)
+final _refreshCubit = RefreshCubit();
+
+BlocBuilder<RefreshCubit, RefreshState>(
+  bloc: _refreshCubit,
+  builder: (context, _) {
+    final canSubmit = _field1Controller.text.isNotEmpty;
+    return PrimaryButton(
+      text: LocaleKeys.submit.tr(),
+      isEnabled: canSubmit,
+      onTap: canSubmit ? () => _submit(context) : null,
+    );
+  },
+)
+
+// عند تغيير الحقل: شغّل refresh لتحديث الزر
+_field1Controller.addListener(_refreshCubit.refresh);
+```
+
+---
+
+## 5 · Validation — قواعد التحقق الموحّدة
+
+```dart
+// ✅ required text
+validator: (v) => (v == null || v.trim().isEmpty)
+    ? LocaleKeys.fieldRequired.tr()
+    : null,
+
+// ✅ email
+validator: (v) {
+  if (v == null || v.isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,}$').hasMatch(v)) {
+    return LocaleKeys.invalidEmail.tr();
+  }
+  return null;
+},
+
+// ✅ password (8-30 + regex)
+validator: (v) {
+  if (v == null || v.isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (v.length < 8 || v.length > 30) return LocaleKeys.passwordLength.tr();
+  if (!CustomRegex.passwordRegex.hasMatch(v)) return LocaleKeys.passwordWeak.tr();
+  return null;
+},
+
+// ✅ phone
+validator: (v) {
+  if (v == null || v.isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (v.length < 9) return LocaleKeys.invalidPhone.tr();
+  return null;
+},
+
+// ✅ optional (لا تحقق)
+validator: null,
+```
+
+> استورد `CustomRegex` من: `package:flutter_base_template/core/foundation/utils/validators.dart`
+
+---
+
+## 6 · UseCases للـ CRUD
+
+```dart
+// create_{feature}.dart
+@injectable
+class Create{Feature} extends BaseUseCase<Either<Failure, {Entity}>, Create{Feature}Params> {
+  Create{Feature}(this._{feature}Repository);
+  final {Feature}Repository _{feature}Repository;
+
+  @override
+  Future<Either<Failure, {Entity}>> call(covariant Create{Feature}Params params) =>
+      _{feature}Repository.create{Feature}(params);
+}
+
+class Create{Feature}Params extends UseCaseParams {
+  final String field1;
+  final String? field2;
+  const Create{Feature}Params({required this.field1, this.field2}) : super();
+}
+
+// update_{feature}.dart
+@injectable
+class Update{Feature} extends BaseUseCase<Either<Failure, {Entity}>, Update{Feature}Params> {
+  Update{Feature}(this._{feature}Repository);
+  final {Feature}Repository _{feature}Repository;
+
+  @override
+  Future<Either<Failure, {Entity}>> call(covariant Update{Feature}Params params) =>
+      _{feature}Repository.update{Feature}(params);
+}
+
+class Update{Feature}Params extends UseCaseParams {
+  final String id;
+  final String field1;
+  final String? field2;
+  const Update{Feature}Params({required this.id, required this.field1, this.field2}) : super();
+}
+
+// delete_{feature}.dart
+@injectable
+class Delete{Feature} extends BaseUseCase<Either<Failure, Unit>, Delete{Feature}Params> {
+  Delete{Feature}(this._{feature}Repository);
+  final {Feature}Repository _{feature}Repository;
+
+  @override
+  Future<Either<Failure, Unit>> call(covariant Delete{Feature}Params params) =>
+      _{feature}Repository.delete{Feature}(params.id);
+}
+
+class Delete{Feature}Params extends UseCaseParams {
+  final String id;
+  const Delete{Feature}Params({required this.id}) : super();
+}
+```
+
+---
+
+## 7 · Repository — void/Unit للحذف والتعديل
+
+```dart
+// Abstract (domain)
+abstract class {Feature}Repository {
+  Future<Either<Failure, {Entity}>>    getList({PaginationQuery query});
+  Future<Either<Failure, {Entity}>>    getDetail(String id);
+  Future<Either<Failure, {Entity}>>    create{Feature}(Create{Feature}Params params);
+  Future<Either<Failure, {Entity}>>    update{Feature}(Update{Feature}Params params);
+  Future<Either<Failure, Unit>>        delete{Feature}(String id);
+}
+
+// Impl — DELETE مثال (void response)
+@override
+Future<Either<Failure, Unit>> delete{Feature}(String id) => handle(() async {
+  final res = await _remoteDataSource.delete{Feature}(id);
+  if (res.error == null) return const Right(unit);
+  return Left(BusinessFailure(statusCode: res.error?.code ?? 400));
+});
+
+// Impl — UPDATE مثال (يُرجع الـ entity المحدَّثة)
+@override
+Future<Either<Failure, {Entity}>> update{Feature}(Update{Feature}Params params) =>
+    handle(() async {
+      final res = await _remoteDataSource.update{Feature}(params);
+      if (res.error == null && res.data != null) {
+        return Right(res.data!.toEntity());
+      }
+      return Left(BusinessFailure(statusCode: res.error?.code ?? 400));
+    });
+```
+
+---
+
+## 8 · ApiService — CRUD Endpoints
+
+```dart
+@lazySingleton
+@RestApi()
+abstract class {Feature}ApiService {
+  @factoryMethod
+  factory {Feature}ApiService(Dio dio) =>
+      _{Feature}ApiService(dio, baseUrl: Env().config.baseUrl);
+
+  @GET(ApiUrls.{feature})
+  Future<ApiResponse<{Feature}Response>> getList(
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+    @CancelRequest() CancelToken? cancelToken,
+  );
+
+  @GET('${ApiUrls.{feature}}/{id}')
+  Future<ApiResponse<{Feature}Model>> getDetail(
+    @Path('id') String id,
+    @CancelRequest() CancelToken? cancelToken,
+  );
+
+  @POST(ApiUrls.{feature})
+  Future<ApiResponse<{Feature}Model>> create(
+    @Body() {Feature}RequestModel body,
+    @CancelRequest() CancelToken? cancelToken,
+  );
+
+  @PATCH('${ApiUrls.{feature}}/{id}')
+  Future<ApiResponse<{Feature}Model>> update(
+    @Path('id') String id,
+    @Body() {Feature}RequestModel body,
+    @CancelRequest() CancelToken? cancelToken,
+  );
+
+  @DELETE('${ApiUrls.{feature}}/{id}')
+  Future<ApiResponse<void>> delete(
+    @Path('id') String id,
+    @CancelRequest() CancelToken? cancelToken,
+  );
+}
+```
+
+---
+
+## 9 · Routing — مسارات CRUD
+
+```dart
+// router.dart
+AutoRoute(
+  path: '/{feature}',
+  page: {Feature}ListRoute.page,
+  children: [
+    // التفاصيل — اختياري
+    customRouteWithAnimation(
+      path: ':id',
+      page: {Feature}DetailRoute.page,
+    ),
+  ],
+),
+// الإضافة — بدون id
+customRouteWithAnimation(
+  path: '/{feature}/new',
+  page: {Feature}FormRoute.page,
+),
+// التعديل — مع id
+customRouteWithAnimation(
+  path: '/{feature}/:id/edit',
+  page: {Feature}FormRoute.page,
+),
+```
+
+### Navigation calls
+
+```dart
+// إضافة
+context.router.push(const {Feature}FormRoute());
+
+// تعديل
+context.router.push({Feature}FormRoute(id: entity.id, initialEntity: entity));
+
+// تفاصيل
+context.router.push({Feature}DetailRoute(id: entity.id));
+
+// بعد النجاح — الرجوع مع نتيجة
+context.router.pop(true);
+
+// من الشاشة السابقة — الاستماع للنتيجة
+final updated = await context.router.push<bool>({Feature}FormRoute(...));
+if (updated == true && context.mounted) { ... }
+```
+
+---
+
+## 10 · Translations المطلوبة لأي Feature CRUD
+
+```json
+// assets/translations/ar.json + en.json
+{
+  "add{Feature}":          "إضافة ...",
+  "edit{Feature}":         "تعديل ...",
+  "deleteConfirmTitle":    "تأكيد الحذف",
+  "deleteConfirmMessage":  "هل أنت متأكد من حذف هذا العنصر؟",
+  "addedSuccessfully":     "تمت الإضافة بنجاح",
+  "updatedSuccessfully":   "تم التحديث بنجاح",
+  "deletedSuccessfully":   "تم الحذف بنجاح",
+  "fieldRequired":         "هذا الحقل مطلوب",
+  "invalidEmail":          "البريد الإلكتروني غير صحيح",
+  "passwordLength":        "كلمة المرور يجب أن تكون بين 8 و 30 حرفاً",
+  "passwordWeak":          "كلمة المرور ضعيفة",
+  "invalidPhone":          "رقم الهاتف غير صحيح",
+  "save":                  "حفظ",
+  "add":                   "إضافة",
+  "cancel":                "إلغاء",
+  "delete":                "حذف"
+}
+```
+
+---
+
+## 11 · PaginationCubit — المساعدات المتاحة
+
+`{Feature}ListCubit` يمتد من `PaginationCubit<{Entity}>`. هذه هي الـ helpers المدمجة:
+
+```dart
+// ─── قراءة ─────────────────────────────────────────────────────────────────
+List<{Entity}> get data          // العناصر المحمّلة حالياً (read-only)
+
+// ─── تعديل القائمة محلياً (بدون re-fetch) ──────────────────────────────────
+void prependItem({Entity} item)  // أضف عنصراً في أول القائمة (بعد إضافة ناجحة)
+void appendItem({Entity} item)   // أضف عنصراً في نهاية القائمة
+void replaceEntityItem({Entity} item) // عدّل عنصراً موجوداً بنفس الـ id
+void removeItemWhere(bool Function({Entity}) test) // أزل عنصراً بشرط
+
+// ─── Backup & Restore (للـ Optimistic) ─────────────────────────────────────
+// لا يوجد helper مدمج — احفظ يدوياً قبل العملية:
+final backup = List<{Entity}>.from(data);
+// ثم عند الفشل:
+restoreItems(backup);            // استعد القائمة كما كانت
+
+// ─── إصدار حالة خطأ ────────────────────────────────────────────────────────
+void emitError(String message)   // يُصدر PaginationError مع رسالة
+```
+
+> **مهم:** استدعِ هذه الـ helpers **قبل** الـ `await` لتضمن تحديث الـ UI فوراً (optimistic).
+
+---
+
+## 12 · Optimistic Update — نمط التعديل الفوري
+
+### حذف (Delete)
+
+```dart
+void delete{Feature}(String id) async {
+  // 1. احفظ نسخة احتياطية
+  final backup = List<{Entity}>.from(data);
+  // 2. أزل العنصر فوراً من الـ UI
+  removeItemWhere((e) => e.id == id);
+
+  final res = await _delete{Feature}(Delete{Feature}Params(id: id));
+
+  res.fold(
+    (failure) {
+      // 3. Rollback: أعد القائمة كما كانت
+      restoreItems(backup);
+      _handleFailure(failure);
+    },
+    (_) {
+      // النجاح — القائمة محدّثة بالفعل
+    },
+  );
+}
+```
+
+### تعديل (Update — Optimistic)
+
+```dart
+void update{Feature}({
+  required String id,
+  required String field1,
+  String? field2,
+}) async {
+  // 1. احفظ العنصر القديم للـ rollback
+  final old = data.firstWhere((e) => e.id == id, orElse: () => throw StateError('not found'));
+  // 2. أنشئ نسخة محدَّثة محلياً وأظهرها فوراً
+  final optimistic = old.copyWith(field1: field1, field2: field2);
+  replaceEntityItem(optimistic);
+
+  final res = await _update{Feature}(
+    Update{Feature}Params(id: id, field1: field1, field2: field2),
+  );
+
+  res.fold(
+    (failure) {
+      // 3. Rollback: أعد العنصر القديم
+      replaceEntityItem(old);
+      _handleFailure(failure);
+    },
+    (updatedFromServer) {
+      // 4. استبدل بالبيانات الفعلية من الـ server (قد تحتوي timestamps محدَّثة)
+      replaceEntityItem(updatedFromServer);
+    },
+  );
+}
+```
+
+> **`copyWith`** متاح تلقائياً إذا كان الـ Entity مُولَّداً بـ `@freezed`.
+> إذا كان Plain Dart class اكتب `copyWith` يدوياً.
+
+### إضافة (Create — Local Prepend)
+
+```dart
+// في FormCubit بعد النجاح — مرّر الـ entity المُنشأة للـ ListCubit
+// (الطريقة: event bus أو pop مع نتيجة — انظر القسم 13)
+```
+
+---
+
+## 13 · List Refresh — متى تستخدم كل استراتيجية
+
+| الموقف | الاستراتيجية | السبب |
+|--------|-------------|-------|
+| بعد **إضافة** ناجحة — والـ server يُرجع العنصر الجديد | `prependItem(newEntity)` | تجنب re-fetch لكامل القائمة |
+| بعد **إضافة** ناجحة — والـ server يُرجع ID فقط أو بيانات ناقصة | `refresh()` | نحتاج البيانات الكاملة |
+| بعد **تعديل** ناجح — والـ server يُرجع الـ entity محدَّثة | `replaceEntityItem(updated)` | تحديث محلي فوري |
+| بعد **تعديل** ناجح — optimistic فقط (بدون server response) | `replaceEntityItem(optimistic)` | كافٍ إذا كانت البيانات بسيطة |
+| بعد **حذف** ناجح | `removeItemWhere((e) => e.id == id)` | إزالة فورية |
+| بعد عملية تؤثر على **الترتيب أو الفلاتر** | `refresh()` | لا يمكن حساب الترتيب محلياً |
+| بعد أي عملية فاشلة | `restoreItems(backup)` | rollback دائماً |
+
+### تنسيق pop → refresh بين FormScreen و ListScreen
+
+```dart
+// ── في FormScreen (بعد النجاح) ──────────────────────────────────────────────
+state.maybeWhen(
+  success: (newEntity) {
+    context.feedback.success(LocaleKeys.addedSuccessfully.tr());
+    // مرّر الـ entity الجديدة كنتيجة الـ pop
+    context.router.pop(newEntity);
+  },
+  orElse: () {},
+);
+
+// ── في ListScreen (بعد العودة) ───────────────────────────────────────────────
+
+// إضافة جديدة — FormCubit يُرجع الـ entity
+final newEntity = await context.router.push<{Entity}?>(
+  const {Feature}FormRoute(),
+);
+if (newEntity != null && context.mounted) {
+  context.read<{Feature}ListCubit>().prependItem(newEntity);
+}
+
+// تعديل — FormCubit يُرجع الـ entity المحدَّثة
+final updated = await context.router.push<{Entity}?>(
+  {Feature}FormRoute(id: entity.id, initialEntity: entity),
+);
+if (updated != null && context.mounted) {
+  context.read<{Feature}ListCubit>().replaceEntityItem(updated);
+}
+
+// حذف من DetailScreen — يُرجع bool
+final didDelete = await context.router.push<bool>(
+  {Feature}DetailRoute(id: entity.id),
+);
+if (didDelete == true && context.mounted) {
+  context.read<{Feature}ListCubit>().removeItemWhere((e) => e.id == entity.id);
+}
+```
+
+> **FormCubit state.success** يجب أن يحمل الـ entity:
+> ```dart
+> const factory {Feature}FormState.success({required {Entity} entity}) = {Feature}FormSuccess;
+> ```
+
+### تحديث شاشة القائمة بعد الحذف من نفس الشاشة
+
+```dart
+// في ListScreen مباشرة — بدون navigation
+void _onDeleteTap(BuildContext context, {Entity} entity) {
+  AppConfirmDialog.show(
+    context,
+    titleKey: LocaleKeys.deleteConfirmTitle,
+    messageKey: LocaleKeys.deleteConfirmMessage,
+    isDestructive: true,
+    onConfirm: () {
+      // الـ cubit يُطبّق optimistic delete داخلياً
+      context.read<{Feature}ListCubit>().delete{Feature}(entity.id);
+      // feedback بعد انتهاء العملية — مُعالَج في BlocListener
+    },
+  );
+}
+
+// BlocListener في ListScreen يُظهر الـ feedback
+BlocListener<{Feature}ListCubit, PaginationState>(
+  listener: (context, state) {
+    if (state is PaginationError) {
+      context.feedback.error(state.errorMessage);
+    }
+  },
+  child: ...,
+)
+```
+
+---
+
+## ✅ Checklist — قبل إنهاء أي Feature CRUD
+
+**Form & Validation**
+- [ ] `{Feature}FormCubit` يقبل `id?` — يُقرر create أو update داخلياً
+- [ ] `{Feature}FormState.success` يحمل الـ `entity` المُنشأة/المحدَّثة
+- [ ] `{Feature}FormScreen` يُمرَّر له `initialEntity` عند التعديل لملء الحقول
+- [ ] `Form` + `GlobalKey` مع `validate()` قبل الإرسال
+- [ ] `_submit()` تستدعي `context.unfocus()` قبل الـ Cubit
+
+**Navigation & Refresh**
+- [ ] الرجوع بعد النجاح: `context.router.pop(newEntity)` (ليس `pop(true)`)
+- [ ] ListScreen تستقبل الـ entity وتُطبّق `prependItem` أو `replaceEntityItem`
+- [ ] الحذف يسبقه `AppConfirmDialog.show(..., isDestructive: true)`
+- [ ] Optimistic delete: `removeItemWhere` قبل الـ `await` + `restoreItems` عند الفشل
+- [ ] Optimistic update: `replaceEntityItem(optimistic)` قبل الـ `await` + `replaceEntityItem(old)` عند الفشل
+
+**Error Handling**
+- [ ] `_handleFailure` موجودة في كل Cubit وتتعامل مع ShowError / NavigateToLogin / Silent
+- [ ] `BlocListener` في ListScreen يعرض أخطاء الـ PaginationError
+
+**Code Generation**
+- [ ] `delete{Feature}` UseCase يُرجع `Either<Failure, Unit>`
+- [ ] مفاتيح الترجمة مضافة في ar.json + en.json + locale_keys.g.dart
+- [ ] `build_runner` شُغّل بعد إنشاء كل الملفات

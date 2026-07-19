@@ -1,0 +1,291 @@
+---
+description: Navigation patterns — push/replace/pop, Bottom Nav, Nested Stack, route guards, data passing. Read before adding any route or navigation logic.
+alwaysApply: false
+---
+
+# Navigation Patterns (Template)
+
+> الـ Router: **AutoRoute** — كل navigation يمر عبر `context.router` أو `getIt<AppRouter>()`.
+
+## 🔗 ترابط القواعد
+
+| السياق | القاعدة المكمّلة |
+|--------|----------------|
+| Navigation بعد CRUD (pop + entity) | `crud-patterns.mdc` §13 — List refresh strategies |
+| Navigation بعد submit Form | `forms-guide.mdc` §submit — `context.router.pop(entity)` |
+| الـ Widgets في الشاشات المستهدفة | `widgets-guide.mdc` |
+| Route guards (auth check) | `core-architecture.mdc` §Auth Slices |
+
+---
+
+## 1 · متى تستخدم كل دالة
+
+| الدالة | متى | مثال |
+|--------|-----|-------|
+| `context.router.push(Route())` | فتح شاشة جديدة فوق الحالية (back button موجود) | من القائمة إلى التفاصيل |
+| `context.router.replace(Route())` | استبدال الشاشة الحالية (back يرجع للتي قبلها) | من Splash إلى Login |
+| `context.router.replaceAll([Route()])` | مسح كل الـ stack وبداية جديدة | بعد Login ناجح |
+| `context.router.pop()` | الرجوع للشاشة السابقة | زر إلغاء |
+| `context.router.pop(value)` | الرجوع مع نتيجة | `pop(true)` بعد إضافة/تعديل |
+| `context.router.popUntil(predicate)` | الرجوع لشاشة معينة | الرجوع لـ Home بدون مسح كل Stack |
+| `context.router.pushAndPopUntil(Route(), predicate: (_) => false)` | فتح شاشة ومسح كل Stack | نادراً — استخدم `replaceAll` بدلاً |
+| `context.router.navigate(Route())` | إعادة استخدام شاشة موجودة أو بناء جديد | Deep links |
+| `context.maybePop()` | الرجوع إذا ممكن، وإلا لا يفعل شيء | في back button مخصص |
+
+### القاعدة الذهبية
+
+```dart
+// ✅ بعد Login ناجح — امسح كل Stack وابدأ من Home
+context.router.replaceAll([const HomeRoute()]);
+
+// ✅ بعد Session Expired — من أي مكان في التطبيق
+// لا تستخدم context.router هنا — استخدم AppRouter مباشرة
+getIt<AppRouter>().replaceAll([const LoginRoute()]);
+
+// ✅ فتح شاشة والاستماع لنتيجتها (CRUD)
+final result = await context.router.push<bool>(const {Name}FormRoute());
+if (result == true && context.mounted) { /* refresh */ }
+
+// ✅ الرجوع مع نتيجة
+context.router.pop(true);
+
+// ❌ لا تستخدم Navigator.of(context) مباشرة — استخدم context.router دائماً
+```
+
+---
+
+## 2 · إضافة Route جديد
+
+```dart
+// 1. أضف @RoutePage() على الشاشة
+@RoutePage()
+class {Name}Screen extends StatelessWidget { ... }
+
+// 2. أضف في router.dart
+@AutoRouterConfig()
+class AppRouter extends RootStackRouter {
+  @override
+  List<AutoRoute> get routes => [
+    // شاشة عادية مع animation
+    customRouteWithAnimation(page: {Name}Route.page),
+
+    // شاشة مع path parameter
+    AutoRoute(
+      path: '/{feature}/:id',
+      page: {Name}Route.page,
+    ),
+
+    // شاشة بدون animation (مثل Splash)
+    AutoRoute(page: SplashRoute.page, path: '/splash'),
+  ];
+}
+
+// 3. شغّل build_runner
+dart run build_runner build --delete-conflicting-outputs
+```
+
+---
+
+## 3 · Bottom Navigation — نمط AppTabBar
+
+```dart
+// lib/Features/home/presentation/pages/home_screen.dart
+@RoutePage()
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoTabsRouter(
+      routes: const [
+        DashboardRoute(),
+        {Feature}ListRoute(),
+        NotificationsRoute(),
+        SettingsRoute(),
+      ],
+      builder: (context, child) {
+        final tabsRouter = AutoTabsRouter.of(context);
+        return Scaffold(
+          body: child,
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: tabsRouter.activeIndex,
+            onDestinationSelected: tabsRouter.setActiveIndex,
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(Icons.home),
+                label: LocaleKeys.home.tr(),
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.list_outlined),
+                selectedIcon: const Icon(Icons.list),
+                label: LocaleKeys.{feature}.tr(),
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.notifications_outlined),
+                selectedIcon: const Icon(Icons.notifications),
+                label: LocaleKeys.notifications.tr(),
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.settings_outlined),
+                selectedIcon: const Icon(Icons.settings),
+                label: LocaleKeys.settings.tr(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// router.dart — HomeRoute يحتوي على الـ nested routes
+AutoRoute(
+  page: HomeRoute.page,
+  path: '/home',
+  children: [
+    AutoRoute(page: DashboardRoute.page, path: 'dashboard'),
+    AutoRoute(page: {Feature}ListRoute.page, path: '{feature}'),
+    AutoRoute(page: NotificationsRoute.page, path: 'notifications'),
+    AutoRoute(page: SettingsRoute.page, path: 'settings'),
+  ],
+),
+```
+
+---
+
+## 4 · Nested Stack — stack داخل tab
+
+```dart
+// مثال: tab الـ {feature} فيه list + detail + form
+AutoRoute(
+  page: HomeRoute.page,
+  children: [
+    AutoRoute(
+      page: {Feature}ListRoute.page,
+      path: '{feature}',
+      children: [
+        // detail داخل نفس الـ stack
+        AutoRoute(path: ':id', page: {Feature}DetailRoute.page),
+        AutoRoute(path: 'new', page: {Feature}FormRoute.page),
+        AutoRoute(path: ':id/edit', page: {Feature}FormRoute.page),
+      ],
+    ),
+  ],
+),
+
+// Navigation من {Feature}ListScreen — يبقى داخل نفس الـ tab stack
+context.router.push({Feature}DetailRoute(id: entity.id));
+```
+
+---
+
+## 5 · Route Guards — حماية الشاشات
+
+```dart
+// lib/routes/auth_guard.dart
+class AuthGuard extends AutoRouteGuard {
+  @override
+  void onNavigation(NavigationResolver resolver, StackRouter router) {
+    final hasToken = getIt<SessionRepository>().getToken() != null;
+    if (hasToken) {
+      resolver.next(true); // سمح بالدخول
+    } else {
+      resolver.redirect(const LoginRoute()); // أعد التوجيه
+    }
+  }
+}
+
+// تطبيق الـ guard على route محمي
+AutoRoute(
+  page: HomeRoute.page,
+  path: '/home',
+  guards: [AuthGuard()], // ← يُطبَّق على هذا الـ route وكل أبنائه
+  children: [...],
+),
+```
+
+---
+
+## 6 · تمرير البيانات بين الشاشات
+
+| الطريقة | متى | مثال |
+|---------|-----|-------|
+| **Route params** | بيانات بسيطة (id، entity) | `{Feature}FormRoute(id: '123', initialEntity: entity)` |
+| **DI (GetIt singleton)** | حالة مشتركة بين أكثر من شاشة | `SessionRepository` |
+| **EventBus** | أحداث عابرة لا تتعلق بـ navigation | `AuthEventBus.sessionExpired` |
+| **`pop(value)`** | نتيجة من شاشة فرعية | `pop(true)` بعد CRUD ناجح |
+
+```dart
+// ✅ تمرير entity للشاشة (Route params)
+context.router.push({Feature}FormRoute(
+  id: entity.id,
+  initialEntity: entity,  // تُملأ الحقول تلقائياً
+));
+
+// ❌ لا تضع business logic أو API calls في الـ Router
+// ❌ لا تمرر Cubits أو UseCases عبر الـ Router params
+```
+
+---
+
+## 7 · Session Expired — من أي مكان
+
+```dart
+// في app.dart — الاستماع المركزي للـ session expired event
+_authEventBus.sessionExpired.listen((_) {
+  getIt<AppRouter>().replaceAll([const LoginRoute()]);
+});
+
+// في أي Cubit — لا تتعامل مع الـ Router مباشرة
+case NavigateToLogin():
+  AuthEventBus.instance.emit(AuthEvent.sessionExpired);
+  // app.dart يتولى التوجيه تلقائياً
+```
+
+---
+
+## 8 · customRouteWithAnimation — الانتقال الموحّد
+
+```dart
+// دالة موجودة في router.dart — استخدمها لكل شاشة جديدة
+customRouteWithAnimation(page: {Name}Route.page)
+
+// توليد: CupertinoPageTransition بـ 300ms
+// تلقائياً: RTL-aware (يعكس الاتجاه عند العربية)
+```
+
+---
+
+## 9 · Deep Links
+
+```dart
+// في AndroidManifest.xml و Info.plist — ضبط الـ URL scheme
+// في router.dart — تحديد الـ path بوضوح
+AutoRoute(path: '/users/:id', page: {Feature}DetailRoute.page),
+
+// في app.dart — deep-link builder
+// يُضيف prefix "/app" → يبحث في الـ router
+deepLinkBuilder: (link) {
+  if (link.path.startsWith('/app')) {
+    return DeepLink.path(link.path.replaceFirst('/app', ''));
+  }
+  return DeepLink.defaultPath;
+},
+
+// ✅ تأكد أن كل شاشة تحتاج deep link لها path صريح في router.dart
+// ❌ لا تعتمد على الترتيب لتحديد الـ path — حدده دائماً صراحةً
+```
+
+---
+
+## ✅ Checklist Navigation
+
+- [ ] `@RoutePage()` على كل شاشة
+- [ ] Route مضاف في `router.dart` بـ `customRouteWithAnimation` أو `AutoRoute`
+- [ ] `build_runner` شُغّل بعد إضافة Route
+- [ ] استخدام `context.router` لا `Navigator.of(context)`
+- [ ] Session expired: `AuthEventBus` لا `context.router` مباشرة من الـ Cubit
+- [ ] نتيجة CRUD: `pop(true)` + الاستماع في الشاشة السابقة
+- [ ] Bottom Nav: `AutoTabsRouter` + `NavigationBar` — لا `BottomNavigationBar` القديم
+- [ ] Route guards: على الـ parent route ليشمل كل الـ children تلقائياً

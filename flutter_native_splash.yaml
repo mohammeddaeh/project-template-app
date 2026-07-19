@@ -1,0 +1,19 @@
+flutter_native_splash:
+  # خلفية السبلاش — أبيض لجميع الـ flavors
+  color: "#FFFFFF"
+  color_dark: "#121212"
+
+  # لوغو الوزارة — يظهر في المنتصف
+  image: assets/ministry_logo/logo_MOW.png
+  image_dark: assets/ministry_logo/logo_MOW.png
+
+  # Android 12+ (Splash API الجديد)
+  android_12:
+    image: assets/ministry_logo/logo_MOW.png
+    icon_background_color: "#FFFFFF"
+    image_dark: assets/ministry_logo/logo_MOW.png
+    icon_background_color_dark: "#121212"
+
+  android: true
+  ios: true
+  web: false

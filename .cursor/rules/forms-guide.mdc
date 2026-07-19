@@ -1,0 +1,561 @@
+---
+description: Forms guide — when to use Form+GlobalKey vs Controller, validation patterns, submit/loading, dirty state warning. Read before building any form or input screen.
+alwaysApply: false
+---
+
+# Forms Guide (Template)
+
+---
+
+## 🔗 ترابط القواعد — هذا الملف جزء من منظومة
+
+| السياق | القاعدة المكمّلة |
+|--------|----------------|
+| Form داخل Feature CRUD | `crud-patterns.mdc` — هيكل Cubit، submit flow، pop(entity) |
+| Widgets داخل الـ Form | `widgets-guide.mdc` — `CustomTextField` parameters، `PrimaryButton` |
+| بعد Submit ناجح (navigation) | `navigation-patterns.mdc` — `context.router.pop(entity)` |
+| الطبقات والـ DI | `core-architecture.mdc` |
+
+> هذا الملف يتحدث عن **الـ UI Layer فقط** (Form + validation + submit button).
+> منطق الإرسال للـ API موجود في `crud-patterns.mdc` (UseCase + Repository).
+
+---
+
+## القاعدة الذهبية
+
+**كل حقل يحتاج تحقق → `Form` + `GlobalKey<FormState>`.**
+حقل واحد بسيط بدون تحقق → `TextEditingController` مباشرة.
+
+---
+
+## 0 · Imports الإلزامية في Form Screen
+
+```dart
+import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_base_template/core/di/injection.dart';
+import 'package:flutter_base_template/resources/locale_keys.g.dart';
+import 'package:flutter_base_template/shared/widgets/widgets.dart';
+import 'package:flutter_base_template/presentation/extensions/extensions.dart';
+import 'package:flutter_base_template/presentation/theme/theme_extensions.dart';
+// ⚠️ هذا منفصل عن extensions.dart — لا تنسَه
+import 'package:flutter_base_template/presentation/feedback/feedback_extension.dart';
+```
+
+---
+
+## 1 · متى `Form` ومتى `Controller` مباشرة
+
+| الحالة | الأسلوب |
+|--------|---------|
+| 2 حقول أو أكثر مع validation | `Form` + `GlobalKey<FormState>` |
+| حقل واحد + validation (مثل: البريد في forgotPassword) | `Form` + `GlobalKey<FormState>` |
+| حقل بحث بدون validation | `TextEditingController` فقط → استخدم `AppSearchBar` |
+| حقل يُفعّل/يُعطّل زر في real-time | `TextEditingController` + `addListener` + `RefreshCubit` |
+| قيمة محسوبة لا تُعدَّل (display only) | `Text` widget مباشرة، لا controller |
+
+---
+
+## 2 · هيكل الـ StatefulWidget للـ Form
+
+```dart
+class _MyFormScreenState extends State<MyFormScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  // كل controller يُهيَّأ في initState ويُتلف في dispose
+  late final TextEditingController _emailCtrl;
+  late final TextEditingController _passwordCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    // في التعديل: مرر القيمة الأولية من widget.initialEntity
+    _emailCtrl    = TextEditingController(text: widget.initialEntity?.email ?? '');
+    _passwordCtrl = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
+    super.dispose();
+  }
+
+  void _submit(BuildContext context) {
+    // 1. تحقق من كل الحقول
+    if (!_formKey.currentState!.validate()) return;
+    // 2. أغلق الكيبورد
+    context.unfocus();
+    // 3. أرسل للـ Cubit
+    context.read<MyCubit>().submit(
+      email:    _emailCtrl.text.trim(),
+      password: _passwordCtrl.text,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<MyCubit, MyState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          success: () {
+            context.feedback.success(LocaleKeys.addedSuccessfully.tr());
+            context.router.pop(true);
+          },
+          error: (msg) => context.feedback.error(msg),
+          orElse: () {},
+        );
+      },
+      builder: (context, state) {
+        final isLoading = state is MyLoading;
+        return Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              CustomTextField(
+                controller: _emailCtrl,
+                labelText: LocaleKeys.eMail.tr(),
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                validator: _validateEmail,
+              ),
+              const SizedBox(height: 16),
+              CustomTextField(
+                controller: _passwordCtrl,
+                labelText: LocaleKeys.password.tr(),
+                isPassword: true,
+                textInputAction: TextInputAction.done,
+                validator: _validatePassword,
+                onSubmitted: (_) => _submit(context),
+              ),
+              const SizedBox(height: 24),
+              PrimaryButton(
+                text: LocaleKeys.login.tr(),
+                isLoading: isLoading,
+                onTap: isLoading ? null : () => _submit(context),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+```
+
+---
+
+## 2.5 · هيكل الـ Scaffold مع الكيبورد — إلزامي
+
+### المشاكل الثلاث الشائعة وحلولها
+
+| المشكلة | السبب | الحل |
+|---------|-------|------|
+| الكيبورد يغطي حقل الإدخال | لا يوجد تمرير عند ظهور الكيبورد | `SingleChildScrollView` كـ body |
+| الكيبورد لا يختفي عند اللمس خارجاً | `onTapOutside` غير مُفعَّل | `KeyboardDismissWidget` يلف الـ body |
+| layout overflow عند الكيبورد | `resizeToAvoidBottomInset` غير صريح | اذكره صراحةً = `true` |
+
+### الهيكل الإلزامي لكل شاشة فيها حقول إدخال
+
+```dart
+Scaffold(
+  resizeToAvoidBottomInset: true,   // ← صريح دائماً (افتراضي لكن يوضّح النية)
+  appBar: AppBar(...),
+  body: KeyboardDismissWidget(       // ← يُغلق الكيبورد عند اللمس خارج الحقل
+    child: SingleChildScrollView(    // ← يسمح بالتمرير عند ظهور الكيبورد
+      padding: const EdgeInsets.all(16),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            CustomTextField(...),    // scrollPadding: EdgeInsets.only(bottom: 120) ← افتراضي
+            ...
+          ],
+        ),
+      ),
+    ),
+  ),
+)
+```
+
+> **`scrollPadding`** في `CustomTextField` يضمن تمرير الحقل النشط للظهور فوق الكيبورد تلقائياً.
+> القيمة الافتراضية `120` كافية — غيّرها فقط إذا كان الكيبورد يغطي الحقل بشكل ملحوظ.
+
+### الـ Form داخل BottomSheet — هيكل مختلف
+
+```dart
+// BottomSheet يتمدد تلقائياً مع الكيبورد — لا تحتاج SingleChildScrollView خارجياً
+// لكن احتفظ بـ isScrollControlled: true في AppBottomSheet
+AppBottomSheet.show(
+  context,
+  isScrollControlled: true,   // ← ضروري لرفع الـ sheet فوق الكيبورد
+  child: Padding(
+    padding: EdgeInsets.only(
+      bottom: MediaQuery.of(context).viewInsets.bottom, // ← يرفع المحتوى
+    ),
+    child: _EditForm(entity: entity),
+  ),
+);
+```
+
+### إغلاق الكيبورد — API الموحّد
+
+```dart
+// ✅ في _submit() — قبل إرسال الـ Cubit
+context.dismissKeyboard();   // alias واضح
+// أو
+context.unfocus();           // نفس النتيجة
+
+// ❌ لا تستخدم مباشرة
+FocusScope.of(context).unfocus();         // مطوَّل
+FocusManager.instance.primaryFocus?.unfocus(); // مباشر لكن تجاوز للـ extension
+```
+
+---
+
+## 3 · Validators — الدوال الموحّدة
+
+ضعها كـ private methods داخل الـ State أو كـ static methods في ملف مساعد.
+
+```dart
+// ✅ Required text
+String? _validateRequired(String? v) =>
+    (v == null || v.trim().isEmpty) ? LocaleKeys.fieldRequired.tr() : null;
+
+// ✅ Email
+String? _validateEmail(String? v) {
+  if (v == null || v.trim().isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,}$').hasMatch(v.trim())) {
+    return LocaleKeys.invalidEmail.tr();
+  }
+  return null;
+}
+
+// ✅ Password (8–30 حرف + تعقيد)
+String? _validatePassword(String? v) {
+  if (v == null || v.isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (v.length < 8 || v.length > 30) return LocaleKeys.passwordLength.tr();
+  if (!CustomRegex.passwordRegex.hasMatch(v)) return LocaleKeys.passwordWeak.tr();
+  return null;
+}
+
+// ✅ تأكيد كلمة المرور
+String? _validateConfirmPassword(String? v) {
+  if (v == null || v.isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (v != _passwordCtrl.text) return LocaleKeys.passwordMismatch.tr();
+  return null;
+}
+
+// ✅ Phone
+String? _validatePhone(String? v) {
+  if (v == null || v.trim().isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (v.trim().length < 9) return LocaleKeys.invalidPhone.tr();
+  return null;
+}
+
+// ✅ Optional phone (لا إلزام)
+String? _validateOptionalPhone(String? v) {
+  if (v == null || v.trim().isEmpty) return null; // اختياري
+  if (v.trim().length < 9) return LocaleKeys.invalidPhone.tr();
+  return null;
+}
+
+// ✅ Min length
+String? _validateMinLength(String? v, int min) {
+  if (v == null || v.trim().isEmpty) return LocaleKeys.fieldRequired.tr();
+  if (v.trim().length < min) return '${LocaleKeys.minLength.tr()} $min';
+  return null;
+}
+```
+
+> `CustomRegex` من: `core/foundation/utils/validators.dart`
+
+---
+
+## 4 · عرض الأخطاء — Inline vs Toast
+
+| نوع الخطأ | الأسلوب |
+|-----------|---------|
+| خطأ في حقل (validation) | `validator` → يظهر أسفل الحقل تلقائياً |
+| خطأ من الـ API (مثل: البريد مستخدم) | `context.feedback.error(msg)` — toast/snackbar |
+| خطأ عام (network / server) | `context.feedback.error(msg)` — toast/snackbar |
+| خطأ يحتاج إجراء المستخدم | `AppConfirmDialog` أو `ErrorStateWidget` في الـ body |
+
+```dart
+// ✅ Toast للأخطاء من الـ API
+listener: (context, state) {
+  state.maybeWhen(
+    error: (msg) => context.feedback.error(msg),
+    orElse: () {},
+  );
+},
+
+// ❌ لا تضع خطأ الـ API في validator
+// validator: (v) => state is ErrorState ? state.message : null,
+// السبب: لن يُعاد التحقق بعد تصحيح الـ API، يبقى الخطأ ظاهراً
+```
+
+---
+
+## 5 · تعطيل الزر أثناء التحميل
+
+```dart
+// ✅ الطريقة الموحّدة — isLoading + onTap: null
+PrimaryButton(
+  text: LocaleKeys.save.tr(),
+  isLoading: isLoading,       // يُظهر CircularProgressIndicator
+  onTap: isLoading ? null : () => _submit(context),
+);
+
+// ✅ إذا احتجت تعطيل بناءً على شرط آخر (مثل: empty field)
+PrimaryButton(
+  text: LocaleKeys.save.tr(),
+  isLoading: isLoading,
+  isEnabled: canSubmit,       // يُعتّم الزر
+  onTap: (isLoading || !canSubmit) ? null : () => _submit(context),
+);
+```
+
+### تفعيل/تعطيل الزر في real-time بناءً على الحقول
+
+```dart
+// في initState — بعد تهيئة الـ controllers
+_emailCtrl.addListener(_refreshSubmitButton);
+_passwordCtrl.addListener(_refreshSubmitButton);
+
+// helper
+void _refreshSubmitButton() => _refreshCubit.refresh();
+
+// getter
+bool get _canSubmit =>
+    _emailCtrl.text.isNotEmpty && _passwordCtrl.text.length >= 8;
+
+// في dispose — أزل الـ listeners
+@override
+void dispose() {
+  _emailCtrl.removeListener(_refreshSubmitButton);
+  _passwordCtrl.removeListener(_refreshSubmitButton);
+  _emailCtrl.dispose();
+  _passwordCtrl.dispose();
+  _refreshCubit.close();
+  super.dispose();
+}
+
+// في الـ build — BlocBuilder للزر فقط
+BlocBuilder<RefreshCubit, RefreshState>(
+  bloc: _refreshCubit,
+  builder: (context, _) => PrimaryButton(
+    text: LocaleKeys.login.tr(),
+    isLoading: isLoading,
+    isEnabled: _canSubmit,
+    onTap: _canSubmit ? () => _submit(context) : null,
+  ),
+)
+```
+
+---
+
+## 6 · Dirty State — تحذير عند المغادرة بتغييرات غير محفوظة
+
+```dart
+// في initState — احفظ القيم الأصلية
+late final String _originalField1;
+late final String _originalField2;
+
+@override
+void initState() {
+  super.initState();
+  _field1Ctrl = TextEditingController(text: widget.initialEntity?.field1 ?? '');
+  _field2Ctrl = TextEditingController(text: widget.initialEntity?.field2 ?? '');
+  // snapshot للقيم الأصلية
+  _originalField1 = _field1Ctrl.text;
+  _originalField2 = _field2Ctrl.text;
+}
+
+// getter
+bool get _isDirty =>
+    _field1Ctrl.text != _originalField1 ||
+    _field2Ctrl.text != _originalField2;
+
+// لف الـ Scaffold بـ PopScope
+@override
+Widget build(BuildContext context) {
+  return PopScope(
+    canPop: !_isDirty,
+    onPopInvokedWithResult: (didPop, _) async {
+      if (didPop) return; // انبثق بالفعل
+      final shouldLeave = await AppConfirmDialog.show(
+        context,
+        titleKey:   LocaleKeys.discardChangesTitle,
+        messageKey: LocaleKeys.discardChangesMessage,
+        isDestructive: false,
+      );
+      if (shouldLeave == true && context.mounted) {
+        context.router.pop();
+      }
+    },
+    child: Scaffold( ... ),
+  );
+}
+```
+
+> أضف مفتاحَي الترجمة `discardChangesTitle` و `discardChangesMessage` إلى ar.json + en.json.
+
+---
+
+## 7 · textInputAction — ترتيب الحقول
+
+```dart
+// ✅ الحقل الأول → next، الأخير → done
+CustomTextField(
+  textInputAction: TextInputAction.next,  // ينقل التركيز للحقل التالي
+),
+CustomTextField(
+  textInputAction: TextInputAction.done,  // يُغلق الكيبورد أو يُرسل
+  onSubmitted: (_) => _submit(context),   // نفّذ الـ submit عند done
+),
+```
+
+---
+
+## 8 · AutoValidateMode — متى تُفعَّل التحقق الفوري
+
+```dart
+// الافتراضي: التحقق بعد أول submit فقط (لا إزعاج)
+Form(
+  key: _formKey,
+  autovalidateMode: AutovalidateMode.disabled, // الافتراضي
+  child: ...,
+)
+
+// بعد أول submit فاشل: بدّل لـ onUserInteraction
+// (يتحقق عند كل keystroke في الحقول التي لامسها المستخدم)
+// لا تُغيِّر هذا يدوياً — autovalidateMode يتغير تلقائياً بعد validate()
+```
+
+---
+
+## 9 · حالات خاصة
+
+### حقلان في صف واحد (row)
+
+```dart
+Row(
+  children: [
+    Expanded(
+      child: CustomTextField(
+        controller: _firstNameCtrl,
+        labelText: LocaleKeys.firstName.tr(),
+        textInputAction: TextInputAction.next,
+        validator: _validateRequired,
+      ),
+    ),
+    const SizedBox(width: 12),
+    Expanded(
+      child: CustomTextField(
+        controller: _lastNameCtrl,
+        labelText: LocaleKeys.lastName.tr(),
+        textInputAction: TextInputAction.next,
+        validator: _validateRequired,
+      ),
+    ),
+  ],
+),
+```
+
+### كلمة المرور وتأكيدها
+
+```dart
+CustomTextField(
+  controller: _passwordCtrl,
+  labelText: LocaleKeys.password.tr(),
+  isPassword: true,
+  textInputAction: TextInputAction.next,
+  validator: _validatePassword,
+),
+const SizedBox(height: 16),
+CustomTextField(
+  controller: _confirmPasswordCtrl,
+  labelText: LocaleKeys.confirmPassword.tr(),
+  isPassword: true,
+  textInputAction: TextInputAction.done,
+  onSubmitted: (_) => _submit(context),
+  // يقرأ _passwordCtrl مباشرة — لذا يجب أن يكون في نفس الـ State
+  validator: (v) {
+    if (v == null || v.isEmpty) return LocaleKeys.fieldRequired.tr();
+    if (v != _passwordCtrl.text) return LocaleKeys.passwordMismatch.tr();
+    return null;
+  },
+),
+```
+
+### الـ Form داخل BottomSheet
+
+```dart
+// AppBottomSheet يلف الـ child — لا Scaffold جديد
+AppBottomSheet.show(
+  context,
+  title: LocaleKeys.editProfile.tr(),
+  showDivider: true,
+  // _EditForm هو StatefulWidget يحوي Form + controllers
+  child: _EditForm(entity: entity),
+);
+
+// داخل _EditForm: BlocProvider.value — الـ cubit موجود بالفعل في الشجرة
+BlocProvider.value(
+  value: context.read<MyCubit>(),
+  child: Form(
+    key: _formKey,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,  // مهم داخل البوتم شيت
+      children: [ ... ],
+    ),
+  ),
+)
+```
+
+---
+
+## 10 · Translations المطلوبة للـ Forms
+
+```json
+{
+  "fieldRequired":          "هذا الحقل مطلوب",
+  "invalidEmail":           "البريد الإلكتروني غير صحيح",
+  "passwordLength":         "كلمة المرور يجب أن تكون بين 8 و 30 حرفاً",
+  "passwordWeak":           "كلمة المرور ضعيفة",
+  "passwordMismatch":       "كلمة المرور غير متطابقة",
+  "invalidPhone":           "رقم الهاتف غير صحيح",
+  "discardChangesTitle":    "تجاهل التغييرات؟",
+  "discardChangesMessage":  "لديك تغييرات غير محفوظة. هل تريد المغادرة؟",
+  "save":                   "حفظ",
+  "add":                    "إضافة",
+  "cancel":                 "إلغاء"
+}
+```
+
+---
+
+## ✅ Checklist — قبل إنهاء أي Form
+
+**الكيبورد والتمرير:**
+- [ ] `Scaffold` يملك `resizeToAvoidBottomInset: true` (صريح)
+- [ ] الـ body ملفوف بـ `KeyboardDismissWidget` + `SingleChildScrollView`
+- [ ] `_submit()` تستدعي `context.dismissKeyboard()` قبل إرسال الـ Cubit
+- [ ] BottomSheet يستخدم `isScrollControlled: true` + `viewInsets.bottom` padding
+
+**الـ Form والـ Controllers:**
+- [ ] كل `TextEditingController` مُهيَّأ في `initState` ومُتلَف في `dispose`
+- [ ] `_submit()` تستدعي `_formKey.currentState!.validate()` أولاً
+- [ ] `textInputAction` على كل حقل: `next` للوسط، `done` للأخير
+- [ ] الحقل الأخير يحوي `onSubmitted: (_) => _submit(context)`
+
+**الحالة والأخطاء:**
+- [ ] الزر يحمل `isLoading: true` أثناء الطلب و `onTap: null`
+- [ ] أخطاء الـ API تُعرض بـ `context.feedback.error(msg)` لا في validator
+- [ ] Form بداخل BottomSheet يستخدم `mainAxisSize: MainAxisSize.min`
+- [ ] Dirty state محمي بـ `PopScope` إذا كانت الشاشة تعديلاً
+- [ ] مفاتيح الترجمة مضافة في ar.json + en.json + locale_keys.g.dart

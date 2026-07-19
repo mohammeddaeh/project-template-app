@@ -1,0 +1,415 @@
+---
+description: Widgets quick reference — every shared widget with usage, key params, and when to use it. Read before building any UI in this project.
+alwaysApply: false
+---
+
+# Widgets Guide (Template)
+
+> **Import الوحيد:** `import 'package:flutter_base_template/shared/widgets/widgets.dart';`
+> **Colors:** `import 'package:flutter_base_template/presentation/theme/theme_extensions.dart';` → `context.colors`
+> **Extensions:** `import 'package:flutter_base_template/presentation/extensions/extensions.dart';`
+
+## 🔗 ترابط القواعد
+
+| تبني… | اقرأ أيضاً |
+|-------|-----------|
+| شاشة CRUD كاملة | `crud-patterns.mdc` — هيكل الملفات، Cubit، Optimistic |
+| Form أو حقول إدخال | `forms-guide.mdc` — validators، submit، dirty state |
+| Navigation بعد action | `navigation-patterns.mdc` |
+| فهم من أين تأتي الـ colors/typography | `core-architecture.mdc` §Colors + §Typography |
+
+> **ملاحظة:** هذا الملف يتحدث عن **ما هو موجود**. كيف تستخدمه داخل pattern صحيح → القواعد أعلاه.
+
+---
+
+## 1 · PrimaryButton — الزر الرئيسي
+
+```dart
+PrimaryButton(
+  text: LocaleKeys.submit.tr(),
+  onTap: () => _handleSubmit(),
+
+  // حالة loading — يُعطّل الزر ويُظهر spinner
+  isLoading: state is LoadingState,
+
+  // تعطيل الزر (لون رمادي، لا يقبل الضغط)
+  isEnabled: formIsValid,
+
+  // زر نصي بدون خلفية
+  isTextOnly: false,
+
+  // تخصيص اللون (default: context.colors.primary)
+  colorButton: context.colors.error,
+)
+```
+
+**متى:** أي action رئيسية — submit, save, next, confirm.
+**لا تستخدم:** `ElevatedButton` أو `TextButton` مباشرة في الـ Features.
+
+---
+
+## 2 · AppCard — بطاقة المحتوى
+
+```dart
+AppCard(
+  child: MyContent(),
+  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  padding: const EdgeInsets.all(16),
+  elevation: 2,                    // default: 1
+  clipBehavior: Clip.antiAlias,    // default: Clip.none
+  onTap: () => navigateToDetail(), // اختياري
+)
+```
+
+**متى:** أي محتوى يحتاج خلفية مرتفعة مع shadow.
+
+---
+
+## 3 · CustomTextField — حقل الإدخال
+
+```dart
+// الأساسي
+CustomTextField(
+  controller: _emailController,
+  labelText: LocaleKeys.email.tr(),
+  hint: LocaleKeys.emailHint.tr(),
+  validator: (v) => v!.isEmpty ? LocaleKeys.fieldRequired.tr() : null,
+)
+
+// كلمة المرور
+CustomTextField(
+  controller: _passwordController,
+  labelText: LocaleKeys.password.tr(),
+  isFieldObscure: true,           // يُضيف أيقونة إظهار/إخفاء تلقائياً
+)
+
+// بحث
+CustomTextField(
+  controller: _searchController,
+  hint: LocaleKeys.search.tr(),
+  isSearch: true,                 // يُغيّر الـ prefix icon لأيقونة بحث
+  onChanged: (v) => _onSearch(v),
+)
+
+// حقل رقمي
+CustomTextField(
+  controller: _phoneController,
+  labelText: LocaleKeys.phone.tr(),
+  keyboardType: TextInputType.phone,
+  ltr: true,                      // يُجبر LTR حتى في واجهة عربية
+)
+
+// متعدد الأسطر
+CustomTextField(
+  controller: _notesController,
+  labelText: LocaleKeys.notes.tr(),
+  maxLines: 4,
+  minLines: 2,
+)
+```
+
+**الـ Parameters الأهم (من 16):**
+
+| Parameter | النوع | الوصف |
+|-----------|-------|-------|
+| `controller` | `TextEditingController` | مطلوب |
+| `labelText` | `String?` | الـ label فوق الحقل |
+| `hint` | `String?` | placeholder |
+| `isFieldObscure` | `bool` | إخفاء النص (كلمة مرور) |
+| `isSearch` | `bool` | أيقونة بحث كـ prefix |
+| `validator` | `FormFieldValidator?` | دالة التحقق |
+| `ltr` | `bool` | إجبار LTR |
+| `maxLines` | `int?` | متعدد الأسطر |
+| `onChanged` | `ValueChanged?` | عند التغيير |
+| `enabled` | `bool` | تعطيل الحقل |
+
+---
+
+## 4 · PaginationBuilderWdg — قائمة مرقّمة
+
+```dart
+PaginationBuilderWdg<{Name}Cubit, {Entity}>(
+  // Shimmer يُعرض أثناء التحميل الأول
+  loadingItemsWidget: _buildShimmerList(),
+
+  // widget لكل عنصر
+  itemWdg: (entity) => {Entity}Item(entity: entity),
+
+  // فاصل بين العناصر
+  separatorWidget: const DashedDivider(),
+
+  // نص حالة الفراغ
+  notItemsMsg: LocaleKeys.no{Feature}.tr(),
+
+  // padding خارجي للقائمة (default: horizontal 24)
+  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+
+  // widget loading الصفحات التالية (default: AppLoader)
+  loadingItemWidget: const AppLoader(),
+
+  // استبدال EmptyStateWidget بـ widget مخصص
+  emptyList: const Custom{Feature}EmptyWidget(),
+
+  // الإبقاء على الحالة عند التبديل بين الـ Tabs
+  wantKeepAlive: true,
+)
+```
+
+**القيود:**
+- يجب تغليفه بـ `BlocProvider<{Name}Cubit>` في الـ parent
+- `{Name}Cubit` يجب أن يـ extend `PaginationCubit<{Entity}>`
+- **إلزامي:** override `close()` في الـ Cubit لإلغاء الطلبات
+
+---
+
+## 5 · حالات الـ State في الشاشة
+
+```dart
+// BlocConsumer — state له side effects (toast على error)
+BlocConsumer<{Name}Cubit, {Name}State>(
+  listener: (context, state) {
+    state.maybeWhen(
+      error: (msg) => context.feedback.error(msg),
+      success: () => context.router.pop(true),
+      orElse: () {},
+    );
+  },
+  builder: (context, state) => state.when(
+    initial: () => const SizedBox.shrink(),
+    loading: () => const LoadingWidget(),
+    loaded: (data) => {Name}Body(data: data),
+    error: (_) => const SizedBox.shrink(),
+  ),
+)
+
+// BlocBuilder — state بدون side effects
+BlocBuilder<{Name}Cubit, {Name}State>(
+  builder: (context, state) => state.when(
+    initial: () => const SizedBox.shrink(),
+    loading: () => const LoadingWidget(),
+    loaded: (data) => {Name}Body(data: data),
+    error: (msg) => ErrorStateWidget(
+      messageKey: msg,
+      onRetry: () => context.read<{Name}Cubit>().load(),
+    ),
+  ),
+)
+```
+
+---
+
+## 6 · States Widgets — حالات الـ UI
+
+```dart
+// تحميل — يملأ المساحة المتاحة
+const LoadingWidget()
+
+// قائمة فارغة
+EmptyStateWidget(
+  titleKey: LocaleKeys.no{Feature},       // مفتاح بدون .tr()
+  descriptionKey: LocaleKeys.add{Feature}Hint,
+  icon: Icons.inbox_outlined,
+  onAction: () => context.router.push(const {Feature}FormRoute()),
+  actionLabelKey: LocaleKeys.add{Feature},
+)
+
+// خطأ مع إعادة المحاولة
+ErrorStateWidget(
+  messageKey: errorMessage,
+  onRetry: () => context.read<{Name}Cubit>().load(),
+)
+
+// لا إنترنت
+const NoInternetWidget()
+
+// صيانة
+const MaintenanceWidget()
+```
+
+---
+
+## 7 · AvatarWidget — صورة المستخدم
+
+```dart
+AvatarWidget(
+  imageUrl: user.profileImage,         // رابط الصورة (nullable)
+  initial: user.fullName.getFirstAndLast, // حروف بديلة: 'محمد داود' → 'م د'
+  radius: 24,                          // default: 24
+  backgroundColor: context.colors.avatarBg,
+  foregroundColor: context.colors.avatarFg,
+)
+
+// ⚠️ دائماً حدد foregroundColor عند تخصيص backgroundColor
+// بدونه قد يظهر اللون الأسود من الـ theme
+```
+
+---
+
+## 8 · Shimmer — Loading Skeleton
+
+```dart
+// ShimmerLoadingWidget يلف containers بيضاء فقط
+ShimmerLoadingWidget(
+  baseColor: const Color(0xFFE0E0E0),
+  highlightColor: const Color(0xFFF5F5F5),
+  child: ListView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemCount: 8,
+    itemBuilder: (_, __) => _buildShimmerItem(),
+  ),
+)
+
+// العنصر الواحد — containers بيضاء فقط داخل ShimmerLoadingWidget
+Widget _buildShimmerItem() => Padding(
+  padding: const EdgeInsets.all(16),
+  child: Row(children: [
+    Container(
+      width: 40, height: 40,
+      decoration: BoxDecoration(
+        color: Colors.white,           // ← أبيض إلزامي
+        borderRadius: BorderRadius.circular(500),
+      ),
+    ),
+    const SizedBox(width: 12),
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(width: 120, height: 14, color: Colors.white),
+          const SizedBox(height: 6),
+          Container(width: 200, height: 12, color: Colors.white),
+        ],
+      ),
+    ),
+  ]),
+)
+
+// SkeletonWidget — يُستخدم منفرداً بدون ShimmerLoadingWidget
+SkeletonWidget(width: 120, height: 14)
+
+// ❌ لا تضع SkeletonWidget داخل ShimmerLoadingWidget — shimmer مزدوج
+```
+
+---
+
+## 9 · Spacing & Padding — المساحات
+
+```dart
+// SizedBox مختصر
+8.widthBox     // SizedBox(width: 8)
+16.heightBox   // SizedBox(height: 16)
+
+// EdgeInsets مختصر
+16.allPadding           // EdgeInsets.all(16)
+16.horizontalPadding    // EdgeInsets.symmetric(horizontal: 16)
+16.verticalPadding      // EdgeInsets.symmetric(vertical: 16)
+16.topPadding           // EdgeInsets.only(top: 16)
+16.bottomPadding        // EdgeInsets.only(bottom: 16)
+16.leftPadding          // EdgeInsets.only(left: 16)
+16.rightPadding         // EdgeInsets.only(right: 16)
+
+// استيراد من:
+// import 'package:flutter_base_template/presentation/extensions/app_padding_extension.dart';
+```
+
+---
+
+## 10 · RefreshCubit — إعادة بناء مخصصة في Forms
+
+```dart
+// متى: تريد تفعيل/تعطيل زر بناءً على قيمة حقل
+// import 'package:flutter_base_template/presentation/shared/refresh/refresh_cubit.dart';
+
+final _refreshCubit = RefreshCubit();
+
+@override
+void initState() {
+  super.initState();
+  // ربط كل controller بالـ refreshCubit
+  _emailController.addListener(_refreshCubit.refresh);
+  _passwordController.addListener(_refreshCubit.refresh);
+}
+
+@override
+void dispose() {
+  _refreshCubit.close();
+  super.dispose();
+}
+
+// في الـ build:
+BlocBuilder<RefreshCubit, RefreshState>(
+  bloc: _refreshCubit,
+  builder: (context, _) {
+    final canSubmit = _emailController.text.isNotEmpty
+        && _passwordController.text.isNotEmpty;
+    return PrimaryButton(
+      text: LocaleKeys.login.tr(),
+      isEnabled: canSubmit,
+      onTap: canSubmit ? () => _handleLogin(context) : null,
+      isLoading: outerState is LoginLoading,
+    );
+  },
+)
+```
+
+---
+
+## 11 · DashedDivider — فاصل منقّط
+
+```dart
+// في القوائم كـ separator
+const DashedDivider()
+
+// مخصص
+DashedDivider(
+  color: context.colors.dividerSubtle,
+  dashWidth: 6,
+  dashSpace: 3,
+)
+```
+
+---
+
+## 12 · Feedback — Toast والإشعارات
+
+```dart
+// استيراد: extensions.dart barrel كافٍ
+context.feedback.success('تم الحفظ');
+context.feedback.error('حدث خطأ');
+context.feedback.warning('تحذير', title: 'انتبه');
+context.feedback.toast('رسالة بسيطة');  // bottom toast
+
+// أو مباشرة
+context.showToast(type: EnumTost.success, description: 'msg', title: 'title');
+context.showSimpleToast('رسالة');
+```
+
+---
+
+## 13 · قواعد مكان الـ Widget
+
+| المكان | متى |
+|--------|-----|
+| `lib/shared/widgets/` | يُستخدم في أكثر من Feature |
+| `lib/Features/{feature}/presentation/widgets/` | خاص بـ Feature واحدة |
+| `lib/presentation/` | theme, feedback, locale, pagination |
+
+**بعد إضافة widget مشترك جديد:**
+```dart
+// أضفه في lib/shared/widgets/widgets.dart
+export 'layout/my_new_widget.dart';
+```
+
+---
+
+## ✅ Checklist قبل بناء أي UI
+
+- [ ] تحقق من `lib/shared/widgets/` أولاً — لا تُعيد بناء موجود
+- [ ] كل نص: `LocaleKeys.xxx.tr()` — ممنوع hardcode
+- [ ] كل لون: `context.colors.xxx` — ممنوع `Color(0xFF...)` في الـ UI
+- [ ] كل نص style: `context.textTheme.xxx` — ممنوع `TextStyle(fontSize: 16)`
+- [ ] Loading: `LoadingWidget()` أو shimmer — لا `CircularProgressIndicator` مباشرة
+- [ ] Error: `ErrorStateWidget` — لا `Text('Error')` مباشرة
+- [ ] Empty: `EmptyStateWidget` — لا `Text('No data')` مباشرة
+- [ ] Padding: `xx.allPadding` / `xx.horizontalPadding` — لا `EdgeInsets.all(xx)` طويلة

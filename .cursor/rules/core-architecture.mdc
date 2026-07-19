@@ -1,0 +1,488 @@
+﻿---
+description: Core architecture principles — foundation/platform/infra layers, Clean Architecture, REST-only template. Read readme/core_architecture.md for full reference.
+alwaysApply: true
+---
+
+# Core Architecture (Template)
+
+Full reference: `readme/core_architecture.md`
+
+---
+
+## 🗂️ Cursor Rules Index — ابدأ هنا دائماً
+
+هذا الملف `alwaysApply: true` — يُحمَّل تلقائياً في كل طلب. الملفات الأخرى تُحمَّل عند الطلب.
+
+### جدول القرار: "أيّ قاعدة أقرأ؟"
+
+| إذا كنت تبني… | القاعدة الأولى | القاعدة الثانية | القاعدة الثالثة |
+|--------------|---------------|----------------|----------------|
+| **Feature كاملة** (CRUD) | `crud-patterns.mdc` | `forms-guide.mdc` | `widgets-guide.mdc` |
+| **Auth Slice** جديدة | هذا الملف (Auth Slices) | `crud-patterns.mdc` | — |
+| **Form** أو شاشة إدخال | `forms-guide.mdc` | `widgets-guide.mdc` | — |
+| **Navigation** بين الشاشات | `navigation-patterns.mdc` | `crud-patterns.mdc` §9 | — |
+| **Widget** جديدة أو موجودة | `widgets-guide.mdc` | — | — |
+| **REST endpoint** جديد | هذا الملف (REST API §) | `crud-patterns.mdc` §§6-8 | — |
+| **Settings** أو platform services | هذا الملف (Optional Platform Services) | — | — |
+| **أي شيء آخر** | هذا الملف أولاً دائماً | — | — |
+
+### خريطة القواعد الكاملة
+
+| الملف | ما يحكمه | alwaysApply |
+|-------|---------|-------------|
+| `core-architecture.mdc` | معمارية الطبقات، DI، REST، Feedback، Locale، Colors، Typography | ✅ |
+| `crud-patterns.mdc` | هيكل Feature CRUD، Optimistic update، List refresh، Routing، Checklist | ❌ |
+| `forms-guide.mdc` | Form vs Controller، Validators، Submit/Loading، Dirty State | ❌ |
+| `widgets-guide.mdc` | كل Widget مع parameters وأمثلة | ❌ |
+| `navigation-patterns.mdc` | push/replace/pop، Bottom Nav، Route guards، Data passing | ❌ |
+| `api-generator.mdc` | توليد Retrofit ApiService تلقائياً | ❌ |
+
+### ترتيب القراءة — Feature كاملة جديدة
+
+```
+1. core-architecture.mdc   ← تأكد من الطبقة الصحيحة
+2. crud-patterns.mdc       ← هيكل الملفات + CRUD pattern كامل
+3. forms-guide.mdc         ← Form + validation + submit
+4. widgets-guide.mdc       ← Widgets المتاحة + parameters
+5. navigation-patterns.mdc ← Routing بعد النجاح
+```
+
+### Features الموجودة في المشروع
+
+| المسار | ما تفعله |
+|--------|---------|
+| `Features/auth/login/` | تسجيل دخول — المثال الحيّ الأساسي |
+| `Features/auth/register/` | تسجيل مستخدم جديد |
+| `Features/auth/forgot_password/` | إرسال رابط استعادة كلمة المرور |
+| `Features/auth/profile/` | عرض وتعديل بيانات المستخدم |
+| `Features/auth/shared/` | `AuthUser` + `AuthUserModel` — لا تكرّر |
+| `Features/settings/` | Theme + Language + Notifications + Version + Cache |
+| `Features/splash/` | شاشة البداية |
+
+---
+
+## Mandatory Documentation Sync
+
+**قاعدة صارمة: لا تنهِ أي مهمة قبل تحديث readme المرتبط في نفس الجلسة.**
+
+### Canonical README Set (7 ملفات فقط — لا غيرها)
+
+| الملف | متى يُقرأ / يُحدَّث |
+|-------|---------------------|
+| `readme/architecture.md` | فهرس المشروع — حدِّثه عند أي تغيير هيكلي في lib/ |
+| `readme/core_architecture.md` | **المرجع الأول** — حدِّثه عند تغيير core/ أو مبادئ الطبقات |
+| `readme/rest_api.md` | عند تغيير REST flow أو network أو failure أو import paths |
+| `readme/pagination.md` | عند تغيير PaginationCubit أو PaginationBuilderWdg |
+| `readme/widgets.md` | عند تغيير presentation/ أو shared/widgets/ أو توزيع الـ widgets |
+| `readme/scripts.md` | عند إضافة/تعديل سكربت أو build/release أو code generation triggers |
+| `readme/new_developer_guide.md` | عند تغيير هيكل المشروع أو onboarding أو feedback/locale API |
+
+### خريطة التغيير → README
+
+| إذا غيّرت… | حدِّث فوراً… |
+|------------|--------------|
+| `core/foundation/` أو مبادئ الطبقات | `core_architecture.md` + `architecture.md` |
+| `core/platform/` (خدمة جديدة أو تعديل) | `core_architecture.md` + `architecture.md` |
+| `core/infra/network/` أو `infra/errors/` | `core_architecture.md` + `rest_api.md` |
+| `core/di/platform_services_registry.dart` أو `AppFeatures` | `core_architecture.md` + `architecture.md` + `lib/core/platform/PLATFORM_SERVICES.md` |
+| `core/infra/network/` (interceptors / security) | `rest_api.md` + `lib/core/infra/network/NETWORK.md` |
+| REST endpoint flow أو BaseRepository أو Failure | `rest_api.md` |
+| `presentation/feedback/` أو الـ feedback API | `widgets.md` + `new_developer_guide.md` |
+| `presentation/locale/` أو الـ locale API | `widgets.md` + `new_developer_guide.md` |
+| `presentation/shared/pagination/` | `pagination.md` |
+| `shared/widgets/` أو توزيع widgets | `widgets.md` |
+| `scripts/` (إضافة/تعديل سكربت) | `scripts.md` |
+| `lib/` top-level structure | `architecture.md` + `new_developer_guide.md` |
+| `modules/sync/` | `architecture.md` + `core_architecture.md` |
+
+**ملاحظة:** `apigenerator.md` و`project_workflow.md` محذوفان — محتواهما في `rest_api.md` و`scripts.md`.
+
+---
+
+## lib/ Top-Level Structure
+
+```
+lib/
+├── core/         ← shared infrastructure (always present)
+│   ├── foundation/  ← Pure Dart only
+│   ├── platform/    ← Flutter/OS wrappers
+│   ├── infra/       ← Implementation + network + errors
+│   └── di/          ← Composition root
+├── modules/      ← optional bounded runtime modules (e.g. sync)
+├── Features/     ← feature slices (data/domain/presentation)
+├── presentation/ ← shared UI: theme, error, feedback, locale, pagination
+├── shared/       ← shared widgets across features
+├── routes/       ← auto_route router
+├── resources/    ← generated locale keys, assets helpers
+└── new/          ← optional alternate stacks (graphql backup)
+```
+
+---
+
+## Core Internal Layers
+
+```
+core/
+├── foundation/   ← Pure Dart only. No Flutter, no Dio, no I/O.
+├── platform/     ← Flutter/OS wrappers. Depends on foundation only.
+├── infra/        ← Implementation. Depends on foundation + platform.
+└── di/           ← Composition root (only place that imports everything)
+```
+
+### Dependency Rules (Strict)
+
+```
+foundation  → nothing from platform, infra, or Flutter     ✅
+platform    → foundation only                               ✅
+infra       → foundation + platform                         ✅
+di          → everything (composition root exception)       ✅
+modules     → foundation + infra only                       ✅
+Features    → foundation + infra + modules (NOT other Features) ✅
+presentation → foundation + infra + platform (AppLocale only via locale/) ✅
+
+core        → Features      ❌ NEVER (except di/)
+core        → presentation  ❌ NEVER (except di/)
+core        → routes        ❌ NEVER (except di/)
+modules     → Features      ❌ NEVER
+modules     → presentation  ❌ NEVER
+Features    → Features      ❌ NEVER
+```
+
+---
+
+## Layer Contents
+
+**foundation/** — `Failure` sealed types (10), `BaseUseCase`, `Params`, `ApiResponse<T>`, `PaginationQuery`, `AuthNetworkGateway`, `LocaleProvider`, `SessionReader`, `validators`, `num_extensions`
+
+**platform/** — `LogService`, `PersistenceKeys`, `MediaService`, `UrlLauncher`, `AppBlocObserver`, `string_extensions`, `datetime_extensions`, `AppLocale` (enum), `AppSettings`, `ConnectivityService`, `NetworkStateMonitor`, `PermissionsService`, `AppFeatures` (central toggle), `LocalNotificationsService` + adapters, `BiometricsService`, `ClipboardService`, `ShareService`, `FileService`, `AppLifecycleService` + adapters, `StorageService`, `SecureStorageService`, `EncryptionService` + adapters
+
+**infra/** — `env/flavors`, `network` (rest/interceptors/boundary/cancellation), `errors` (mappers/registry), `session` (AuthEventBus, LocaleProviderImpl)
+
+**di/** — `injection.dart` (entry + calls PlatformServicesRegistry), `injection_module.dart` (always-on), `platform_services_registry.dart` (optional P6-P10), `injection.config.dart` (generated)
+
+**modules/sync/** — optional offline sync engine. Entry: `SyncSDK.initialize(config, getIt)`
+
+---
+
+## Presentation Layer (ليس core/)
+
+```
+presentation/
+├── theme/        ← AppColors, AppPalette, AppTheme, ThemeExtensions
+├── extensions/   ← BuildContext helpers (screen size, padding, dialog, bottomsheet)
+├── error/        ← FailureUiMapper, UiAction
+├── feedback/     ← AppFeedbackService (abstract), adapters, context.feedback.*
+├── locale/       ← LocaleSwitcher variants, context.isAr / context.isRtl / context.changeLocale()
+└── shared/       ← PaginationCubit, ConnectivityCubit
+```
+
+**قاعدة:** لا تضع feedback أو locale أو PaginationCubit أو theme داخل `core/`.
+
+---
+
+## Errors Flow
+
+```
+Exception (Dio/IO/unknown)
+    ▼ infra/errors/
+FailureMapperRegistry.map(error) → Failure (sealed type)
+    ▼ presentation/error/
+FailureUiMapper.toAction(failure) → UiAction
+    ▼ Feature/cubits/
+switch على كل حالة → emit State
+```
+
+- `foundation/errors/` = أنواع Failure فقط — لا mapping، لا Dio، لا `.tr()`
+- `infra/errors/` = mapping فقط — لا UI، لا localization
+- `presentation/error/` = عرض فقط — لا منطق
+- Repositories = `handle()` من BaseRepository — لا try/catch يدوي
+- Cubits = `FailureUiMapper.toAction(failure)` — لا يعرف DioException
+
+---
+
+## REST API (new endpoint)
+
+1. URL → `core/infra/network/rest/api_urls.dart`
+2. `*_api_service.dart` → `Features/<name>/data/datasources/`
+3. `dart run build_runner build --delete-conflicting-outputs`
+4. RemoteDataSource → Repository (`handle()`) → UseCase → Cubit
+5. **لا توضع Feature ApiService أو models داخل core/**
+
+---
+
+## Feedback API (context.feedback)
+
+```dart
+context.feedback.success('msg');   // motion_toast (default adapter)
+context.feedback.error('msg');
+context.feedback.warning('msg', title: 'title');
+context.feedback.toast('msg');     // simple bottom toast
+```
+
+### ⚠️ Import إلزامي — لا يُصدَّر من extensions.dart
+
+```dart
+// هذا الـ import مطلوب صراحةً في كل ملف يستخدم context.feedback
+import 'package:flutter_base_template/presentation/feedback/feedback_extension.dart';
+
+// ❌ هذا لا يكفي — extensions.dart لا يصدّر feedback_extension
+import 'package:flutter_base_template/presentation/extensions/extensions.dart';
+```
+
+> **السبب:** `feedback_extension.dart` خارج `extensions/` barrel عمداً لعزل adapter التبعية.
+> **الحل الموحّد:** أضف الـ import الصريح في كل Screen/Widget يستخدم `context.feedback.*`
+
+تبديل الـ adapter: سطر واحد في `core/di/injection_module.dart`.
+
+---
+
+## Locale API (context)
+
+```dart
+context.isAr         // bool — بدلاً من context.locale.languageCode == 'ar'
+context.isRtl        // bool
+context.appLocale    // AppLocale enum
+context.changeLocale(AppLocale.english);
+context.toggleLocale();
+
+LocaleSwitcher.tile()          // صفحة الإعدادات
+LocaleSwitcher.iconButton()    // AppBar
+LocaleSwitcher.segmented()     // أونبوردينج
+LocaleSwitcher.textToggle()    // inline
+```
+
+---
+
+## Cubit Error Pattern
+
+```dart
+res.fold((failure) {
+  switch (FailureUiMapper.toAction(failure)) {
+    case ShowError(:final message): emit(State.error(message));
+    case NavigateToLogin(): AuthEventBus.instance.emit(AuthEvent.sessionExpired);
+    case Silent(): break;
+  }
+}, (data) => emit(State.success(data)));
+```
+
+---
+
+## Do NOT Put in Core
+
+- Theme, BuildContext extensions, PaginationCubit → `presentation/`
+- AppFeedbackService adapters → `presentation/feedback/adapters/`
+- LocaleSwitcher → `presentation/locale/`
+- GraphQL → `new/09_graphql/` (لا تربطه بـ lib/)
+- Feature ApiService, models → `Features/<name>/data/`
+- Optional modules (sync) → `modules/`
+
+---
+
+## Auth Capability Slices (قاعدة إلزامية)
+
+ميزة `auth` مقسّمة إلى **شرائح عمودية مستقلة** — قدرة واحدة لكل مجلد
+(`login/`, `register/`, `forgot_password/`, `change_password/`, `profile/`).
+كل شريحة قابلة للحذف بإزالة مجلدها + سطر مسارها فقط (الـ DI تلقائي).
+
+- **المشترك** في `auth/shared/` فقط: الكيان المركزي `AuthUser` + المترجم
+  `AuthUserModel.toEntity()` + `SessionRepository`. **لا تكرّر** الكيان أو منطق
+  التحويل داخل أي شريحة — أعد استخدام `shared/`.
+- **المثال الحيّ العامل:** `auth/login/` — انسخ نمطه حرفياً.
+- **قالب النسخ الرسمي:** `tools/templates/auth/__slice_template__/` (ملفات `.tmpl` + README فيه
+  الخطوات الكاملة). أي شريحة جديدة **يجب** أن تُبنى من هذا القالب.
+- **قالب CRUD كامل (قائمة + تفاصيل + إضافة/تعديل/حذف):** `tools/templates/feature/__crud_template__/`
+  — للميزات خارج `auth/` (Products, Orders, Reports ...). المرجع: `.cursor/rules/crud-patterns.mdc`.
+- بنية الشريحة الثابتة:
+  `data/{datasources,models,repositories}` · `domain/{entities,repositories,usecases}` · `presentation/{cubits,pages}`.
+- عند إضافة شريحة: انسخ القالب، استبدل `Xxx`/`xxx`، أضف `ApiUrls.<name>` + مساراً
+  في `router.dart` + مفاتيح ترجمة، ثم `build_runner`.
+
+---
+
+## Optional Platform Services (P6-P10)
+
+**القاعدة الصارمة:** الخدمات الاختيارية تُسجَّل **فقط** عبر `AppFeatures` + `PlatformServicesRegistry`.
+
+```
+# تفعيل خدمة — خطوة واحدة فقط:
+app_features.dart:  static const biometrics = true;
+                              ↓ تلقائياً
+platform_services_registry.dart: يسجّل BiometricsService
+```
+
+### قائمة الخدمات الاختيارية
+
+| Flag في AppFeatures | الخدمة المُسجَّلة | Package |
+|---------------------|------------------|---------|
+| `biometrics = true` | `BiometricsService` | `local_auth` |
+| `clipboard = true` | `ClipboardService` | Flutter built-in |
+| `shareSheet = true` | `ShareService` | `share_plus` |
+| `fileOperations = true` | `FileService` | `file_picker` + `open_filex` |
+| `appLifecycle = true` | `AppLifecycleService` | Flutter built-in |
+| `certificatePinning = true` | applies `CertificatePinningConfig` on Dio | `crypto` |
+
+### ماذا لا تفعل ❌
+
+- لا تضع P6-P10 مباشرة في `injection_module.dart`
+- لا تنشئ `@lazySingleton` على impl الخدمات الاختيارية
+- لا تسجّل خدمة اختيارية بدون flag مرتبط في `AppFeatures`
+- لا تعدّل `PlatformServicesRegistry` إلا عند إضافة خدمة اختيارية جديدة
+
+### عند إضافة خدمة اختيارية جديدة:
+
+1. أضف `interface` في `core/platform/<name>/`
+2. أضف `impl` أو `adapter` في نفس المجلد
+3. أضف flag في `AppFeatures`: `static const <name> = false;`
+4. أضف `_register<Name>()` في `PlatformServicesRegistry`
+5. أضف قسماً في `lib/core/platform/PLATFORM_SERVICES.md`
+6. حدِّث `readme/core_architecture.md` + `readme/architecture.md`
+
+---
+
+## Typography — قواعد النصوص (صارمة)
+
+### خريطة التوجيه السريع
+
+| الحالة | الاستخدام الصحيح | مثال |
+|--------|-----------------|-------|
+| نص عنوان رئيسي كبير | `context.textTheme.headlineLarge` | صفحة onboarding |
+| نص عنوان متوسط | `context.textTheme.headlineMedium` | section title |
+| نص عنوان صغير | `context.textTheme.headlineSmall` | card title |
+| نص جسم رئيسي | `context.textTheme.bodyMedium` | paragraph |
+| نص جسم صغير | `context.textTheme.bodySmall` | caption, hint |
+| تسمية زر / label | `context.textTheme.labelLarge` | button text |
+| style مخصص خاص بـ widget واحد | `.copyWith(fontSize, fontWeight)` على style موجود | |
+| style متكرر في أكثر من مكان | أضفه إلى `TextThemeEx` في `app_theme.dart` | `context.headLineS24W600` |
+
+### TextTheme الحالي (مرجع سريع)
+
+| Style | fontSize | weight | الاستخدام |
+|-------|----------|--------|-----------|
+| `displayLarge` | 24 | w800 | أكبر عنوان hero |
+| `displayMedium` | 18 | w700 | hero subtitle |
+| `displaySmall` | 16 | w700 | featured section |
+| `headlineLarge` | 26 | w700 | page title |
+| `headlineMedium` | 20 | w700 | section title |
+| `headlineSmall` | 14 | w700 | card title |
+| `titleLarge` | 16 | w700 | list header |
+| `titleMedium` | 16 | w500 | dialog title |
+| `titleSmall` | 14 | w300 | subtitle |
+| `bodyLarge` | 16 | bold | emphasized body |
+| `bodyMedium` | 14 | w500 | default body |
+| `bodySmall` | 12 | w400 | secondary body |
+| `labelLarge` | 14 | w400 | button, chip |
+| `labelMedium` | 12 | w400 | badge text |
+| `labelSmall` | 10 | w400 | tiny label |
+
+### ممنوع تماماً ❌
+- `TextStyle(fontSize: 16, ...)` مباشرة في الـ UI
+- `fontFamily: 'NotoSansArabic'` hardcoded — المشروع يضبطه تلقائياً حسب اللغة
+- `style: TextStyle(color: Color(...))` — استخدم `.copyWith(color: context.colors.X)`
+- تجاهل اللغة عند اختيار الـ fontFamily — `TextThemeEx` تعالجه تلقائياً
+
+### Font Family — تلقائي
+```dart
+// حسب اللغة الحالية — لا تحتاج تعيينه يدوياً
+// NotoSansArabic  ← when context.isAr
+// NotoSansLatin   ← otherwise
+// كل TextThemeEx getter يجلبه تلقائياً عبر context._fontFamily
+```
+
+### عند إضافة style متكرر جديد
+1. أضف getter في `TextThemeEx` في `lib/presentation/theme/app_theme.dart`
+2. استخدم `Theme.of(this).textTheme.X!.copyWith(fontFamily: _fontFamily, ...)`
+3. لا تضع قيماً hardcoded — ابنِ على style أساسي من `TextTheme`
+
+---
+
+## Localization — قواعد الترجمة (صارمة)
+
+### خريطة سريعة
+
+| الحالة | الاستخدام الصحيح |
+|--------|-----------------|
+| عرض نص في الـ UI | `LocaleKeys.myKey.tr()` |
+| نص مع متغيرات | `LocaleKeys.myKey.tr(args: ['value'])` أو `namedArgs: {'name': val}` |
+| تحقق من اللغة | `context.isAr` أو `context.isRtl` |
+| تغيير اللغة | `context.changeLocale(AppLocale.arabic)` |
+| تبديل اللغة | `context.toggleLocale()` |
+
+### مسار إضافة مفتاح جديد (3 ملفات دائماً)
+
+```
+1. assets/translations/ar.json   ← أضف المفتاح بالعربية
+2. assets/translations/en.json   ← أضف المفتاح بالإنجليزية
+3. lib/resources/locale_keys.g.dart ← أضف: static const myKey = 'myKey';
+4. في الـ UI: LocaleKeys.myKey.tr()
+```
+
+> **ملاحظة:** `locale_keys.g.dart` مُولَّد مبدئياً لكن يُعدَّل يدوياً في هذا المشروع
+> (أمر الـ generate غير مُشغَّل في CI). **أضف دائماً المفتاح في الملفات الثلاثة معاً**
+> وإلا ستظهر أخطاء compile في الـ Widget.
+
+### LocaleSwitcher — أنماط الاستخدام
+```dart
+LocaleSwitcher.tile()          // صفحة الإعدادات — ListTile
+LocaleSwitcher.iconButton()    // AppBar icon
+LocaleSwitcher.segmented()     // onboarding — SegmentedButton
+LocaleSwitcher.textToggle()    // inline — AR | EN
+```
+
+### ممنوع تماماً ❌
+- `Text('تسجيل الدخول')` أو `Text('Login')` hardcoded في الـ UI
+- `locale.languageCode == 'ar'` — استخدم `context.isAr`
+- `Localizations.localeOf(context).languageCode` — استخدم `context.appLocale`
+- إضافة مفتاح في ar.json فقط بدون en.json + locale_keys.g.dart — يكسر الـ build
+- `tr('key')` بدون استيراد `LocaleKeys` — يُسبّب typo بدون compile error
+
+### قواعد مفاتيح الترجمة (Naming)
+- camelCase: `LocaleKeys.noInternetConnection`
+- المفاتيح المتشابكة بنقطة: `LocaleKeys.auth_login` → `{"auth": {"login": "..."}}`
+- لا مسافات، لا أرقام في بداية المفتاح
+- **الـ ar.json هو المرجع الأول** — تأكد دائماً من وجود المفتاح في كلا الملفين
+
+### بعد تغيير ملفات الترجمة
+- `readme/widgets.md` + `readme/new_developer_guide.md` ← حدِّثهما
+
+---
+
+## Colors — قواعد الاستخدام (صارمة)
+
+### خريطة التوجيه السريع
+
+| الحالة | الاستخدام الصحيح | مثال |
+|--------|-----------------|-------|
+| خلفيات وألوان UI عامة | `context.colors.X` | `context.colors.bgCard` |
+| ألوان brand + Flutter widgets | `context.colorScheme.X` | `context.colorScheme.primary` |
+| Avatar وStatus وIcons | `context.colors.statusSuccessBg` / `avatarBg` / `iconAction` | tokens جاهزة |
+| لون خاص بـ widget واحد فقط | `static const` في ملف الـ widget + من `AppPalette` | `static const _divider = AppPalette.gray300` |
+| إضافة لون متكرر جديد | أضفه إلى `AppColors` في light() وdark() | لا تتركه static const |
+
+### المسار الصحيح للون من المصمم
+```
+Figma hex → AppPalette (raw) → AppColors.light/dark (semantic) → context.colors.X في الـ UI
+```
+
+### ممنوع تماماً ❌
+- `Color(0xFF...)` مباشرة في الـ UI
+- `AppPalette.X` خارج ملف `app_colors.dart`
+- `Colors.blue` أو أي ثابت Flutter مرئي
+- `Theme.of(context).colorScheme.surfaceContainerHighest` مباشرة → استخدم `context.colors.bgElevated2`
+- `Colors.white` / `Colors.black` في الـ UI → استخدم `context.colors.bgCard` / `context.colors.textPrimary`
+
+### عند تغيير ألوان المشروع (brand جديد من المصمم)
+1. حدِّث `AppPalette` بالقيم الجديدة
+2. راجع `AppColors.light()` و `AppColors.dark()` — تأكد الـ mapping منطقي
+3. لا تلمس الـ UI — الـ tokens تنتشر تلقائياً
+
+### خريطة → README
+تغيير `AppPalette` أو `AppColors` أو `AppThemeData` → حدِّث `readme/widgets.md`
+
+---
+
+## Modification Rules
+
+- تغيير minimal ومعزول — لا refactors واسعة بدون موافقة صريحة
+- بعد DI/retrofit/freezed: `dart run build_runner build --delete-conflicting-outputs`
+- تحقق دائماً: `dart analyze lib`
+- لا مراحل معمارية بدون موافقة المستخدم

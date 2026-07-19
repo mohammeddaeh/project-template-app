@@ -1,0 +1,25 @@
+{
+  "flavors": {
+    "dev": {
+      "displayName": "تجريبي DEV",
+      "showVersion": true,
+      "applicationId": "com.example.app_template.dev",
+      "iconPath": "assets/app_icons/icon_dev.png",
+      "adaptiveIconBackground": "#1565C0"
+    },
+    "staging": {
+      "displayName": "اسم التطبيق TEST",
+      "showVersion": true,
+      "applicationId": "com.example.app_template.staging",
+      "iconPath": "assets/app_icons/icon_staging.png",
+      "adaptiveIconBackground": "#F57C00"
+    },
+    "prod": {
+      "displayName": "اسم التطبيق",
+      "showVersion": false,
+      "applicationId": "com.example.app_template",
+      "iconPath": "assets/app_icons/icon_prod.png",
+      "adaptiveIconBackground": "#FFFFFF"
+    }
+  }
+}
