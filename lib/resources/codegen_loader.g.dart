@@ -401,7 +401,21 @@ class CodegenLoader extends AssetLoader{
   "roleLevelHint": "الرقم الأقل يعني سلطة أعلى",
   "cardVariantContainer": "شفّاف",
   "edit": "تعديل",
-  "detailWidgetsSampleTitle": "محمّد الحلبي"
+  "detailWidgetsSampleTitle": "محمّد الحلبي",
+  "loginDisabled": "حسابك معطَّل",
+  "loginPendingApproval": "حسابك قيد مراجعة الإدارة",
+  "loginRejected": "طلب تسجيلك مرفوض",
+  "noDataFound": "لا توجد بيانات",
+  "loginSuspended": "حسابك موقوف مؤقتاً",
+  "sendResetCode": "إرسال رمز الاستعادة",
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "passwordMustDiffer": "كلمة المرور الجديدة يجب أن تختلف عن الحالية",
+  "newPassword": "كلمة المرور الجديدة",
+  "changePassword": "تغيير كلمة المرور",
+  "resetCode": "رمز الاستعادة",
+  "currentPassword": "كلمة المرور الحالية",
+  "passwordChangedSuccess": "تم تغيير كلمة المرور",
+  "resetCodeSentTo": "إن كان {email} مسجَّلاً لدينا فقد أرسلنا إليه رمزاً"
 };
 static const Map<String,dynamic> _en = {
   "password": "Password",
@@ -790,7 +804,21 @@ static const Map<String,dynamic> _en = {
   "roleLevelHint": "A lower number means higher authority",
   "cardVariantContainer": "Transparent",
   "edit": "Edit",
-  "detailWidgetsSampleTitle": "Mohammed Al-Halabi"
+  "detailWidgetsSampleTitle": "Mohammed Al-Halabi",
+  "loginDisabled": "Your account has been disabled",
+  "loginPendingApproval": "Your account is awaiting admin approval",
+  "loginRejected": "Your registration request was rejected",
+  "noDataFound": "No data found",
+  "loginSuspended": "Your account is temporarily suspended",
+  "sendResetCode": "Send reset code",
+  "resetPassword": "Reset password",
+  "passwordMustDiffer": "The new password must differ from the current one",
+  "newPassword": "New password",
+  "changePassword": "Change password",
+  "resetCode": "Reset code",
+  "currentPassword": "Current password",
+  "passwordChangedSuccess": "Password changed",
+  "resetCodeSentTo": "If {email} is registered with us, we have sent it a code"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }

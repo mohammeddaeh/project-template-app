@@ -47,6 +47,68 @@ import 'package:app_template/core/platform/storage/secure_storage_service.dart'
     as _i455;
 import 'package:app_template/core/platform/storage/storage_service.dart'
     as _i104;
+import 'package:app_template/Features/auth/change_password/data/datasources/change_password_api_service.dart'
+    as _i400;
+import 'package:app_template/Features/auth/change_password/data/datasources/change_password_remote_datasource.dart'
+    as _i7;
+import 'package:app_template/Features/auth/change_password/data/repositories/change_password_repository_impl.dart'
+    as _i716;
+import 'package:app_template/Features/auth/change_password/domain/repositories/change_password_repository.dart'
+    as _i276;
+import 'package:app_template/Features/auth/change_password/domain/usecases/change_password_usecase.dart'
+    as _i26;
+import 'package:app_template/Features/auth/change_password/presentation/cubits/change_password_cubit.dart'
+    as _i245;
+import 'package:app_template/Features/auth/forgot_password/data/datasources/password_reset_api_service.dart'
+    as _i294;
+import 'package:app_template/Features/auth/forgot_password/data/datasources/password_reset_remote_datasource.dart'
+    as _i997;
+import 'package:app_template/Features/auth/forgot_password/data/repositories/password_reset_repository_impl.dart'
+    as _i602;
+import 'package:app_template/Features/auth/forgot_password/domain/repositories/password_reset_repository.dart'
+    as _i667;
+import 'package:app_template/Features/auth/forgot_password/domain/usecases/request_reset_usecase.dart'
+    as _i300;
+import 'package:app_template/Features/auth/forgot_password/domain/usecases/reset_password_usecase.dart'
+    as _i809;
+import 'package:app_template/Features/auth/forgot_password/presentation/cubits/forgot_password_cubit.dart'
+    as _i974;
+import 'package:app_template/Features/auth/login/data/datasources/auth_api_service.dart'
+    as _i895;
+import 'package:app_template/Features/auth/login/data/datasources/auth_remote_datasource.dart'
+    as _i71;
+import 'package:app_template/Features/auth/login/data/repositories/login_repository_impl.dart'
+    as _i631;
+import 'package:app_template/Features/auth/login/domain/repositories/login_repository.dart'
+    as _i337;
+import 'package:app_template/Features/auth/login/domain/usecases/login_usecase.dart'
+    as _i779;
+import 'package:app_template/Features/auth/login/presentation/cubits/login_cubit.dart'
+    as _i21;
+import 'package:app_template/Features/auth/logout/data/datasources/logout_api_service.dart'
+    as _i315;
+import 'package:app_template/Features/auth/logout/data/datasources/logout_remote_datasource.dart'
+    as _i16;
+import 'package:app_template/Features/auth/logout/data/repositories/logout_repository_impl.dart'
+    as _i805;
+import 'package:app_template/Features/auth/logout/domain/repositories/logout_repository.dart'
+    as _i694;
+import 'package:app_template/Features/auth/logout/domain/usecases/logout_usecase.dart'
+    as _i850;
+import 'package:app_template/Features/auth/logout/presentation/cubits/logout_cubit.dart'
+    as _i478;
+import 'package:app_template/Features/auth/me/data/datasources/me_api_service.dart'
+    as _i713;
+import 'package:app_template/Features/auth/me/data/datasources/me_remote_datasource.dart'
+    as _i414;
+import 'package:app_template/Features/auth/me/data/repositories/me_repository_impl.dart'
+    as _i555;
+import 'package:app_template/Features/auth/me/domain/repositories/me_repository.dart'
+    as _i475;
+import 'package:app_template/Features/auth/me/domain/usecases/get_current_user_usecase.dart'
+    as _i351;
+import 'package:app_template/Features/auth/shared/current_user_repository.dart'
+    as _i508;
 import 'package:app_template/Features/home/presentation/cubits/navigation_cubit.dart'
     as _i921;
 import 'package:app_template/modules/sync/domain/sync_queue_repository.dart'
@@ -121,6 +183,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1021.PermissionsService>(
       () => _i252.PermissionsServiceImpl(),
     );
+    gh.lazySingleton<_i895.AuthApiService>(
+      () => injectableModule.authApiService(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i713.MeApiService>(
+      () => injectableModule.meApiService(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i315.LogoutApiService>(
+      () => injectableModule.logoutApiService(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i294.PasswordResetApiService>(
+      () => injectableModule.passwordResetApiService(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i400.ChangePasswordApiService>(
+      () => injectableModule.changePasswordApiService(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i702.LocaleProvider>(() => _i259.AppLocaleProvider());
     gh.lazySingleton<_i442.SyncManagerCubit>(
       () => _i442.SyncManagerCubit(
@@ -134,6 +211,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i895.Connectivity>(),
       ),
     );
+    gh.lazySingleton<_i7.ChangePasswordRemoteDataSource>(
+      () => _i7.ChangePasswordRemoteDataSource(
+        gh<_i400.ChangePasswordApiService>(),
+      ),
+    );
+    gh.lazySingleton<_i414.MeRemoteDataSource>(
+      () => _i414.MeRemoteDataSource(gh<_i713.MeApiService>()),
+    );
     gh.singleton<_i512.SessionRepository>(
       () => _i512.SessionRepository(gh<_i455.SecureStorageService>()),
     );
@@ -146,14 +231,95 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i652.SyncQueueRepository>(),
       ),
     );
+    gh.lazySingleton<_i997.PasswordResetRemoteDataSource>(
+      () => _i997.PasswordResetRemoteDataSource(
+        gh<_i294.PasswordResetApiService>(),
+      ),
+    );
+    gh.lazySingleton<_i16.LogoutRemoteDataSource>(
+      () => _i16.LogoutRemoteDataSource(gh<_i315.LogoutApiService>()),
+    );
+    gh.lazySingleton<_i475.MeRepository>(
+      () => _i555.MeRepositoryImpl(
+        gh<_i414.MeRemoteDataSource>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
+    gh.lazySingleton<_i71.AuthRemoteDataSource>(
+      () => _i71.AuthRemoteDataSource(gh<_i895.AuthApiService>()),
+    );
+    gh.factory<_i351.GetCurrentUserUseCase>(
+      () => _i351.GetCurrentUserUseCase(gh<_i475.MeRepository>()),
+    );
+    gh.lazySingleton<_i276.ChangePasswordRepository>(
+      () => _i716.ChangePasswordRepositoryImpl(
+        gh<_i7.ChangePasswordRemoteDataSource>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
     gh.lazySingleton<_i188.AuthNetworkGateway>(
       () => injectableModule.authNetworkGateway(gh<_i512.SessionRepository>()),
+    );
+    gh.singleton<_i508.CurrentUserRepository>(
+      () => _i508.CurrentUserRepository(gh<_i104.StorageService>()),
+    );
+    gh.lazySingleton<_i667.PasswordResetRepository>(
+      () => _i602.PasswordResetRepositoryImpl(
+        gh<_i997.PasswordResetRemoteDataSource>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
+    gh.factory<_i26.ChangePasswordUseCase>(
+      () => _i26.ChangePasswordUseCase(gh<_i276.ChangePasswordRepository>()),
+    );
+    gh.lazySingleton<_i694.LogoutRepository>(
+      () => _i805.LogoutRepositoryImpl(
+        gh<_i16.LogoutRemoteDataSource>(),
+        gh<_i512.SessionRepository>(),
+        gh<_i508.CurrentUserRepository>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
     );
     gh.lazySingleton<_i275.AuthInterceptor>(
       () => _i275.AuthInterceptor(
         gh<_i188.AuthNetworkGateway>(),
         gh<_i702.LocaleProvider>(),
       ),
+    );
+    gh.factory<_i245.ChangePasswordCubit>(
+      () => _i245.ChangePasswordCubit(gh<_i26.ChangePasswordUseCase>()),
+    );
+    gh.factory<_i300.RequestResetUseCase>(
+      () => _i300.RequestResetUseCase(gh<_i667.PasswordResetRepository>()),
+    );
+    gh.factory<_i809.ResetPasswordUseCase>(
+      () => _i809.ResetPasswordUseCase(gh<_i667.PasswordResetRepository>()),
+    );
+    gh.lazySingleton<_i337.LoginRepository>(
+      () => _i631.LoginRepositoryImpl(
+        gh<_i71.AuthRemoteDataSource>(),
+        gh<_i512.SessionRepository>(),
+        gh<_i508.CurrentUserRepository>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
+    gh.factory<_i850.LogoutUseCase>(
+      () => _i850.LogoutUseCase(gh<_i694.LogoutRepository>()),
+    );
+    gh.factory<_i974.ForgotPasswordCubit>(
+      () => _i974.ForgotPasswordCubit(
+        gh<_i300.RequestResetUseCase>(),
+        gh<_i809.ResetPasswordUseCase>(),
+      ),
+    );
+    gh.factory<_i478.LogoutCubit>(
+      () => _i478.LogoutCubit(gh<_i850.LogoutUseCase>()),
+    );
+    gh.factory<_i779.LoginUseCase>(
+      () => _i779.LoginUseCase(gh<_i337.LoginRepository>()),
+    );
+    gh.factory<_i21.LoginCubit>(
+      () => _i21.LoginCubit(gh<_i779.LoginUseCase>()),
     );
     return this;
   }

@@ -46,6 +46,46 @@ abstract final class FailureUiMapper {
                 : LocaleKeys.unauthorised.tr(),
           ),
 
+        // The four refused-account states. Each says something different about
+        // what the user should do next, which is the entire reason they are
+        // separate types — see their docs in core/foundation/errors/failure.dart.
+        //
+        // The server's own message wins when it sends one: it can be more
+        // specific than anything hardcoded here ("suspended until Sunday").
+        // The local key is the floor, not the preference.
+        LoginPendingApprovalFailure(:final serverMessage) => ShowError(
+            title: LocaleKeys.error.tr(),
+            message: serverMessage?.isNotEmpty == true
+                ? serverMessage!
+                : LocaleKeys.loginPendingApproval.tr(),
+          ),
+
+        // `reason` outranks even the server message: it is the admin's own
+        // words about this specific account, and it is the only thing that
+        // makes a rejection actionable.
+        LoginRejectedFailure(:final reason, :final serverMessage) => ShowError(
+            title: LocaleKeys.error.tr(),
+            message: reason?.isNotEmpty == true
+                ? reason!
+                : serverMessage?.isNotEmpty == true
+                    ? serverMessage!
+                    : LocaleKeys.loginRejected.tr(),
+          ),
+
+        LoginSuspendedFailure(:final serverMessage) => ShowError(
+            title: LocaleKeys.error.tr(),
+            message: serverMessage?.isNotEmpty == true
+                ? serverMessage!
+                : LocaleKeys.loginSuspended.tr(),
+          ),
+
+        LoginDisabledFailure(:final serverMessage) => ShowError(
+            title: LocaleKeys.error.tr(),
+            message: serverMessage?.isNotEmpty == true
+                ? serverMessage!
+                : LocaleKeys.loginDisabled.tr(),
+          ),
+
         RegisterFailure(:final serverMessage) => ShowError(
             title: LocaleKeys.error.tr(),
             message: serverMessage?.isNotEmpty == true

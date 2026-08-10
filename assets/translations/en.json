@@ -391,5 +391,19 @@
   "roleLevelHint": "A lower number means higher authority",
   "cardVariantContainer": "Transparent",
   "edit": "Edit",
-  "detailWidgetsSampleTitle": "Mohammed Al-Halabi"
+  "detailWidgetsSampleTitle": "Mohammed Al-Halabi",
+  "loginDisabled": "Your account has been disabled",
+  "loginPendingApproval": "Your account is awaiting admin approval",
+  "loginRejected": "Your registration request was rejected",
+  "noDataFound": "No data found",
+  "loginSuspended": "Your account is temporarily suspended",
+  "sendResetCode": "Send reset code",
+  "resetPassword": "Reset password",
+  "passwordMustDiffer": "The new password must differ from the current one",
+  "newPassword": "New password",
+  "changePassword": "Change password",
+  "resetCode": "Reset code",
+  "currentPassword": "Current password",
+  "passwordChangedSuccess": "Password changed",
+  "resetCodeSentTo": "If {email} is registered with us, we have sent it a code"
 }

@@ -27,6 +27,15 @@ class AppRouter extends RootStackRouter {
     // ── Splash ─────────────────────────────────────────────────────────────
     AutoRoute(page: SplashRoute.page, path: '/splash', initial: true),
 
+    // ── Auth ───────────────────────────────────────────────────────────────
+    // `LoginRoute` is what the whole app falls back to: `app.dart` listens to
+    // AuthEventBus and does `replaceAll([LoginRoute()])` when a session
+    // expires, so this entry is load-bearing far beyond the login screen.
+    AutoRoute(page: LoginRoute.page, path: '/login'),
+    AutoRoute(page: ForgotPasswordRoute.page, path: '/forgot-password'),
+    AutoRoute(page: ResetPasswordRoute.page, path: '/reset-password'),
+    AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
+
     // ── Home ───────────────────────────────────────────────────────────────
     AutoRoute(page: HomeRoute.page, path: '/home'),
 

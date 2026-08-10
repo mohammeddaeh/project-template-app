@@ -389,5 +389,19 @@ abstract class  LocaleKeys {
   static const cardVariantContainer = 'cardVariantContainer';
   static const edit = 'edit';
   static const detailWidgetsSampleTitle = 'detailWidgetsSampleTitle';
+  static const loginDisabled = 'loginDisabled';
+  static const loginPendingApproval = 'loginPendingApproval';
+  static const loginRejected = 'loginRejected';
+  static const noDataFound = 'noDataFound';
+  static const loginSuspended = 'loginSuspended';
+  static const sendResetCode = 'sendResetCode';
+  static const resetPassword = 'resetPassword';
+  static const passwordMustDiffer = 'passwordMustDiffer';
+  static const newPassword = 'newPassword';
+  static const changePassword = 'changePassword';
+  static const resetCode = 'resetCode';
+  static const currentPassword = 'currentPassword';
+  static const passwordChangedSuccess = 'passwordChangedSuccess';
+  static const resetCodeSentTo = 'resetCodeSentTo';
 
 }

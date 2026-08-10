@@ -28,4 +28,29 @@ abstract class PersistenceKeys {
   /// Epoch-ms timestamp of the last successful full delta-sync download.
   /// Used as the `updated_since` cursor on next sync.
   static const String syncLastDownloadAt = 'sync_last_download_at_ms';
+
+  // ── Current-user cache (CurrentUserRepository) ─────────────────────────────
+  // The token itself stays in SecureStorage ([token] above); these hold the
+  // NON-sensitive snapshot restored at startup, so identity and permissions
+  // survive a restart instead of resetting to empty on every launch.
+  //
+  // Without them the app holds a valid token and does not know whose it is
+  // until `GET /users/me` returns — a window in which every permission check
+  // answers "no", so the user briefly sees a version of the app with their own
+  // controls missing, then watches them appear.
+
+  /// JSON-encoded `AuthUser` snapshot — written on login and after every
+  /// successful `GET /users/me` refresh.
+  static const String cachedCurrentUser = 'cached_current_user';
+
+  /// JSON-encoded `List<String>` of the cached user's effective permission
+  /// keys — kept in sync with [cachedCurrentUser] at all times. Two stores that
+  /// can disagree are worse than one that is briefly empty.
+  static const String cachedPermissionKeys = 'cached_permission_keys';
+
+  /// Whether the cached session holds an unrestricted (super-admin) role.
+  /// Persisted beside the two above because it is part of the same snapshot:
+  /// restoring the user without it leaves an admin missing their own controls
+  /// until the background refresh returns.
+  static const String cachedIsSuperAdmin = 'cached_is_super_admin';
 }

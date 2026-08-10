@@ -57,6 +57,67 @@ final class LoginFailure extends Failure {
   String? get diagnosticMessage => serverMessage;
 }
 
+// ── Refused logins that are NOT "wrong password" ─────────────────────────────
+//
+// All four are a 403 on `/login`, and merging them into one "login failed"
+// message helps in none of the four: the user must wait, contact someone, read
+// a reason, or stop trying — and only a named state can say which.
+//
+// They are discriminated by `ApiError.data['account_status']`, **never** by
+// matching the message text: that text is translated prose which changes with
+// any rewording, so a branch built on it breaks in the language nobody tested.
+// See `login/data/repositories/login_repository_impl.dart` for the switch, and
+// `ApiError.data` in `core/foundation/contracts/api_response.dart` for how the
+// payload arrives.
+//
+// A project whose backend returns none of these simply never constructs them —
+// `LoginFailure` keeps meaning what it always did.
+
+/// 403 on `/login` — the account exists but is still awaiting approval.
+final class LoginPendingApprovalFailure extends Failure {
+  const LoginPendingApprovalFailure({this.serverMessage});
+
+  final String? serverMessage;
+
+  @override
+  String? get diagnosticMessage => serverMessage;
+}
+
+/// 403 on `/login` — the registration request was rejected.
+///
+/// [reason] carries `data.rejection_reason`. It is the whole point of this
+/// state: "your request was rejected" with no reason leaves the user with
+/// nothing to act on.
+final class LoginRejectedFailure extends Failure {
+  const LoginRejectedFailure({this.reason, this.serverMessage});
+
+  final String? reason;
+  final String? serverMessage;
+
+  @override
+  String? get diagnosticMessage => serverMessage;
+}
+
+/// 403 on `/login` — account temporarily suspended. Reversible.
+final class LoginSuspendedFailure extends Failure {
+  const LoginSuspendedFailure({this.serverMessage});
+
+  final String? serverMessage;
+
+  @override
+  String? get diagnosticMessage => serverMessage;
+}
+
+/// 403 on `/login` — account permanently disabled. Not reversible by waiting.
+final class LoginDisabledFailure extends Failure {
+  const LoginDisabledFailure({this.serverMessage});
+
+  final String? serverMessage;
+
+  @override
+  String? get diagnosticMessage => serverMessage;
+}
+
 /// 400 / 422 returned by the register endpoint (duplicate email, weak password …).
 final class RegisterFailure extends Failure {
   const RegisterFailure({this.serverMessage});

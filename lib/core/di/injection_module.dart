@@ -1,6 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/foundation.dart';
+import 'package:app_template/Features/auth/change_password/data/datasources/change_password_api_service.dart';
+import 'package:app_template/Features/auth/forgot_password/data/datasources/password_reset_api_service.dart';
+import 'package:app_template/Features/auth/me/data/datasources/me_api_service.dart';
+import 'package:app_template/Features/auth/logout/data/datasources/logout_api_service.dart';
+import 'package:app_template/Features/auth/login/data/datasources/auth_api_service.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart';
@@ -132,6 +137,28 @@ abstract class InjectableModule {
 
     return dio;
   }
+
+  // ── Feature ApiServices ───────────────────────────────────────────────────
+  // Registered here and not with `@injectable`, because a `@RestApi()` class is
+  // abstract and generated — the annotation cannot be placed on it. Every new
+  // feature adds one line in this block.
+
+  @lazySingleton
+  AuthApiService authApiService(Dio dio) => AuthApiService(dio);
+
+  @lazySingleton
+  MeApiService meApiService(Dio dio) => MeApiService(dio);
+
+  @lazySingleton
+  LogoutApiService logoutApiService(Dio dio) => LogoutApiService(dio);
+
+  @lazySingleton
+  PasswordResetApiService passwordResetApiService(Dio dio) =>
+      PasswordResetApiService(dio);
+
+  @lazySingleton
+  ChangePasswordApiService changePasswordApiService(Dio dio) =>
+      ChangePasswordApiService(dio);
 
   @lazySingleton
   Uuid get uuid {

@@ -388,5 +388,19 @@
   "roleLevelHint": "الرقم الأقل يعني سلطة أعلى",
   "cardVariantContainer": "شفّاف",
   "edit": "تعديل",
-  "detailWidgetsSampleTitle": "محمّد الحلبي"
+  "detailWidgetsSampleTitle": "محمّد الحلبي",
+  "loginDisabled": "حسابك معطَّل",
+  "loginPendingApproval": "حسابك قيد مراجعة الإدارة",
+  "loginRejected": "طلب تسجيلك مرفوض",
+  "noDataFound": "لا توجد بيانات",
+  "loginSuspended": "حسابك موقوف مؤقتاً",
+  "sendResetCode": "إرسال رمز الاستعادة",
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "passwordMustDiffer": "كلمة المرور الجديدة يجب أن تختلف عن الحالية",
+  "newPassword": "كلمة المرور الجديدة",
+  "changePassword": "تغيير كلمة المرور",
+  "resetCode": "رمز الاستعادة",
+  "currentPassword": "كلمة المرور الحالية",
+  "passwordChangedSuccess": "تم تغيير كلمة المرور",
+  "resetCodeSentTo": "إن كان {email} مسجَّلاً لدينا فقد أرسلنا إليه رمزاً"
 }
