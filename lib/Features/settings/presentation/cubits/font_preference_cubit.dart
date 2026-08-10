@@ -1,9 +1,9 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/core/platform/storage/persistence_keys.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
 
-class FontPreferenceCubit extends Cubit<AppFontOption> {
+class FontPreferenceCubit extends SafeCubit<AppFontOption> {
   FontPreferenceCubit(this._storage, {AppFontOption? initial})
       : super(initial ?? AppFonts.available.first);
 

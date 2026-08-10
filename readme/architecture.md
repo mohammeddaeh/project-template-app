@@ -1,7 +1,6 @@
 # Architecture Guide
 
 > **المرجع الكامل:** [`core_architecture.md`](core_architecture.md) — اقرأه قبل أي تعديل معماري.  
-> **قاعدة Cursor:** `.cursor/rules/core-architecture.mdc` (تُطبَّق تلقائياً).  
 > **مزامنة إلزامية:** عند تغيير الكود → حدّث readme المرتبط (انظر القسم 0 في `core_architecture.md`).
 
 This template uses **Clean Architecture** with **feature-based organization**. **REST only** in `lib/`.
@@ -23,7 +22,6 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | [`widgets_usage.md`](widgets_usage.md) | **Widget Usage Guide** — كل الويدجتات مع أمثلة الاستخدام |
 | [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync module — quick setup |
 | [`sync.md`](sync.md) | **Offline Sync — Engineering Reference** (architecture, lifecycle, failure scenarios, roadmap) |
-| [`../new/09_graphql/README.md`](../new/09_graphql/README.md) | Optional GraphQL (not in template) |
 
 ---
 
@@ -38,7 +36,6 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | `lib/shared/` | Reusable widgets (`widgets.dart` barrel) |
 | `lib/routes/` | Navigation (`auto_route`) |
 | `lib/resources/` | Generated locale keys, assets helpers |
-| `lib/new/` | Optional alternate stacks (GraphQL backup, reference patterns) |
 
 ---
 
@@ -113,11 +110,14 @@ core/
 | Module | Entry Point | Packages |
 |--------|-------------|---------|
 | `sync/` ✅ | `SyncSDK.initialize(config, getIt)` — called in `main.dart` | sqflite |
+| `multi_device/` ✅ | `MultiDevicePlugin.initialize(getIt)` | dio (retrofit) |
 | `push_notifications/` | `PushNotificationsModule.initialize(getIt, config: ...)` | firebase_messaging |
 | `crash_reporting/` | `CrashReportingModule.initialize(enabled: kReleaseMode)` | firebase_crashlytics |
 | `analytics/` | `AnalyticsModule.initialize(getIt, enabled: kReleaseMode)` | firebase_analytics |
 | `remote_config/` | `RemoteConfigModule.initialize(getIt, defaults: {...})` | firebase_remote_config |
 | `in_app_updates/` | `InAppUpdatesModule.checkAndPrompt(context)` | in_app_update |
+
+> `realtime/` موجود كـ `README.md` تخطيطي فقط حتى الآن — لا يحتوي كود مُنفَّذ.
 
 ---
 
@@ -169,7 +169,7 @@ Errors:
 ## Workflow
 
 ```bash
-dart run scripts/feature_generator.dart
+# feature جديدة: أنشئ data/domain/presentation يدوياً تحت Features/<name>/ ثم:
 dart run scripts/sync_permissions.dart      # after changing AppFeatures flags
 dart run build_runner build --delete-conflicting-outputs
 dart analyze lib
@@ -187,23 +187,10 @@ dart analyze lib
 | N2 | **DeepLinkService** | تمرير push notification taps + URL schemes بشكل موحّد للـ router | 🔴 عالية |
 | N3 | **FormValidator utility** | استخدام Value Objects + ValidationFailure في validation مركزي لنماذج `form_builder` | 🟡 متوسطة |
 | N4 | **AppUpdateChecker** | يجمع `RemoteConfigModule` (min_version) مع `InAppUpdatesModule` في utility واحد | 🟡 متوسطة |
-| N5 | **ConnectivityBanner widget** | `shared/` widget يعرض شريط offline تلقائياً عبر `ConnectivityCubit` | 🟡 متوسطة |
+| N5 | **ConnectivityBanner widget** | `shared/` widget يعرض شريط offline تلقائياً عبر `ConnectivityCubit` (انظر `readme/sync.md` لمرجع `OfflineBanner`/`OfflineConnectivityLayer` المخطَّط) | 🟡 متوسطة |
 | N6 | **AnalyticsRouteObserver** | `RouteObserver` يُسجّل screen views تلقائياً لكل route دون كود يدوي | 🟢 منخفضة |
 | N7 | **UserSession** | كيان مركزي لـ userId + token + role — يُستخدم من Crashlytics + Analytics + AuthInterceptor | 🟢 منخفضة |
 
 ---
 
-## Reference Patterns in `new/`
-
-> موجودة كمراجع — تُرقَّى إلى `lib/` عند الحاجة.
-
-| المجلد | المحتوى | الحالة |
-|--------|---------|--------|
-| ~~`new/01_connectivity/`~~ | ~~ConnectivityService + NetworkManager~~ | ✅ رُقِّي إلى `platform/connectivity/` |
-| `new/05_sync/` | `NetworkStabilityProbe`, `SyncManager` | مرجع |
-| `new/07_sync_widgets/` | `OfflineBanner`, `OfflineConnectivityLayer` | مرجع — ذات صلة بـ N5 |
-| `new/08_local_storage/` | `KeyValueStore` abstraction | مرجع |
-
----
-
-*Last updated: 2026-06-17*
+*Last updated: 2026-07-23 — أُزيلت إشارات لمجلد `new/` غير الموجود (GraphQL backup، reference patterns) وقاعدة Cursor المحذوفة؛ أُضيف `multi_device/` لجدول Optional Modules؛ صُحِّح سطر `feature_generator.dart` غير الموجود.*

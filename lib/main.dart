@@ -19,7 +19,6 @@ import 'package:app_template/resources/assets_files.dart';
 import 'package:app_template/resources/codegen_loader.g.dart';
 import 'package:app_template/app.dart';
 
-// d
 void main() async {
   await runZonedGuarded(_bootstrap, _onError);
 }
@@ -57,8 +56,6 @@ Future<void> _bootstrap() async {
       : AppFonts.available.first;
 
   // ── System UI — Edge-to-Edge ──────────────────────────────────────────────
-  // يجعل التطبيق يرسم خلف status bar وشريط التنقل/منطقة الإيماءات.
-  // النتيجة: MediaQuery.size.height ثابت في وضع الأزرار والإيماءات.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // ── Device orientation ────────────────────────────────────────────────────
@@ -86,4 +83,3 @@ Future<void> _bootstrap() async {
 void _onError(Object error, StackTrace stack) {
   debugPrint('Uncaught error: $error\n$stack');
 }
-// 01

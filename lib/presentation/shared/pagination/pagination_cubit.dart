@@ -1,4 +1,5 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
@@ -11,7 +12,7 @@ import 'package:app_template/core/foundation/contracts/pagination_data_entity.da
 part 'pagination_cubit.freezed.dart';
 part 'pagination_state.dart';
 
-abstract class PaginationCubit<E> extends Cubit<PaginationState<E>> {
+abstract class PaginationCubit<E> extends SafeCubit<PaginationState<E>> {
   final ScrollController scrollController = ScrollController();
   PaginationQuery paginationQuery = const PaginationQuery();
 
@@ -158,6 +159,68 @@ abstract class PaginationCubit<E> extends Cubit<PaginationState<E>> {
     emit(updatedState);
   }
 
+  /// Removes every item matching [test] from the current page set.
+  ///
+  /// Call BEFORE the delete `await` for optimistic UI; call [restoreItems]
+  /// with the pre-removal snapshot if the request fails.
+  void removeItemWhere(bool Function(E) test) {
+    if (state is! PaginationSuccessState<E>) return;
+
+    final PaginationSuccessState<E> successState =
+        state as PaginationSuccessState<E>;
+
+    final updated = List<E>.from(data)..removeWhere(test);
+
+    emit(
+      successState.copyWith(
+        paginationEntity: successState.paginationEntity.copyWith(
+          data: updated,
+        ),
+      ),
+    );
+  }
+
+  /// Restores a previously-saved snapshot — call on rollback after a failed
+  /// optimistic [removeItemWhere] / [replaceEntityItem].
+  void restoreItems(List<E> backup) {
+    if (state is! PaginationSuccessState<E>) return;
+
+    final PaginationSuccessState<E> successState =
+        state as PaginationSuccessState<E>;
+
+    emit(
+      successState.copyWith(
+        paginationEntity: successState.paginationEntity.copyWith(
+          data: backup,
+        ),
+      ),
+    );
+  }
+
+  /// Prepends a newly-created entity to the top of the list (e.g. after a
+  /// create-form returns the server's canonical entity via `pop(entity)`).
+  ///
+  /// **Assumes the backend orders newest-first.** Without an explicit
+  /// `ORDER BY`, Postgres returns rows in unspecified physical order, so the
+  /// item lands at the top here and somewhere else after the next `refresh()`
+  /// — which reads as a bug in this method rather than in the query. See #17.
+  void prependItem(E entity) {
+    if (state is! PaginationSuccessState<E>) return;
+
+    final PaginationSuccessState<E> successState =
+        state as PaginationSuccessState<E>;
+
+    final updated = [entity, ...data];
+
+    emit(
+      successState.copyWith(
+        paginationEntity: successState.paginationEntity.copyWith(
+          data: updated,
+        ),
+      ),
+    );
+  }
+
   void _bindScrollController() {
     scrollController.addListener(() {
       if (state is! PaginationSuccessState<E>) return;
@@ -178,13 +241,11 @@ abstract class PaginationCubit<E> extends Cubit<PaginationState<E>> {
     });
   }
 
-  @override
-  void emit(PaginationState<E> state) {
-    if (isClosed) {
-      return;
-    }
-    super.emit(state);
-  }
+  // The `emit` override that used to live here (`if (isClosed) return;`) is now
+  // [SafeCubit]'s job — and that is the point of the move, not a tidy-up: the
+  // guard existed HERE ONLY, so paginated lists survived a late response while
+  // every other cubit in the app crashed on one. A protection that correct in
+  // one file and absent in twenty is an accident waiting for the next screen.
 
   @override
   void onChange(Change<PaginationState<E>> change) {

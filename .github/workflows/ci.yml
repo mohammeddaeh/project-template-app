@@ -1,0 +1,95 @@
+# CI — the checks that already exist, run by something other than memory.
+#
+# Every gate below was added because a real defect got past code review. None of
+# them are new rules; what is new is that nobody has to remember to run them:
+#
+#   analyze  — the compiler-level net
+#   test     — four regression tests, each pinning behaviour that fails SILENTLY
+#              (emit-after-close, content hidden behind the nav bar, a section
+#              refetching on every scroll, an OpenType tag not reaching headings)
+#   format   — keeps diffs about content instead of whitespace
+#
+# The tests are the point. A guard against a silent failure is itself silent
+# when it stops running, so a suite nobody executes protects nothing — which is
+# exactly what an empty, permanently-failing test file had done here until it
+# was removed. Red must mean red.
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+# A new push supersedes the previous run on the same branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          # Tracks the channel rather than pinning an exact build: a template is
+          # cloned months after it is written, and a pinned version quietly
+          # becomes the reason a fresh project will not build.
+          channel: stable
+          cache: true
+
+      - run: flutter --version
+
+      - run: flutter pub get
+
+      # Generated sources are committed, so this runs against what is in the
+      # repo. If codegen output ever drifts from its inputs, `analyze` is where
+      # it surfaces.
+      - name: Analyze
+        run: dart analyze lib test
+
+      - name: Test
+        run: flutter test
+
+      # Advisory, not a gate — and measured, not guessed: as of 2026-08-10 this
+      # reports 137 of 327 files as unformatted, because the repo predates the
+      # current `dart format`. Blocking on that would make every PR red on
+      # arrival, and a build that is always red is a build nobody reads.
+      #
+      # To promote it to a gate: run `dart format .` once, commit the result on
+      # its own (so the noise never mixes with a real change), then delete the
+      # `continue-on-error` line below.
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed lib test
+        continue-on-error: true
+
+  build-android:
+    needs: analyze-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # Proves the app still assembles — `analyze` does not catch a broken
+      # Gradle file, a missing asset, or a manifest that no longer merges.
+      #
+      # Uses the dev flavor with its env file; adjust the flavor list here when
+      # a project adds or renames one.
+      - name: Build APK (dev, debug)
+        run: >
+          flutter build apk --debug
+          --flavor dev
+          --dart-define=FLAVOR=dev
+          --dart-define-from-file=.env.dev.json

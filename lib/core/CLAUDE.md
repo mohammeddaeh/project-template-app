@@ -198,9 +198,14 @@ class {Name}Cubit extends PaginationCubit<{Entity}> {
     )));
   }
   @override bool isMatchedTwoEntity({Entity} e1, {Entity} e2) => e1.id == e2.id;
-  @override Future<void> close() { _{useCase}.cancel(); return super.close(); } // ← إلزامي
 }
 ```
+
+> **`PaginationCubit` يرث `SafeCubit`** (`core/foundation/domain/safe_cubit.dart`) — فكل قائمة محميّة بلا سطر إضافي. وكل cubit جديد يكتبه المشروع يرث `SafeCubit` كذلك، **لا `Cubit`**.
+>
+> **ولا تكتب `close() { _useCase.cancel(); }` ظنّاً أنها الحماية.** كانت هنا موصوفة «إلزامية» — وهي **بلا أثر**: `BaseUseCase.resetCancelToken` بلا مستدعٍ واحد في `lib/` كلّه، فالتوكن `null` دائماً وكل `cancel()` لا تفعل شيئاً. ولو عملت لما كفت: الردّ قد يصل بين «تحليل الاستجابة» و«إغلاق الـcubit» مهما أُلغي بسرعة. الحارس الحقيقي هو `SafeCubit`، وهو غير مشروط.
+>
+> والانهيار الذي يمنعه حقيقي ويصل نسخة الإصدار — `Bad state: Cannot emit new states after calling close` — وسببه لا أكثر من مغادرة شاشة قبل وصول ردّها. مثبَّت بـ`test/safe_cubit_test.dart`.
 
 ---
 

@@ -58,11 +58,18 @@ part '{name}_cubit.freezed.dart';
 part '{name}_state.dart';
 
 @injectable
-class {Name}Cubit extends Cubit<{Name}State> {
+class {Name}Cubit extends SafeCubit<{Name}State> {   // ← SafeCubit، لا Cubit
   {Name}Cubit(this._{useCase}) : super(const {Name}State.initial());
   final {UseCaseName} _{useCase};
 }
 ```
+
+> **`SafeCubit` لا `Cubit` — بلا استثناء** (`core/foundation/domain/safe_cubit.dart`).
+> كل جلب يتجاوز شاشته عاجلاً أو آجلاً: رجوع، إغلاق ورقة، أو `ListView` يتخلّص من قسم. فيصل الردّ إلى cubit مغلق و`emit` يرمي:
+> ```
+> StateError (Bad state: Cannot emit new states after calling close)
+> ```
+> **انهيار حقيقي يصل نسخة الإصدار**، سببه لا أكثر من مغادرة شاشة بسرعة. راجع `core/CLAUDE.md` لسبب عدم كفاية `useCase.cancel()`.
 
 ```dart
 // {name}_state.dart
@@ -136,7 +143,7 @@ lib/Features/{feature}/
 
 ```dart
 @injectable
-class {Feature}FormCubit extends Cubit<{Feature}FormState> {
+class {Feature}FormCubit extends SafeCubit<{Feature}FormState> {
   void submit({required String? id, required String field1}) async {
     emit(const {Feature}FormState.loading());
     final res = id == null
@@ -196,6 +203,87 @@ context.router.pop(newEntity);          // FormScreen — الرجوع مع enti
 final e = await context.router.push<{Entity}?>({Feature}FormRoute());
 if (e != null && context.mounted) context.read<{Feature}ListCubit>().prependItem(e);
 ```
+
+### شاشة التفاصيل تُرجع **نوعاً** لا `Entity?`
+
+`Entity?` تملك **خانتين** بينما شاشة التفاصيل تملك **ثلاثة أجوبة**: عُدِّل · حُذف · لم يتغيّر شيء. فالحذف لا يجد ما يقوله بغير `null` — وهو نفسه «لم يتغيّر شيء»، فتبقى القائمة تعرض صفاً لم يعد موجوداً. **الحذف نجح؛ قيمة الإرجاع فقط لم تستطع التعبير عنه.**
+
+```dart
+// {feature}_detail_outcome.dart
+sealed class {Feature}DetailOutcome {
+  const {Feature}DetailOutcome();
+}
+
+class {Feature}Updated extends {Feature}DetailOutcome {
+  const {Feature}Updated(this.entity);
+  final {Entity} entity;
+}
+
+/// يحمل **المعرّف لا الكيان**: ما تحتاجه القائمة هو أي صفٍّ تحذف، وإعطاؤها
+/// كياناً لسجلٍّ لم يعد موجوداً دعوةٌ لأن يرسمه أحد.
+class {Feature}Deleted extends {Feature}DetailOutcome {
+  const {Feature}Deleted(this.id);
+  final String id;
+}
+```
+
+```dart
+switch (await context.router.push<{Feature}DetailOutcome?>({Feature}DetailRoute(id: id))) {
+  case {Feature}Updated(:final entity): cubit.replaceEntityItem(entity);
+  case {Feature}Deleted(:final id):     cubit.removeItemWhere((e) => e.id == id);
+  case null: break;
+}
+```
+
+`sealed` تُفعّل شمولية المُصرِّف، فحالةٌ رابعة تُضاف لاحقاً لا تُنسى صامتةً.
+
+> **شاشة النموذج تبقى على `pop(entity)`** — لأنها فعلاً جوابان. القاعدة ليست «استعمل نوعاً دائماً» بل: **نتيجتان تحتاجان معالجة مختلفة لا تتشاركان خانة واحدة قابلة للعدم.**
+
+## فلترة وبحث لقائمة (اختياريان — لا تبنِهما قبل حاجة شاشة فعلية)
+
+**الأدوات جاهزة بالقالب**: `AppFilterSheet` (فلترة بنيوية) · `ListFilterBar` (بحث حرّ + شرائح ما يُضيّق القائمة) · `AppSearchBar` (بداخلها، بـdebounce 400ms).
+
+```dart
+// domain/params/{feature}_filter_params.dart — يطابق عقد الباك حرفياً
+class {Feature}FilterParams {
+  const {Feature}FilterParams({this.status, this.search});
+  final {Status}? status;
+  final String? search;
+  bool get isEmpty => status == null && (search?.isEmpty ?? true);
+}
+
+// {feature}_list_cubit.dart
+{Feature}FilterParams filter = const {Feature}FilterParams();
+void applyFilter({Feature}FilterParams f) { filter = f; refresh(); }
+void clearFilter() { filter = const {Feature}FilterParams(); refresh(); }
+```
+
+| القاعدة | لماذا |
+|---|---|
+| **الشرائح تشمل نصّ البحث نفسه** | قائمة مفلترة ومنظمة فارغة **تتطابقان بصرياً**. واستثناء نصّ البحث يجعل «لا نتائج» تُقرأ «لا يوجد شيء» |
+| `ListFilterBar` بـ`AppBar.bottom` | جواب «لماذا أرى هؤلاء فقط؟» يجب ألّا ينزلق بعيداً عن الصفوف التي يفسّرها |
+| `heightFor(hasActiveFilters:)` قيمتان لا واحدة | صفّ الشرائح لا يوجد إلا عند وجود فلتر، وحجز ارتفاعه دائماً يترك فجوة دائمة تحت صندوق البحث |
+| **الباك يفرض `ORDER BY`** | بلا ترتيب صريح تُرجع Postgres صفوفاً بترتيب فيزيائي غير مضمون، فيظهر عنصر `prependItem` بموضع مختلف بعد أول `refresh()` — ويبدو خطأً بالفرونت وهو بالاستعلام. راجع `backend_template` |
+
+### ⚠️ فخّ: حساب `hasActiveFilters` داخل `appBar`
+
+الـ`context` داخل `build()` هو **والد** الـ`BlocProvider`، فلا يرى ما أنشأه.
+
+```dart
+// ❌ ينهار: ProviderNotFoundException
+BlocProvider(create: (_) => getIt<XCubit>(), child: Scaffold(appBar: AppBar(bottom:
+  PreferredSize(preferredSize: Size.fromHeight(
+    ListFilterBar.heightFor(hasActiveFilters: !context.read<XCubit>().filter.isEmpty)), …))));
+
+// ❌ أسوأ — لا ينهار بل يُجيب خطأً: كيوبتس القوائم مسجَّلة `factory`،
+//    فـ`getIt` يبني **نسخة جديدة** فلترها الافتراضي فارغ أبداً + تسريب كل rebuild
+hasActiveFilters: !getIt<XCubit>().filter.isEmpty,
+
+// ✅ Builder يخلق context تحت الـprovider (أو افصل الشاشة لموفِّر ومستهلك)
+BlocProvider(create: (_) => getIt<XCubit>(), child: Builder(builder: (context) => Scaffold(…)));
+```
+
+**الشكلان شُحنا معاً بمشروع حقيقي** — والصامت منهما أخطر: الشرائح تُرسم بارتفاع لا يتّسع لها ولا شيء يُبلّغ.
 
 ## ✅ Checklist CRUD
 

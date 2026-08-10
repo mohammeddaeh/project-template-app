@@ -1,4 +1,5 @@
-﻿import 'dart:async';
+import 'dart:async';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -31,7 +32,7 @@ export 'package:app_template/core/platform/connectivity/network_state.dart';
 /// if (!await ConnectivityService.isOnline()) return;
 /// ```
 @lazySingleton
-class ConnectivityCubit extends Cubit<NetworkState> {
+class ConnectivityCubit extends SafeCubit<NetworkState> {
   ConnectivityCubit(this._monitor) : super(_monitor.currentState) {
     _sub = _monitor.stateStream.listen(emit);
   }

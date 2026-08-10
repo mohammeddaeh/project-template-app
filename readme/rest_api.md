@@ -172,7 +172,6 @@ res.fold((failure) {
 - Do not put feature models or `*_api_service.dart` in `core/`.
 - Do not throw raw `DioException` to UI — use `Failure`.
 - Do not use `ErrorModel` — removed; use `Failure` + `FailureUiMapper`.
-- GraphQL is optional backup in `new/09_graphql/` — not wired to template.
 
 ## 9) Quick Checklist
 
@@ -190,7 +189,7 @@ res.fold((failure) {
 
 ```dart
 // ✅ Correct
-import 'package:app_template/Features/users/data/datasources/users_api_service.dart';
+import 'package:app_template/modules/multi_device/data/device_session_api_service.dart';
 import 'package:app_template/core/infra/network/rest/api_urls.dart';
 import 'package:app_template/core/foundation/contracts/api_response.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
@@ -203,12 +202,7 @@ import 'package:app_template/core/network/models/error_model.dart';
 import 'package:app_template/core/failure/failure.dart';
 ```
 
-## 11) AI-Assisted Generation (OpenAPI)
-
-Use `.cursor/rules/api-generator.mdc` (agent-requestable) for AI-assisted generation from OpenAPI spec.
-Invoke it when you have a spec file and want to generate the full feature flow automatically.
-
-## 12) Common Mistakes
+## 11) Common Mistakes
 
 - Putting Retrofit service in `core/` instead of `Features/<name>/data/datasources/`
 - Returning raw models to UI instead of mapped domain entities
@@ -220,10 +214,9 @@ Invoke it when you have a spec file and want to generate the full feature flow a
 - Annotating `*ApiService` with `@injectable` directly — register it in `injection_module.dart` instead
 - Using `Env().config.baseUrl` — use `Env.baseUrl` (abstract final class, لا instantiation)
 
-## 13) Related Docs
+## 12) Related Docs
 
 - [`core_architecture.md`](core_architecture.md)
 - [`architecture.md`](architecture.md)
-- [`new/09_graphql/README.md`](../new/09_graphql/README.md) — optional GraphQL only
 
 *Last updated: 2026-06-17 — F1-F4 مكتملة: `ParseFailure`+`ValidationFailure`+`PermissionFailure`+`StorageFailure`؛ `FailureUiMapper` يعالج جميعها؛ `FormatException`/`TypeError` → `ParseFailure` تلقائياً.*

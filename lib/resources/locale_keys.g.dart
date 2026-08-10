@@ -368,5 +368,26 @@ abstract class  LocaleKeys {
   static const lastSeenAgo_months = 'lastSeenAgo.months';
   static const lastSeenAgo_longTime = 'lastSeenAgo.longTime';
   static const lastSeenAgo = 'lastSeenAgo';
+  static const forbiddenAction = 'forbiddenAction';
+  static const clearFilters = 'clearFilters';
+  static const notSpecified = 'notSpecified';
+  static const stylisticSet = 'stylisticSet';
+  static const withStylisticSet = 'withStylisticSet';
+  static const withoutStylisticSet = 'withoutStylisticSet';
+  static const stylisticSetUnavailable = 'stylisticSetUnavailable';
+  static const systemDefault = 'systemDefault';
+  static const level = 'level';
+  static const searchDemoHint = 'searchDemoHint';
+  static const cardVariantSample = 'cardVariantSample';
+  static const detailWidgetsSampleSection = 'detailWidgetsSampleSection';
+  static const cardVariantCard = 'cardVariantCard';
+  static const cardVariant = 'cardVariant';
+  static const detailWidgetsSampleSubtitle = 'detailWidgetsSampleSubtitle';
+  static const detailWidgets = 'detailWidgets';
+  static const listFiltering = 'listFiltering';
+  static const roleLevelHint = 'roleLevelHint';
+  static const cardVariantContainer = 'cardVariantContainer';
+  static const edit = 'edit';
+  static const detailWidgetsSampleTitle = 'detailWidgetsSampleTitle';
 
 }

@@ -4,7 +4,7 @@ description: A new Flutter project.
 
 publish_to: "none"
 
-version: 1.0.0+8
+version: 1.0.0+7
 
 environment:
   sdk: ^3.8.1
@@ -17,6 +17,10 @@ dependencies:
   cupertino_icons: ^1.0.6
 
   #=== STATE MANAGEMENT ===#
+  # `bloc` is declared directly, not left as a transitive dependency of
+  # flutter_bloc: `SafeCubit` lives in core/foundation/, which is Pure Dart by
+  # rule and may not import Flutter — so it imports `bloc` itself.
+  bloc: ^9.0.0
   flutter_bloc: ^9.1.1
   rxdart: ^0.27.7
 
@@ -104,15 +108,14 @@ dev_dependencies:
   mockito: ^5.4.2
   http_mock_adapter: ^0.6.0
   bloc_test: ^10.0.0
-  flutter_flavorizr: ^2.3.0
   flutter_launcher_icons: ^0.14.2
 
-# ── Flavor configuration — يُقرأ بـ: dart run flutter_flavorizr ─────────────
+# ── Flavor configuration — يُقرأ بـ: dart run scripts/sync_flavors.dart ─────
 # بعد إضافة الأيقونات في assets/app_icons/ شغّل:
 #   flutter pub get
-#   dart run flutter_flavorizr
+#   dart run scripts/sync_flavors.dart
 # ─────────────────────────────────────────────────────────────────────────────
- 
+
 flutter:
   uses-material-design: true
 

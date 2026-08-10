@@ -83,7 +83,16 @@ class _MainShellScreenState extends State<MainShellScreen> {
             onPopInvokedWithResult: (didPop, result) => cubit.onBackPressed(),
             child: Scaffold(
               // extendBody: الـ body يمتد خلف NavigationBar في وضع edge-to-edge.
-              // المحتوى محمي عبر SafeArea داخل كل شاشة فرعية.
+              //
+              // ⚠️ والمحتوى **غير** محميّ تلقائياً — لا بـ`SafeArea` ولا بغيرها.
+              // الشريط يجلس **فوق** الـbody لا تحته، فآخر عنصر بأي قائمة قابلة
+              // للتمرير يقع خلفه ولا يُرى مهما نزلت. كل قائمة تنتهي بحشوة تشمل
+              // `context.bottomContentInset` — راجع توثيقها بـ
+              // `presentation/extensions/screen_sizes_extensions.dart`.
+              //
+              // (كان هنا سطر يقول إن الشاشات الفرعية «محميّة بـSafeArea»، ولم
+              // يكن صحيحاً لأيٍّ منها بمشروع حقيقي بُني على القالب — والعطل صامت،
+              // فبقي شهوراً.)
               extendBody: true,
               // IndexedStack يحفظ حالة كل شاشة عند التبديل بين التبويبات
               body: IndexedStack(

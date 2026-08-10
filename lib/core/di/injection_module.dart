@@ -1,6 +1,5 @@
-﻿// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
-import 'package:awesome_dio_interceptor/awesome_dio_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
@@ -14,6 +13,7 @@ import 'package:app_template/core/platform/notifications/adapters/disabled_notif
 import 'package:app_template/core/platform/notifications/adapters/fln_notifications_adapter.dart';
 import 'package:app_template/core/platform/notifications/local_notifications_service.dart';
 import 'package:app_template/core/infra/network/interceptors/request_cache_interceptor.dart';
+import 'package:app_template/core/infra/network/interceptors/network_log_interceptor.dart';
 import 'package:app_template/core/infra/network/interceptors/retry_interceptor.dart';
 import 'package:app_template/core/infra/network/interceptors/token_refresh_interceptor.dart';
 import 'package:app_template/core/platform/storage/adapters/aes_encryption_adapter.dart';
@@ -121,8 +121,13 @@ abstract class InjectableModule {
       // 5. Response cache: serves GET responses from local storage within TTL
       RequestCacheInterceptor(getIt<StorageService>()),
 
-      // 6. Dev-only: pretty-prints requests & responses to console (last = full picture)
-      if (kDebugMode) AwesomeDioInterceptor(logger: debugPrint),
+      // 6. Dev-only logging, last so it sees the final outcome after auth,
+      //    retry and cache have had their say. One line per success, the whole
+      //    picture on failure — the previous full-dump logger printed hundreds
+      //    of lines per launch and buried real errors in them. Flip `verbose`
+      //    for a single debugging session when you need the firehose back.
+      if (kDebugMode)
+        NetworkLogInterceptor(verbose: AppFeatures.verboseNetworkLog),
     ]);
 
     return dio;

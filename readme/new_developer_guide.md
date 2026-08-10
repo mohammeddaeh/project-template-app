@@ -7,9 +7,10 @@
 
 ```bash
 flutter pub get
-dart run scripts/setup_project.dart
 dart run build_runner build --delete-conflicting-outputs
 ```
+
+بعد استنساخ التيمبليت لمشروع جديد، عدّل يدوياً: اسم التطبيق (`flavor_settings.json` → `displayName`)، bundle ID/`applicationId` (`android/app/build.gradle.kts` + `flavor_settings.json`)، واسم package في `pubspec.yaml` إذا لزم. لا يوجد سكربت آلي لهذه الخطوة حالياً.
 
 After identity/flavor changes:
 
@@ -24,13 +25,12 @@ cd ios && pod install
 ```text
 lib/
   core/                 infrastructure (foundation/, platform/, infra/, di/)
-  modules/              optional runtime modules (sync/)
+  modules/              optional runtime modules (sync/, multi_device/, realtime/, analytics/, ...)
   Features/<name>/      data / domain / presentation (cubits, pages)
   presentation/         theme, UI extensions, error UI, feedback, locale, pagination
   shared/               reusable widgets (barrel: widgets.dart)
   routes/               auto_route
   resources/            locale keys, assets helpers
-new/                    optional alternate stacks (GraphQL backup, reference patterns)
 readme/                 documentation — keep in sync with code changes
 scripts/
 ```
@@ -41,12 +41,10 @@ scripts/
 | `core/platform/` | Flutter/OS wrappers — locale, connectivity, permissions, notifications, logging... |
 | `core/infra/` | Implementation — network, env, errors, session |
 | `core/di/` | Composition root (injectable/GetIt) — يستورد كل شيء |
-| `modules/sync/` | Offline sync engine — entry: `SyncSDK.initialize(config, getIt)` |
+| `modules/` | Optional runtime modules — `sync/`, `multi_device/`, `realtime/`, `analytics/`, `crash_reporting/`, `remote_config/`, `push_notifications/`, `in_app_updates/` (انظر [`architecture.md`](architecture.md)) |
 | `Features/` | Isolated business modules — لا استيراد بين Features |
 | `presentation/` | Theme, UI extensions, `FailureUiMapper`, `AppFeedbackService`, `LocaleSwitcher`, `PaginationCubit` |
 | `shared/` | Cross-feature widgets |
-| `tools/` | Dev-time tools only — لا يُستخدم runtime |
-| `new/` | Optional stacks not wired to template (e.g. GraphQL) |
 
 ## 3) Layer Flow (REST)
 
@@ -107,11 +105,9 @@ LocaleSwitcher.segmented()    // في الأونبوردينج
 LocaleSwitcher.textToggle()   // inline
 ```
 
-## 6) GraphQL (Optional — Not in Template)
+## 6) GraphQL (Not in Template)
 
-GraphQL is **not** in `lib/`. Backup stack: `new/09_graphql/README.md`.
-
-Template default: **REST only**.
+GraphQL is **not** in `lib/` and there is no backup stack in this repo. Template default: **REST only** (`retrofit` + `dio`).
 
 ## 7) Pagination
 
@@ -119,21 +115,18 @@ Template default: **REST only**.
 2. Cubit extends `PaginationCubit<T>` in `presentation/cubits/`
 3. Page uses `PaginationBuilderWdg`
 
-Reference:
-
-- `lib/Features/users/presentation/cubits/users_cubit.dart`
-- `lib/Features/users/presentation/pages/users_screen.dart`
-
 Guide: [`pagination.md`](pagination.md)
 
 ## 8) Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `setup_project.dart` | App identity, bundle ID, package name |
-| `feature_generator.dart` | New feature skeleton |
-| `generate_flavors.dart` / `delete_flavors.dart` | Flavor management |
-| `common_commands.dart` | Interactive command menu |
+| `codegen.dart` | build_runner + localization codegen |
+| `export.dart` | Version bump + APK export |
+| `sync_flavors.dart` | Flavor setup/reset (Android productFlavors, names, icons, launch.json) |
+| `gen_assets.dart` | Generate `lib/resources/assets.gen.dart` |
+| `sync_fonts.dart` | Register fonts + generate `app_fonts.dart` |
+| `sync_permissions.dart` | Sync AndroidManifest/Info.plist from `AppFeatures` |
 
 Details: [`scripts.md`](scripts.md)
 
@@ -149,13 +142,12 @@ Guide: [`widgets.md`](widgets.md)
 
 ## 10) New Feature
 
+Create the `data/`, `domain/`, `presentation/` folders manually under `lib/Features/<name>/` following [`core_architecture.md`](core_architecture.md) and [`rest_api.md`](rest_api.md), then add the route in `lib/routes/router.dart`.
+
 ```bash
-dart run scripts/feature_generator.dart
 dart run build_runner build --delete-conflicting-outputs
 dart analyze lib
 ```
-
-Then implement business logic following [`core_architecture.md`](core_architecture.md).
 
 ## 11) Documentation Sync (Mandatory)
 
@@ -169,8 +161,6 @@ When you change code, update the matching readme:
 | Widgets rules | `widgets.md` |
 | Scripts / workflow | `scripts.md` |
 | Onboarding / structure | this file + `architecture.md` |
-
-Cursor rule `.cursor/rules/core-architecture.mdc` enforces this automatically.
 
 ## 12) Team Rules
 
@@ -187,6 +177,5 @@ Cursor rule `.cursor/rules/core-architecture.mdc` enforces this automatically.
 - [`architecture.md`](architecture.md) — index
 - [`rest_api.md`](rest_api.md) — REST flow + import paths
 - [`scripts.md`](scripts.md) — scripts + build/release + troubleshooting
-- [`new/09_graphql/README.md`](../new/09_graphql/README.md)
 
-*Last updated: 2026-06-17*
+*Last updated: 2026-07-23 — أزيلت إشارات لسكربتات وملف `new/` غير موجودة بالكود؛ حُدِّث جدول الموديولات؛ أُزيلت إشارة Cursor rule (محذوف).*

@@ -5,7 +5,7 @@
 
 Reusable infinite-scroll pagination for REST-backed lists.
 
-Reference implementation: **Users** feature.
+> **ملاحظة:** لا يوجد حالياً feature حقيقية بالتيمبليت تستهلك `PaginationCubit` ببيانات REST فعلية. أقرب مرجع حي لنمط REST كامل (data→domain→presentation) هو `lib/modules/multi_device/` (انظر §3 أدناه)؛ الأمثلة بهذا الملف افتراضية (`Items`/`ItemsCubit`) لتوضيح النمط المطلوب تنفيذه في feature جديدة.
 
 ## 1) Components
 
@@ -20,7 +20,7 @@ Reference implementation: **Users** feature.
 
 ## 2) What You Need Per Feature
 
-1. Domain page entity (`UsersPage` — items + totalPages)
+1. Domain page entity (items + totalPages)
 2. Cubit extending `PaginationCubit<T>`
 3. Page using `PaginationBuilderWdg`
 
@@ -28,11 +28,13 @@ Reference implementation: **Users** feature.
 
 API response should include items + paging metadata.
 
-Reference:
+مرجع REST حقيقي (data→domain→presentation كامل، بدون pagination) موجود في `lib/modules/multi_device/`:
 
-- `lib/Features/users/data/models/users_response.dart`
-- `lib/Features/users/domain/entities/users_page.dart`
-- `lib/Features/users/domain/entities/user.dart`
+- `lib/modules/multi_device/data/device_session_api_service.dart` — retrofit API service
+- `lib/modules/multi_device/data/models/device_session_model.dart` — response model
+- `lib/modules/multi_device/domain/device_session.dart` — domain entity
+
+اتبع نفس تقسيم الطبقات عند بناء feature بها pagination — فقط أضف `totalPages`/paging metadata لموديل الاستجابة.
 
 ## 4) Cubit Setup
 
@@ -41,22 +43,20 @@ Extend `PaginationCubit<T>` and implement:
 - `call()` → `Either<Failure, PaginationDataEntity<T>>`
 - `isMatchedTwoEntity()` → duplicate detection
 
-Reference: `lib/Features/users/presentation/cubits/users_cubit.dart`
-
 ```dart
 @injectable
-class UsersCubit extends PaginationCubit<User> {
-  UsersCubit(this._getUsers) : super();
+class ItemsCubit extends PaginationCubit<Item> {
+  ItemsCubit(this._getItems) : super();
 
-  final GetUsers _getUsers;
+  final GetItems _getItems;
 
   @override
-  Future<Either<Failure, PaginationDataEntity<User>>> call() async {
-    final res = await _getUsers(GetUsersParams(paginationQuery: paginationQuery));
-    return res.fold(Left.new, (usersPage) {
-      final isLastPage = paginationQuery.page >= usersPage.totalPages;
-      return Right(PaginationDataEntity<User>(
-        data: usersPage.items,
+  Future<Either<Failure, PaginationDataEntity<Item>>> call() async {
+    final res = await _getItems(GetItemsParams(paginationQuery: paginationQuery));
+    return res.fold(Left.new, (itemsPage) {
+      final isLastPage = paginationQuery.page >= itemsPage.totalPages;
+      return Right(PaginationDataEntity<Item>(
+        data: itemsPage.items,
         paginationInfo: PaginationInfo(
           isFirstPage: paginationQuery.page == 1,
           isLastPage: isLastPage,
@@ -66,7 +66,7 @@ class UsersCubit extends PaginationCubit<User> {
   }
 
   @override
-  bool isMatchedTwoEntity(User a, User b) => a.id == b.id;
+  bool isMatchedTwoEntity(Item a, Item b) => a.id == b.id;
 }
 ```
 
@@ -74,17 +74,15 @@ class UsersCubit extends PaginationCubit<User> {
 
 ```dart
 BlocProvider(
-  create: (_) => getIt<UsersCubit>(),
-  child: PaginationBuilderWdg<UsersCubit, User>(
+  create: (_) => getIt<ItemsCubit>(),
+  child: PaginationBuilderWdg<ItemsCubit, Item>(
     loadingItemsWidget: _buildShimmerList(),
-    itemWdg: (user) => _buildUserItem(user),
+    itemWdg: (item) => _buildItemTile(item),
     separatorWidget: const SizedBox(height: 8),
     contentPadding: EdgeInsets.zero,
   ),
 )
 ```
-
-Reference: `lib/Features/users/presentation/pages/users_screen.dart`
 
 ## 6) Controls
 

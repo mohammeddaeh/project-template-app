@@ -1,7 +1,6 @@
 # Core Architecture — المبادئ المرجعية للتيمبلت
 
 > **استخدم هذا الملف** عند أي تعديل أو تفكير معماري في المشروع.
-> القاعدة المرتبطة في Cursor: `.cursor/rules/core-architecture.mdc` (`alwaysApply: true`)
 
 ---
 
@@ -9,11 +8,11 @@
 
 **كل تعديل على الكود يتطلب تحديث readme المرتبط — في نفس الجلسة / نفس الـ PR.**
 
-### الـ README الرسمية (7 ملفات فقط)
+### الـ README الرسمية
 
 | إذا غيّرت… | حدّث فوراً… |
 |------------|-------------|
-| مبادئ core، حدود الطبقات، هيكل core/ | `core_architecture.md` + `.cursor/rules/core-architecture.mdc` |
+| مبادئ core، حدود الطبقات، هيكل core/ | `core_architecture.md` |
 | REST، network، ApiService، Repository، Failure flow | `rest_api.md` |
 | `presentation/feedback/` أو feedback API | `widgets.md` + `new_developer_guide.md` |
 | `presentation/locale/` أو locale API | `widgets.md` + `new_developer_guide.md` |
@@ -22,11 +21,8 @@
 | Scripts، build/release، troubleshooting | `scripts.md` |
 | Onboarding، هيكل lib/ | `new_developer_guide.md` + `architecture.md` |
 | فهرس عام | `architecture.md` |
-| GraphQL الاحتياطي | `new/09_graphql/README.md` فقط |
 
 > `apigenerator.md` و`project_workflow.md` **محذوفان** — محتواهما مدمج في `rest_api.md` و`scripts.md`.
-
-**قاعدة Cursor (`.cursor/rules/core-architecture.mdc`):** تُطبَّق تلقائياً في كل جلسة — تحوي نفس جدول الخريطة أعلاه.
 
 ---
 
@@ -496,9 +492,7 @@ return ApiResponse(status: 'success', message: ..., data: dataJson != null ? Mod
 | `readme/widgets.md` | widget placement + feedback + locale |
 | `readme/scripts.md` | scripts + build/release + troubleshooting |
 | `readme/new_developer_guide.md` | onboarding + feedback & locale API |
-| `new/09_graphql/README.md` | GraphQL الاحتياطي |
-| `.cursor/rules/core-architecture.mdc` | قواعد AI التلقائية (alwaysApply) |
 
 ---
 
-*آخر تحديث: 2026-06-29 — أضيف §10 (أنماط مستقرة: AdaptiveTheme/font sync، locale-reactive، SessionRepository، ApiResponse bool)؛ تحديث قواعد بناء الترجمة (أمران لا أمر واحد)؛ تصحيح @singleton → @lazySingleton للـ DataSource.*
+*آخر تحديث: 2026-07-23 — أُزيلت إشارات لـ GraphQL الاحتياطي (`new/`) وقواعد Cursor (`.cursor/rules/`) — كلاهما غير موجود بالمشروع.*

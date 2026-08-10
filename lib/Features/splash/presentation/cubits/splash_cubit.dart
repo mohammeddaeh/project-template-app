@@ -1,4 +1,4 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
@@ -6,7 +6,7 @@ import 'package:app_template/core/platform/features/app_features.dart';
 part 'splash_cubit.freezed.dart';
 part 'splash_state.dart';
 
-class SplashCubit extends Cubit<SplashState> {
+class SplashCubit extends SafeCubit<SplashState> {
   SplashCubit(this._sessionRepository) : super(const SplashState.initial());
 
   final SessionRepository _sessionRepository;

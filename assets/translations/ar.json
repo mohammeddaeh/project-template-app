@@ -367,5 +367,26 @@
     "month": "آخر ظهور منذ شهر",
     "months": "آخر ظهور منذ {months} أشهر",
     "longTime": "آخر ظهور منذ زمن طويل"
-  }
+  },
+  "forbiddenAction": "لا تملك صلاحية تنفيذ هذا الإجراء",
+  "clearFilters": "مسح الفلاتر",
+  "notSpecified": "غير محدَّد",
+  "stylisticSet": "المجموعة الأسلوبية",
+  "withStylisticSet": "مع ss01",
+  "withoutStylisticSet": "بدون ss01",
+  "stylisticSetUnavailable": "هذا الخط لا يُعرّف مجموعة أسلوبية — العناوين تُرسم بأشكالها العادية",
+  "systemDefault": "افتراضي",
+  "level": "المستوى",
+  "searchDemoHint": "ابحث بالاسم أو البريد",
+  "cardVariantSample": "نفس المحتوى — الفرق بوجود السطح من عدمه",
+  "detailWidgetsSampleSection": "الطاقم",
+  "cardVariantCard": "بطاقة",
+  "cardVariant": "شكل البطاقة",
+  "detailWidgetsSampleSubtitle": "٢ من ٤ قادرون على العمل الآن",
+  "detailWidgets": "مفردات شاشة التفاصيل",
+  "listFiltering": "البحث والفلترة",
+  "roleLevelHint": "الرقم الأقل يعني سلطة أعلى",
+  "cardVariantContainer": "شفّاف",
+  "edit": "تعديل",
+  "detailWidgetsSampleTitle": "محمّد الحلبي"
 }

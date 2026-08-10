@@ -579,11 +579,215 @@ class _WidgetLibraryDemoScreenState extends State<WidgetLibraryDemoScreen> {
                   ),
                 ),
 
+                // ── Detail-screen vocabulary ──────────────────────────────────
+                // The three widgets a detail screen is built from. Shown
+                // together on purpose: their whole point is that every entity
+                // renders identically, and what they replace is four private
+                // copies that had already drifted apart.
+                _SectionHeader(
+                  icon: Icons.article_outlined,
+                  title: LocaleKeys.detailWidgets.tr(),
+                ),
+                DetailHeaderCard(
+                  title: LocaleKeys.detailWidgetsSampleTitle.tr(),
+                  subtitle: 'sample@example.com',
+                  leading: AvatarWidget(
+                    initial: LocaleKeys.detailWidgetsSampleTitle.tr()[0],
+                    radius: 28,
+                  ),
+                  tags: [
+                    TagWidget(labelKey: LocaleKeys.active),
+                    TagWidget(labelKey: LocaleKeys.systemDefault),
+                  ],
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit_outlined, size: 20),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () =>
+                        context.feedback.toast(LocaleKeys.done.tr()),
+                  ),
+                  facts: [
+                    DetailFact(
+                      icon: Icons.alternate_email,
+                      label: LocaleKeys.eMail.tr(),
+                      value: 'sample@example.com',
+                      forceLtr: true,
+                    ),
+                    // The editable variant — the control exists only when
+                    // `onEdit` is passed, and is absent rather than disabled.
+                    DetailFact(
+                      icon: Icons.military_tech_outlined,
+                      label: LocaleKeys.level.tr(),
+                      value: '10',
+                      hint: LocaleKeys.roleLevelHint.tr(),
+                      onEdit: () => context.feedback.toast(LocaleKeys.done.tr()),
+                      editTooltip: LocaleKeys.edit.tr(),
+                    ),
+                    // The case worth previewing: an ABSENT value, stated rather
+                    // than dropped. A row that disappears cannot be told from
+                    // one that failed to load, so a demo showing only populated
+                    // facts proves nothing about the widget's actual job.
+                    DetailFact(
+                      icon: Icons.place_outlined,
+                      label: LocaleKeys.address.tr(),
+                      value: null,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                DetailSectionHeader(
+                  icon: Icons.groups_outlined,
+                  title: LocaleKeys.detailWidgetsSampleSection.tr(),
+                  subtitle: LocaleKeys.detailWidgetsSampleSubtitle.tr(),
+                  trailing: Text(
+                    '4',
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colors.textMuted,
+                    ),
+                  ),
+                ),
+
+                // ── Card variants ─────────────────────────────────────────────
+                _SectionHeader(
+                  icon: Icons.crop_square_rounded,
+                  title: LocaleKeys.cardVariant.tr(),
+                ),
+                const _CardVariantDemo(),
+
+                // ── List filtering (ListFilterBar) ────────────────────────────
+                _SectionHeader(
+                  icon: Icons.filter_list_rounded,
+                  title: LocaleKeys.listFiltering.tr(),
+                ),
+                const _ListFilterBarDemo(),
+
                 const SizedBox(height: 60),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Live mirror for [AppCardVariant] — the same content drawn both ways.
+///
+/// Side by side because the difference *is* the absence: `container` draws no
+/// surface at all, and a single rendering cannot show that. Content which
+/// paints its own background (like [DetailHeaderCard] above) needs this
+/// variant, or it ends up inside a second visible card.
+class _CardVariantDemo extends StatefulWidget {
+  const _CardVariantDemo();
+
+  @override
+  State<_CardVariantDemo> createState() => _CardVariantDemoState();
+}
+
+class _CardVariantDemoState extends State<_CardVariantDemo> {
+  AppCardVariant _variant = AppCardVariant.card;
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — EasyLocalization dependency
+    context.locale;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SegmentedButton<AppCardVariant>(
+          segments: [
+            ButtonSegment(
+              value: AppCardVariant.card,
+              label: Text(LocaleKeys.cardVariantCard.tr()),
+            ),
+            ButtonSegment(
+              value: AppCardVariant.container,
+              label: Text(LocaleKeys.cardVariantContainer.tr()),
+            ),
+          ],
+          selected: {_variant},
+          onSelectionChanged: (s) => setState(() => _variant = s.first),
+        ),
+        const SizedBox(height: 12),
+        AppCard(
+          variant: _variant,
+          margin: EdgeInsets.zero,
+          child: Text(
+            LocaleKeys.cardVariantSample.tr(),
+            style: context.textTheme.bodyMedium,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Live mirror for [ListFilterBar] — the shared search + active-filter bar.
+///
+/// Both halves are exercised, because the interesting behaviour is the second:
+/// toggling a filter shows how the chips appear, how the reserved height
+/// changes with them (`heightFor`), and that clearing is offered beside what it
+/// clears rather than back inside the filter sheet. A preview with nothing
+/// active tests only the search box, which was never the risky part.
+class _ListFilterBarDemo extends StatefulWidget {
+  const _ListFilterBarDemo();
+
+  @override
+  State<_ListFilterBarDemo> createState() => _ListFilterBarDemoState();
+}
+
+class _ListFilterBarDemoState extends State<_ListFilterBarDemo> {
+  String? _query;
+  bool _statusFilter = false;
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — EasyLocalization dependency
+    context.locale;
+
+    // The search term is part of `activeFilters`, not separate from it:
+    // leaving it out lets "no results" read as "nothing exists".
+    final active = <String>[
+      if (_query != null && _query!.isNotEmpty) '"$_query"',
+      if (_statusFilter) LocaleKeys.active.tr(),
+    ];
+
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: ListFilterBar.heightFor(hasActiveFilters: active.isNotEmpty),
+            child: ListFilterBar(
+              hint: LocaleKeys.searchDemoHint.tr(),
+              activeFilters: active,
+              isLoading: _busy,
+              onSearch: (q) => setState(() => _query = q),
+              onClearSearch: () => setState(() => _query = null),
+              onClearAll: () => setState(() {
+                _query = null;
+                _statusFilter = false;
+              }),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              FilterChip(
+                label: Text(LocaleKeys.active.tr()),
+                selected: _statusFilter,
+                onSelected: (v) => setState(() => _statusFilter = v),
+              ),
+              FilterChip(
+                label: Text(LocaleKeys.loading.tr()),
+                selected: _busy,
+                onSelected: (v) => setState(() => _busy = v),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

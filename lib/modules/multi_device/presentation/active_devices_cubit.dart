@@ -1,13 +1,13 @@
-﻿import 'package:app_template/modules/multi_device/config/multi_device_config.dart';
+import 'package:app_template/modules/multi_device/config/multi_device_config.dart';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/modules/multi_device/domain/device_session.dart';
 import 'package:app_template/modules/multi_device/domain/device_session_repository.dart';
 import 'package:app_template/presentation/error/failure_ui_mapper.dart';
 import 'package:app_template/presentation/error/ui_action.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'active_devices_state.dart';
 
-class ActiveDevicesCubit extends Cubit<ActiveDevicesState> {
+class ActiveDevicesCubit extends SafeCubit<ActiveDevicesState> {
   ActiveDevicesCubit(this._repository) : super(const ActiveDevicesInitial());
 
   final DeviceSessionRepository _repository;

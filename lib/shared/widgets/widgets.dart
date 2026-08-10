@@ -49,6 +49,7 @@ export 'layout/dashed_divider.dart';
 export 'layout/spacing.dart';
 export 'layout/app_button.dart';
 export 'layout/primary_button.dart';
+export 'layout/detail_widgets.dart';
 
 // Lists
 export 'lists/pagination_builder_wdg.dart';
@@ -69,6 +70,7 @@ export 'wrappers/safe_area_wrapper.dart';
 // Inputs
 export 'inputs/custom_text_field.dart';
 export 'inputs/app_search_bar.dart';
+export 'inputs/list_filter_bar.dart';
 export 'inputs/app_select_field.dart';
 export 'inputs/chip_row.dart';
 

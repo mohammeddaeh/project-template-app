@@ -380,7 +380,28 @@ class CodegenLoader extends AssetLoader{
     "month": "آخر ظهور منذ شهر",
     "months": "آخر ظهور منذ {months} أشهر",
     "longTime": "آخر ظهور منذ زمن طويل"
-  }
+  },
+  "forbiddenAction": "لا تملك صلاحية تنفيذ هذا الإجراء",
+  "clearFilters": "مسح الفلاتر",
+  "notSpecified": "غير محدَّد",
+  "stylisticSet": "المجموعة الأسلوبية",
+  "withStylisticSet": "مع ss01",
+  "withoutStylisticSet": "بدون ss01",
+  "stylisticSetUnavailable": "هذا الخط لا يُعرّف مجموعة أسلوبية — العناوين تُرسم بأشكالها العادية",
+  "systemDefault": "افتراضي",
+  "level": "المستوى",
+  "searchDemoHint": "ابحث بالاسم أو البريد",
+  "cardVariantSample": "نفس المحتوى — الفرق بوجود السطح من عدمه",
+  "detailWidgetsSampleSection": "الطاقم",
+  "cardVariantCard": "بطاقة",
+  "cardVariant": "شكل البطاقة",
+  "detailWidgetsSampleSubtitle": "٢ من ٤ قادرون على العمل الآن",
+  "detailWidgets": "مفردات شاشة التفاصيل",
+  "listFiltering": "البحث والفلترة",
+  "roleLevelHint": "الرقم الأقل يعني سلطة أعلى",
+  "cardVariantContainer": "شفّاف",
+  "edit": "تعديل",
+  "detailWidgetsSampleTitle": "محمّد الحلبي"
 };
 static const Map<String,dynamic> _en = {
   "password": "Password",
@@ -748,7 +769,28 @@ static const Map<String,dynamic> _en = {
     "month": "last seen a month ago",
     "months": "last seen {months} months ago",
     "longTime": "last seen a long time ago"
-  }
+  },
+  "forbiddenAction": "You do not have permission to perform this action",
+  "clearFilters": "Clear filters",
+  "notSpecified": "Not specified",
+  "stylisticSet": "Stylistic set",
+  "withStylisticSet": "With ss01",
+  "withoutStylisticSet": "Without ss01",
+  "stylisticSetUnavailable": "This font declares no stylistic set — headings render in their plain forms",
+  "systemDefault": "Default",
+  "level": "Level",
+  "searchDemoHint": "Search by name or email",
+  "cardVariantSample": "Same content — the difference is whether a surface is drawn",
+  "detailWidgetsSampleSection": "Staff",
+  "cardVariantCard": "Card",
+  "cardVariant": "Card variant",
+  "detailWidgetsSampleSubtitle": "2 of 4 can work right now",
+  "detailWidgets": "Detail screen vocabulary",
+  "listFiltering": "Search and filtering",
+  "roleLevelHint": "A lower number means higher authority",
+  "cardVariantContainer": "Transparent",
+  "edit": "Edit",
+  "detailWidgetsSampleTitle": "Mohammed Al-Halabi"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }

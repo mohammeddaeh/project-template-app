@@ -188,6 +188,10 @@ Column(children: [
 | AppStateWidgets | `shared/widgets/` | `TestStatesDemoScreen` | Card لكل widget |
 | AppColors semantic tokens | `presentation/theme/app_colors.dart` | `TestThemeDemoScreen` | جدول ألوان تلقائي |
 | AppPalette raw colors | `presentation/theme/app_palette.dart` | `TestThemeDemoScreen` | palette grid تلقائي |
+| المجموعة الأسلوبية للعناوين (`ss01`) | `core/infra/config/app_fonts.dart` → `headingFeaturesFor` + `presentation/theme/app_theme.dart` → `_textTheme` | `TestThemeDemoScreen` → قسم «المجموعة الأسلوبية» ✅ | **مقارنة «مع/بدون» جنباً لجنب — لا عرض مفرد**: المُشكِّل يتجاهل أي وسم لا يُعرّفه الخط **بصمت**، فسطرٌ يحمل `ss01` وسطرٌ لم يطلبه متطابقان بالبكسل حين يكون الوسم مفقوداً أو مكتوباً خطأً. الزوج وحده يكشف أن شيئاً يُطبَّق. + اسم العائلة النشطة، وسطر صريح حين تكون العائلة بلا مجموعة |
+| `DetailHeaderCard` · `DetailFact` · `DetailSectionHeader` | `shared/widgets/layout/detail_widgets.dart` | `WidgetLibraryDemoScreen` → قسم «مفردات شاشة التفاصيل» ✅ | البطاقة الكاملة بثلاث حقائق: عادية · **قابلة للتعديل** (`onEdit` — الأداة تغيب ولا تُعطَّل) · **غائبة القيمة**. والأخيرة هي المهمة: معاينة تعرض المملوء فقط لا تُثبت أن الغائب يُذكر بدل أن يُحذف سطره. + `DetailSectionHeader` بـ`subtitle` و`trailing` |
+| `ListFilterBar` | `shared/widgets/inputs/list_filter_bar.dart` | `WidgetLibraryDemoScreen` → قسم «البحث والفلترة» ✅ | `FilterChip` لفلتر وهمي + آخر للتحميل. **الشرائح والارتفاع المتغيّر (`heightFor`) هما السلوك المهم**، فمعاينة بلا فلتر نشط تختبر صندوق البحث وحده — وهو لم يكن الجزء الخطر. ونصّ البحث يظهر ضمن الشرائح لا منفصلاً عنها |
+| `AppCardVariant` | `shared/widgets/layout/app_card.dart` | `WidgetLibraryDemoScreen` → قسم «شكل البطاقة» ✅ | `SegmentedButton<AppCardVariant>` بنفس المحتوى بالشكلين — **الفرق هو الغياب نفسه**: `container` لا يرسم سطحاً إطلاقاً، وعرضٌ مفرد لا يُظهر ذلك |
 | AppFontOption | `core/infra/config/app_fonts.dart` | `TestSettingsDemoScreen` | قائمة typography |
 | AdaptiveThemeMode | `adaptive_theme` | `TestSettingsDemoScreen` | `SegmentedButton<AdaptiveThemeMode>` |
 | AppLocale | `core/platform/locale/app_locale.dart` | `TestSettingsDemoScreen` | `SegmentedButton<bool>` |

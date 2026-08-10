@@ -41,7 +41,12 @@ class DioFailureMapper implements FailureMapper {
     final status = error.response?.statusCode;
     final serverMessage = ServerMessageExtractor.extract(error.response?.data);
 
-    if (status == 401 || status == 403) {
+    // Split, never merged: a 403 must not sign the user out over one refused
+    // action. See [ForbiddenFailure] for why the distinction is load-bearing.
+    if (status == 403) {
+      return ForbiddenFailure(serverMessage: serverMessage);
+    }
+    if (status == 401) {
       return UnauthorizedFailure(serverMessage: serverMessage);
     }
     if (status == 408) return const TimeoutFailure();

@@ -116,6 +116,16 @@ abstract final class AppThemeData {
     AppFontOption font,
   ) {
     final String fontFamily = font.familyFor(locale.languageCode);
+
+    // Every heading at 18px or above gets these, wherever it is defined.
+    //
+    // Hoisted rather than fetched at each site because the two hand-written
+    // title styles below (AppBar, dialog) live outside `_textTheme` and are
+    // therefore exactly what a "headings get X" rule misses — and the AppBar
+    // title is the heading an app shows most often, since nearly every screen
+    // passes no style at all and takes this default.
+    final headingFeatures = AppFonts.headingFeaturesFor(fontFamily);
+
     const transparent = Colors.transparent;
     return ThemeData(
       useMaterial3: false,
@@ -141,11 +151,16 @@ abstract final class AppThemeData {
         scrolledUnderElevation: 0,
         surfaceTintColor: transparent,
         iconTheme: IconThemeData(color: c.textPrimary),
+        // The screen title — 18px, so it takes the heading set like any other
+        // heading. Note `AppBar` ellipsizes its title by default, and these
+        // alternates are wider: a title that only just fitted may now clip.
+        // That is the correct trade for the one heading every screen shows.
         titleTextStyle: TextStyle(
           color: c.textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.w600,
           fontFamily: fontFamily,
+          fontFeatures: headingFeatures,
         ),
       ),
 
@@ -321,6 +336,7 @@ abstract final class AppThemeData {
           fontSize: 20,
           fontWeight: FontWeight.w600,
           fontFamily: fontFamily,
+          fontFeatures: headingFeatures,
         ),
         contentTextStyle: TextStyle(
           color: c.textSecondary,
@@ -392,17 +408,43 @@ abstract final class AppThemeData {
         },
       ),
 
-      textTheme: _textTheme(c.textPrimary, c.textSecondary, fontFamily),
-      primaryTextTheme: _textTheme(c.textPrimary, c.textSecondary, fontFamily),
+      textTheme: _textTheme(
+        c.textPrimary,
+        c.textSecondary,
+        fontFamily,
+        headingFeatures,
+      ),
+      primaryTextTheme: _textTheme(
+        c.textPrimary,
+        c.textSecondary,
+        fontFamily,
+        headingFeatures,
+      ),
 
       extensions: <ThemeExtension<dynamic>>[c],
     );
   }
 
+  /// [headingFeatures] carries the font's OpenType heading set (see
+  /// [AppFonts.headingFeaturesFor]) and is applied to the **large** display and
+  /// headline tiers only — 18px and above.
+  ///
+  /// `displaySmall` (16) and `headlineSmall` (14) are excluded on purpose:
+  /// `headlineSmall` is the card-title tier, so it repeats down a list at body
+  /// size, where display alternates read as noise and their wider advances push
+  /// against rows that already ellipsize.
+  ///
+  /// Set here rather than in `AppTextStyles`, and that is the whole reason it
+  /// reaches everything: `context.ts.*` builds every style by `copyWith` on this
+  /// same `TextTheme`, so both it and a direct `context.textTheme.headlineLarge`
+  /// pick the features up. Adding them in one of the two would have left the
+  /// other rendering the plain forms — the same heading looking different
+  /// depending on which accessor a screen happened to use.
   static TextTheme _textTheme(
     Color primary,
     Color secondary,
     String fontFamily,
+    List<FontFeature> headingFeatures,
   ) {
     return TextTheme(
       titleLarge: TextStyle(
@@ -445,12 +487,14 @@ abstract final class AppThemeData {
         fontSize: 24,
         fontWeight: FontWeight.w800,
         fontFamily: fontFamily,
+        fontFeatures: headingFeatures,
         color: primary,
       ),
       displayMedium: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
         fontFamily: fontFamily,
+        fontFeatures: headingFeatures,
         color: primary,
       ),
       displaySmall: TextStyle(
@@ -463,12 +507,14 @@ abstract final class AppThemeData {
         fontWeight: FontWeight.w700,
         fontSize: 26,
         fontFamily: fontFamily,
+        fontFeatures: headingFeatures,
         color: primary,
       ),
       headlineMedium: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 20,
         fontFamily: fontFamily,
+        fontFeatures: headingFeatures,
         color: primary,
       ),
       headlineSmall: TextStyle(

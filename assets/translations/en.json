@@ -370,5 +370,26 @@
     "month": "last seen a month ago",
     "months": "last seen {months} months ago",
     "longTime": "last seen a long time ago"
-  }
+  },
+  "forbiddenAction": "You do not have permission to perform this action",
+  "clearFilters": "Clear filters",
+  "notSpecified": "Not specified",
+  "stylisticSet": "Stylistic set",
+  "withStylisticSet": "With ss01",
+  "withoutStylisticSet": "Without ss01",
+  "stylisticSetUnavailable": "This font declares no stylistic set — headings render in their plain forms",
+  "systemDefault": "Default",
+  "level": "Level",
+  "searchDemoHint": "Search by name or email",
+  "cardVariantSample": "Same content — the difference is whether a surface is drawn",
+  "detailWidgetsSampleSection": "Staff",
+  "cardVariantCard": "Card",
+  "cardVariant": "Card variant",
+  "detailWidgetsSampleSubtitle": "2 of 4 can work right now",
+  "detailWidgets": "Detail screen vocabulary",
+  "listFiltering": "Search and filtering",
+  "roleLevelHint": "A lower number means higher authority",
+  "cardVariantContainer": "Transparent",
+  "edit": "Edit",
+  "detailWidgetsSampleTitle": "Mohammed Al-Halabi"
 }

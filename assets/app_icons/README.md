@@ -1,6 +1,6 @@
 # App Icons — Flavor Icons
 
-ضع هنا 3 أيقونات PNG بحجم **1024 × 1024** قبل تشغيل `flutter_flavorizr`:
+ضع هنا 3 أيقونات PNG بحجم **1024 × 1024** قبل تشغيل `dart run scripts/sync_flavors.dart`:
 
 | الملف            | الـ Flavor | الوصف                          |
 |-----------------|-----------|-------------------------------|
@@ -12,7 +12,7 @@
 
 ```bash
 flutter pub get
-dart run flutter_flavorizr
+dart run scripts/sync_flavors.dart
 ```
 
 ## ملاحظات

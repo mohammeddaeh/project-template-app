@@ -67,13 +67,39 @@ final class RegisterFailure extends Failure {
   String? get diagnosticMessage => serverMessage;
 }
 
-/// 401 / 403 during an active session — token expired or insufficient scope.
+/// **401 only** — no token, or a token the server rejected.
 ///
 /// [AuthInterceptor] (REST) and [GqlFailureMapper] (GQL) both fire
 /// [AuthEventBus.sessionExpired] BEFORE this reaches the cubit.
 /// [FailureUiMapper] maps this to [NavigateToLogin].
+///
+/// 403 is [ForbiddenFailure] and is a different situation entirely — see there.
 final class UnauthorizedFailure extends Failure {
   const UnauthorizedFailure({this.serverMessage});
+
+  final String? serverMessage;
+
+  @override
+  String? get diagnosticMessage => serverMessage;
+}
+
+/// 403 — the session is valid, this **one action** is not permitted.
+///
+/// Kept apart from [UnauthorizedFailure] because merging them logs the user
+/// out over a single missing permission. A 401 means "we do not know who you
+/// are" and the only way forward is signing in again; a 403 means "we know
+/// exactly who you are, and the answer is no". Any app with per-action
+/// permissions hits the second constantly, and being ejected to the login
+/// screen for pressing a button you were not allowed to press reads as the app
+/// breaking, not as a refusal.
+///
+/// [FailureUiMapper] maps this to `ShowError`, **not** `NavigateToLogin` — the
+/// user stays exactly where they are.
+///
+/// A project that never returns 403 simply never constructs this: no behaviour
+/// changes anywhere, and `UnauthorizedFailure` still means what it always did.
+final class ForbiddenFailure extends Failure {
+  const ForbiddenFailure({this.serverMessage});
 
   final String? serverMessage;
 

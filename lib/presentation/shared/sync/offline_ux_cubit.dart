@@ -1,6 +1,6 @@
-﻿import 'dart:async';
+import 'dart:async';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/connectivity/connectivity_service.dart';
 import 'package:app_template/core/platform/connectivity/network_state_monitor.dart';
@@ -31,7 +31,7 @@ part 'offline_ux_state.dart';
 /// );
 /// ```
 @lazySingleton
-class OfflineUxCubit extends Cubit<OfflineUxState> {
+class OfflineUxCubit extends SafeCubit<OfflineUxState> {
   OfflineUxCubit(
     this._networkMonitor,
     this._queueRepository,

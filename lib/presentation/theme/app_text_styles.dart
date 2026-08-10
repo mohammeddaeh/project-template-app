@@ -105,10 +105,19 @@ class AppTextStyles {
   // ── App-specific presets ──────────────────────────────────────────────────
 
   /// AppBar title — 18px / w600
+  ///
+  /// [FontFeature]s are set explicitly here, unlike every other style on this
+  /// class. The rest inherit them by building on a `TextTheme` entry that
+  /// already carries them; this one starts from `titleLarge`, which is a 16px
+  /// **title** and correctly has none — then raises the size to 18, crossing the
+  /// heading threshold. Without this line it would be the one 18px heading in
+  /// the app rendering in plain forms, and it would look like the AppBar itself
+  /// was wrong rather than this preset.
   TextStyle get appBar => _tt.titleLarge!.copyWith(
     fontFamily: _font,
     fontSize: 18,
     fontWeight: FontWeight.w600,
+    fontFeatures: AppFonts.headingFeaturesFor(_font),
   );
 
   /// Buttons — 14px / w600

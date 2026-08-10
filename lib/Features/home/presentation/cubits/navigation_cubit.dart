@@ -1,11 +1,11 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/shared/widgets/navigation/nav_item.dart';
 import 'package:injectable/injectable.dart';
 
 part 'navigation_state.dart';
 
 @lazySingleton
-class NavigationCubit extends Cubit<NavigationState> {
+class NavigationCubit extends SafeCubit<NavigationState> {
   NavigationCubit() : super(const NavigationState());
 
   List<NavItem> _items = [];

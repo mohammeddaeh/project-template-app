@@ -1,4 +1,4 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:injectable/injectable.dart';
@@ -31,7 +31,7 @@ part 'sync_manager_state.dart';
 /// );
 /// ```
 @lazySingleton
-class SyncManagerCubit extends Cubit<SyncManagerState> {
+class SyncManagerCubit extends SafeCubit<SyncManagerState> {
   SyncManagerCubit(
     this._controller,
     this._queueRepository,

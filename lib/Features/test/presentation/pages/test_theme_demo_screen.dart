@@ -1,6 +1,7 @@
-﻿import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/presentation/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/shared/widgets/widgets.dart';
@@ -99,10 +100,99 @@ class TestThemeDemoScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 32),
+
+            // ── Stylistic set ──────────────────────────────────────────────
+            SectionTitle(titleKey: LocaleKeys.stylisticSet),
+            const SizedBox(height: 12),
+            const _StylisticSetPreview(),
+
             const SizedBox(height: 60),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Side by side, the same sentence with and without the heading feature.
+///
+/// A single rendering proves nothing here: the shaper **silently ignores** a
+/// feature the font does not define, so a heading that carries `ss01` and one
+/// that never asked for it are pixel-identical when the tag is missing or
+/// misspelled. Only the pair shows whether anything is actually being applied —
+/// if these two lines look the same, the feature is not reaching the text.
+class _StylisticSetPreview extends StatelessWidget {
+  const _StylisticSetPreview();
+
+  /// Arabic, because that is where Qomra's alternates live, and long enough to
+  /// contain the letters that change rather than a two-word label that may not.
+  static const _sample = 'شروط تسجيل الحجاج لموسم الحج';
+
+  @override
+  Widget build(BuildContext context) {
+    context.locale;
+    final family = context.textTheme.bodyMedium?.fontFamily ?? '';
+    final features = AppFonts.headingFeaturesFor(family);
+    // headlineLarge already carries the feature from the theme; stripping it
+    // gives the honest "before", rather than a hand-built style that might
+    // differ for some other reason.
+    final heading = context.textTheme.headlineLarge;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          family,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: context.colorScheme.outline,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _StylisticRow(
+          label: LocaleKeys.withoutStylisticSet.tr(),
+          style: heading?.copyWith(fontFeatures: const []),
+        ),
+        const SizedBox(height: 8),
+        _StylisticRow(label: LocaleKeys.withStylisticSet.tr(), style: heading),
+        if (features.isEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            LocaleKeys.stylisticSetUnavailable.tr(),
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.outline,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _StylisticRow extends StatelessWidget {
+  const _StylisticRow({required this.label, required this.style});
+
+  final String label;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: context.colorScheme.outline,
+          ),
+        ),
+        Text(
+          _StylisticSetPreview._sample,
+          style: style,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }

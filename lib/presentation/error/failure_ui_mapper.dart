@@ -27,6 +27,16 @@ abstract final class FailureUiMapper {
         // The cubit fires AuthEventBus as a safety-net (deduplicated).
         UnauthorizedFailure() => const NavigateToLogin(),
 
+        // 403 — the session is valid, this one action is not permitted. The
+        // user stays exactly where they are; ejecting them to the login screen
+        // over a missing permission reads as the app breaking, not a refusal.
+        ForbiddenFailure(:final serverMessage) => ShowError(
+            title: LocaleKeys.error.tr(),
+            message: serverMessage?.isNotEmpty == true
+                ? serverMessage!
+                : LocaleKeys.forbiddenAction.tr(),
+          ),
+
         // ── Auth-specific ───────────────────────────────────────────────────
 
         LoginFailure(:final serverMessage) => ShowError(
