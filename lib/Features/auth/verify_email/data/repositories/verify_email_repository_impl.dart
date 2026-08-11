@@ -46,16 +46,8 @@ class VerifyEmailRepositoryImpl extends BaseRepository
         final updated = res.data!.applyTo(cached);
 
         // Fed straight back so re-entering any screen reflects the new status
-        // without a `GET /users/me` round trip — the same thing
-        // `RegistrationStatusCubit` does after a resubmit.
-        _currentUserRepository.setCurrentUser(
-          updated,
-          permissionKeys: _currentUserRepository.permissionKeys,
-          // Carried through unchanged: this call changes the user's own record,
-          // not their authority. Letting it default to false would strip a
-          // Super Admin's controls as a side effect of confirming an email.
-          isSuperAdmin: _currentUserRepository.isSuperAdmin,
-        );
+        // without a `GET /account/me` round trip.
+        _currentUserRepository.setCurrentUser(updated);
         return Right(updated);
       });
 

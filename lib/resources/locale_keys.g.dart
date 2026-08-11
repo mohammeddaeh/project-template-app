@@ -434,5 +434,35 @@ abstract class  LocaleKeys {
   static const deviceEmpty = 'deviceEmpty';
   static const deviceSecurityNote = 'deviceSecurityNote';
   static const security = 'security';
+  static const accountStatus = 'accountStatus';
+  static const memberSince = 'memberSince';
+  static const emailVerifiedYes = 'emailVerifiedYes';
+  static const emailVerifiedNo = 'emailVerifiedNo';
+  static const statusActive = 'statusActive';
+  static const statusDisabled = 'statusDisabled';
+  static const registerTitle = 'registerTitle';
+  static const registerSubtitle = 'registerSubtitle';
+  static const registerCta = 'registerCta';
+  static const alreadyHaveAccount = 'alreadyHaveAccount';
+  static const signIn = 'signIn';
+  static const createAccount = 'createAccount';
+  static const passwordsDoNotMatch = 'passwordsDoNotMatch';
+  static const registerSuccess = 'registerSuccess';
+  static const fullNameOptional = 'fullNameOptional';
+  static const typeFullName = 'typeFullName';
+  static const testAuthFlowTitle = 'testAuthFlowTitle';
+  static const testAuthFlowSubtitle = 'testAuthFlowSubtitle';
+  static const notes = 'notes';
+  static const noteTitle = 'noteTitle';
+  static const noteBody = 'noteBody';
+  static const addNote = 'addNote';
+  static const editNote = 'editNote';
+  static const noNotes = 'noNotes';
+  static const noteSaved = 'noteSaved';
+  static const noteDeleted = 'noteDeleted';
+  static const typeNoteTitle = 'typeNoteTitle';
+  static const typeNoteBody = 'typeNoteBody';
+  static const testNotesTitle = 'testNotesTitle';
+  static const testNotesSubtitle = 'testNotesSubtitle';
 
 }

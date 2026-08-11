@@ -83,6 +83,12 @@ modules     → Features      ❌ NEVER
 | `readme/scripts.md` | إضافة/تعديل سكربت |
 | `readme/new_developer_guide.md` | تغيير هيكل المشروع أو onboarding |
 | `readme/template_enhancements.md` | إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود |
+| `readme/integration_audit.md` | إصلاح أي بند من بنوده، أو أي تغيير في عقد الـwire بين الفرونت والباك |
+
+> ⚠️ **`readme/integration_audit.md` — اقرأه قبل بناء أي feature تمسّ المصادقة.**
+> يوثّق خمسة أعطال قاطعة في عقد الـwire بين `app_template` و`backend_template` (تدقيق 2026-08-11):
+> مسار الدخول لا يعمل — الفرونت يقرأ `data.user` والباك يرسل `data.account`، و`MainShellRoute` غير مسجَّلة بالراوتر.
+> و`backend_template/docs/rest_api.md` — المرجع المفترض للعقد — خارج المزامنة تماماً؛ **العقد الفعلي هو `/openapi.json`**.
 
 ---
 

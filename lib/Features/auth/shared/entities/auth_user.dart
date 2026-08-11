@@ -2,107 +2,103 @@ import 'package:equatable/equatable.dart';
 
 /// Where an account stands, beyond "exists".
 ///
-/// Five states rather than a `bool isActive`, because refusing a login is not
-/// one situation — and the difference is what the user must do next:
+/// **Three values, and they are exactly the three `backend_template` ships**
+/// (`users.schema.ts` → `userStatusEnum`). That is the whole point: a client
+/// enum with values no server ever sends is a set of branches nobody can reach
+/// and nobody can test, and this file used to carry three of them
+/// (`pending_approval`, `rejected`, `suspended`) inherited from an application
+/// with an admin approval queue.
 ///
 /// | state | what the user should do |
 /// |---|---|
-/// | [pendingApproval] | wait; an admin has not decided yet |
+/// | [pendingVerification] | enter the code sent to their address |
 /// | [active] | nothing — sign in |
-/// | [suspended] | contact someone; it is temporary |
-/// | [rejected] | read the reason ([AuthUser.rejectionReason]) |
 /// | [disabled] | nothing will help; the account is closed |
 ///
-/// A single "login failed" message covers all five and helps in none of them.
-/// See `login/domain/entities/login_entity.dart` for how the login repository
-/// turns each into its own `Failure`.
+/// ## Adding a state (the intended path)
 ///
-/// **Adapt this to your API.** Projects without an approval workflow usually
-/// need only `active` / `suspended` / `disabled`; deleting the other two is the
-/// expected customisation, not a deviation.
+/// Both halves move together, or the value arrives as a string the client
+/// silently reads as [active]:
+///
+/// 1. `backend_template/src/features/account/schemas/users.schema.ts` — add it
+///    to `userStatusEnum`, then `npm run db:generate && npm run db:migrate`.
+/// 2. Same file's `canSignIn` in `account-store.impl.ts` — give it a branch, so
+///    the 403 carries `data.account_status`.
+/// 3. This enum + [authUserStatusFromWire] in `auth_user_model.dart`.
+/// 4. `login_repository_impl.dart` `_mapLoginError` — map it to a [Failure].
 enum AuthUserStatus {
   /// Registered; the email address is not yet proven. **First in the
-  /// lifecycle** — before any approval step your project may add.
+  /// lifecycle.**
   ///
   /// An account in this state signs in successfully, deliberately: the code
   /// screen lives inside the app, so refusing the session would leave someone
   /// with an account they can neither use nor repair (the common case being a
   /// reinstall). The session unlocks nothing on its own.
-  ///
-  /// Keep this one even if you delete the rest — it is the only state the
-  /// backend's `core/auth` participates in.
   pendingVerification,
-  pendingApproval,
+
+  /// The address is proven and the account may be used.
   active,
-  suspended,
-  rejected,
+
+  /// Access revoked. The row survives so historical records keep their
+  /// attribution — this is not a deletion.
   disabled,
 }
 
 /// The signed-in user, as every slice of `auth/` sees them.
 ///
-/// ## This class is meant to be edited
+/// ## This class mirrors `WireAccount` field for field
 ///
-/// It is the one file here that mirrors **your** API's user shape, so it is
-/// deliberately NOT kept in sync with any project built from this template.
-/// Add the fields your server sends, delete the ones it does not. What is worth
-/// keeping is the shape of the decisions: a typed [status] instead of booleans,
-/// an explicit [rejectionReason] beside the state that needs it, and nullable
-/// optional fields rather than empty strings standing in for absence.
+/// Seven fields, and they are the seven `GET /api/v1/account/me` returns
+/// (`backend_template/src/features/account/dtos/account.dto.ts`). Nothing here
+/// is aspirational: a field the server does not send is a field that arrives
+/// empty on every single request, and the screen built on it reads as broken
+/// rather than as unconfigured. This file previously carried eight such fields
+/// — `first_name`, `last_name`, `phone`, `image`, `address`, `is_admin`,
+/// `mfa_enabled`, `rejection_reason` — none of which any endpoint has ever
+/// returned.
+///
+/// ## This class is still meant to be edited
+///
+/// It is the one file here deliberately NOT kept in sync with projects built
+/// from this template. Adding a field is two coordinated edits, and they must
+/// be made in this order:
+///
+/// 1. `backend_template` — column in `users.schema.ts`, accept it in
+///    `account-store.impl.ts`, expose it in `WireAccount`/`toWireAccount` and
+///    `accountResponseSchema` (the last one is what OpenAPI publishes).
+/// 2. Here — the field, then in `auth_user_model.dart` its `fromJson`,
+///    `toJson`, `fromEntity` and `toEntity`.
+///
+/// `test/wire_contract_test.dart` fails until both halves agree, which is the
+/// only reason that ordering is enforceable rather than merely advised.
 class AuthUser extends Equatable {
   const AuthUser({
     required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.fullName,
     required this.email,
-    required this.phone,
-    this.image,
-    this.address,
-    required this.isAdmin,
-    this.mfaEnabled = false,
+    this.fullName,
     // Defaults to true so that constructing an AuthUser without this field —
-    // tests, fixtures, a payload from a server that predates verification —
+    // tests, fixtures, a payload from a server with verification switched off —
     // never accidentally routes a real user into the code screen.
     this.emailVerified = true,
     this.emailVerifiedAt,
     this.status = AuthUserStatus.active,
-    this.rejectionReason,
     required this.createdAt,
   });
 
   final int id;
-  final String firstName;
-  final String lastName;
-  final String fullName;
   final String email;
-  final String phone;
 
-  /// Null when the user has no picture — **not** an empty string. An empty URL
-  /// reaches an image widget as a request for "", which fails at runtime
-  /// instead of falling back to initials.
-  final String? image;
-  final String? address;
-
-  final bool isAdmin;
-
-  /// ⚠️ **RESERVED — always `false`. MFA is not implemented in this template.**
-  ///
-  /// Present so the field exists when you add MFA, and annotated so nobody
-  /// reads its presence as protection. Do **not** render it as an account
-  /// security state: a screen that says "two-factor enabled" off this field
-  /// tells the user they are protected when they are not.
-  ///
-  /// Before implementing, decide the factor first (TOTP / SMS / email) — each
-  /// needs different columns, and a boolean is unlikely to be one of them.
-  final bool mfaEnabled;
+  /// Null when the account has no human label — **not** an empty string.
+  /// The server's column is nullable and a project that identifies people by
+  /// email never fills it, so every display site must decide what to show;
+  /// `''` would let that decision be skipped by accident.
+  final String? fullName;
 
   /// Whether the email address has been proven.
   ///
-  /// Unlike [mfaEnabled] this one is real and load-bearing: it is what routes
-  /// the app to the verification screen. Sent by the server as its own field
-  /// rather than derived from [emailVerifiedAt] here, so the client never
-  /// restates a rule the server already answered.
+  /// Load-bearing: it is what routes the app to the verification screen. Sent
+  /// by the server as its own field rather than derived from [emailVerifiedAt]
+  /// here, so the client never restates a rule the server already answered.
   final bool emailVerified;
 
   /// When the address was proven, or null. Kept beside [emailVerified] because
@@ -111,11 +107,6 @@ class AuthUser extends Equatable {
   final DateTime? emailVerifiedAt;
 
   final AuthUserStatus status;
-
-  /// Only meaningful with [AuthUserStatus.rejected] — and the reason is the
-  /// entire point of that state. "Your registration was rejected" without it
-  /// leaves the user with nothing to act on.
-  final String? rejectionReason;
 
   final DateTime createdAt;
 
@@ -132,38 +123,31 @@ class AuthUser extends Equatable {
     DateTime? emailVerifiedAt,
   }) => AuthUser(
     id: id,
-    firstName: firstName,
-    lastName: lastName,
-    fullName: fullName,
     email: email,
-    phone: phone,
-    image: image,
-    address: address,
-    isAdmin: isAdmin,
-    mfaEnabled: mfaEnabled,
+    fullName: fullName,
     emailVerified: emailVerified ?? this.emailVerified,
     emailVerifiedAt: emailVerifiedAt ?? this.emailVerifiedAt,
     status: status ?? this.status,
-    rejectionReason: rejectionReason,
     createdAt: createdAt,
   );
+
+  /// What to show where a name belongs. Falls back to the address rather than
+  /// to `''`, because a row reading "—" tells the user nothing about whose
+  /// account they are looking at.
+  String get displayName =>
+      (fullName != null && fullName!.isNotEmpty) ? fullName! : email;
+
+  /// First character for [AvatarWidget], guaranteed non-empty.
+  String get initial => displayName[0].toUpperCase();
 
   @override
   List<Object?> get props => [
     id,
-    firstName,
-    lastName,
-    fullName,
     email,
-    phone,
-    image,
-    address,
-    isAdmin,
-    mfaEnabled,
+    fullName,
     emailVerified,
     emailVerifiedAt,
     status,
-    rejectionReason,
     createdAt,
   ];
 }

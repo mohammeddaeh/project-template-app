@@ -40,17 +40,13 @@ abstract class PersistenceKeys {
   // controls missing, then watches them appear.
 
   /// JSON-encoded `AuthUser` snapshot — written on login and after every
-  /// successful `GET /users/me` refresh.
+  /// successful `GET /account/me` refresh.
+  ///
+  /// A bridge across app restarts, never the source of truth: `SplashCubit`
+  /// restores it so the first frame after a cached token is not empty, and
+  /// `SessionSyncService` overwrites it from the server moments later.
+  ///
+  /// `cached_permission_keys` and `cached_is_super_admin` were removed
+  /// alongside it — they persisted two fields no endpoint ever sent.
   static const String cachedCurrentUser = 'cached_current_user';
-
-  /// JSON-encoded `List<String>` of the cached user's effective permission
-  /// keys — kept in sync with [cachedCurrentUser] at all times. Two stores that
-  /// can disagree are worse than one that is briefly empty.
-  static const String cachedPermissionKeys = 'cached_permission_keys';
-
-  /// Whether the cached session holds an unrestricted (super-admin) role.
-  /// Persisted beside the two above because it is part of the same snapshot:
-  /// restoring the user without it leaves an admin missing their own controls
-  /// until the background refresh returns.
-  static const String cachedIsSuperAdmin = 'cached_is_super_admin';
 }

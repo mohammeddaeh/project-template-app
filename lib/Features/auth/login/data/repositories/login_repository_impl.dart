@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:app_template/core/foundation/contracts/api_response.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/network/boundary/base_repository.dart';
@@ -27,7 +27,7 @@ class LoginRepositoryImpl extends BaseRepository implements LoginRepository {
   @override
   Future<Either<Failure, LoginEntity>> login(LoginParams params) =>
       handle(() async {
-        final res = await _dataSource.login(params.email, params.password);
+        final res = await _dataSource.login(params);
 
         if (res.error != null) {
           return Left(_mapLoginError(res.error!, res.message));
@@ -38,15 +38,28 @@ class LoginRepositoryImpl extends BaseRepository implements LoginRepository {
         }
 
         final entity = res.data!.toEntity();
+        // Token first: `setCurrentUser` persists asynchronously, and a user
+        // snapshot on disk without the credential that justifies it is the one
+        // ordering that can survive a crash in a misleading state.
         await _sessionRepository.saveToken(entity.token);
-        _currentUserRepository.setCurrentUser(
-          entity.user,
-          permissionKeys: entity.permissionKeys.toSet(),
-          isSuperAdmin: entity.isSuperAdmin,
-        );
+        _currentUserRepository.setCurrentUser(entity.user);
         return Right(entity);
       });
 
+  /// Turns a refusal into the failure that names it.
+  ///
+  /// **Branches on `data.account_status`, never on the message text** — that is
+  /// translated prose which changes with any rewording, so a branch matching it
+  /// breaks silently in whichever language nobody tested. The server sends the
+  /// discriminator for exactly this reason
+  /// (`account-store.impl.ts` → `canSignIn`).
+  ///
+  /// `disabled` is the only value `backend_template` emits today. The `_` arm
+  /// is not dead code: it is what a status this client has not learned yet
+  /// falls into, and it must be a refusal rather than a crash. To add one —
+  /// e.g. `suspended` — give it a branch in `canSignIn` first, then here.
+  /// `LoginPendingApprovalFailure`, `LoginRejectedFailure` and
+  /// `LoginSuspendedFailure` are already defined in `failure.dart` for that.
   Failure _mapLoginError(ApiError error, String message) {
     if (error.code == 401) {
       return LoginFailure(serverMessage: message);
@@ -55,13 +68,6 @@ class LoginRepositoryImpl extends BaseRepository implements LoginRepository {
     if (error.code == 403) {
       final accountStatus = error.data?['account_status'] as String?;
       return switch (accountStatus) {
-        'pending_approval' =>
-          LoginPendingApprovalFailure(serverMessage: message),
-        'rejected' => LoginRejectedFailure(
-            reason: error.data?['rejection_reason'] as String?,
-            serverMessage: message,
-          ),
-        'suspended' => LoginSuspendedFailure(serverMessage: message),
         'disabled' => LoginDisabledFailure(serverMessage: message),
         _ => ForbiddenFailure(serverMessage: message),
       };

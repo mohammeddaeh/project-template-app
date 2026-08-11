@@ -30,6 +30,8 @@ import 'package:app_template/core/platform/connectivity/network_state_monitor.da
     as _i979;
 import 'package:app_template/core/platform/connectivity/network_state_monitor_impl.dart'
     as _i894;
+import 'package:app_template/core/platform/device/device_label_service.dart'
+    as _i27;
 import 'package:app_template/core/platform/launcher/url_launcher_service.dart'
     as _i888;
 import 'package:app_template/core/platform/launcher/url_launcher_service_impl.dart'
@@ -188,6 +190,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i921.NavigationCubit>(() => _i921.NavigationCubit());
     gh.lazySingleton<_i988.AppTheme>(() => _i988.AppTheme());
+    gh.lazySingleton<_i27.DeviceLabelService>(() => _i27.DeviceLabelService());
     gh.lazySingleton<_i979.NetworkStateMonitor>(
       () => _i894.NetworkStateMonitorImpl(),
     );
@@ -263,17 +266,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i16.LogoutRemoteDataSource>(
       () => _i16.LogoutRemoteDataSource(gh<_i315.LogoutApiService>()),
     );
-    gh.lazySingleton<_i475.MeRepository>(
-      () => _i555.MeRepositoryImpl(
-        gh<_i414.MeRemoteDataSource>(),
-        gh<_i148.HandleBodyResponse>(),
-      ),
-    );
     gh.lazySingleton<_i71.AuthRemoteDataSource>(
-      () => _i71.AuthRemoteDataSource(gh<_i895.AuthApiService>()),
-    );
-    gh.factory<_i351.GetCurrentUserUseCase>(
-      () => _i351.GetCurrentUserUseCase(gh<_i475.MeRepository>()),
+      () => _i71.AuthRemoteDataSource(
+        gh<_i895.AuthApiService>(),
+        gh<_i27.DeviceLabelService>(),
+      ),
     );
     gh.lazySingleton<_i276.ChangePasswordRepository>(
       () => _i716.ChangePasswordRepositoryImpl(
@@ -312,6 +309,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i245.ChangePasswordCubit>(
       () => _i245.ChangePasswordCubit(gh<_i26.ChangePasswordUseCase>()),
+    );
+    gh.lazySingleton<_i475.MeRepository>(
+      () => _i555.MeRepositoryImpl(
+        gh<_i414.MeRemoteDataSource>(),
+        gh<_i508.CurrentUserRepository>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
     );
     gh.factory<_i300.RequestResetUseCase>(
       () => _i300.RequestResetUseCase(gh<_i667.PasswordResetRepository>()),
@@ -357,6 +361,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i478.LogoutCubit>(
       () => _i478.LogoutCubit(gh<_i850.LogoutUseCase>()),
+    );
+    gh.factory<_i351.GetCurrentUserUseCase>(
+      () => _i351.GetCurrentUserUseCase(gh<_i475.MeRepository>()),
     );
     gh.factory<_i680.VerifyEmailCubit>(
       () => _i680.VerifyEmailCubit(

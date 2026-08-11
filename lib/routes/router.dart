@@ -41,7 +41,18 @@ class AppRouter extends RootStackRouter {
     // account from the session, never from the URL.
     AutoRoute(page: VerifyEmailRoute.page, path: '/verify-email'),
 
-    // ── Home ───────────────────────────────────────────────────────────────
+    // ── Signed in ──────────────────────────────────────────────────────────
+    // `MainShellRoute` is where every authenticated path lands: splash with a
+    // restored token, and login on success. It was NOT registered here until
+    // 2026-08-11 while `login_screen.dart` already navigated to it — a
+    // `@RoutePage()` widget gets a generated `PageRouteInfo` class whether or
+    // not it appears in this list, so the call compiled cleanly and threw at
+    // runtime. `dart analyze` cannot see this; `test/router_contract_test.dart`
+    // can, and does.
+    AutoRoute(page: MainShellRoute.page, path: '/app'),
+
+    // The Home tab on its own, outside the shell — kept for deep links that
+    // should not restore the tab bar. Ordinary navigation goes to the shell.
     AutoRoute(page: HomeRoute.page, path: '/home'),
 
     // ── Utility ────────────────────────────────────────────────────────────

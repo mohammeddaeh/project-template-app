@@ -7,32 +7,38 @@ import 'package:app_template/Features/auth/shared/models/auth_user_model.dart';
 import 'package:app_template/core/platform/storage/persistence_keys.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
 
-/// Reactive holder for the currently authenticated user + their effective RBAC permissions.
+/// Reactive holder for the currently authenticated user.
 ///
-/// - `@singleton` (eager, same justification as [SessionRepository]): consumed immediately
-///   after login succeeds and by any widget that needs to gate UI on permissions.
-/// - [setCurrentUser] is called by `LoginRepositoryImpl` after a successful login, and
-///   again after every successful `GET /users/me` background refresh.
-/// - [clear] is called by `LogoutRepositoryImpl` on logout (and should be called on 401).
+/// - `@singleton` (eager, same justification as `SessionRepository`): consumed
+///   immediately after login succeeds and by any widget that shows who is
+///   signed in.
+/// - [setCurrentUser] is called by `LoginRepositoryImpl` after a successful
+///   sign-in, and again by `MeRepositoryImpl` on every `GET /account/me`.
+/// - [clear] is called by `LogoutRepositoryImpl`, and by
+///   `TokenRefreshGatewayImpl.onRefreshFailed`.
 ///
-/// `permissionKeys` comes from `POST /users/login`'s `permission_keys` field — the
-/// union of the user's effective RBAC permissions at login time (same source as the
-/// backend's `findAllEffectivePermissionKeys`, branch-agnostic). Parsed by
-/// `LoginModel`/`LoginEntity` (`Features/auth/login/`) and passed through here by
-/// `LoginRepositoryImpl`.
+/// ## Permissions were removed (2026-08-11)
+///
+/// This class carried `permissionKeys`, `isSuperAdmin` and `hasPermission()`.
+/// No endpoint has ever sent those fields, so `hasPermission()` returned
+/// `false` for every key on every call — a gate that is always shut reads in
+/// code exactly like a gate that works. `backend_template` states that
+/// authorization is deliberately out of scope; the client now says the same
+/// thing instead of pretending otherwise.
+///
+/// **When you add RBAC**, the server issues the claims first. Then reinstate a
+/// field here and cache it beside the user with the same two-key pattern below.
 ///
 /// ## Persistence across app restarts
-/// This repository is in-memory only by itself — a fresh Dart process (full app
-/// restart, not hot reload) starts with `_user = null`. [setCurrentUser] also
-/// JSON-encodes the user + permission keys into [StorageService] (via
-/// [PersistenceKeys.cachedCurrentUser]/[PersistenceKeys.cachedPermissionKeys],
-/// same pattern as `DynamicLanguageCache`), so `SplashCubit.loadResources()` can
-/// call [restoreFromCache] to repopulate this repository BEFORE the app
-/// navigates past splash — fixing the bug where Home/Profile appeared empty
-/// after a restart despite a still-valid token. A silent `GET /users/me` call
-/// fired shortly after landing in the main app then re-syncs both the in-memory
-/// state and this same local cache, in case anything changed server-side while
-/// the app was closed (docs/reference/session_permission_integrity.md §4/§6/§10).
+///
+/// In-memory by itself — a fresh Dart process starts with `_user = null`.
+/// [setCurrentUser] also JSON-encodes the user into [StorageService] under
+/// [PersistenceKeys.cachedCurrentUser], so `SplashCubit` can call
+/// [restoreFromCache] and repopulate this repository BEFORE the app navigates
+/// past splash. Without it, Home and Profile render empty after a restart
+/// despite a still-valid token. `SessionSyncService` then re-reads `/account/me`
+/// in the background, so the snapshot is a bridge across the gap, never the
+/// source of truth.
 @singleton
 class CurrentUserRepository {
   CurrentUserRepository(this._storage);
@@ -40,8 +46,6 @@ class CurrentUserRepository {
   final StorageService _storage;
 
   AuthUser? _user;
-  Set<String> _permissionKeys = const {};
-  bool _isSuperAdmin = false;
 
   final _userController = StreamController<AuthUser?>.broadcast();
 
@@ -50,83 +54,43 @@ class CurrentUserRepository {
 
   AuthUser? get currentUser => _user;
 
-  Set<String> get permissionKeys => _permissionKeys;
-
-  /// Whether this session holds the Super Admin role — **not** a permission
-  /// key, and not derivable from them. See `CurrentUserEntity.isSuperAdmin`.
-  bool get isSuperAdmin => _isSuperAdmin;
-
-  bool hasPermission(String key) => _permissionKeys.contains(key);
-
-  void setCurrentUser(
-    AuthUser user, {
-    Set<String> permissionKeys = const {},
-    bool isSuperAdmin = false,
-  }) {
+  void setCurrentUser(AuthUser user) {
     _user = user;
-    _permissionKeys = permissionKeys;
-    _isSuperAdmin = isSuperAdmin;
     _userController.add(_user);
-    unawaited(_persist(user, permissionKeys, isSuperAdmin));
+    unawaited(_persist(user));
   }
 
-  /// Restores a previously-persisted user/permissions snapshot into this
-  /// repository — called once by `SplashCubit.loadResources()` right after a
-  /// cached token is found, before emitting `SplashState.loadedWithAuth()`.
-  /// Never throws: a missing/corrupted cache entry is treated as "nothing to
-  /// restore" (defensive — the background `GET /users/me` refresh covers this
-  /// gap shortly after, same as before this fix, just transient instead of
-  /// permanent).
+  /// Restores a previously-persisted snapshot — called once by
+  /// `SplashCubit.loadResources()` right after a cached token is found.
+  ///
+  /// Never throws: a missing or corrupted entry is treated as "nothing to
+  /// restore", because failing here would turn a stale cache into a startup
+  /// crash while the background `/account/me` refresh already covers the gap.
   Future<void> restoreFromCache() async {
     try {
-      final userJson = await _storage.readString(PersistenceKeys.cachedCurrentUser);
+      final userJson =
+          await _storage.readString(PersistenceKeys.cachedCurrentUser);
       if (userJson == null || userJson.isEmpty) return;
 
-      final user = AuthUserModel.fromJson(
+      _user = AuthUserModel.fromJson(
         jsonDecode(userJson) as Map<String, dynamic>,
       ).toEntity();
-
-      final keysJson = await _storage.readString(PersistenceKeys.cachedPermissionKeys);
-      final keys = keysJson != null && keysJson.isNotEmpty
-          ? (jsonDecode(keysJson) as List<dynamic>).map((e) => e as String).toSet()
-          : <String>{};
-
-      _user = user;
-      _permissionKeys = keys;
-      _isSuperAdmin =
-          await _storage.readBool(PersistenceKeys.cachedIsSuperAdmin) ?? false;
       _userController.add(_user);
     } catch (_) {
       // Corrupted cache entry — treat as "not cached", never crash startup.
     }
   }
 
-  Future<void> _persist(
-    AuthUser user,
-    Set<String> permissionKeys,
-    bool isSuperAdmin,
-  ) async {
+  Future<void> _persist(AuthUser user) async {
     await _storage.writeString(
       PersistenceKeys.cachedCurrentUser,
       jsonEncode(AuthUserModel.fromEntity(user).toJson()),
-    );
-    await _storage.writeString(
-      PersistenceKeys.cachedPermissionKeys,
-      jsonEncode(permissionKeys.toList()),
-    );
-    await _storage.writeBool(
-      PersistenceKeys.cachedIsSuperAdmin,
-      value: isSuperAdmin,
     );
   }
 
   void clear() {
     _user = null;
-    _permissionKeys = const {};
-    _isSuperAdmin = false;
     _userController.add(null);
     unawaited(_storage.delete(PersistenceKeys.cachedCurrentUser));
-    unawaited(_storage.delete(PersistenceKeys.cachedPermissionKeys));
-    unawaited(_storage.delete(PersistenceKeys.cachedIsSuperAdmin));
   }
 }

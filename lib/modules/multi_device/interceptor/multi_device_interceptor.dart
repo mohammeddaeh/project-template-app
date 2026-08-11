@@ -1,24 +1,24 @@
 import 'package:dio/dio.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:app_template/core/infra/network/rest/api_urls.dart';
-import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/modules/multi_device/config/multi_device_config.dart';
 import 'package:app_template/modules/multi_device/services/device_id_service.dart';
 
-/// Attaches device identity to outgoing requests when the module is active.
-///
-/// ## What it does
-/// - Adds `X-Device-ID` to every request.
-/// - Labels the sign-in so the sessions screen has something a person can
-///   recognise — otherwise every row reads "unknown device" and the screen
-///   cannot answer the question it exists for.
+/// Attaches this device's stable id to outgoing requests when the module is
+/// active, as `X-Device-ID`.
 ///
 /// ## What was removed (2026-08-11)
 ///
 /// **The `device_id` / `device_name` / `platform` / `app_version` body fields.**
 /// The server's login schema has no such fields, so zod stripped all four
-/// silently — the enrichment ran on every sign-in and reached nothing. They are
-/// replaced by the single `device_info` string the server does store.
+/// silently — the enrichment ran on every sign-in and reached nothing.
+///
+/// **The `device_info` login label (removed a second time, later the same
+/// day).** Replacing the four fields with the one string the server does store
+/// was correct, but putting it *here* left it behind
+/// `AppFeatures.multiDevice`, which is `false` by default — so every session a
+/// default build opened was still labelled with Dio's `User-Agent`. It now
+/// lives in `core/platform/device/device_label_service.dart` and is attached by
+/// `AuthRemoteDataSource` unconditionally. This module governs the screen, not
+/// the wire.
 ///
 /// **The login-response capture of `device_session_id` / `is_primary`.** Neither
 /// key exists in any response; both were read as null on every login. The
@@ -35,58 +35,16 @@ class MultiDeviceInterceptor extends Interceptor {
 
   final DeviceIdService _deviceIdService;
 
-  static const String _tag = 'MULTI_DEVICE';
-
-  /// Resolved once — `PackageInfo.fromPlatform()` reads a platform channel, and
-  /// the version cannot change while the process is alive.
-  String? _appVersion;
-
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
-  ) async {
+  ) {
     if (_deviceIdService.deviceId.isNotEmpty) {
       options.headers[MultiDeviceConfig.headerDeviceId] =
           _deviceIdService.deviceId;
     }
 
-    if (_isLoginRequest(options)) {
-      try {
-        options.data = {
-          ..._toMutableMap(options.data),
-          'device_info': await _deviceLabel(),
-        };
-      } catch (e) {
-        // Never blocks the sign-in. The label is a convenience for a screen the
-        // user may never open; failing to build it must not cost them the
-        // ability to log in.
-        LogService.warning('Could not label this device: $e', tag: _tag);
-      }
-    }
-
     handler.next(options);
-  }
-
-  /// e.g. `Samsung SM-G991B · android · v1.2.0`.
-  ///
-  /// Deliberately human-shaped rather than structured: the server stores it
-  /// verbatim as free text and never parses it, so any structure would be
-  /// invented on both ends for nothing.
-  Future<String> _deviceLabel() async {
-    _appVersion ??= (await PackageInfo.fromPlatform()).version;
-    return [
-      _deviceIdService.deviceName,
-      _deviceIdService.platform,
-      'v$_appVersion',
-    ].join(' · ');
-  }
-
-  bool _isLoginRequest(RequestOptions options) =>
-      options.path.endsWith(ApiUrls.login) && options.method == 'POST';
-
-  Map<String, dynamic> _toMutableMap(dynamic data) {
-    if (data is Map<String, dynamic>) return Map.from(data);
-    return {};
   }
 }

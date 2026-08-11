@@ -12,23 +12,22 @@ import 'package:app_template/Features/auth/shared/entities/auth_user.dart';
 /// this and default to the safest state instead.
 AuthUserStatus authUserStatusFromWire(String? raw) => switch (raw) {
   'pending_verification' => AuthUserStatus.pendingVerification,
-  'pending_approval' => AuthUserStatus.pendingApproval,
-  'suspended' => AuthUserStatus.suspended,
-  'rejected' => AuthUserStatus.rejected,
   'disabled' => AuthUserStatus.disabled,
   _ => AuthUserStatus.active,
 };
 
 String _statusToWire(AuthUserStatus status) => switch (status) {
   AuthUserStatus.pendingVerification => 'pending_verification',
-  AuthUserStatus.pendingApproval => 'pending_approval',
-  AuthUserStatus.suspended => 'suspended',
-  AuthUserStatus.rejected => 'rejected',
   AuthUserStatus.disabled => 'disabled',
   AuthUserStatus.active => 'active',
 };
 
 /// Wire shape of [AuthUser] — one field per JSON key, raw types only.
+///
+/// **This is `WireAccount`**, the object `backend_template` returns as `data`
+/// from `GET /api/v1/account/me` and as `data.account` from
+/// `POST /api/v1/account/login`. Field for field, name for name; the mapping is
+/// verified against OpenAPI examples by `test/wire_contract_test.dart`.
 ///
 /// Dates stay `String` and status stays `String?` here; conversion happens in
 /// [toEntity]. Keeping the raw types at the boundary means a malformed date
@@ -37,80 +36,50 @@ String _statusToWire(AuthUserStatus status) => switch (status) {
 class AuthUserModel {
   const AuthUserModel({
     required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.fullName,
     required this.email,
-    required this.phone,
-    this.image,
-    this.address,
-    required this.isAdmin,
-    this.mfaEnabled = false,
+    this.fullName,
     this.emailVerified = true,
     this.emailVerifiedAt,
     this.status,
-    this.rejectionReason,
     required this.createdAt,
   });
 
   final int id;
-  final String firstName;
-  final String lastName;
-  final String fullName;
   final String email;
-  final String phone;
-  final String? image;
-  final String? address;
-  final bool isAdmin;
-  final bool mfaEnabled;
+  final String? fullName;
   final bool emailVerified;
   final String? emailVerifiedAt;
   final String? status;
-  final String? rejectionReason;
   final String createdAt;
 
   /// Reverse of [toEntity] — serializes a live [AuthUser] back to wire shape so
-  /// the current user can be cached locally (see [CurrentUserRepository]).
+  /// the current user can be cached locally (see `CurrentUserRepository`).
   factory AuthUserModel.fromEntity(AuthUser user) => AuthUserModel(
     id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    fullName: user.fullName,
     email: user.email,
-    phone: user.phone,
-    image: user.image,
-    address: user.address,
-    isAdmin: user.isAdmin,
-    mfaEnabled: user.mfaEnabled,
+    fullName: user.fullName,
     emailVerified: user.emailVerified,
     emailVerifiedAt: user.emailVerifiedAt?.toIso8601String(),
     status: _statusToWire(user.status),
-    rejectionReason: user.rejectionReason,
     createdAt: user.createdAt.toIso8601String(),
   );
 
   factory AuthUserModel.fromJson(Map<String, dynamic> json) {
     return AuthUserModel(
       id: json['id'] as int? ?? 0,
-      firstName: json['first_name'] as String? ?? '',
-      lastName: json['last_name'] as String? ?? '',
-      fullName: json['full_name'] as String? ?? '',
       email: json['email'] as String? ?? '',
-      phone: json['phone'] as String? ?? '',
-      image: json['image'] as String?,
-      address: json['address'] as String?,
+      fullName: json['full_name'] as String?,
       // Accepts `true` and `1`: a backend that stores booleans as integers
       // sends the second, and `as bool?` would silently read it as null.
-      isAdmin: (json['is_admin'] == true || json['is_admin'] == 1),
-      mfaEnabled: (json['mfa_enabled'] == true || json['mfa_enabled'] == 1),
-      // Absent key defaults to TRUE, not false: a payload from a server that
-      // predates verification must not push every user into the code screen.
+      //
+      // An ABSENT key defaults to TRUE, not false: a payload from a server with
+      // verification switched off carries no such field, and reading that as
+      // "unverified" would push every user into the code screen.
       emailVerified: json['email_verified'] == null
           ? true
           : (json['email_verified'] == true || json['email_verified'] == 1),
       emailVerifiedAt: json['email_verified_at'] as String?,
       status: json['status'] as String?,
-      rejectionReason: json['rejection_reason'] as String?,
       createdAt: json['created_at'] as String? ?? '',
     );
   }
@@ -119,39 +88,23 @@ class AuthUserModel {
   /// never sent over the network as a request body.
   Map<String, dynamic> toJson() => {
     'id': id,
-    'first_name': firstName,
-    'last_name': lastName,
-    'full_name': fullName,
     'email': email,
-    'phone': phone,
-    'image': image,
-    'address': address,
-    'is_admin': isAdmin,
-    'mfa_enabled': mfaEnabled,
+    'full_name': fullName,
     'email_verified': emailVerified,
     'email_verified_at': emailVerifiedAt,
     'status': status,
-    'rejection_reason': rejectionReason,
     'created_at': createdAt,
   };
 
   AuthUser toEntity() => AuthUser(
     id: id,
-    firstName: firstName,
-    lastName: lastName,
-    fullName: fullName,
     email: email,
-    phone: phone,
-    image: image,
-    address: address,
-    isAdmin: isAdmin,
-    mfaEnabled: mfaEnabled,
+    fullName: fullName,
     emailVerified: emailVerified,
     emailVerifiedAt: emailVerifiedAt != null
         ? DateTime.tryParse(emailVerifiedAt!)
         : null,
     status: authUserStatusFromWire(status),
-    rejectionReason: rejectionReason,
     createdAt: DateTime.tryParse(createdAt) ?? DateTime(2000),
   );
 }
