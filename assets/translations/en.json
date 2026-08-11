@@ -338,13 +338,10 @@
   "today": "Today",
   "yesterday": "Yesterday",
   "daysAgo": "{days} days ago",
-  
   "syncQueue": "Sync Queue",
   "failedQueue": "Failed Queue",
-
   "failedToSync": "Failed to sync",
- 
-    "completed": "Completed",
+  "completed": "Completed",
   "clearCompleted": "Clear Completed",
   "cancelled": "Cancelled",
   "attempts": "Attempts",
@@ -353,12 +350,9 @@
   "noFailedItems": "No failed items to retry",
   "retryingFailed": "Retrying failed items",
   "noCompletedItems": "No completed items to clear",
-  "clearedQueue": "Queue cleared"
- ,
+  "clearedQueue": "Queue cleared",
   "clearAll": "Clear All",
   "products": "Products",
-
-
   "lastSeenAgo": {
     "now": "last seen just now",
     "minutes": "last seen {minutes} minutes ago",
@@ -405,5 +399,36 @@
   "resetCode": "Reset code",
   "currentPassword": "Current password",
   "passwordChangedSuccess": "Password changed",
-  "resetCodeSentTo": "If {email} is registered with us, we have sent it a code"
+  "resetCodeSentTo": "If {email} is registered with us, we have sent it a code",
+  "statusPendingVerification": "Pending Email Confirmation",
+  "verifyEmailTitle": "Confirm your email",
+  "verifyEmailSubtitle": "We sent an 8-character code to:",
+  "verifyEmailHint": "Enter the code",
+  "verifyEmailCta": "Confirm",
+  "verifyEmailResend": "Send a new code",
+  "verifyEmailResendIn": "You can request another in {}s",
+  "verifyEmailResent": "A new code was sent — the previous one no longer works",
+  "verifyEmailSuccess": "Email confirmed — your request is now awaiting admin approval",
+  "verifyEmailWhyTitle": "Why this step?",
+  "verifyEmailWhyBody": "Your registration does not reach an administrator until your address is confirmed — so nobody can open an account with an email they do not own.",
+  "verifyEmailCheckSpam": "Nothing arrived? Check your spam folder.",
+  "verifyEmailCodeRequired": "Enter the code that was sent to you",
+  "activeDevicesSubtitle": "Where your account is signed in right now",
+  "deviceThisDevice": "This device",
+  "deviceUnknown": "Unknown device",
+  "deviceSignedInAt": "Signed in",
+  "deviceLastActive": "Last active",
+  "deviceExpiresAt": "Expires",
+  "deviceRevoke": "Sign out",
+  "deviceRevokeConfirmTitle": "Sign out this device?",
+  "deviceRevokeConfirmMessage": "It will have to sign in again. No other device is affected.",
+  "deviceRevokeDone": "Session ended",
+  "deviceRevokeOthers": "Sign out other devices",
+  "deviceRevokeOthersConfirmTitle": "Sign out your other devices?",
+  "deviceRevokeOthersConfirmMessage": "Every other device will have to sign in again. This device stays signed in.",
+  "deviceRevokeOthersDone": "{} sessions ended",
+  "deviceNoOthers": "No other devices",
+  "deviceEmpty": "No active sessions",
+  "deviceSecurityNote": "Don't recognise a device? Sign it out and change your password.",
+  "security": "Security"
 }

@@ -29,7 +29,7 @@ class _LogoutApiService implements LogoutApiService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/logout',
+            '/account/logout',
             queryParameters: queryParameters,
             data: _data,
           )

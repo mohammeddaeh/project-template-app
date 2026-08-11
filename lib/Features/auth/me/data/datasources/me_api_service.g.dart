@@ -29,7 +29,7 @@ class _MeApiService implements MeApiService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/users/me',
+            '/account/me',
             queryParameters: queryParameters,
             data: _data,
           )

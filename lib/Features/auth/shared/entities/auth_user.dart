@@ -20,7 +20,24 @@ import 'package:equatable/equatable.dart';
 /// **Adapt this to your API.** Projects without an approval workflow usually
 /// need only `active` / `suspended` / `disabled`; deleting the other two is the
 /// expected customisation, not a deviation.
-enum AuthUserStatus { pendingApproval, active, suspended, rejected, disabled }
+enum AuthUserStatus {
+  /// Registered; the email address is not yet proven. **First in the
+  /// lifecycle** — before any approval step your project may add.
+  ///
+  /// An account in this state signs in successfully, deliberately: the code
+  /// screen lives inside the app, so refusing the session would leave someone
+  /// with an account they can neither use nor repair (the common case being a
+  /// reinstall). The session unlocks nothing on its own.
+  ///
+  /// Keep this one even if you delete the rest — it is the only state the
+  /// backend's `core/auth` participates in.
+  pendingVerification,
+  pendingApproval,
+  active,
+  suspended,
+  rejected,
+  disabled,
+}
 
 /// The signed-in user, as every slice of `auth/` sees them.
 ///
@@ -44,6 +61,11 @@ class AuthUser extends Equatable {
     this.address,
     required this.isAdmin,
     this.mfaEnabled = false,
+    // Defaults to true so that constructing an AuthUser without this field —
+    // tests, fixtures, a payload from a server that predates verification —
+    // never accidentally routes a real user into the code screen.
+    this.emailVerified = true,
+    this.emailVerifiedAt,
     this.status = AuthUserStatus.active,
     this.rejectionReason,
     required this.createdAt,
@@ -75,6 +97,19 @@ class AuthUser extends Equatable {
   /// needs different columns, and a boolean is unlikely to be one of them.
   final bool mfaEnabled;
 
+  /// Whether the email address has been proven.
+  ///
+  /// Unlike [mfaEnabled] this one is real and load-bearing: it is what routes
+  /// the app to the verification screen. Sent by the server as its own field
+  /// rather than derived from [emailVerifiedAt] here, so the client never
+  /// restates a rule the server already answered.
+  final bool emailVerified;
+
+  /// When the address was proven, or null. Kept beside [emailVerified] because
+  /// "when" answers questions "whether" cannot — how long an account went
+  /// unverified, whether the proof predates an incident.
+  final DateTime? emailVerifiedAt;
+
   final AuthUserStatus status;
 
   /// Only meaningful with [AuthUserStatus.rejected] — and the reason is the
@@ -83,6 +118,35 @@ class AuthUser extends Equatable {
   final String? rejectionReason;
 
   final DateTime createdAt;
+
+  /// Returns a copy with only the named fields replaced.
+  ///
+  /// Deliberately narrow — it covers the fields an endpoint hands back as a
+  /// partial update (`POST /auth/verify-email` returns the new status and
+  /// verification stamp, nothing else). A full copyWith would invite callers to
+  /// synthesise a user the server never sent, which is how a client starts
+  /// believing things the server does not.
+  AuthUser copyWith({
+    AuthUserStatus? status,
+    bool? emailVerified,
+    DateTime? emailVerifiedAt,
+  }) => AuthUser(
+    id: id,
+    firstName: firstName,
+    lastName: lastName,
+    fullName: fullName,
+    email: email,
+    phone: phone,
+    image: image,
+    address: address,
+    isAdmin: isAdmin,
+    mfaEnabled: mfaEnabled,
+    emailVerified: emailVerified ?? this.emailVerified,
+    emailVerifiedAt: emailVerifiedAt ?? this.emailVerifiedAt,
+    status: status ?? this.status,
+    rejectionReason: rejectionReason,
+    createdAt: createdAt,
+  );
 
   @override
   List<Object?> get props => [
@@ -96,6 +160,8 @@ class AuthUser extends Equatable {
     address,
     isAdmin,
     mfaEnabled,
+    emailVerified,
+    emailVerifiedAt,
     status,
     rejectionReason,
     createdAt,

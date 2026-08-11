@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:app_template/Features/auth/change_password/data/datasources/change_password_api_service.dart';
+import 'package:app_template/Features/auth/verify_email/data/datasources/verify_email_api_service.dart';
 import 'package:app_template/Features/auth/forgot_password/data/datasources/password_reset_api_service.dart';
 import 'package:app_template/Features/auth/me/data/datasources/me_api_service.dart';
 import 'package:app_template/Features/auth/logout/data/datasources/logout_api_service.dart';
@@ -159,6 +160,10 @@ abstract class InjectableModule {
   @lazySingleton
   ChangePasswordApiService changePasswordApiService(Dio dio) =>
       ChangePasswordApiService(dio);
+
+  @lazySingleton
+  VerifyEmailApiService verifyEmailApiService(Dio dio) =>
+      VerifyEmailApiService(dio);
 
   @lazySingleton
   Uuid get uuid {

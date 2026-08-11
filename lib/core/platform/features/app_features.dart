@@ -46,9 +46,25 @@ abstract final class AppFeatures {
   /// When true: run `dart run build_runner build` after adding feature contracts.
   static const offlineSync = false;
 
-  /// Enable multi-device session management.
-  /// When false: MultiDevicePlugin.initialize() exits immediately — zero overhead.
-  /// When true: login requests are enriched with device context automatically.
+  /// Enable the devices & sessions module.
+  ///
+  /// **When true**: a "Devices & sessions" entry appears in Settings, showing
+  /// where this account is signed in and letting the user end any of those
+  /// sessions. Sign-in requests are also labelled (`device_info`) so the list
+  /// reads "Samsung SM-G991B · android · v1.2.0" rather than "unknown device".
+  ///
+  /// **When false**: `MultiDevicePlugin.initialize()` returns immediately and
+  /// `DevicesSection` renders nothing — zero overhead, no dead route. Both
+  /// checks read this same flag, so the tile can never appear without the
+  /// dependencies behind it.
+  ///
+  /// ⚠️ **The trade-off of leaving it off**: there is then no way, from inside
+  /// the app, to end the session of a lost or stolen device. Changing the
+  /// password still ends every session — that becomes the only route.
+  ///
+  /// The server side (`GET`/`DELETE /api/v1/auth/sessions`) is available
+  /// regardless of this flag; it is infrastructure, not a feature. This flag
+  /// governs the client only.
   static const multiDevice = false;
 
   // ── Firebase-backed modules ───────────────────────────────────────────────

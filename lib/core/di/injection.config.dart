@@ -14,6 +14,8 @@ import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart
     as _i188;
 import 'package:app_template/core/foundation/contracts/locale_provider.dart'
     as _i702;
+import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart'
+    as _i371;
 import 'package:app_template/core/infra/network/interceptors/auth_interceptor.dart'
     as _i275;
 import 'package:app_template/core/infra/network/interceptors/internet_checker_interceptor.dart'
@@ -109,6 +111,22 @@ import 'package:app_template/Features/auth/me/domain/usecases/get_current_user_u
     as _i351;
 import 'package:app_template/Features/auth/shared/current_user_repository.dart'
     as _i508;
+import 'package:app_template/Features/auth/shared/token_refresh_gateway_impl.dart'
+    as _i295;
+import 'package:app_template/Features/auth/verify_email/data/datasources/verify_email_api_service.dart'
+    as _i553;
+import 'package:app_template/Features/auth/verify_email/data/datasources/verify_email_remote_datasource.dart'
+    as _i77;
+import 'package:app_template/Features/auth/verify_email/data/repositories/verify_email_repository_impl.dart'
+    as _i625;
+import 'package:app_template/Features/auth/verify_email/domain/repositories/verify_email_repository.dart'
+    as _i784;
+import 'package:app_template/Features/auth/verify_email/domain/usecases/resend_verification_usecase.dart'
+    as _i848;
+import 'package:app_template/Features/auth/verify_email/domain/usecases/verify_email_usecase.dart'
+    as _i179;
+import 'package:app_template/Features/auth/verify_email/presentation/cubits/verify_email_cubit.dart'
+    as _i680;
 import 'package:app_template/Features/home/presentation/cubits/navigation_cubit.dart'
     as _i921;
 import 'package:app_template/modules/sync/domain/sync_queue_repository.dart'
@@ -198,6 +216,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i400.ChangePasswordApiService>(
       () => injectableModule.changePasswordApiService(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i553.VerifyEmailApiService>(
+      () => injectableModule.verifyEmailApiService(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i702.LocaleProvider>(() => _i259.AppLocaleProvider());
     gh.lazySingleton<_i442.SyncManagerCubit>(
       () => _i442.SyncManagerCubit(
@@ -210,6 +231,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i973.InternetConnectionChecker>(),
         gh<_i895.Connectivity>(),
       ),
+    );
+    gh.lazySingleton<_i77.VerifyEmailRemoteDataSource>(
+      () => _i77.VerifyEmailRemoteDataSource(gh<_i553.VerifyEmailApiService>()),
     );
     gh.lazySingleton<_i7.ChangePasswordRemoteDataSource>(
       () => _i7.ChangePasswordRemoteDataSource(
@@ -295,12 +319,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i809.ResetPasswordUseCase>(
       () => _i809.ResetPasswordUseCase(gh<_i667.PasswordResetRepository>()),
     );
+    gh.lazySingleton<_i784.VerifyEmailRepository>(
+      () => _i625.VerifyEmailRepositoryImpl(
+        gh<_i77.VerifyEmailRemoteDataSource>(),
+        gh<_i508.CurrentUserRepository>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
     gh.lazySingleton<_i337.LoginRepository>(
       () => _i631.LoginRepositoryImpl(
         gh<_i71.AuthRemoteDataSource>(),
         gh<_i512.SessionRepository>(),
         gh<_i508.CurrentUserRepository>(),
         gh<_i148.HandleBodyResponse>(),
+      ),
+    );
+    gh.singleton<_i371.TokenRefreshGateway>(
+      () => _i295.TokenRefreshGatewayImpl(
+        gh<_i512.SessionRepository>(),
+        gh<_i508.CurrentUserRepository>(),
       ),
     );
     gh.factory<_i850.LogoutUseCase>(
@@ -312,8 +349,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i809.ResetPasswordUseCase>(),
       ),
     );
+    gh.factory<_i848.ResendVerificationUseCase>(
+      () => _i848.ResendVerificationUseCase(gh<_i784.VerifyEmailRepository>()),
+    );
+    gh.factory<_i179.VerifyEmailUseCase>(
+      () => _i179.VerifyEmailUseCase(gh<_i784.VerifyEmailRepository>()),
+    );
     gh.factory<_i478.LogoutCubit>(
       () => _i478.LogoutCubit(gh<_i850.LogoutUseCase>()),
+    );
+    gh.factory<_i680.VerifyEmailCubit>(
+      () => _i680.VerifyEmailCubit(
+        gh<_i179.VerifyEmailUseCase>(),
+        gh<_i848.ResendVerificationUseCase>(),
+      ),
     );
     gh.factory<_i779.LoginUseCase>(
       () => _i779.LoginUseCase(gh<_i337.LoginRepository>()),

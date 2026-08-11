@@ -35,6 +35,11 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ForgotPasswordRoute.page, path: '/forgot-password'),
     AutoRoute(page: ResetPasswordRoute.page, path: '/reset-password'),
     AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
+    // Literal path, not '/verify-email/:email': the screen takes the address as
+    // a constructor argument for display only, and a path parameter would
+    // advertise a deep link that cannot be honoured — the server identifies the
+    // account from the session, never from the URL.
+    AutoRoute(page: VerifyEmailRoute.page, path: '/verify-email'),
 
     // ── Home ───────────────────────────────────────────────────────────────
     AutoRoute(page: HomeRoute.page, path: '/home'),

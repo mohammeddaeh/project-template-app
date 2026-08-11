@@ -30,7 +30,7 @@ class _PasswordResetApiService implements PasswordResetApiService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/forgot-password',
+            '/auth/forgot-password',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -53,7 +53,7 @@ class _PasswordResetApiService implements PasswordResetApiService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/reset-password',
+            '/auth/reset-password',
             queryParameters: queryParameters,
             data: _data,
           )

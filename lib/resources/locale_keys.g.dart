@@ -403,5 +403,36 @@ abstract class  LocaleKeys {
   static const currentPassword = 'currentPassword';
   static const passwordChangedSuccess = 'passwordChangedSuccess';
   static const resetCodeSentTo = 'resetCodeSentTo';
+  static const statusPendingVerification = 'statusPendingVerification';
+  static const verifyEmailTitle = 'verifyEmailTitle';
+  static const verifyEmailSubtitle = 'verifyEmailSubtitle';
+  static const verifyEmailHint = 'verifyEmailHint';
+  static const verifyEmailCta = 'verifyEmailCta';
+  static const verifyEmailResend = 'verifyEmailResend';
+  static const verifyEmailResendIn = 'verifyEmailResendIn';
+  static const verifyEmailResent = 'verifyEmailResent';
+  static const verifyEmailSuccess = 'verifyEmailSuccess';
+  static const verifyEmailWhyTitle = 'verifyEmailWhyTitle';
+  static const verifyEmailWhyBody = 'verifyEmailWhyBody';
+  static const verifyEmailCheckSpam = 'verifyEmailCheckSpam';
+  static const verifyEmailCodeRequired = 'verifyEmailCodeRequired';
+  static const activeDevicesSubtitle = 'activeDevicesSubtitle';
+  static const deviceThisDevice = 'deviceThisDevice';
+  static const deviceUnknown = 'deviceUnknown';
+  static const deviceSignedInAt = 'deviceSignedInAt';
+  static const deviceLastActive = 'deviceLastActive';
+  static const deviceExpiresAt = 'deviceExpiresAt';
+  static const deviceRevoke = 'deviceRevoke';
+  static const deviceRevokeConfirmTitle = 'deviceRevokeConfirmTitle';
+  static const deviceRevokeConfirmMessage = 'deviceRevokeConfirmMessage';
+  static const deviceRevokeDone = 'deviceRevokeDone';
+  static const deviceRevokeOthers = 'deviceRevokeOthers';
+  static const deviceRevokeOthersConfirmTitle = 'deviceRevokeOthersConfirmTitle';
+  static const deviceRevokeOthersConfirmMessage = 'deviceRevokeOthersConfirmMessage';
+  static const deviceRevokeOthersDone = 'deviceRevokeOthersDone';
+  static const deviceNoOthers = 'deviceNoOthers';
+  static const deviceEmpty = 'deviceEmpty';
+  static const deviceSecurityNote = 'deviceSecurityNote';
+  static const security = 'security';
 
 }

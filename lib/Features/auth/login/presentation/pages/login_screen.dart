@@ -2,6 +2,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/Features/auth/login/presentation/cubits/login_cubit.dart';
+import 'package:app_template/Features/auth/shared/entities/auth_user.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/presentation/extensions/extensions.dart';
 import 'package:app_template/presentation/feedback/feedback_extension.dart';
@@ -74,7 +75,17 @@ class _LoginScreenState extends State<LoginScreen> {
       //     AuthUserStatus.rejected => const RegistrationStatusRoute(),
       //     _ => const MainShellRoute(),
       //   }
-      success: (_) => context.router.replaceAll([const MainShellRoute()]),
+      //
+      // `pendingVerification` IS wired, because the backend ships it: such an
+      // account signs in successfully and belongs on the code screen — the one
+      // destination it can act on. Refusing the session instead would leave
+      // someone holding an account they can neither use nor repair.
+      success: (entity) => context.router.replaceAll([
+        if (entity.user.status == AuthUserStatus.pendingVerification)
+          VerifyEmailRoute(email: entity.user.email)
+        else
+          const MainShellRoute(),
+      ]),
       error: (message) => context.feedback.error(message),
       orElse: () {},
     );

@@ -11,6 +11,7 @@ import 'package:app_template/Features/auth/shared/entities/auth_user.dart';
 /// restrictive (a new one is more likely to mean "blocked" than "fine"), invert
 /// this and default to the safest state instead.
 AuthUserStatus authUserStatusFromWire(String? raw) => switch (raw) {
+  'pending_verification' => AuthUserStatus.pendingVerification,
   'pending_approval' => AuthUserStatus.pendingApproval,
   'suspended' => AuthUserStatus.suspended,
   'rejected' => AuthUserStatus.rejected,
@@ -19,6 +20,7 @@ AuthUserStatus authUserStatusFromWire(String? raw) => switch (raw) {
 };
 
 String _statusToWire(AuthUserStatus status) => switch (status) {
+  AuthUserStatus.pendingVerification => 'pending_verification',
   AuthUserStatus.pendingApproval => 'pending_approval',
   AuthUserStatus.suspended => 'suspended',
   AuthUserStatus.rejected => 'rejected',
@@ -44,6 +46,8 @@ class AuthUserModel {
     this.address,
     required this.isAdmin,
     this.mfaEnabled = false,
+    this.emailVerified = true,
+    this.emailVerifiedAt,
     this.status,
     this.rejectionReason,
     required this.createdAt,
@@ -59,6 +63,8 @@ class AuthUserModel {
   final String? address;
   final bool isAdmin;
   final bool mfaEnabled;
+  final bool emailVerified;
+  final String? emailVerifiedAt;
   final String? status;
   final String? rejectionReason;
   final String createdAt;
@@ -76,6 +82,8 @@ class AuthUserModel {
     address: user.address,
     isAdmin: user.isAdmin,
     mfaEnabled: user.mfaEnabled,
+    emailVerified: user.emailVerified,
+    emailVerifiedAt: user.emailVerifiedAt?.toIso8601String(),
     status: _statusToWire(user.status),
     rejectionReason: user.rejectionReason,
     createdAt: user.createdAt.toIso8601String(),
@@ -95,6 +103,12 @@ class AuthUserModel {
       // sends the second, and `as bool?` would silently read it as null.
       isAdmin: (json['is_admin'] == true || json['is_admin'] == 1),
       mfaEnabled: (json['mfa_enabled'] == true || json['mfa_enabled'] == 1),
+      // Absent key defaults to TRUE, not false: a payload from a server that
+      // predates verification must not push every user into the code screen.
+      emailVerified: json['email_verified'] == null
+          ? true
+          : (json['email_verified'] == true || json['email_verified'] == 1),
+      emailVerifiedAt: json['email_verified_at'] as String?,
       status: json['status'] as String?,
       rejectionReason: json['rejection_reason'] as String?,
       createdAt: json['created_at'] as String? ?? '',
@@ -114,6 +128,8 @@ class AuthUserModel {
     'address': address,
     'is_admin': isAdmin,
     'mfa_enabled': mfaEnabled,
+    'email_verified': emailVerified,
+    'email_verified_at': emailVerifiedAt,
     'status': status,
     'rejection_reason': rejectionReason,
     'created_at': createdAt,
@@ -130,6 +146,10 @@ class AuthUserModel {
     address: address,
     isAdmin: isAdmin,
     mfaEnabled: mfaEnabled,
+    emailVerified: emailVerified,
+    emailVerifiedAt: emailVerifiedAt != null
+        ? DateTime.tryParse(emailVerifiedAt!)
+        : null,
     status: authUserStatusFromWire(status),
     rejectionReason: rejectionReason,
     createdAt: DateTime.tryParse(createdAt) ?? DateTime(2000),

@@ -57,8 +57,12 @@ Future<void> registerMultiDeviceCore(GetIt di) async {
     );
   }
 
-  // Insert MultiDeviceInterceptor at position 0 so it runs before AuthInterceptor
-  // and can intercept SESSION_REVOKED before the generic 401 handler.
+  // Position 0 so the device label is added to the login body before anything
+  // else reads or serialises it.
+  //
+  // (It used to sit here to intercept a `SESSION_REVOKED` 401 ahead of the
+  // generic handler. No endpoint has ever sent that code, and the branch was
+  // removed — see MultiDeviceInterceptor.)
   final dio = di<Dio>();
   final mdInterceptor = di<MultiDeviceInterceptor>();
   if (!dio.interceptors.any((i) => i is MultiDeviceInterceptor)) {
