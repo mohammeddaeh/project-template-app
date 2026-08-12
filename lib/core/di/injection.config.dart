@@ -111,8 +111,22 @@ import 'package:app_template/Features/auth/me/domain/repositories/me_repository.
     as _i475;
 import 'package:app_template/Features/auth/me/domain/usecases/get_current_user_usecase.dart'
     as _i351;
+import 'package:app_template/Features/auth/register/data/datasources/register_api_service.dart'
+    as _i342;
+import 'package:app_template/Features/auth/register/data/datasources/register_remote_datasource.dart'
+    as _i615;
+import 'package:app_template/Features/auth/register/data/repositories/register_repository_impl.dart'
+    as _i278;
+import 'package:app_template/Features/auth/register/domain/repositories/register_repository.dart'
+    as _i382;
+import 'package:app_template/Features/auth/register/domain/usecases/register_usecase.dart'
+    as _i523;
+import 'package:app_template/Features/auth/register/presentation/cubits/register_cubit.dart'
+    as _i947;
 import 'package:app_template/Features/auth/shared/current_user_repository.dart'
     as _i508;
+import 'package:app_template/Features/auth/shared/session_sync_service.dart'
+    as _i723;
 import 'package:app_template/Features/auth/shared/token_refresh_gateway_impl.dart'
     as _i295;
 import 'package:app_template/Features/auth/verify_email/data/datasources/verify_email_api_service.dart'
@@ -131,6 +145,20 @@ import 'package:app_template/Features/auth/verify_email/presentation/cubits/veri
     as _i680;
 import 'package:app_template/Features/home/presentation/cubits/navigation_cubit.dart'
     as _i921;
+import 'package:app_template/Features/notes/data/datasources/notes_api_service.dart'
+    as _i428;
+import 'package:app_template/Features/notes/data/datasources/notes_remote_datasource.dart'
+    as _i723;
+import 'package:app_template/Features/notes/data/repositories/notes_repository_impl.dart'
+    as _i6;
+import 'package:app_template/Features/notes/domain/repositories/notes_repository.dart'
+    as _i319;
+import 'package:app_template/Features/notes/domain/usecases/notes_usecases.dart'
+    as _i750;
+import 'package:app_template/Features/notes/presentation/cubits/note_form_cubit.dart'
+    as _i47;
+import 'package:app_template/Features/notes/presentation/cubits/notes_list_cubit.dart'
+    as _i1004;
 import 'package:app_template/modules/sync/domain/sync_queue_repository.dart'
     as _i652;
 import 'package:app_template/modules/sync/integration/sync_controller.dart'
@@ -207,6 +235,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i895.AuthApiService>(
       () => injectableModule.authApiService(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i342.RegisterApiService>(
+      () => injectableModule.registerApiService(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i428.NotesApiService>(
+      () => injectableModule.notesApiService(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i713.MeApiService>(
       () => injectableModule.meApiService(gh<_i361.Dio>()),
     );
@@ -243,6 +277,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i400.ChangePasswordApiService>(),
       ),
     );
+    gh.lazySingleton<_i615.RegisterRemoteDataSource>(
+      () => _i615.RegisterRemoteDataSource(gh<_i342.RegisterApiService>()),
+    );
     gh.lazySingleton<_i414.MeRemoteDataSource>(
       () => _i414.MeRemoteDataSource(gh<_i713.MeApiService>()),
     );
@@ -266,10 +303,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i16.LogoutRemoteDataSource>(
       () => _i16.LogoutRemoteDataSource(gh<_i315.LogoutApiService>()),
     );
+    gh.lazySingleton<_i723.NotesRemoteDataSource>(
+      () => _i723.NotesRemoteDataSource(gh<_i428.NotesApiService>()),
+    );
     gh.lazySingleton<_i71.AuthRemoteDataSource>(
       () => _i71.AuthRemoteDataSource(
         gh<_i895.AuthApiService>(),
         gh<_i27.DeviceLabelService>(),
+      ),
+    );
+    gh.lazySingleton<_i382.RegisterRepository>(
+      () => _i278.RegisterRepositoryImpl(
+        gh<_i615.RegisterRemoteDataSource>(),
+        gh<_i148.HandleBodyResponse>(),
       ),
     );
     gh.lazySingleton<_i276.ChangePasswordRepository>(
@@ -310,12 +356,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i245.ChangePasswordCubit>(
       () => _i245.ChangePasswordCubit(gh<_i26.ChangePasswordUseCase>()),
     );
+    gh.lazySingleton<_i319.NotesRepository>(
+      () => _i6.NotesRepositoryImpl(
+        gh<_i723.NotesRemoteDataSource>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
     gh.lazySingleton<_i475.MeRepository>(
       () => _i555.MeRepositoryImpl(
         gh<_i414.MeRemoteDataSource>(),
         gh<_i508.CurrentUserRepository>(),
         gh<_i148.HandleBodyResponse>(),
       ),
+    );
+    gh.factory<_i523.RegisterUseCase>(
+      () => _i523.RegisterUseCase(gh<_i382.RegisterRepository>()),
+    );
+    gh.factory<_i947.RegisterCubit>(
+      () => _i947.RegisterCubit(gh<_i523.RegisterUseCase>()),
     );
     gh.factory<_i300.RequestResetUseCase>(
       () => _i300.RequestResetUseCase(gh<_i667.PasswordResetRepository>()),
@@ -337,6 +395,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.CurrentUserRepository>(),
         gh<_i148.HandleBodyResponse>(),
       ),
+    );
+    gh.factory<_i750.ListNotesUseCase>(
+      () => _i750.ListNotesUseCase(gh<_i319.NotesRepository>()),
+    );
+    gh.factory<_i750.SaveNoteUseCase>(
+      () => _i750.SaveNoteUseCase(gh<_i319.NotesRepository>()),
+    );
+    gh.factory<_i750.DeleteNoteUseCase>(
+      () => _i750.DeleteNoteUseCase(gh<_i319.NotesRepository>()),
     );
     gh.singleton<_i371.TokenRefreshGateway>(
       () => _i295.TokenRefreshGatewayImpl(
@@ -365,14 +432,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i351.GetCurrentUserUseCase>(
       () => _i351.GetCurrentUserUseCase(gh<_i475.MeRepository>()),
     );
+    gh.factory<_i1004.NotesListCubit>(
+      () => _i1004.NotesListCubit(
+        gh<_i750.ListNotesUseCase>(),
+        gh<_i750.DeleteNoteUseCase>(),
+      ),
+    );
     gh.factory<_i680.VerifyEmailCubit>(
       () => _i680.VerifyEmailCubit(
         gh<_i179.VerifyEmailUseCase>(),
         gh<_i848.ResendVerificationUseCase>(),
       ),
     );
+    gh.factory<_i47.NoteFormCubit>(
+      () => _i47.NoteFormCubit(gh<_i750.SaveNoteUseCase>()),
+    );
     gh.factory<_i779.LoginUseCase>(
       () => _i779.LoginUseCase(gh<_i337.LoginRepository>()),
+    );
+    gh.lazySingleton<_i723.SessionSyncService>(
+      () => _i723.SessionSyncService(
+        gh<_i512.SessionRepository>(),
+        gh<_i351.GetCurrentUserUseCase>(),
+      ),
     );
     gh.factory<_i21.LoginCubit>(
       () => _i21.LoginCubit(gh<_i779.LoginUseCase>()),

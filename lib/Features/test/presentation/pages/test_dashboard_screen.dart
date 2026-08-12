@@ -31,6 +31,29 @@ class _TestDashboardScreenState extends State<TestDashboardScreen> {
     final scheme = context.colorScheme;
 
     final cards = [
+      // ── Live, against the real backend ────────────────────────────────────
+      // Everything below these two is a self-contained demo on fake data.
+      // These two are not: they hit `backend_template` over the network and
+      // fail exactly the way a real screen fails when `Env.baseUrl` is wrong or
+      // the server is down. That is the point of having them here — the mirror
+      // rule in CLAUDE.md was already broken once, when seven auth screens
+      // shipped and this dashboard gained nothing.
+      _CardData(
+        icon: Icons.lock_person_outlined,
+        titleKey: LocaleKeys.testAuthFlowTitle,
+        subtitleKey: LocaleKeys.testAuthFlowSubtitle,
+        color: scheme.primary,
+        heroTag: 'demo_auth_flow',
+        onTap: () => context.router.push(const LoginRoute()),
+      ),
+      _CardData(
+        icon: Icons.sticky_note_2_outlined,
+        titleKey: LocaleKeys.testNotesTitle,
+        subtitleKey: LocaleKeys.testNotesSubtitle,
+        color: scheme.tertiary,
+        heroTag: 'demo_notes_crud',
+        onTap: () => context.router.push(const NotesRoute()),
+      ),
       _CardData(
         icon: Icons.widgets_outlined,
         titleKey: LocaleKeys.widgetCatalogTitle,

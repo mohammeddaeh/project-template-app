@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
+import 'package:app_template/Features/auth/shared/current_user_repository.dart';
 import 'package:app_template/presentation/shared/refresh/refresh_cubit.dart';
 import 'package:app_template/presentation/extensions/screen_sizes_extensions.dart';
 import 'package:app_template/Features/splash/presentation/cubits/splash_cubit.dart';
@@ -30,7 +31,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _splashCubit = SplashCubit(getIt<SessionRepository>());
+    _splashCubit = SplashCubit(
+      getIt<SessionRepository>(),
+      getIt<CurrentUserRepository>(),
+    );
     Future.delayed(const Duration(milliseconds: 1500), () async {
       if (!mounted) return;
       setState(() => _logoHeight = 160);
@@ -84,10 +88,16 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
+  /// One destination per outcome, and `loaded` is the one that changed.
+  ///
+  /// It used to go to `TestDashboardRoute` — the debug showcase — meaning a
+  /// build with `debugSkipLogin` switched off for release still sent every
+  /// signed-out user to the demo screens instead of to sign-in. Only
+  /// `guestLoaded`, which is reached solely through that flag, belongs there.
   void _onSplashStateChanged(BuildContext context, SplashState state) {
     state.maybeWhen(
-      loadedWithAuth: () => context.router.replaceAll([const HomeRoute()]),
-      loaded: () => context.router.replaceAll([const TestDashboardRoute()]),
+      loadedWithAuth: () => context.router.replaceAll([const MainShellRoute()]),
+      loaded: () => context.router.replaceAll([const LoginRoute()]),
       guestLoaded: () => context.router.replaceAll([const TestDashboardRoute()]),
       orElse: () {},
     );

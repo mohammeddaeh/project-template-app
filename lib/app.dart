@@ -5,6 +5,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:app_template/Features/auth/shared/session_sync_service.dart';
 import 'package:app_template/Features/settings/presentation/cubits/font_preference_cubit.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/foundation/contracts/locale_provider.dart';
@@ -38,6 +39,7 @@ class _AppState extends State<App> {
   late final AppLocaleProvider _localeProvider;
   late final FontPreferenceCubit _fontCubit;
   StreamSubscription<AuthEvent>? _authSub;
+  late final SessionSyncService _sessionSync;
 
   @override
   void initState() {
@@ -51,6 +53,11 @@ class _AppState extends State<App> {
     );
 
     _authSub = AuthEventBus.instance.stream.listen(_handleAuthEvent);
+
+    // Started here rather than from a screen: the account must stay in step
+    // with the server for as long as the app is alive, and any screen that
+    // owned this would stop syncing the moment it was popped.
+    _sessionSync = getIt<SessionSyncService>()..start();
 
     // الإطار الأول قبل أن يُطبَّق AnnotatedRegion — يضمن شفافية فورية.
     SystemChrome.setSystemUIOverlayStyle(
@@ -72,14 +79,24 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     _authSub?.cancel();
+    _sessionSync.dispose();
     _fontCubit.close();
     super.dispose();
   }
 
+  /// A dead session sends the user to sign-in, and nowhere else.
+  ///
+  /// This used to route to `SplashRoute` with a comment explaining that no auth
+  /// feature existed yet. One does now — and bouncing through splash re-ran the
+  /// token check that had just failed, which on a slow disk read showed the
+  /// logo for two seconds before landing on the same screen this goes to
+  /// directly.
+  ///
+  /// `replaceAll` rather than `push`: the stack behind an expired session is
+  /// screens that will refuse to load, and leaving them there means a back
+  /// gesture returns to one.
   void _handleAuthEvent(AuthEvent event) {
-    // لا يوجد auth feature بهذا التيمبليت — بدّل هذا لمسار الدخول الفعلي
-    // بمجرد بناء feature حقيقية (راجع lib/Features/CLAUDE.md).
-    _router.replaceAll([const SplashRoute()]);
+    _router.replaceAll([const LoginRoute()]);
   }
 
   @override

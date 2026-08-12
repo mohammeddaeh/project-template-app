@@ -32,6 +32,7 @@ class AppRouter extends RootStackRouter {
     // AuthEventBus and does `replaceAll([LoginRoute()])` when a session
     // expires, so this entry is load-bearing far beyond the login screen.
     AutoRoute(page: LoginRoute.page, path: '/login'),
+    AutoRoute(page: RegisterRoute.page, path: '/register'),
     AutoRoute(page: ForgotPasswordRoute.page, path: '/forgot-password'),
     AutoRoute(page: ResetPasswordRoute.page, path: '/reset-password'),
     AutoRoute(page: ChangePasswordRoute.page, path: '/change-password'),
@@ -54,6 +55,10 @@ class AppRouter extends RootStackRouter {
     // The Home tab on its own, outside the shell — kept for deep links that
     // should not restore the tab bar. Ordinary navigation goes to the shell.
     AutoRoute(page: HomeRoute.page, path: '/home'),
+
+    // ── Reference feature — delete with `Features/notes/` ───────────────────
+    AutoRoute(page: NotesRoute.page, path: '/notes'),
+    AutoRoute(page: NoteFormRoute.page, path: '/notes/form'),
 
     // ── Utility ────────────────────────────────────────────────────────────
     // ── Widget Library (demo) ──────────────────────────────────────────────────

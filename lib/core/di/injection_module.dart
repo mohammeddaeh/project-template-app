@@ -7,6 +7,8 @@ import 'package:app_template/Features/auth/forgot_password/data/datasources/pass
 import 'package:app_template/Features/auth/me/data/datasources/me_api_service.dart';
 import 'package:app_template/Features/auth/logout/data/datasources/logout_api_service.dart';
 import 'package:app_template/Features/auth/login/data/datasources/auth_api_service.dart';
+import 'package:app_template/Features/auth/register/data/datasources/register_api_service.dart';
+import 'package:app_template/Features/notes/data/datasources/notes_api_service.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart';
@@ -146,6 +148,13 @@ abstract class InjectableModule {
 
   @lazySingleton
   AuthApiService authApiService(Dio dio) => AuthApiService(dio);
+
+  @lazySingleton
+  RegisterApiService registerApiService(Dio dio) => RegisterApiService(dio);
+
+  /// Reference feature — delete with `Features/notes/`.
+  @lazySingleton
+  NotesApiService notesApiService(Dio dio) => NotesApiService(dio);
 
   @lazySingleton
   MeApiService meApiService(Dio dio) => MeApiService(dio);

@@ -4,15 +4,31 @@
 # them are new rules; what is new is that nobody has to remember to run them:
 #
 #   analyze  — the compiler-level net
-#   test     — four regression tests, each pinning behaviour that fails SILENTLY
-#              (emit-after-close, content hidden behind the nav bar, a section
-#              refetching on every scroll, an OpenType tag not reaching headings)
+#   test     — regression + contract tests, each pinning behaviour that fails
+#              SILENTLY (emit-after-close, content hidden behind the nav bar, a
+#              section refetching on every scroll, an OpenType tag not reaching
+#              headings) plus the two contract suites below
 #   format   — keeps diffs about content instead of whitespace
 #
 # The tests are the point. A guard against a silent failure is itself silent
 # when it stops running, so a suite nobody executes protects nothing — which is
 # exactly what an empty, permanently-failing test file had done here until it
 # was removed. Red must mean red.
+#
+# Two suites were added 2026-08-12, both because `analyze` cannot see the
+# failure they catch:
+#
+#   wire_contract_test.dart   — parses fixtures written to the SERVER's shape
+#     with this client's own parsers. This app read `data.user` from a login
+#     response that has always sent `data.account`; sign-in failed on every
+#     attempt while `dart analyze` passed, `tsc` passed, and both pipelines
+#     were green — a missing JSON key is `null`, and `null` is a fine `dynamic`.
+#
+#   router_contract_test.dart — asserts every route the app navigates to is
+#     actually registered. `auto_route` generates a `PageRouteInfo` class for
+#     every `@RoutePage()` widget whether or not it appears in `AppRouter.routes`,
+#     so `MainShellRoute` type-checked perfectly and threw at runtime, on the
+#     one screen transition every user makes.
 name: CI
 
 on:

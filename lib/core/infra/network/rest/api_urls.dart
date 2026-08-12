@@ -60,6 +60,15 @@ abstract class ApiUrls {
   static String session(dynamic id) => '/auth/sessions/$id';
   static const String revokeOtherSessions = '/auth/sessions/revoke-others';
 
+  // ── Reference feature — delete together with `Features/notes/` ────────────
+
+  /// The one endpoint that exercises the paginated list contract end to end.
+  ///
+  /// `static const String users = '/users'` used to sit here instead: a path no
+  /// router has ever served, referenced by nothing in `lib/`, left over from
+  /// the project this template was extracted from.
+  static const String notes = '/notes';
+  static String note(int id) => '/notes/$id';
+
   // ── Your own features go below ────────────────────────────────────────────
-  static const String users = '/users';
 }

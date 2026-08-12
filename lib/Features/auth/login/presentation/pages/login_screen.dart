@@ -194,14 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // The sign-up link is intentionally absent: this template
-                      // ships no `register/` slice, and a button that goes
-                      // nowhere is worse than no button.
-                      //
-                      // To add one, copy the structure of `login/` (it is the
-                      // reference slice — DTO, model, datasource, repository,
-                      // use case, cubit, screen), then restore this row with
-                      //   onTap: () => context.router.push(const RegisterRoute())
+                      // `push`, not `replace`: coming back from registration
+                      // must return to a sign-in screen that still has the
+                      // address typed in it.
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -210,6 +205,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: context.textTheme.bodyMedium?.copyWith(
                               color: context.colors.textMuted,
                             ),
+                          ),
+                          PrimaryButton(
+                            text: LocaleKeys.createAccount.tr(),
+                            isTextOnly: true,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            onTap: () =>
+                                context.router.push(const RegisterRoute()),
                           ),
                         ],
                       ),

@@ -21,13 +21,12 @@
 
 | المسار | ما تفعله |
 |---|---|
-| `Features/auth/profile/` | شاشة الملف الشخصي (presentation فقط — لا feature عمل حقيقية بعد) |
+| `Features/auth/` | **دورة الحساب كاملة** — login · register · logout · me · verify_email · forgot_password · change_password · profile. مقابل `/api/v1/account` و`/api/v1/auth` بالباك |
+| `Features/notes/` | **الـfeature المرجعية لـCRUD — احذفها.** قائمة مُصفَّحة + إنشاء + تعديل + حذف تفاؤلي، مقابل `/api/v1/notes`. المكان الوحيد الذي تُرى فيه §CRUD-PATTERNS و`PaginationCubit` على endpoint حقيقي |
 | `Features/home/` | التنقل الرئيسي |
 | `Features/settings/` | Theme + Language + Notifications + Version + Cache |
-| `Features/splash/` | شاشة البداية — يتحقق من وجود توكن محفوظ عبر `core/infra/session/session_repository.dart` |
+| `Features/splash/` | شاشة البداية — يستعيد التوكن **واللقطة المخزَّنة للمستخدم** قبل التنقّل |
 | `Features/test/` | **Template Showcase** — demo بصري (Widgets · Forms · States · Theme) — debug فقط |
-
-> **لا يوجد auth feature مبني بعد** (تيمبليت مجرد) — `core/infra/session/session_repository.dart` (تخزين توكن) و`AuthNetworkGateway`/`AuthInterceptor` (بنية تحتية للشبكة) جاهزان؛ ابنِ `Features/auth/login/` (أو أي اسم) بنمط `lib/Features/CLAUDE.md` واربطه بـ`SessionRepository.saveToken()` بعد نجاح الدخول.
 
 > `Features/test/` **لا تُبنى في production** — `AppFeatures.debugSkipLogin = false` يخفيها تماماً.
 
@@ -83,12 +82,15 @@ modules     → Features      ❌ NEVER
 | `readme/scripts.md` | إضافة/تعديل سكربت |
 | `readme/new_developer_guide.md` | تغيير هيكل المشروع أو onboarding |
 | `readme/template_enhancements.md` | إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود |
-| `readme/integration_audit.md` | إصلاح أي بند من بنوده، أو أي تغيير في عقد الـwire بين الفرونت والباك |
+| `readme/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
 
-> ⚠️ **`readme/integration_audit.md` — اقرأه قبل بناء أي feature تمسّ المصادقة.**
-> يوثّق خمسة أعطال قاطعة في عقد الـwire بين `app_template` و`backend_template` (تدقيق 2026-08-11):
-> مسار الدخول لا يعمل — الفرونت يقرأ `data.user` والباك يرسل `data.account`، و`MainShellRoute` غير مسجَّلة بالراوتر.
-> و`backend_template/docs/rest_api.md` — المرجع المفترض للعقد — خارج المزامنة تماماً؛ **العقد الفعلي هو `/openapi.json`**.
+## ⛓️ عقد الـwire — قاعدة صارمة
+
+**مفاتيح JSON عقدٌ مع `backend_template`.** خطؤها لا يراه `dart analyze` (مفتاح غائب = `null` = `dynamic` سليم)، ولا `tsc`، ويبتلعه `HandleBodyResponse` فيصل المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK`. **هذا وقع فعلاً ومنع الدخول كلياً** — راجع [`readme/integration_audit.md`](readme/integration_audit.md).
+
+**عند تغيير أي مفتاح**: عدّل `test/fixtures/wire/*.json` هنا و`backend_template/src/features/*/__tests__/wire-contract.test.ts` هناك — **بنفس الـcommit**.
+
+**المرجع القاطع للعقد**: `GET /openapi.json` من الباك (مولَّد من نفس zod schemas التي تفرضها `validate()`)، وشرحه النصّي بـ`backend_template/docs/rest_api.md`.
 
 ---
 
