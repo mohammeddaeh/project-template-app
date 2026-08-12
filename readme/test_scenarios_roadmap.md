@@ -22,6 +22,7 @@
 | 11 | Platform Services Demo | تفاعلي | `core/platform/` + AppFeatures | ✅ مُنفَّذ |
 | 12 | REST API Inspector | تفاعلي | `core/infra/network/` + Retrofit (محاكاة pipeline) | ✅ مُنفَّذ |
 | 13 | Connectivity & Lifecycle Monitor | تفاعلي | `NetworkStateMonitor` + `AppLifecycleService` | ✅ مُنفَّذ |
+| 14 | Import / Export (live) | تفاعلي | `modules/data_transfer/` — **شبكة حقيقية** | ✅ مُنفَّذ |
 
 ---
 
@@ -217,6 +218,22 @@
 
 ---
 
+### 14 — Import / Export (live) ✅
+
+`TestDataTransferScreen` · مسار `/test/data-transfer`
+
+**شبكة حقيقية، لا محاكاة.** يجلب `GET /api/v1/data-transfer/resources` ويعرض ما يصل:
+
+- لوحة تُعلن حالة `AppFeatures.dataTransfer` صراحةً — شاشةُ demo تصمت عند إطفاء علَم تُعلّم القارئ أن الميزة معطوبة.
+- بطاقة لكل مورد يعلنه السيرفر: صيغ التصدير/الاستيراد، عدد الأعمدة والقابل منها للاستيراد، سقف الصفوف.
+- زر يفتح `DataTransferSheet` للمورد نفسه → تصدير أو استيراد كاملَي الدورة.
+
+**النقطة التي يثبتها ولا يستطيع demo ساكن إثباتها:** قائمة الموارد **غير مكتوبة في الملف**. أعلِن `*.transfer.ts` جديداً بالباك، ولا تُعِد بناء شيء هنا، فيظهر. هذا هو ادّعاء «صفر Dart لكل feature»، والطريقة الصادقة الوحيدة لعرضه هي جلبه.
+
+**الربط الدائم:** `lib/modules/data_transfer/` + `readme/data_transfer.md` + `backend_template/src/core/data-transfer/`
+
+---
+
 ## قواعد الربط الدائم
 
 > عند تعديل أي موديول مرتبط بسيناريو → يجب مراجعة السيناريو المقابل وتحديثه.
@@ -231,6 +248,7 @@
 | `app_features.dart` platform services | #11 |
 | `lib/Features/CLAUDE.md` patterns | #01, #04, #05 |
 | AutoRoute configuration | #02 |
+| `modules/data_transfer/` أو عقد `/api/v1/data-transfer` | #14 |
 
 ---
 

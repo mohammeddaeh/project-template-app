@@ -28,6 +28,14 @@
 | `Features/splash/` | شاشة البداية — يستعيد التوكن **واللقطة المخزَّنة للمستخدم** قبل التنقّل |
 | `Features/test/` | **Template Showcase** — demo بصري (Widgets · Forms · States · Theme) — debug فقط |
 
+### Modules الاختيارية البارزة
+
+| المسار | ما تفعله |
+|---|---|
+| `modules/data_transfer/` | **استيراد/تصدير عام — صفر Dart لكل feature.** الشاشتان تُبنيان من `GET /data-transfer/resources`، فـfeature تُعلن قابليتها بالباك تظهر بنسخة مبنية قبل وجودها. سطر الدخول: `DataTransferSheet.show(context, resource: 'notes')`. علَم: `AppFeatures.dataTransfer`. ⚠️ `/export` يردّ **بايتات لا مغلّفاً** — راجع `readme/data_transfer.md` |
+| `modules/multi_device/` | الأجهزة والجلسات النشطة. علَم: `AppFeatures.multiDevice` |
+| `modules/sync/` | محرّك المزامنة دون اتصال. علَم: `AppFeatures.offlineSync` |
+
 > `Features/test/` **لا تُبنى في production** — `AppFeatures.debugSkipLogin = false` يخفيها تماماً.
 
 ---
@@ -83,6 +91,7 @@ modules     → Features      ❌ NEVER
 | `readme/new_developer_guide.md` | تغيير هيكل المشروع أو onboarding |
 | `readme/template_enhancements.md` | إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود |
 | `readme/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
+| `readme/data_transfer.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 
@@ -124,6 +133,7 @@ modules     → Features      ❌ NEVER
 | `core/foundation/errors/failure.dart` | سيناريو #07 | failure type جديد → صف في القائمة |
 | `routes/router.dart` (route جديد) | `TestDashboardScreen` | أضف card إذا كانت للـ test feature |
 | `modules/sync/` | سيناريو #10 | أي operation جديدة → تظهر في المراقب |
+| `modules/data_transfer/` | `TestDataTransferScreen` (#14) | صيغة أو حالة جديدة → تظهر في بطاقة المورد. **قائمة الموارد تُجلب من السيرفر — لا تُكتب** |
 
 ### Checklist إلزامي قبل إغلاق أي مهمة
 

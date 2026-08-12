@@ -46,6 +46,29 @@ abstract final class AppFeatures {
   /// When true: run `dart run build_runner build` after adding feature contracts.
   static const offlineSync = false;
 
+  /// Enable the generic import/export module.
+  ///
+  /// **When true**: `DataTransferSheet.show(context, resource: '<name>')` works
+  /// from anywhere for any resource the backend declares under
+  /// `GET /api/v1/data-transfer/resources` — export to CSV/Excel with a column
+  /// picker, download an import template, and import in two phases (review the
+  /// row-by-row errors, then confirm).
+  ///
+  /// The screens carry **no per-feature code**. A feature becomes transferable
+  /// by declaring a `*.transfer.ts` server-side; nothing is added, built or
+  /// shipped here. That is the whole point of the module, and the reason it is
+  /// one flag rather than one flag per feature.
+  ///
+  /// **When false**: `DataTransferPlugin.initialize()` returns immediately,
+  /// nothing is registered, and `DataTransferSheet.show` refuses instead of
+  /// opening a screen whose dependencies are absent — the entry point cannot
+  /// appear without the module behind it.
+  ///
+  /// ⚠️ Requires the backend half (`backend_template/src/core/data-transfer/`).
+  /// With an older server every call answers 404 and the sheet shows an error
+  /// where a resource list should be.
+  static const dataTransfer = false;
+
   /// Enable the devices & sessions module.
   ///
   /// **When true**: a "Devices & sessions" entry appears in Settings, showing

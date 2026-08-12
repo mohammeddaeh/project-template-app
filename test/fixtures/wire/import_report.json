@@ -1,0 +1,22 @@
+{
+  "token": "imp_9f2c1b7a4d3e5f6081a2b3c4d5e6f708",
+  "expires_in": 900,
+  "total_rows": 3,
+  "valid_rows": 2,
+  "errors": [
+    {
+      "row": 2,
+      "column": "title",
+      "code": "required",
+      "message": "\"title\" is required",
+      "value": ""
+    },
+    {
+      "row": 3,
+      "column": null,
+      "code": "custom",
+      "message": "Nothing to update"
+    }
+  ],
+  "truncated_errors": false
+}

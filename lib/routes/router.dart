@@ -60,6 +60,16 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: NotesRoute.page, path: '/notes'),
     AutoRoute(page: NoteFormRoute.page, path: '/notes/form'),
 
+    // ── Import / export (modules/data_transfer) ────────────────────────────
+    //
+    // Generic: `:resource` is a wire name, so these two routes serve every
+    // transferable feature the backend declares. They stay registered even when
+    // `AppFeatures.dataTransfer` is off — `DataTransferSheet.show` is the guard,
+    // and it refuses before navigating, so an unreachable route costs nothing
+    // while a conditionally-registered one would break deep links per build.
+    AutoRoute(page: TransferExportRoute.page, path: '/transfer/:resource/export'),
+    AutoRoute(page: TransferImportRoute.page, path: '/transfer/:resource/import'),
+
     // ── Utility ────────────────────────────────────────────────────────────
     // ── Widget Library (demo) ──────────────────────────────────────────────────
     AutoRoute(page: WidgetLibraryDemoRoute.page, path: '/widgets-demo'),
@@ -92,6 +102,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: TestSyncQueueRoute.page, path: '/test/sync-queue'),
     AutoRoute(page: TestBlocStatesRoute.page, path: '/test/bloc-states'),
     AutoRoute(page: TestApiSimulatorRoute.page, path: '/test/api-simulator'),
+    AutoRoute(page: TestDataTransferRoute.page, path: '/test/data-transfer'),
 
     AutoRoute(page: ErrorRoute.page, path: '/error'),
   ];

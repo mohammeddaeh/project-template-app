@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/Features/notes/domain/entities/note.dart';
 import 'package:app_template/Features/notes/presentation/cubits/notes_list_cubit.dart';
+import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
 import 'package:app_template/presentation/feedback/feedback_extension.dart';
 import 'package:app_template/presentation/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -42,7 +43,29 @@ class NotesScreen extends StatelessWidget {
       create: (_) => getIt<NotesListCubit>(),
       child: Builder(
         builder: (context) => Scaffold(
-          appBar: AppBar(title: Text(LocaleKeys.notes.tr())),
+          appBar: AppBar(
+            title: Text(LocaleKeys.notes.tr()),
+            actions: [
+              // **The entire cost of making a feature transferable, client-side.**
+              //
+              // No import/export code lives in `Features/notes/` beyond this
+              // line: the sheet fetches the descriptor for `'notes'` and builds
+              // its column picker, format choice, template and error table from
+              // it. The server-side declaration
+              // (`backend_template/src/features/notes/notes.transfer.ts`) is the
+              // other half, and it is one file.
+              //
+              // Safe to call with `AppFeatures.dataTransfer` off — `show`
+              // refuses and explains rather than opening a screen whose
+              // dependencies were never registered.
+              IconButton(
+                icon: const Icon(Icons.import_export),
+                tooltip: LocaleKeys.dataTransfer.tr(),
+                onPressed: () =>
+                    DataTransferSheet.show(context, resource: 'notes'),
+              ),
+            ],
+          ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () => _openForm(context),
             icon: const Icon(Icons.add),

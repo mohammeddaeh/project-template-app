@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/modules/analytics/analytics_module.dart';
 import 'package:app_template/modules/crash_reporting/crash_reporting_module.dart';
+import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
 import 'package:app_template/modules/multi_device/multi_device_plugin.dart';
 import 'package:app_template/modules/push_notifications/push_notifications_module.dart';
 import 'package:app_template/modules/remote_config/remote_config_module.dart';
@@ -62,6 +63,11 @@ abstract final class ModulesBootstrap {
     }
     if (AppFeatures.offlineSync) {
       await SyncSDK.initialize(const SyncSdkConfig(enabled: true), di);
+    }
+    // Last, and order-independent: it registers a repository and two cubit
+    // factories over the already-configured Dio, and nothing else waits on it.
+    if (AppFeatures.dataTransfer) {
+      await DataTransferPlugin.initialize(di);
     }
   }
 

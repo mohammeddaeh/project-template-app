@@ -54,6 +54,17 @@ class _TestDashboardScreenState extends State<TestDashboardScreen> {
         heroTag: 'demo_notes_crud',
         onTap: () => context.router.push(const NotesRoute()),
       ),
+      // Also live: it fetches the resource descriptor from the server and
+      // renders whatever comes back, so it proves the "no per-feature Dart"
+      // claim rather than asserting it.
+      _CardData(
+        icon: Icons.import_export_outlined,
+        titleKey: LocaleKeys.testDataTransferTitle,
+        subtitleKey: LocaleKeys.testDataTransferSubtitle,
+        color: scheme.secondary,
+        heroTag: 'demo_data_transfer',
+        onTap: () => context.router.push(const TestDataTransferRoute()),
+      ),
       _CardData(
         icon: Icons.widgets_outlined,
         titleKey: LocaleKeys.widgetCatalogTitle,

@@ -1,0 +1,51 @@
+{
+  "resources": [
+    {
+      "name": "notes",
+      "label": { "ar": "الملاحظات", "en": "Notes" },
+      "export_formats": ["csv", "xlsx"],
+      "import_formats": ["csv", "xlsx"],
+      "max_export_rows": 50000,
+      "supports_import": true,
+      "columns": [
+        {
+          "key": "id",
+          "label": { "ar": "المعرّف", "en": "ID" },
+          "type": "number",
+          "required": false,
+          "importable": false
+        },
+        {
+          "key": "title",
+          "label": { "ar": "العنوان", "en": "Title" },
+          "type": "string",
+          "required": true,
+          "importable": true,
+          "example": "Weekly summary"
+        },
+        {
+          "key": "body",
+          "label": { "ar": "المحتوى", "en": "Body" },
+          "type": "string",
+          "required": false,
+          "importable": true,
+          "example": "Optional longer text"
+        },
+        {
+          "key": "created_at",
+          "label": { "ar": "تاريخ الإنشاء", "en": "Created at" },
+          "type": "datetime",
+          "required": false,
+          "importable": false
+        },
+        {
+          "key": "updated_at",
+          "label": { "ar": "تاريخ التعديل", "en": "Updated at" },
+          "type": "datetime",
+          "required": false,
+          "importable": false
+        }
+      ]
+    }
+  ]
+}
