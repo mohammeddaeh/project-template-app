@@ -21,6 +21,7 @@ class TransferResource extends Equatable {
     required this.maxExportRows,
     required this.supportsImport,
     required this.columns,
+    this.filters = const [],
   });
 
   /// Wire identifier — goes into the URL path. Never shown to a user.
@@ -43,16 +44,96 @@ class TransferResource extends Equatable {
 
   final List<TransferColumn> columns;
 
+  /// Filter controls the export screen renders, and the query keys it sends.
+  ///
+  /// **Declared by the server, not guessed here.** The export screen used to
+  /// ship a hardcoded `?q=` box; the first real application named its filter
+  /// `search`, so that control sent a parameter the schema ignored and filtered
+  /// nothing — a field that looks like it works, does nothing, and reports no
+  /// error. Empty means no filter section at all.
+  final List<TransferFilter> filters;
+
   /// Columns the importer will accept. The rest (`id`, `created_at`) are
   /// exportable only and are silently ignored on the way back in.
   List<TransferColumn> get importableColumns =>
       columns.where((c) => c.importable).toList();
 
+  /// Columns the server fills in — shown on the import screen so a user who
+  /// counts three fields and expected seven knows why.
+  List<TransferColumn> get systemColumns =>
+      columns.where((c) => !c.importable).toList();
+
   String label({required bool isArabic}) => isArabic ? labelAr : labelEn;
 
   @override
   List<Object?> get props => [name, labelAr, labelEn, exportFormats,
-        importFormats, maxExportRows, supportsImport, columns];
+        importFormats, maxExportRows, supportsImport, columns, filters];
+}
+
+/// One filter control on the export screen.
+class TransferFilter extends Equatable {
+  const TransferFilter({
+    required this.key,
+    required this.labelAr,
+    required this.labelEn,
+    required this.type,
+    this.placeholderAr,
+    this.placeholderEn,
+    this.options = const [],
+  });
+
+  /// Query-string key, sent verbatim: `?search=…`.
+  final String key;
+  final String labelAr;
+  final String labelEn;
+  final TransferFilterType type;
+  final String? placeholderAr;
+  final String? placeholderEn;
+  final List<TransferFilterOption> options;
+
+  String label({required bool isArabic}) => isArabic ? labelAr : labelEn;
+  String? placeholder({required bool isArabic}) =>
+      isArabic ? placeholderAr : placeholderEn;
+
+  @override
+  List<Object?> get props =>
+      [key, labelAr, labelEn, type, placeholderAr, placeholderEn, options];
+}
+
+class TransferFilterOption extends Equatable {
+  const TransferFilterOption({
+    required this.value,
+    required this.labelAr,
+    required this.labelEn,
+  });
+
+  final String value;
+  final String labelAr;
+  final String labelEn;
+
+  String label({required bool isArabic}) => isArabic ? labelAr : labelEn;
+
+  @override
+  List<Object?> get props => [value, labelAr, labelEn];
+}
+
+/// A filter type this build knows how to draw.
+///
+/// [unknown] filters are **dropped**, not rendered as text: a `select` shown as
+/// a free-text box would let the user type a value the server rejects, which is
+/// worse than the filter being absent until the app is updated.
+enum TransferFilterType {
+  text,
+  select,
+  boolean,
+  unknown;
+
+  static TransferFilterType fromWire(String? value) => switch (value) {
+        'text' => TransferFilterType.text,
+        'select' => TransferFilterType.select,
+        'boolean' => TransferFilterType.boolean,
+        _ => TransferFilterType.unknown,
+      };
 }
 
 class TransferColumn extends Equatable {
@@ -64,6 +145,8 @@ class TransferColumn extends Equatable {
     required this.required,
     required this.importable,
     this.example,
+    this.hintAr,
+    this.hintEn,
   });
 
   /// The header written in the file, and the `column` an import error names.
@@ -78,13 +161,25 @@ class TransferColumn extends Equatable {
   /// Import-side only: an empty cell here is a row error.
   final bool required;
   final bool importable;
+
+  /// A sample **value** — what the template file's example row contains.
+  /// Teaches the format (`0912345678` says more than a sentence about phones).
   final String? example;
 
+  /// One line on what the column **means**. Shown beside the name in the app.
+  ///
+  /// Separate from [example] because the two answer different questions, and
+  /// the screen was answering the wrong one: a sample branch name under "Branch
+  /// name" tells the reader what branches are called, not what to put there.
+  final String? hintAr;
+  final String? hintEn;
+
   String label({required bool isArabic}) => isArabic ? labelAr : labelEn;
+  String? hint({required bool isArabic}) => isArabic ? hintAr : hintEn;
 
   @override
   List<Object?> get props =>
-      [key, labelAr, labelEn, type, required, importable, example];
+      [key, labelAr, labelEn, type, required, importable, example, hintAr, hintEn];
 }
 
 /// Closed set, matching the server's `ColumnType`.

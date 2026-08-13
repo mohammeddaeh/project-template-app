@@ -23,6 +23,7 @@
 | 12 | REST API Inspector | تفاعلي | `core/infra/network/` + Retrofit (محاكاة pipeline) | ✅ مُنفَّذ |
 | 13 | Connectivity & Lifecycle Monitor | تفاعلي | `NetworkStateMonitor` + `AppLifecycleService` | ✅ مُنفَّذ |
 | 14 | Import / Export (live) | تفاعلي | `modules/data_transfer/` — **شبكة حقيقية** | ✅ مُنفَّذ |
+| 15 | Roles & Permissions (live) | تفاعلي | `modules/access_control/` — **شبكة حقيقية** | ✅ مُنفَّذ |
 
 ---
 
@@ -234,6 +235,24 @@
 
 ---
 
+### 15 — Roles & Permissions (live) ✅
+
+`TestAccessControlScreen` · مسار `/test/access-control`
+
+**شبكة حقيقية، لا محاكاة.** يجلب `GET /api/v1/authz/catalog` و`/authz/me` ويعرض ما يصل:
+
+- لوحة تُعلن حالة `AppFeatures.accessControl` صراحةً — لنفس سبب #14.
+- بطاقة «صلاحياتي»: المجموعة المحلولة كما أرسلها السيرفر، مع `enforced` و`is_super_admin` و`version`، وزر يعيد قراءة `/authz/me`.
+- **الملعب التفاعلي** — حقل تكتب فيه أي مفتاح، وبوابة `Can` حيّة تُفتح وتُغلق أمامك، مع `SegmentedButton` يبدّل بين `CanMode.hide` و`CanMode.disable`. اكتب مفتاحاً لا يعلنه أي سيرفر فترى التحذير الصارخ الذي يجعل الخطأ المطبعي مستحيل التجاهل في وضع التطوير.
+- ملخّص الكتالوج: مورد لكل بطاقة بعدد إجراءاته — **غير مكتوب في الملف**.
+- زر يفتح شاشة الأدوار العامة (`RolesScreen`).
+
+**النقطة التي يثبتها:** أضِف `requirePermission('invoices.approve')` لمسار بالباك، ولا تُعِد بناء شيء هنا، فيصير المفتاح صالحاً في الملعب وتظهر بطاقة «الفواتير» في شاشة الأدوار. هذا ادّعاء «صفر Dart لكل صلاحية».
+
+**الربط الدائم:** `lib/modules/access_control/` + `readme/permissions.md` + `backend_template/src/core/authz/`
+
+---
+
 ## قواعد الربط الدائم
 
 > عند تعديل أي موديول مرتبط بسيناريو → يجب مراجعة السيناريو المقابل وتحديثه.
@@ -249,6 +268,7 @@
 | `lib/Features/CLAUDE.md` patterns | #01, #04, #05 |
 | AutoRoute configuration | #02 |
 | `modules/data_transfer/` أو عقد `/api/v1/data-transfer` | #14 |
+| `modules/access_control/` أو عقد `/api/v1/authz` | #15 |
 
 ---
 

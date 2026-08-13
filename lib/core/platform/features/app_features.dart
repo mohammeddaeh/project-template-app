@@ -69,6 +69,37 @@ abstract final class AppFeatures {
   /// where a resource list should be.
   static const dataTransfer = true;
 
+  /// Enable role-based access control.
+  ///
+  /// **When true**: `Can(permission: 'notes.delete', child: …)` and
+  /// `context.can('notes.delete')` gate any control against the permissions the
+  /// server grants this account, and a generic roles screen — built entirely
+  /// from `GET /api/v1/authz/catalog` — lets an administrator manage them.
+  ///
+  /// The screens carry **no per-permission code**. A feature becomes guarded by
+  /// adding `requirePermission('invoices.approve')` to its route server-side;
+  /// the key then appears in the roles screen of a build that shipped before
+  /// invoices existed. That is the whole point of the module, and the reason it
+  /// is one flag rather than one flag per permission.
+  ///
+  /// **When false**: `AccessControlPlugin.initialize()` returns immediately,
+  /// nothing is registered, and every gate answers `true` — an app built
+  /// without access control behaves exactly as it did before the module
+  /// existed. `Can` still compiles and still renders its child, so switching
+  /// the flag on later needs no edit to a single call site.
+  ///
+  /// ⚠️ **The client gate is not the security boundary.** It stops a user being
+  /// offered a button that will be refused; `requirePermission` on the server
+  /// is what refuses. A screen guarded here whose endpoint is unguarded there
+  /// is not protected at all — the backend's route-coverage test exists to make
+  /// that impossible to leave half-done.
+  ///
+  /// ⚠️ Requires the backend half (`backend_template/src/core/authz/`) **and**
+  /// `AUTHZ_ENABLED=true` there. With enforcement off the server reports
+  /// `enabled: false` on `/authz/me` and this module keeps every gate open, so
+  /// a half-rolled-out deployment shows a working app rather than an empty one.
+  static const accessControl = false;
+
   /// Enable the devices & sessions module.
   ///
   /// **When true**: a "Devices & sessions" entry appears in Settings, showing

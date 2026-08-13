@@ -33,6 +33,18 @@ abstract class DataTransferApiService {
     @Query('mode') String mode = 'validate',
   });
 
+  /// Phase one again, on rows the user corrected in the grid.
+  ///
+  /// Same path and same `mode=validate` as the upload — only the body differs
+  /// (JSON instead of multipart). The server dispatches on that, and runs the
+  /// identical rules either way.
+  @POST('/data-transfer/{resource}/import')
+  Future<HttpResponse<dynamic>> revalidateRows(
+    @Path('resource') String resource,
+    @Body() Map<String, dynamic> body, {
+    @Query('mode') String mode = 'validate',
+  });
+
   /// Phase two — spend the token. All rows or none.
   @POST('/data-transfer/{resource}/import')
   Future<HttpResponse<dynamic>> commitImport(

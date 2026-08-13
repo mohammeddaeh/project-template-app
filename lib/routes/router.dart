@@ -1,4 +1,5 @@
 ﻿import 'package:auto_route/auto_route.dart';
+import 'package:app_template/modules/access_control/guards/permission_route_guard.dart';
 import 'package:app_template/routes/router.gr.dart';
 
 CustomRoute customRouteWithAnimation({required PageInfo page}) {
@@ -70,6 +71,28 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: TransferExportRoute.page, path: '/transfer/:resource/export'),
     AutoRoute(page: TransferImportRoute.page, path: '/transfer/:resource/import'),
 
+    // ── Roles & permissions (modules/access_control) ───────────────────────
+    //
+    // Generic in the same way: the roles screen renders whatever permissions
+    // the backend declares, so these two routes serve every guarded feature
+    // that will ever exist in this application.
+    //
+    // Guarded by `roles.view` / `user_access.view` — the module's own keys,
+    // declared by the same `requirePermission()` calls a feature would use.
+    // `PermissionRouteGuard` passes through untouched when
+    // `AppFeatures.accessControl` is off, so these stay registered in every
+    // build rather than appearing and disappearing with a flag.
+    AutoRoute(
+      page: RolesRoute.page,
+      path: '/roles',
+      guards: [PermissionRouteGuard('roles.view')],
+    ),
+    AutoRoute(
+      page: UserAccessRoute.page,
+      path: '/users/:userId/access',
+      guards: [PermissionRouteGuard('user_access.view')],
+    ),
+
     // ── Utility ────────────────────────────────────────────────────────────
     // ── Widget Library (demo) ──────────────────────────────────────────────────
     AutoRoute(page: WidgetLibraryDemoRoute.page, path: '/widgets-demo'),
@@ -103,6 +126,11 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: TestBlocStatesRoute.page, path: '/test/bloc-states'),
     AutoRoute(page: TestApiSimulatorRoute.page, path: '/test/api-simulator'),
     AutoRoute(page: TestDataTransferRoute.page, path: '/test/data-transfer'),
+    // Scenario #15. Deliberately NOT guarded by `PermissionRouteGuard`: it is a
+    // debug screen whose whole job is to show what happens with and without a
+    // permission, and guarding it would hide the demonstration from the account
+    // that most needs to see it.
+    AutoRoute(page: TestAccessControlRoute.page, path: '/test/access-control'),
 
     AutoRoute(page: ErrorRoute.page, path: '/error'),
   ];

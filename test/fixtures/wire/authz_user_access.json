@@ -1,0 +1,43 @@
+{
+  "user_id": 42,
+  "roles": [
+    {
+      "id": 3,
+      "key": "editor",
+      "name": {
+        "ar": "محرّر",
+        "en": "Editor"
+      },
+      "is_system": false,
+      "is_active": true,
+      "permissions": [
+        "notes.update",
+        "deleted_feature.update"
+      ],
+      "stale_permissions": [
+        "deleted_feature.update"
+      ],
+      "users_count": 4,
+      "created_at": "2026-07-01T12:00:00.000Z",
+      "updated_at": "2026-08-12T09:30:00.000Z"
+    }
+  ],
+  "overrides": [
+    {
+      "key": "notes.delete",
+      "effect": "deny",
+      "note": "Left the archiving team on 2026-08-01"
+    },
+    {
+      "key": "notes.create",
+      "effect": "allow",
+      "note": null
+    }
+  ],
+  "effective_permissions": [
+    "notes.create",
+    "notes.update",
+    "notes.view"
+  ],
+  "is_super_admin": false
+}

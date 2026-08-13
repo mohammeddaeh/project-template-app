@@ -1,0 +1,10 @@
+{
+  "permissions": [
+    "notes.create",
+    "notes.update",
+    "notes.view"
+  ],
+  "is_super_admin": false,
+  "version": 1786600000000,
+  "enabled": true
+}

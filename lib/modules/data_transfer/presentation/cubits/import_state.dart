@@ -54,17 +54,51 @@ class ImportValidating extends ImportState {
 }
 
 /// Phase one is done and **nothing has been written**. The user decides here.
+///
+/// This is also where they *edit*: [rows] starts as the server's echo of the
+/// file and diverges as cells are changed and rows deleted. [report] keeps
+/// describing the last **checked** state, which is why [dirty] exists — the two
+/// disagree exactly while there are unchecked edits, and the confirm button is
+/// disabled for that whole window.
 class ImportReviewing extends ImportState {
   const ImportReviewing({
     required this.resource,
     required this.file,
     required this.report,
+    required this.rows,
+    this.dirty = false,
   });
 
   @override
   final TransferResource resource;
   final File file;
+
+  /// The last verdict from the server. Its errors point at [report]'s row
+  /// numbering, which is [rows]'s numbering only while [dirty] is false.
   final ImportReport report;
+
+  /// The working copy the grid renders and edits.
+  final List<Map<String, String>> rows;
+
+  /// `true` when [rows] has changed since [report] was produced.
+  ///
+  /// While true the report is stale — a deleted row has renumbered everything
+  /// after it, and the staged token describes data that no longer exists. The
+  /// UI shows "re-check before importing" and blocks the commit.
+  final bool dirty;
+
+  ImportReviewing copyWith({
+    ImportReport? report,
+    List<Map<String, String>>? rows,
+    bool? dirty,
+  }) =>
+      ImportReviewing(
+        resource: resource,
+        file: file,
+        report: report ?? this.report,
+        rows: rows ?? this.rows,
+        dirty: dirty ?? this.dirty,
+      );
 }
 
 class ImportCommitting extends ImportState {

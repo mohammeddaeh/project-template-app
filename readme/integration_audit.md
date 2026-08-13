@@ -64,6 +64,10 @@
 
 **الآن:** حُذفا من `LoginEntity` و`CurrentUserRepository` و`PersistenceKeys`، مع توثيق الاتجاه الصحيح عند إضافة RBAC: **السيرفر يصدر الادّعاءات أولاً**.
 
+**وقد أُضيف RBAC بهذا الترتيب فعلاً** — `core/authz/` بالباك أولاً (`requirePermission` + `/authz/me` + `/authz/catalog`)، ثم `modules/access_control/` هنا. والدرس نفسه مبنيّ في الموديول الجديد كحاجز لا كتعليق: بناء التطوير يطلب `?include_declared=true` فيحمل قائمة كل مفتاح يعلنه الخادم، وأي `Can(permission: …)` بمفتاح خارجها يُصدر `LogService.error` + `assert`. راجع [`permissions.md`](permissions.md).
+
+**عقد الـwire الجديد:** `test/fixtures/wire/authz_me.json` · `authz_catalog.json` · `authz_user_access.json` — يقابلها `src/core/authz/__tests__/wire-contract.test.ts`. خطأ المفتاح هنا أخطر منه في أي payload آخر: مجموعة صلاحيات تُحلَّل إلى فارغة لا تُميَّز عن حساب لا يملك شيئاً حقاً.
+
 ---
 
 ## الجزء ٢ — الفجوات الوظيفية

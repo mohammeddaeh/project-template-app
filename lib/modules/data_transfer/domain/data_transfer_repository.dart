@@ -41,6 +41,21 @@ abstract class DataTransferRepository {
     required File file,
   });
 
+  /// Phase one again, on rows the user corrected in the app's grid.
+  ///
+  /// The same endpoint and the same rules as [validateImport] — the server runs
+  /// one code path for both. That matters: a separate "re-check" route would be
+  /// a second copy of the validation, and the copies would drift until the grid
+  /// accepted rows the upload refused.
+  ///
+  /// Each call issues a **fresh token** and invalidates nothing else; the
+  /// previous one simply expires unused.
+  Future<Either<Failure, ImportReport>> revalidateRows({
+    required String resource,
+    required List<String> columns,
+    required List<Map<String, String>> rows,
+  });
+
   /// Phase two — spends [token] and writes, all rows or none.
   ///
   /// The token is single-use: a retry after a timeout must re-upload rather

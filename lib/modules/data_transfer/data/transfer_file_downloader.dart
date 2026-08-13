@@ -57,7 +57,7 @@ class TransferFileDownloader {
     final Response<List<int>> response;
     try {
       response = await _dio.get<List<int>>(
-        '${Env.baseUrl}$path',
+        _absoluteUrl(path),
         queryParameters: query,
         options: Options(
           responseType: ResponseType.bytes,
@@ -100,6 +100,24 @@ class TransferFileDownloader {
     return file;
   }
 
+  /// Joins [Env.baseUrl] and an [ApiUrls] path into one absolute URL.
+  ///
+  /// **Not string concatenation.** The injected `Dio` carries no `baseUrl` —
+  /// each retrofit service passes its own — so this class has to build the
+  /// whole URL, and `'$base$path'` produces `…/api/v1//data-transfer/…` the
+  /// moment `BASE_URL` is defined with a trailing slash. Express answers that
+  /// double slash with a 404, and the client reports "route not found" for an
+  /// endpoint that is mounted and working.
+  ///
+  /// The trap is that it depends on a `--dart-define` value: it works for
+  /// whoever wrote `http://host/api/v1` and fails for whoever wrote
+  /// `http://host/api/v1/`. Normalising the boundary here means neither has to
+  /// know.
+  ///
+  /// A path that is already absolute is returned untouched, so a future caller
+  /// passing a full URL is not mangled.
+  String _absoluteUrl(String path) => joinBaseUrl(Env.baseUrl, path);
+
   /// Pulls the server's message out of an error body that arrived as bytes.
   ///
   /// Falls back rather than throwing: a refusal we cannot decode must still
@@ -117,6 +135,30 @@ class TransferFileDownloader {
     }
     return null;
   }
+}
+
+/// Joins a base URL and a path into one absolute URL, collapsing the boundary.
+///
+/// **This exists because `'$base$path'` is wrong**, and wrong in a way that
+/// depends on a `--dart-define`: `BASE_URL=http://host/api/v1` works, and
+/// `BASE_URL=http://host/api/v1/` produces `…/api/v1//data-transfer/…`, which
+/// Express answers with a 404. The client then reports "route not found" for an
+/// endpoint that is mounted and working — and it reproduces only on the
+/// machines whose environment file has the trailing slash.
+///
+/// Retrofit's generated services never hit this: Dio's `Options.compose`
+/// resolves their paths against a base. This module is the one place that
+/// builds a URL by hand, because the injected `Dio` carries no `baseUrl` of its
+/// own.
+///
+/// Top-level and public so it can be tested without a `Dio` or a build-time
+/// environment — see `test/transfer_url_test.dart`.
+String joinBaseUrl(String base, String path) {
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+
+  final trimmedBase = base.endsWith('/') ? base.substring(0, base.length - 1) : base;
+  final suffix = path.startsWith('/') ? path : '/$path';
+  return '$trimmedBase$suffix';
 }
 
 /// A refusal that arrived on a bytes-typed request.

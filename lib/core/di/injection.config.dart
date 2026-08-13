@@ -216,9 +216,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i148.HandleBodyResponse>(
       () => _i148.HandleBodyResponse(),
     );
+    gh.lazySingleton<_i27.DeviceLabelService>(() => _i27.DeviceLabelService());
     gh.lazySingleton<_i921.NavigationCubit>(() => _i921.NavigationCubit());
     gh.lazySingleton<_i988.AppTheme>(() => _i988.AppTheme());
-    gh.lazySingleton<_i27.DeviceLabelService>(() => _i27.DeviceLabelService());
     gh.lazySingleton<_i979.NetworkStateMonitor>(
       () => _i894.NetworkStateMonitorImpl(),
     );

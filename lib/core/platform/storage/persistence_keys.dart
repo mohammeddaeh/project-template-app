@@ -49,4 +49,15 @@ abstract class PersistenceKeys {
   /// `cached_permission_keys` and `cached_is_super_admin` were removed
   /// alongside it — they persisted two fields no endpoint ever sent.
   static const String cachedCurrentUser = 'cached_current_user';
+
+  // ── Access-control module (AbilitiesStore) ────────────────────────────────
+  /// JSON-encoded `AbilitySet` — written after every successful
+  /// `GET /authz/me`, restored before the first frame.
+  ///
+  /// Same role as [cachedCurrentUser] and for the same reason, applied to the
+  /// other half of the problem: without it a relaunch with a valid token starts
+  /// with **every gate shut**, and the user watches their own controls appear a
+  /// moment later. Cleared on sign-out — the set belongs to an account, not to
+  /// a device.
+  static const String cachedAbilities = 'cached_abilities';
 }

@@ -109,6 +109,7 @@ core/
 
 | Module | Entry Point | Packages |
 |--------|-------------|---------|
+| `access_control/` ✅ | `AccessControlPlugin.initialize(getIt)` — عبر `ModulesBootstrap` | dio (retrofit) |
 | `sync/` ✅ | `SyncSDK.initialize(config, getIt)` — called in `main.dart` | sqflite |
 | `multi_device/` ✅ | `MultiDevicePlugin.initialize(getIt)` | dio (retrofit) |
 | `push_notifications/` | `PushNotificationsModule.initialize(getIt, config: ...)` | firebase_messaging |

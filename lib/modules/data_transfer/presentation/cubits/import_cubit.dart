@@ -85,7 +85,86 @@ class ImportCubit extends SafeCubit<ImportState> {
     result.fold(
       _emitFailure,
       (report) => emit(
-        ImportReviewing(resource: resource, file: file, report: report),
+        ImportReviewing(
+          resource: resource,
+          file: file,
+          report: report,
+          rows: report.rows,
+        ),
+      ),
+    );
+  }
+
+  /// Replaces one cell, locally. **Does not call the server.**
+  ///
+  /// Edits accumulate in [ImportReviewing.editedRows] and the report keeps
+  /// showing the *old* verdict until [recheck] runs. That is deliberate: a
+  /// round trip per keystroke would make correcting forty cells forty requests,
+  /// and would let the token change under a user who is mid-edit. The screen
+  /// says "re-check before importing" instead, and the confirm button is
+  /// disabled while edits are pending.
+  void editCell(int row, String column, String value) {
+    final current = state;
+    if (current is! ImportReviewing) return;
+
+    final rows = [...current.rows];
+    final index = row - 1;
+    if (index < 0 || index >= rows.length) return;
+
+    rows[index] = {...rows[index], column: value};
+    emit(current.copyWith(rows: rows, dirty: true));
+  }
+
+  /// Removes a row locally — the usual fix for a duplicate or a line of junk.
+  ///
+  /// Row numbers shift, and that is why [recheck] must run before any commit:
+  /// every error in the current report still points at the old numbering.
+  void deleteRow(int row) {
+    final current = state;
+    if (current is! ImportReviewing) return;
+
+    final index = row - 1;
+    if (index < 0 || index >= current.rows.length) return;
+
+    final rows = [...current.rows]..removeAt(index);
+    if (rows.isEmpty) {
+      // Nothing left to import. Back to the file picker rather than an empty
+      // grid with a disabled button and no explanation.
+      startOver();
+      return;
+    }
+    emit(current.copyWith(rows: rows, dirty: true));
+  }
+
+  /// Sends the edited rows back through **the same validation the upload ran**.
+  ///
+  /// Answers a fresh report and a fresh token, both consistent with the current
+  /// row numbering.
+  Future<void> recheck() async {
+    final current = state;
+    if (current is! ImportReviewing) return;
+
+    emit(ImportValidating(resource: current.resource, file: current.file));
+
+    final result = await _repository.revalidateRows(
+      resource: current.resource.name,
+      columns: current.report.columns,
+      rows: current.rows,
+    );
+
+    result.fold(
+      _emitFailure,
+      (report) => emit(
+        ImportReviewing(
+          resource: current.resource,
+          file: current.file,
+          report: report,
+          // The server has re-echoed the rows, so the local copy is replaced
+          // rather than merged — merging would let a row the server dropped
+          // survive on the client and be committed by a token that excludes it.
+          rows: report.rows,
+          dirty: false,
+        ),
       ),
     );
   }
@@ -95,6 +174,10 @@ class ImportCubit extends SafeCubit<ImportState> {
   Future<void> confirm() async {
     final current = state;
     if (current is! ImportReviewing) return;
+
+    // A token issued before the user edited rows describes data that no longer
+    // exists. Refusing here is the last guard; the button is already disabled.
+    if (current.dirty) return;
 
     final token = current.report.token;
     if (token == null) return;

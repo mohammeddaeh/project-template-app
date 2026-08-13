@@ -1,22 +1,41 @@
 {
   "token": "imp_9f2c1b7a4d3e5f6081a2b3c4d5e6f708",
   "expires_in": 900,
-  "total_rows": 3,
-  "valid_rows": 2,
+  "total_rows": 4,
+  "valid_rows": 1,
   "errors": [
     {
       "row": 2,
       "column": "title",
       "code": "required",
       "message": "\"title\" is required",
-      "value": ""
+      "value": "",
+      "severity": "error"
     },
     {
       "row": 3,
+      "column": "title",
+      "code": "duplicate_in_file",
+      "message": "Duplicate of row 1",
+      "value": "Weekly summary",
+      "severity": "error",
+      "duplicate_of_row": 1
+    },
+    {
+      "row": 4,
       "column": null,
       "code": "custom",
-      "message": "Nothing to update"
+      "message": "Nothing to update",
+      "severity": "error"
     }
   ],
-  "truncated_errors": false
+  "truncated_errors": false,
+  "columns": ["title", "body"],
+  "rows": [
+    { "title": "Weekly summary", "body": "First one" },
+    { "title": "", "body": "No title on this row" },
+    { "title": "Weekly summary", "body": "Pasted twice" },
+    { "title": "Cross-field failure", "body": "" }
+  ],
+  "truncated_rows": false
 }

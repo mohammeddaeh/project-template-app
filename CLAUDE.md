@@ -33,6 +33,7 @@
 | المسار | ما تفعله |
 |---|---|
 | `modules/data_transfer/` | **استيراد/تصدير عام — صفر Dart لكل feature.** الشاشتان تُبنيان من `GET /data-transfer/resources`، فـfeature تُعلن قابليتها بالباك تظهر بنسخة مبنية قبل وجودها. سطر الدخول: `DataTransferSheet.show(context, resource: 'notes')`. علَم: `AppFeatures.dataTransfer`. ⚠️ `/export` يردّ **بايتات لا مغلّفاً** — راجع `readme/data_transfer.md` |
+| `modules/access_control/` | **صلاحيات عامة — صفر Dart لكل صلاحية.** المفتاح يُعلَن في السطر الذي يحميه بالباك (`requirePermission('notes.update')`)، ويُلمّ تلقائياً، فتظهر بطاقته في شاشة الأدوار المبنيّة من `GET /authz/catalog`. سطر الدخول: `Can(permission: 'notes.delete', child: …)`. علَم: `AppFeatures.accessControl` + `AUTHZ_ENABLED` بالباك. ⚠️ **بوابة العميل ليست حدّ الأمان** — راجع `readme/permissions.md` |
 | `modules/multi_device/` | الأجهزة والجلسات النشطة. علَم: `AppFeatures.multiDevice` |
 | `modules/sync/` | محرّك المزامنة دون اتصال. علَم: `AppFeatures.offlineSync` |
 
@@ -92,6 +93,7 @@ modules     → Features      ❌ NEVER
 | `readme/template_enhancements.md` | إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود |
 | `readme/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
 | `readme/data_transfer.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
+| `readme/permissions.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 
@@ -134,6 +136,7 @@ modules     → Features      ❌ NEVER
 | `routes/router.dart` (route جديد) | `TestDashboardScreen` | أضف card إذا كانت للـ test feature |
 | `modules/sync/` | سيناريو #10 | أي operation جديدة → تظهر في المراقب |
 | `modules/data_transfer/` | `TestDataTransferScreen` (#14) | صيغة أو حالة جديدة → تظهر في بطاقة المورد. **قائمة الموارد تُجلب من السيرفر — لا تُكتب** |
+| `modules/access_control/` | `TestAccessControlScreen` (#15) | `CanMode` جديد → segment في الملعب · أي تغيير في `AbilitySet` → حقل في بطاقة «صلاحياتي». **قائمة الصلاحيات تُجلب من السيرفر — لا تُكتب** |
 
 ### Checklist إلزامي قبل إغلاق أي مهمة
 

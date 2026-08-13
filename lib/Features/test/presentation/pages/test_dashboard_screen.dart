@@ -65,6 +65,17 @@ class _TestDashboardScreenState extends State<TestDashboardScreen> {
         heroTag: 'demo_data_transfer',
         onTap: () => context.router.push(const TestDataTransferRoute()),
       ),
+      // Live for the same reason: it fetches the permission catalog and drives
+      // a real `Can` gate from a key the reader types, so the "no per-permission
+      // Dart" claim is demonstrated rather than asserted.
+      _CardData(
+        icon: Icons.admin_panel_settings_outlined,
+        titleKey: LocaleKeys.testAccessControlTitle,
+        subtitleKey: LocaleKeys.testAccessControlSubtitle,
+        color: scheme.primary,
+        heroTag: 'demo_access_control',
+        onTap: () => context.router.push(const TestAccessControlRoute()),
+      ),
       _CardData(
         icon: Icons.widgets_outlined,
         titleKey: LocaleKeys.widgetCatalogTitle,

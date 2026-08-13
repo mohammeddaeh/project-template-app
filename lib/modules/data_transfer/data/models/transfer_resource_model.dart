@@ -26,11 +26,44 @@ class TransferResourceModel {
           .whereType<Map<String, dynamic>>()
           .map(_column)
           .toList(),
+      filters: (json['filters'] as List<dynamic>? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map(_filter)
+          // A filter type this build cannot draw is dropped rather than
+          // guessed at: a `select` rendered as a free-text box invites the
+          // user to type a value the server will reject.
+          .where((f) => f.type != TransferFilterType.unknown)
+          .toList(),
+    );
+  }
+
+  static TransferFilter _filter(Map<String, dynamic> json) {
+    final label = json['label'] as Map<String, dynamic>? ?? const {};
+    final placeholder = json['placeholder'] as Map<String, dynamic>?;
+    return TransferFilter(
+      key: json['key'] as String? ?? '',
+      labelAr: label['ar'] as String? ?? '',
+      labelEn: label['en'] as String? ?? '',
+      type: TransferFilterType.fromWire(json['type'] as String?),
+      placeholderAr: placeholder?['ar'] as String?,
+      placeholderEn: placeholder?['en'] as String?,
+      options: (json['options'] as List<dynamic>? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map((o) {
+            final optionLabel = o['label'] as Map<String, dynamic>? ?? const {};
+            return TransferFilterOption(
+              value: o['value'] as String? ?? '',
+              labelAr: optionLabel['ar'] as String? ?? '',
+              labelEn: optionLabel['en'] as String? ?? '',
+            );
+          })
+          .toList(),
     );
   }
 
   static TransferColumn _column(Map<String, dynamic> json) {
     final label = json['label'] as Map<String, dynamic>? ?? const {};
+    final hint = json['hint'] as Map<String, dynamic>?;
     return TransferColumn(
       key: json['key'] as String? ?? '',
       labelAr: label['ar'] as String? ?? '',
@@ -44,6 +77,8 @@ class TransferResourceModel {
       required: json['required'] as bool? ?? false,
       importable: json['importable'] as bool? ?? false,
       example: json['example'] as String?,
+      hintAr: hint?['ar'] as String?,
+      hintEn: hint?['en'] as String?,
     );
   }
 

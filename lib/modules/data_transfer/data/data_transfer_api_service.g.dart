@@ -74,6 +74,33 @@ class _DataTransferApiService implements DataTransferApiService {
   }
 
   @override
+  Future<HttpResponse<dynamic>> revalidateRows(
+    String resource,
+    Map<String, dynamic> body, {
+    String mode = 'validate',
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'mode': mode};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/data-transfer/${resource}/import',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<dynamic>> commitImport(
     String resource,
     Map<String, dynamic> body, {

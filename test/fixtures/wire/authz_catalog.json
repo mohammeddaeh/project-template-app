@@ -1,0 +1,102 @@
+{
+  "groups": [
+    {
+      "resource": "audit_log",
+      "label": {
+        "ar": "Audit log",
+        "en": "Audit log"
+      },
+      "label_inferred": true,
+      "permissions": [
+        {
+          "key": "audit_log.replay",
+          "action": "replay",
+          "label": {
+            "ar": "Replay",
+            "en": "Replay"
+          },
+          "label_inferred": true,
+          "implies": [],
+          "synthetic": false
+        }
+      ]
+    },
+    {
+      "resource": "notes",
+      "label": {
+        "ar": "الملاحظات",
+        "en": "Notes"
+      },
+      "label_inferred": false,
+      "permissions": [
+        {
+          "key": "notes.create",
+          "action": "create",
+          "label": {
+            "ar": "إضافة",
+            "en": "Create"
+          },
+          "label_inferred": false,
+          "implies": [
+            "notes.view"
+          ],
+          "synthetic": false
+        },
+        {
+          "key": "notes.delete",
+          "action": "delete",
+          "label": {
+            "ar": "حذف",
+            "en": "Delete"
+          },
+          "label_inferred": false,
+          "implies": [
+            "notes.view"
+          ],
+          "synthetic": false
+        },
+        {
+          "key": "notes.update",
+          "action": "update",
+          "label": {
+            "ar": "تعديل",
+            "en": "Edit"
+          },
+          "label_inferred": false,
+          "implies": [
+            "notes.view"
+          ],
+          "synthetic": false
+        },
+        {
+          "key": "notes.view",
+          "action": "view",
+          "label": {
+            "ar": "عرض",
+            "en": "View"
+          },
+          "label_inferred": false,
+          "implies": [],
+          "synthetic": false
+        },
+        {
+          "key": "notes.manage",
+          "action": "manage",
+          "label": {
+            "ar": "إدارة كاملة",
+            "en": "Full management"
+          },
+          "label_inferred": false,
+          "implies": [
+            "notes.create",
+            "notes.delete",
+            "notes.update",
+            "notes.view"
+          ],
+          "synthetic": true
+        }
+      ]
+    }
+  ],
+  "enabled": true
+}

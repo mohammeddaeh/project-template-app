@@ -64,11 +64,22 @@ class _ErrorRow extends StatelessWidget {
   final ImportRowError error;
 
   @override
-  Widget build(BuildContext context) => AppCard(
+  Widget build(BuildContext context) {
+    // Amber for "this row will be skipped", red for "you must change this".
+    // One colour for both would train the user to ignore whichever they meet
+    // first — and the skip case is by far the more common.
+    final isWarning = error.severity == ImportSeverity.warning;
+    final tint = isWarning ? context.colors.statusWarningFg : context.colors.error;
+
+    return AppCard(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.error_outline, size: 18, color: context.colors.error),
+            Icon(
+              isWarning ? Icons.info_outline : Icons.error_outline,
+              size: 18,
+              color: tint,
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -100,10 +111,22 @@ class _ErrorRow extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
+                  if (error.duplicateOfRow != null) ...[
+                    const SizedBox(height: 4),
+                    // Names the other row so the user can go delete one of the
+                    // pair. "Duplicate" without saying of what is a dead end.
+                    Text(
+                      LocaleKeys.importDuplicateOf.tr(
+                        args: ['${error.duplicateOfRow! + 1}'],
+                      ),
+                      style: context.textTheme.bodySmall?.copyWith(color: tint),
+                    ),
+                  ],
                 ],
               ),
             ),
           ],
         ),
       );
+  }
 }

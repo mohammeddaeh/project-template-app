@@ -102,6 +102,21 @@ class DataTransferRepositoryImpl extends BaseRepository
       });
 
   @override
+  Future<Either<Failure, ImportReport>> revalidateRows({
+    required String resource,
+    required List<String> columns,
+    required List<Map<String, String>> rows,
+  }) =>
+      handle(() async {
+        final envelope = _read(
+          await _api.revalidateRows(resource, {'columns': columns, 'rows': rows}),
+        );
+        return envelope.map(
+          (data) => ImportReportModel.fromJson(data as Map<String, dynamic>),
+        );
+      });
+
+  @override
   Future<Either<Failure, ImportResult>> commitImport({
     required String resource,
     required String token,

@@ -2,6 +2,7 @@
 import 'package:get_it/get_it.dart';
 
 import 'package:app_template/core/platform/features/app_features.dart';
+import 'package:app_template/modules/access_control/access_control_plugin.dart';
 import 'package:app_template/modules/analytics/analytics_module.dart';
 import 'package:app_template/modules/crash_reporting/crash_reporting_module.dart';
 import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
@@ -58,6 +59,12 @@ abstract final class ModulesBootstrap {
     }
 
     // 5. Feature modules.
+    //    Access control comes first among them: it restores the cached ability
+    //    set before the first frame, and anything registered after it may
+    //    legitimately gate on `Can` from its own first build.
+    if (AppFeatures.accessControl) {
+      await AccessControlPlugin.initialize(di);
+    }
     if (AppFeatures.multiDevice) {
       await MultiDevicePlugin.initialize(di);
     }

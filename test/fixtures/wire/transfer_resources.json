@@ -2,48 +2,106 @@
   "resources": [
     {
       "name": "notes",
-      "label": { "ar": "الملاحظات", "en": "Notes" },
-      "export_formats": ["csv", "xlsx"],
-      "import_formats": ["csv", "xlsx"],
+      "label": {
+        "ar": "الملاحظات",
+        "en": "Notes"
+      },
+      "export_formats": [
+        "csv",
+        "xlsx"
+      ],
+      "import_formats": [
+        "csv",
+        "xlsx"
+      ],
       "max_export_rows": 50000,
       "supports_import": true,
       "columns": [
         {
           "key": "id",
-          "label": { "ar": "المعرّف", "en": "ID" },
+          "label": {
+            "ar": "المعرّف",
+            "en": "ID"
+          },
           "type": "number",
           "required": false,
-          "importable": false
+          "importable": false,
+          "hint": {
+            "ar": "رقم تُنشئه المنظومة — لا يُملأ",
+            "en": "Assigned by the system — leave blank"
+          }
         },
         {
           "key": "title",
-          "label": { "ar": "العنوان", "en": "Title" },
+          "label": {
+            "ar": "العنوان",
+            "en": "Title"
+          },
           "type": "string",
           "required": true,
           "importable": true,
-          "example": "Weekly summary"
+          "example": "Weekly summary",
+          "hint": {
+            "ar": "إلزامي · حتى ٢٠٠ حرف",
+            "en": "Required · up to 200 characters"
+          }
         },
         {
           "key": "body",
-          "label": { "ar": "المحتوى", "en": "Body" },
+          "label": {
+            "ar": "المحتوى",
+            "en": "Body"
+          },
           "type": "string",
           "required": false,
           "importable": true,
-          "example": "Optional longer text"
+          "example": "Optional longer text",
+          "hint": {
+            "ar": "اختياري · نصّ الملاحظة",
+            "en": "Optional · the note text"
+          }
         },
         {
           "key": "created_at",
-          "label": { "ar": "تاريخ الإنشاء", "en": "Created at" },
+          "label": {
+            "ar": "تاريخ الإنشاء",
+            "en": "Created at"
+          },
           "type": "datetime",
           "required": false,
-          "importable": false
+          "importable": false,
+          "hint": {
+            "ar": "تُسجّله المنظومة",
+            "en": "Recorded by the system"
+          }
         },
         {
           "key": "updated_at",
-          "label": { "ar": "تاريخ التعديل", "en": "Updated at" },
+          "label": {
+            "ar": "تاريخ التعديل",
+            "en": "Updated at"
+          },
           "type": "datetime",
           "required": false,
-          "importable": false
+          "importable": false,
+          "hint": {
+            "ar": "تُسجّله المنظومة",
+            "en": "Recorded by the system"
+          }
+        }
+      ],
+      "filters": [
+        {
+          "key": "q",
+          "label": {
+            "ar": "بحث بالعنوان",
+            "en": "Search by title"
+          },
+          "type": "text",
+          "placeholder": {
+            "ar": "جزء من العنوان",
+            "en": "Part of the title"
+          }
         }
       ]
     }
