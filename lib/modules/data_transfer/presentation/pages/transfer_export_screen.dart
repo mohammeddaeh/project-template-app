@@ -81,16 +81,50 @@ class TransferExportScreen extends StatelessWidget {
   }
 }
 
-class _Form extends StatelessWidget {
+class _Form extends StatefulWidget {
   const _Form({required this.state, required this.busy});
 
   final ExportReady state;
   final bool busy;
 
   @override
+  State<_Form> createState() => _FormState();
+}
+
+class _FormState extends State<_Form> {
+  /// Owned here rather than driven by an `onChanged(String)` callback.
+  ///
+  /// `CustomTextField`'s callback signature is not the same in every project
+  /// this module is dropped into — one of them types it `VoidCallback` on
+  /// purpose, so that `onChanged: (v) {…}` cannot compile and then throw
+  /// `NoSuchMethodError` on the first keystroke. A controller listener does not
+  /// depend on that signature at all, which keeps this file identical
+  /// everywhere it is copied.
+  final _filterController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _filterController.addListener(_onFilterChanged);
+  }
+
+  @override
+  void dispose() {
+    _filterController
+      ..removeListener(_onFilterChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onFilterChanged() =>
+      context.read<ExportCubit>().setFilter('q', _filterController.text);
+
+  @override
   Widget build(BuildContext context) {
     final cubit = context.read<ExportCubit>();
     final isArabic = context.isAr;
+    final state = widget.state;
+    final busy = widget.busy;
     final resource = state.resource;
 
     return Stack(
@@ -148,9 +182,9 @@ class _Form extends StatelessWidget {
             SectionTitle(titleKey: LocaleKeys.exportFilters),
             const SizedBox(height: 8),
             CustomTextField(
+              controller: _filterController,
               hint: LocaleKeys.exportFilters.tr(),
               enabled: !busy,
-              onChanged: (value) => cubit.setFilter('q', value),
             ),
 
             const SizedBox(height: 32),

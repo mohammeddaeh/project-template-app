@@ -25,14 +25,14 @@ abstract final class AppFeatures {
   static const verboseNetworkLog = false;
 
   // ── Platform permissions ───────────────────────────────────────────────────
-  static const camera            = false;
-  static const microphone        = false;
-  static const location          = false;
-  static const locationAlways    = false;
-  static const photos            = false;
-  static const fileStorage       = false;
-  static const contacts          = false;
-  static const bluetooth         = false;
+  static const camera = false;
+  static const microphone = false;
+  static const location = false;
+  static const locationAlways = false;
+  static const photos = false;
+  static const fileStorage = false;
+  static const contacts = false;
+  static const bluetooth = false;
   static const pushNotifications = false;
 
   // ── Optional modules ──────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ abstract final class AppFeatures {
   /// ⚠️ Requires the backend half (`backend_template/src/core/data-transfer/`).
   /// With an older server every call answers 404 and the sheet shows an error
   /// where a resource list should be.
-  static const dataTransfer = false;
+  static const dataTransfer = true;
 
   /// Enable the devices & sessions module.
   ///
@@ -136,16 +136,14 @@ abstract final class AppFeatures {
   /// Returns `false` if the feature is disabled — PermissionsService
   /// will return [AppPermissionStatus.denied] without prompting the user.
   static bool isEnabled(AppPermission permission) => switch (permission) {
-        AppPermission.camera         => camera,
-        AppPermission.microphone     => microphone,
-        AppPermission.location       => location,
-        AppPermission.locationAlways => locationAlways,
-        AppPermission.photos         => photos,
-        AppPermission.storage        => fileStorage,
-        AppPermission.notifications  => pushNotifications,
-        AppPermission.contacts       => contacts,
-        AppPermission.bluetooth      => bluetooth,
-      };
+    AppPermission.camera => camera,
+    AppPermission.microphone => microphone,
+    AppPermission.location => location,
+    AppPermission.locationAlways => locationAlways,
+    AppPermission.photos => photos,
+    AppPermission.storage => fileStorage,
+    AppPermission.notifications => pushNotifications,
+    AppPermission.contacts => contacts,
+    AppPermission.bluetooth => bluetooth,
+  };
 }
-
-
