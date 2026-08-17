@@ -1,0 +1,20 @@
+{
+  "_comment": "GENERATED — do not edit by hand. Run: dart run scripts/sync_permission_keys.dart --update --from <perms.json>",
+  "source": "backend_template — every key its routes enforce, plus the grant-only umbrellas",
+  "keys": [
+    "notes.create",
+    "notes.delete",
+    "notes.manage",
+    "notes.update",
+    "notes.view",
+    "roles.create",
+    "roles.delete",
+    "roles.manage",
+    "roles.restore",
+    "roles.update",
+    "roles.view",
+    "user_access.manage",
+    "user_access.update",
+    "user_access.view"
+  ]
+}

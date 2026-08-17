@@ -22,8 +22,13 @@ export 'presentation/widgets/can.dart' show AbilityContext, Can, CanMode;
 /// One line per control, anywhere, for any permission the backend declares:
 ///
 /// ```dart
-/// Can(permission: 'notes.delete', child: DeleteButton())
+/// Can(permission: PermKeys.notesDelete, child: DeleteButton())
 /// ```
+///
+/// The key is named through `PermKeys` (generated from `permissions.lock.json`),
+/// never as a literal: a key the server stops enforcing disappears from the
+/// generated file and **breaks the build at every use**, instead of leaving a
+/// control hidden from everyone forever with nothing to report it.
 ///
 /// and one generic screen an administrator uses to hand those permissions out —
 /// `RolesScreen`, built entirely from `GET /api/v1/authz/catalog`.

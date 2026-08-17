@@ -593,5 +593,11 @@ abstract class  LocaleKeys {
   static const accessOpenRoles = 'accessOpenRoles';
   static const accessUnknownKeyHint = 'accessUnknownKeyHint';
   static const accessRefreshAbilities = 'accessRefreshAbilities';
+  static const serviceUnavailable = 'serviceUnavailable';
+  static const serverUnreachable = 'serverUnreachable';
+  static const tooManyRequests = 'tooManyRequests';
+  static const retryAfterUnderMinute = 'retryAfterUnderMinute';
+  static const retryAfterFewMinutes = 'retryAfterFewMinutes';
+  static const retryAfterLater = 'retryAfterLater';
 
 }

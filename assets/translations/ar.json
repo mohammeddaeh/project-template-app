@@ -543,7 +543,6 @@
   "importRequired": "إلزامي",
   "importOptional": "اختياري",
   "importColumnExample": "مثال: {}",
-
   "accessControlDisabled": "الصلاحيات معطَّلة في هذه النسخة",
   "accessNotEnforced": "الخادم لا يطبّق الصلاحيات بعد — المنح يُحفَظ لكن لا يُرفَض شيء",
   "rolesTitle": "الأدوار والصلاحيات",
@@ -578,7 +577,6 @@
   "overrideAllow": "سماح",
   "overrideDeny": "حظر",
   "superAdminBadge": "صلاحية كاملة",
-
   "testAccessControlTitle": "الأدوار والصلاحيات",
   "testAccessControlSubtitle": "حيّ: قائمة الصلاحيات تُجلَب من الخادم ولا تُكتب هنا",
   "accessModuleOff": "AppFeatures.accessControl = false — فعّله لتجربة هذه الشاشة",
@@ -591,5 +589,11 @@
   "accessModeDisable": "تعطيل",
   "accessOpenRoles": "فتح شاشة الأدوار",
   "accessUnknownKeyHint": "المفتاح غير المعلَن يُصدر تحذيراً صارخاً في وضع التطوير",
-  "accessRefreshAbilities": "إعادة قراءة \u200E/authz/me"
+  "accessRefreshAbilities": "إعادة قراءة ‎/authz/me",
+  "serviceUnavailable": "الخدمة غير متاحة مؤقتاً بسبب ضغط أو صيانة.",
+  "serverUnreachable": "تعذّر الوصول إلى الخادم. اتصالك يعمل، لكن الخادم لا يستجيب حالياً.",
+  "tooManyRequests": "محاولات كثيرة خلال وقت قصير.",
+  "retryAfterUnderMinute": "أعد المحاولة بعد أقل من دقيقة.",
+  "retryAfterFewMinutes": "أعد المحاولة بعد بضع دقائق.",
+  "retryAfterLater": "أعد المحاولة لاحقاً."
 }

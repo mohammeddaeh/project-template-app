@@ -71,8 +71,8 @@ abstract final class AppFeatures {
 
   /// Enable role-based access control.
   ///
-  /// **When true**: `Can(permission: 'notes.delete', child: …)` and
-  /// `context.can('notes.delete')` gate any control against the permissions the
+  /// **When true**: `Can(permission: PermKeys.notesDelete, child: …)` and
+  /// `context.can(PermKeys.notesDelete)` gate any control against the permissions the
   /// server grants this account, and a generic roles screen — built entirely
   /// from `GET /api/v1/authz/catalog` — lets an administrator manage them.
   ///

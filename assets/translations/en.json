@@ -543,7 +543,6 @@
   "importRequired": "Required",
   "importOptional": "Optional",
   "importColumnExample": "e.g. {}",
-
   "accessControlDisabled": "Access control is turned off in this build",
   "accessNotEnforced": "This server is not enforcing permissions yet — grants are saved, but nothing is refused",
   "rolesTitle": "Roles & permissions",
@@ -578,7 +577,6 @@
   "overrideAllow": "Allow",
   "overrideDeny": "Deny",
   "superAdminBadge": "Full access",
-
   "testAccessControlTitle": "Roles & permissions",
   "testAccessControlSubtitle": "Live: the permission list is fetched, not written here",
   "accessModuleOff": "AppFeatures.accessControl is false — turn it on to use this",
@@ -591,5 +589,11 @@
   "accessModeDisable": "disable",
   "accessOpenRoles": "Open the roles screen",
   "accessUnknownKeyHint": "A key no server declares warns loudly in debug builds",
-  "accessRefreshAbilities": "Re-read /authz/me"
+  "accessRefreshAbilities": "Re-read /authz/me",
+  "serviceUnavailable": "The service is temporarily unavailable due to load or maintenance.",
+  "serverUnreachable": "Could not reach the server. Your connection is working, but the server is not responding.",
+  "tooManyRequests": "Too many attempts in a short time.",
+  "retryAfterUnderMinute": "Try again in less than a minute.",
+  "retryAfterFewMinutes": "Try again in a few minutes.",
+  "retryAfterLater": "Try again later."
 }

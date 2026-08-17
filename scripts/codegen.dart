@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_print
-/// توليد الكود التلقائي للمشروع (3 خطوات):
+/// توليد الكود التلقائي للمشروع (4 خطوات):
 ///   1. build_runner  — Retrofit · Freezed · Injectable · AutoRoute
 ///   2. locale_keys.g.dart   — مفاتيح EasyLocalization
 ///   3. codegen_loader.g.dart — runtime loader (CodegenLoader)
+///   4. permission_keys.g.dart — مفاتيح الصلاحيات من permissions.lock.json
 ///
 /// تشغيل من جذر المشروع:
 ///   dart run scripts/codegen.dart
@@ -47,6 +48,20 @@ Future<void> main(List<String> args) async {
       '-o', 'codegen_loader.g.dart',
     ],
   );
+
+  // 4. permission_keys.g.dart — من `permissions.lock.json` المُلتزَم به.
+  //
+  //    **لا شبكة، ولا خادم، ولا الباك على الجهاز.** وهذا بيت القصيد: مطوّر
+  //    الفرونت يبني بلا أن يملك مصدر الباك إطلاقاً. وتحديث القفل عملية منفصلة
+  //    تُشغَّل حين تتغيّر صلاحيات الباك فعلاً — راجع `sync_permission_keys.dart`.
+  //
+  //    يُتخطّى بلا ضجيج إن لم يكن المشروع يستعمل الصلاحيات أصلاً (لا ملف قفل).
+  if (File('permissions.lock.json').existsSync()) {
+    await _stream('🔑  permission_keys.g.dart', 'dart', [
+      'run',
+      'scripts/sync_permission_keys.dart',
+    ]);
+  }
 
   _footer('✅  codegen done');
 }

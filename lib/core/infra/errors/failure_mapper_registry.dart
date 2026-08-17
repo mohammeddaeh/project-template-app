@@ -7,7 +7,26 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 abstract final class FailureMapperRegistry {
   const FailureMapperRegistry._();
 
-  static const _dioMapper = DioFailureMapper();
+  static DioFailureMapper _dioMapper = const DioFailureMapper();
+
+  /// Lets the mapper tell "this device is offline" apart from "the server is
+  /// closed" — two situations Dio reports identically and that need opposite
+  /// messages. See [ServerUnreachableFailure].
+  ///
+  /// Wired once by the composition root, because this registry is `static` (it
+  /// is reached from repositories, interceptors and use cases that hold no
+  /// container) while [NetworkStateMonitor] is a DI singleton. Leaving it
+  /// unwired is a supported state, not a broken one: every connection error
+  /// then keeps its previous classification.
+  static void useNetworkStateProbe(NetworkStateProbe probe) {
+    _dioMapper = DioFailureMapper(networkState: probe);
+  }
+
+  /// Restores the unwired default. Tests only — a probe left over from one test
+  /// silently changes what the next one classifies.
+  static void resetNetworkStateProbe() {
+    _dioMapper = const DioFailureMapper();
+  }
 
   static Failure map(Object error, {String source = 'unknown'}) {
     final failure = _classify(error);

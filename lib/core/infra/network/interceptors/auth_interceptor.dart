@@ -46,6 +46,28 @@ class AuthInterceptor extends Interceptor {
       AuthEventBus.instance.emit(AuthEvent.sessionExpired);
     }
 
+    // A 403 the client did not expect: it drew a control the server refuses, so
+    // the permission set it holds is out of date. **Fires** the re-read rather
+    // than performing it — an interceptor awaiting a request on the same Dio
+    // instance would deadlock itself.
+    //
+    // `permission_missing` specifically, not every 403: an account-status
+    // refusal (`disabled`, `pending_verification`) is also a 403, and
+    // re-reading permissions would answer nothing about it.
+    if (err.response?.statusCode == 403 && _isPermissionRefusal(err)) {
+      AuthEventBus.instance.emit(AuthEvent.permissionsStale);
+    }
+
     if (!handler.isCompleted) handler.next(err);
+  }
+
+  /// The server names its refusals with `data.message_key` — the discriminator
+  /// a client branches on instead of matching free text, which changes with the
+  /// reader's language on every request.
+  bool _isPermissionRefusal(DioException err) {
+    final body = err.response?.data;
+    if (body is! Map) return false;
+    final data = body['data'];
+    return data is Map && data['message_key'] == 'permission_missing';
   }
 }

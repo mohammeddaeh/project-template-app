@@ -124,7 +124,7 @@ enum CanMode {
 /// Imperative checks — inside a callback, an `if`, a list filter.
 ///
 /// ```dart
-/// if (context.can('notes.delete')) _showDeleteAction();
+/// if (context.can(PermKeys.notesDelete)) _showDeleteAction();
 /// ```
 ///
 /// **Reads the current set synchronously and does not rebuild on its own.**

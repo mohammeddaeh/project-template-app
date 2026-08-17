@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:app_template/core/infra/session/auth_event_bus.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/core/platform/storage/persistence_keys.dart';
@@ -49,6 +50,11 @@ class AbilitiesStore {
   AbilitySet _abilities = AbilitySet.none;
   final _controller = StreamController<AbilitySet>.broadcast();
   StreamSubscription<String?>? _sessionSub;
+  StreamSubscription<AuthEvent>? _authSub;
+
+  /// Guards two triggers firing at once — a sign-in that coincides with a
+  /// refusal would otherwise send two identical requests.
+  bool _inFlight = false;
 
   /// Keys already reported by [debugWarnIfUnknown], so one mistyped key in a
   /// list that rebuilds sixty times a second logs once and not sixty times.
@@ -69,6 +75,13 @@ class AbilitiesStore {
         unawaited(refresh());
       }
     });
+
+    // The server refused something this app drew, so the set held here is out
+    // of date. The refusal itself is the trigger — no poll, no push channel,
+    // and no request at all until the two sides actually disagree.
+    _authSub ??= AuthEventBus.instance.stream.listen((event) {
+      if (event == AuthEvent.permissionsStale) unawaited(refresh());
+    });
   }
 
   /// Re-reads `/authz/me`.
@@ -80,6 +93,16 @@ class AbilitiesStore {
   /// issued a minute ago. The server refuses the action regardless; this only
   /// decides what is drawn.
   Future<void> refresh() async {
+    if (_inFlight) return;
+    _inFlight = true;
+    try {
+      await _refresh();
+    } finally {
+      _inFlight = false;
+    }
+  }
+
+  Future<void> _refresh() async {
     final result = await _repository.myAbilities(
       // Debug builds ask the server for its full key list so the module can
       // shout about a key nothing declares. Never requested in release.
@@ -153,6 +176,7 @@ class AbilitiesStore {
 
   void dispose() {
     unawaited(_sessionSub?.cancel());
+    unawaited(_authSub?.cancel());
     unawaited(_controller.close());
   }
 

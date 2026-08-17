@@ -605,7 +605,13 @@ class CodegenLoader extends AssetLoader{
   "accessModeDisable": "تعطيل",
   "accessOpenRoles": "فتح شاشة الأدوار",
   "accessUnknownKeyHint": "المفتاح غير المعلَن يُصدر تحذيراً صارخاً في وضع التطوير",
-  "accessRefreshAbilities": "إعادة قراءة ‎/authz/me"
+  "accessRefreshAbilities": "إعادة قراءة ‎/authz/me",
+  "serviceUnavailable": "الخدمة غير متاحة مؤقتاً بسبب ضغط أو صيانة.",
+  "serverUnreachable": "تعذّر الوصول إلى الخادم. اتصالك يعمل، لكن الخادم لا يستجيب حالياً.",
+  "tooManyRequests": "محاولات كثيرة خلال وقت قصير.",
+  "retryAfterUnderMinute": "أعد المحاولة بعد أقل من دقيقة.",
+  "retryAfterFewMinutes": "أعد المحاولة بعد بضع دقائق.",
+  "retryAfterLater": "أعد المحاولة لاحقاً."
 };
 static const Map<String,dynamic> _en = {
   "password": "Password",
@@ -1198,7 +1204,13 @@ static const Map<String,dynamic> _en = {
   "accessModeDisable": "disable",
   "accessOpenRoles": "Open the roles screen",
   "accessUnknownKeyHint": "A key no server declares warns loudly in debug builds",
-  "accessRefreshAbilities": "Re-read /authz/me"
+  "accessRefreshAbilities": "Re-read /authz/me",
+  "serviceUnavailable": "The service is temporarily unavailable due to load or maintenance.",
+  "serverUnreachable": "Could not reach the server. Your connection is working, but the server is not responding.",
+  "tooManyRequests": "Too many attempts in a short time.",
+  "retryAfterUnderMinute": "Try again in less than a minute.",
+  "retryAfterFewMinutes": "Try again in a few minutes.",
+  "retryAfterLater": "Try again later."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }

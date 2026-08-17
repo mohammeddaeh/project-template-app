@@ -95,7 +95,26 @@ class _AppState extends State<App> {
   /// `replaceAll` rather than `push`: the stack behind an expired session is
   /// screens that will refuse to load, and leaving them there means a back
   /// gesture returns to one.
+  /// **Only a dead session sends anyone to sign in.**
+  ///
+  /// Switched exhaustively rather than acting on arrival, because this bus now
+  /// carries an event that must NOT navigate. Qirtas hit exactly that: its
+  /// handler navigated for any event, so the first 403 over one missing
+  /// permission signed the user out in the middle of a task. A refusal is not
+  /// an authentication failure.
+  ///
+  /// The exhaustive form is the guard: a future event added to the bus becomes
+  /// a compile error here rather than a silent sign-out.
   void _handleAuthEvent(AuthEvent event) {
+    switch (event) {
+      case AuthEvent.sessionExpired:
+      case AuthEvent.sessionRevoked:
+        break;
+      case AuthEvent.permissionsStale:
+        // Handled by `AbilitiesStore`, which re-reads `/authz/me`. Nothing
+        // about the session changed, so the user stays where they are.
+        return;
+    }
     _router.replaceAll([const LoginRoute()]);
   }
 

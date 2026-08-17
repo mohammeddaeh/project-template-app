@@ -12,7 +12,18 @@ import 'package:app_template/shared/widgets/widgets.dart';
 
 enum _StepStatus { idle, running, success, error }
 
-enum _InjectFailure { none, noInternet, timeout, server500, parseError }
+enum _InjectFailure {
+  none,
+  noInternet,
+  // "The server is closed" — deliberately next to noInternet, because the two
+  // arrive from Dio as the same exception and the demo's job is to show that
+  // they no longer produce the same sentence.
+  serverClosed,
+  timeout,
+  server500,
+  server503,
+  parseError,
+}
 
 class _PipelineStep {
   _PipelineStep({
@@ -99,16 +110,23 @@ class _TestApiSimulatorScreenState extends State<TestApiSimulatorScreen> {
   int get _failStepIndex => switch (_inject) {
         _InjectFailure.none => -1,
         _InjectFailure.noInternet => 1,
+        _InjectFailure.serverClosed => 1,
         _InjectFailure.timeout => 2,
         _InjectFailure.server500 => 3,
+        _InjectFailure.server503 => 3,
         _InjectFailure.parseError => 3,
       };
 
   Failure? get _injectedFailure => switch (_inject) {
         _InjectFailure.none => null,
         _InjectFailure.noInternet => const NoInternetFailure(),
+        _InjectFailure.serverClosed => const ServerUnreachableFailure(),
         _InjectFailure.timeout => const TimeoutFailure(),
         _InjectFailure.server500 => const ServerFailure(statusCode: 500),
+        _InjectFailure.server503 => const ServiceUnavailableFailure(
+            statusCode: 503,
+            retryAfterSeconds: 45,
+          ),
         _InjectFailure.parseError =>
           const ParseFailure(kind: ParseErrorKind.malformedJson),
       };
@@ -255,8 +273,10 @@ class _ConfigCard extends StatelessWidget {
   String _injectLabel(BuildContext context, _InjectFailure f) => switch (f) {
         _InjectFailure.none => LocaleKeys.injectNone.tr(),
         _InjectFailure.noInternet => 'NoInternetFailure',
+        _InjectFailure.serverClosed => 'ServerUnreachable',
         _InjectFailure.timeout => 'TimeoutFailure',
         _InjectFailure.server500 => 'ServerFailure(500)',
+        _InjectFailure.server503 => 'Unavailable(503)',
         _InjectFailure.parseError => 'ParseFailure',
       };
 

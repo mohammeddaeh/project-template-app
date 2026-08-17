@@ -180,9 +180,9 @@ final List<_CaseGroup> _groups = [
         steps: [
           _server('HTTP 429 Too Many Requests', 'rate limit exceeded'),
           _registry('→ RateLimitFailure(retryAfter)',
-              'may include retryAfterSeconds'),
-          _uiMapper('→ ShowError(serverMessage)', 'fallback: serverError'),
-          _ui('context.feedback.error(msg)', 'user told to wait'),
+              'Retry-After: seconds OR HTTP-date'),
+          _uiMapper('→ ShowError + wait hint', 'canRetry: false — on purpose'),
+          _ui('context.feedback.error(msg)', 'told to wait, not to retry'),
         ],
       ),
       _FailureCase(
@@ -190,9 +190,32 @@ final List<_CaseGroup> _groups = [
         failure: const ServerFailure(statusCode: 500),
         steps: [
           _server('HTTP 500 Internal Server Error', 'statusCode: 500'),
-          _registry('→ ServerFailure(statusCode: 500)', 'all 5xx responses'),
-          _uiMapper('→ ShowError', 'serverMessage or generic'),
+          _registry('→ ServerFailure(statusCode: 500)', '500/501/505 — a defect'),
+          _uiMapper('→ ShowError', 'canRetry: false — retry cannot help'),
           _ui('context.feedback.error(msg)', 'generic server error shown'),
+        ],
+      ),
+      _FailureCase(
+        label: 'Unavailable 503',
+        failure: const ServiceUnavailableFailure(
+          statusCode: 503,
+          retryAfterSeconds: 45,
+        ),
+        steps: [
+          _server('HTTP 502 / 503 / 504', 'overloaded, maintenance, upstream'),
+          _registry('→ ServiceUnavailableFailure', 'transient — NOT ServerFailure'),
+          _uiMapper('→ ShowError + wait hint', 'canRetry: true'),
+          _ui('context.feedback.error(msg)', 'retry offered, and it can work'),
+        ],
+      ),
+      _FailureCase(
+        label: 'Server closed',
+        failure: const ServerUnreachableFailure(),
+        steps: [
+          _server('nothing answered', 'connection refused / host down'),
+          _registry('→ ServerUnreachableFailure', 'only when device IS online'),
+          _uiMapper('→ ShowError(serverUnreachable)', 'canRetry: true'),
+          _ui('context.feedback.error(msg)', 'blames the server, not the wifi'),
         ],
       ),
       _FailureCase(

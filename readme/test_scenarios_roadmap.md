@@ -141,6 +141,17 @@
   - `Silent` → لا شيء (مع شرح لماذا)
 - HTTP Status Simulator: أدخل status code → اعرف الـ Failure المناظر
 
+**مجموعة Server تعرض الأربعة صراحةً** — لأن الفارق بينها هو ما كان يضيع:
+
+| البطاقة | تُظهر |
+|---|---|
+| `Server 500` | خلل — `canRetry: false`، ولا إعادة تلقائية |
+| `Unavailable 503` | ثِقَل/صيانة — `canRetry: true` + تلميح انتظار |
+| `Server closed` | الخادم لا يجيب والجهاز متصل — لا يلوم الشبكة |
+| `RateLimit 429` | `canRetry: false` عمداً، مع تلميح انتظار |
+
+وبمحاكي الـAPI حقنتان جديدتان: `serverClosed` (بجوار `noInternet` تحديداً، فالاثنان يصلان من Dio كاستثناء واحد والغرض إظهار أنهما لم يعودا جملة واحدة) و`server503`.
+
 **الربط الدائم:** `lib/core/foundation/errors/failure.dart` · `lib/core/infra/network/`
 
 ---

@@ -10,7 +10,7 @@ import 'package:app_template/modules/access_control/integration/abilities_store.
 /// ```dart
 /// AutoRoute(
 ///   page: RolesRoute.page,
-///   guards: [PermissionRouteGuard('roles.view')],
+///   guards: [PermissionRouteGuard(PermKeys.rolesView)],
 /// )
 /// ```
 ///

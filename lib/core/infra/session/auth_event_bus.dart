@@ -11,6 +11,24 @@ enum AuthEvent {
   /// was explicitly revoked from another device (or the primary device).
   /// [MultiDeviceInterceptor] fires this; app.dart shows a specific message.
   sessionRevoked,
+
+  /// The server refused an action the client believed was allowed (403 with
+  /// `permission_missing`).
+  ///
+  /// **A disagreement, not a failure** — and the disagreement is the signal:
+  /// the client holds a permission set the server no longer agrees with, so it
+  /// re-reads `/authz/me`. The screen corrects itself in the same breath as the
+  /// refusal, which is the moment the user is looking at it.
+  ///
+  /// Unlike the two above it is **not deduplicated**: each refusal is fresh
+  /// evidence, and `AbilitiesStore` does its own in-flight guard. Dropping all
+  /// but the first would leave the app stale after the session's second change.
+  ///
+  /// ⚠️ Anything listening to this bus must **switch on the event**, not act on
+  /// its arrival. Qirtas — the first application to add this — had a handler
+  /// that navigated to sign-in for any event at all, so the first 403 over one
+  /// missing permission signed the user out mid-task. See `app.dart`.
+  permissionsStale,
 }
 
 /// A lightweight broadcast stream for authentication lifecycle events.

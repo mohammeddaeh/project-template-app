@@ -1,5 +1,6 @@
 ﻿import 'package:auto_route/auto_route.dart';
 import 'package:app_template/modules/access_control/guards/permission_route_guard.dart';
+import 'package:app_template/resources/permission_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
 
 CustomRoute customRouteWithAnimation({required PageInfo page}) {
@@ -82,15 +83,19 @@ class AppRouter extends RootStackRouter {
     // `PermissionRouteGuard` passes through untouched when
     // `AppFeatures.accessControl` is off, so these stay registered in every
     // build rather than appearing and disappearing with a flag.
+    //
+    // Named through `PermKeys`, never as a literal: a key the server stops
+    // enforcing vanishes from the generated file and **breaks this build**,
+    // instead of leaving a route nobody can reach and nothing complains about.
     AutoRoute(
       page: RolesRoute.page,
       path: '/roles',
-      guards: [PermissionRouteGuard('roles.view')],
+      guards: [PermissionRouteGuard(PermKeys.rolesView)],
     ),
     AutoRoute(
       page: UserAccessRoute.page,
       path: '/users/:userId/access',
-      guards: [PermissionRouteGuard('user_access.view')],
+      guards: [PermissionRouteGuard(PermKeys.userAccessView)],
     ),
 
     // ── Utility ────────────────────────────────────────────────────────────

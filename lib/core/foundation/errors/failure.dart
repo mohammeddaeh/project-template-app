@@ -179,7 +179,13 @@ final class RateLimitFailure extends Failure {
   String? get diagnosticMessage => serverMessage;
 }
 
-/// 5xx — internal server error.
+/// 5xx that is **not** transient — 500, 501, 505… The server answered, and the
+/// answer is that something is broken inside it.
+///
+/// Split from [ServiceUnavailableFailure] because the two need opposite words.
+/// This one is a defect: retrying the same request in two seconds reproduces
+/// it, and telling the user "the service is busy, try again shortly" sends them
+/// into a loop that never ends while implying the fault is temporary.
 final class ServerFailure extends Failure {
   const ServerFailure({required this.statusCode, this.serverMessage});
 
@@ -187,7 +193,66 @@ final class ServerFailure extends Failure {
   final String? serverMessage;
 
   @override
-  String? get diagnosticMessage => serverMessage;
+  String? get diagnosticMessage => 'status=$statusCode ${serverMessage ?? ''}';
+}
+
+/// **الخادم مثقل أو مغلق مؤقتاً** — 502, 503, 504.
+///
+/// The three share one meaning the user can act on: *the server is reachable
+/// but cannot serve this right now, and later it will.* A 502/504 is an
+/// upstream that died or ran long; a 503 is a server refusing on purpose —
+/// maintenance, or shedding load before it falls over.
+///
+/// Distinct from [ServerFailure] because **this one is worth retrying** and
+/// that one is not, and distinct from [ServerUnreachableFailure] because here
+/// something did answer — which is why a `Retry-After` can exist at all.
+///
+/// [retryAfterSeconds] carries the server's own `Retry-After` when it sent one.
+/// RFC 9110 defines that header on 503 exactly as much as on 429, and honouring
+/// it is the difference between backing off and hammering a server that just
+/// said it is overloaded.
+final class ServiceUnavailableFailure extends Failure {
+  const ServiceUnavailableFailure({
+    required this.statusCode,
+    this.retryAfterSeconds,
+    this.serverMessage,
+  });
+
+  /// 502, 503 or 504 — preserved for diagnostics, never branched on by the UI.
+  final int statusCode;
+
+  final int? retryAfterSeconds;
+  final String? serverMessage;
+
+  @override
+  String? get diagnosticMessage =>
+      'status=$statusCode retry_after=${retryAfterSeconds ?? '-'} '
+      '${serverMessage ?? ''}';
+}
+
+/// **الخادم مغلق** — the device has a working link, but nothing answered at the
+/// other end: connection refused, host unreachable, TLS handshake never
+/// completed.
+///
+/// ## Why this is not [NoInternetFailure]
+///
+/// Both arrive as `DioExceptionType.connectionError`, and collapsing them told
+/// every user with a perfectly good connection that *their* internet was down.
+/// They then do the one thing that cannot possibly help — toggle wifi, walk to
+/// a window, restart the router — because the app named the wrong culprit.
+///
+/// The two are separated by asking [NetworkStateMonitor] whether the device has
+/// a link at all. When it does, the fault is on the server's side and the
+/// message must say so. When the monitor has not determined the state yet, this
+/// is **not** constructed: an unproven claim about the server is worse than the
+/// vaguer message.
+final class ServerUnreachableFailure extends Failure {
+  const ServerUnreachableFailure({this.message});
+
+  final String? message;
+
+  @override
+  String? get diagnosticMessage => message;
 }
 
 /// 4xx (excluding 401, 403, 408, 429) — business or validation error.

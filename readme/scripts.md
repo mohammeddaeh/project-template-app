@@ -18,6 +18,7 @@ dart run scripts/<script_name>.dart
 | `sync_flavors.dart` | إعداد/إزالة flavors (Android productFlavors + أسماء + أيقونات + launch.json) |
 | `gen_assets.dart` | مسح `assets/` وتوليد `lib/resources/assets.gen.dart` |
 | `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
+| `sync_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
 | `sync_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
 
 ---
