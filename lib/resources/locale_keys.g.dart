@@ -209,6 +209,10 @@ abstract class  LocaleKeys {
   static const items = 'items';
   static const pageLoadingStyle = 'pageLoadingStyle';
   static const loadingMore = 'loadingMore';
+  static const loadMore = 'loadMore';
+  static const endOfList = 'endOfList';
+  static const loadMoreFailed = 'loadMoreFailed';
+  static const offlineListHint = 'offlineListHint';
   static const testCrudDemoTitle = 'testCrudDemoTitle';
   static const testCrudSubtitle = 'testCrudSubtitle';
   static const addProduct = 'addProduct';

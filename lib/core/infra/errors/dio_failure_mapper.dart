@@ -86,13 +86,40 @@ class DioFailureMapper implements FailureMapper {
     if (status == 409) {
       final body = error.response?.data;
       final map = body is Map<String, dynamic> ? body : null;
-      return ConflictFailure(
-        serverVersion: map?['server_version'] as Map<String, dynamic>?,
-        clientVersion: map?['client_version'] as Map<String, dynamic>?,
-        conflictFields: (map?['conflict_fields'] as List?)
-                ?.map((e) => e.toString())
-                .toList() ??
-            [],
+
+      // A 409 is two unrelated things:
+      //
+      //   * a SYNC conflict — carries server_version / client_version /
+      //     conflict_fields, is resolved by the sync engine, and is never shown
+      //     to the user (hence ConflictFailure → Silent);
+      //   * a BUSINESS refusal — "email already in use", "name already taken".
+      //     Here the server's message IS the answer, and swallowing it makes
+      //     the action look broken: the user taps, nothing happens, no reason.
+      //
+      // Only the sync shape may map to the silent failure. This used to map
+      // **every** 409 to it, which silenced every business refusal in the app —
+      // and no endpoint emits the sync shape yet. Fixed 2026-08-17, ported
+      // from `qirtas_app` where it shipped and was found in use.
+      final isSyncConflict =
+          map?.containsKey('server_version') == true ||
+          map?.containsKey('client_version') == true ||
+          map?.containsKey('conflict_fields') == true;
+
+      if (isSyncConflict) {
+        return ConflictFailure(
+          serverVersion: map?['server_version'] as Map<String, dynamic>?,
+          clientVersion: map?['client_version'] as Map<String, dynamic>?,
+          conflictFields: (map?['conflict_fields'] as List?)
+                  ?.map((e) => e.toString())
+                  .toList() ??
+              [],
+        );
+      }
+
+      return BusinessFailure(
+        statusCode: 409,
+        serverMessage: serverMessage,
+        messageKey: _messageKey(map),
       );
     }
     if (status == 429) {
@@ -119,7 +146,32 @@ class DioFailureMapper implements FailureMapper {
     if (status != null && status >= 500) {
       return ServerFailure(statusCode: status, serverMessage: serverMessage);
     }
-    return BusinessFailure(statusCode: status ?? 0, serverMessage: serverMessage);
+    final body = error.response?.data;
+    return BusinessFailure(
+      statusCode: status ?? 0,
+      serverMessage: serverMessage,
+      messageKey: _messageKey(body is Map<String, dynamic> ? body : null),
+    );
+  }
+
+  /// The server's machine-readable reason, out of `data.message_key`.
+  ///
+  /// **Lifted here, not in a datasource.** A datasource's `_parse` only ever
+  /// sees a body Dio handed back as a success — and a refusal is an HTTP 4xx,
+  /// which Dio raises as an exception before any of that runs. So a repository
+  /// reading `res.error?.data?['message_key']` reads a branch reached only by
+  /// the rare `200 { status: false }` shape, and gets `null` for every real
+  /// refusal.
+  ///
+  /// Nothing announces that: the message still arrives and still displays, so
+  /// the refusal looks handled. Only the branch keyed on WHICH rule refused
+  /// goes quiet — every "do it anyway" confirmation and every two-answer sheet
+  /// degrading to the same red toast any other failure produces.
+  static String? _messageKey(Map<String, dynamic>? body) {
+    final data = body?['data'];
+    if (data is! Map) return null;
+    final key = data['message_key'];
+    return key is String && key.isNotEmpty ? key : null;
   }
 
   Failure _fromUnknown(DioException error) {

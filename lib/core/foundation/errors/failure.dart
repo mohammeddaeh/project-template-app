@@ -257,10 +257,33 @@ final class ServerUnreachableFailure extends Failure {
 
 /// 4xx (excluding 401, 403, 408, 429) — business or validation error.
 final class BusinessFailure extends Failure {
-  const BusinessFailure({required this.statusCode, this.serverMessage});
+  const BusinessFailure({
+    required this.statusCode,
+    this.serverMessage,
+    this.messageKey,
+  });
 
   final int statusCode;
   final String? serverMessage;
+
+  /// The server's machine-readable reason (`data.message_key`), when it sent
+  /// one — e.g. `last_qualified_staff`, `role_duplicate_permission_set`.
+  ///
+  /// Branch on this, never on [serverMessage]: two different rules routinely
+  /// share a status code, and the message text is translated prose that changes
+  /// with wording. `null` means the endpoint reported no key.
+  ///
+  /// **The backend half of this shipped without the client half.**
+  /// `backend_template` already sends `message_key` and `check:messages`
+  /// enforces it, and enhancement #20 was marked done on *both* sides — but
+  /// nothing here lifted the key off the wire, so every refusal collapsed into
+  /// the same red panel and no caller could tell one rule from another. That is
+  /// the same shape of gap the whole enhancements table exists to prevent: a
+  /// `✅` meaning "the server can send it" read as "the client acts on it".
+  ///
+  /// Added 2026-08-17, ported from `qirtas_app`, where the gap surfaced as two
+  /// distinct 409s — one overridable, one not — rendering identically.
+  final String? messageKey;
 
   @override
   String? get diagnosticMessage => serverMessage;
