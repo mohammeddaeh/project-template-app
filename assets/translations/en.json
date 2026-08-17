@@ -28,6 +28,7 @@
   "permissionPermanentlyDenied": "Permission permanently denied, open App Settings to enable it",
   "sessionTimedOut": "Session timed out",
   "sessionRevoked": "You have been signed out from another device",
+  "sessionExpiredMessage": "Your session has ended. Please sign in again.",
   "notPrimaryDevice": "Only the primary device can sign out other devices",
   "deviceNotFound": "Device not found or already removed",
   "invalidPassword": "Password required",

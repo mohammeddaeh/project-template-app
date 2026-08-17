@@ -58,9 +58,23 @@ abstract interface class StorageService {
   /// Removes the value associated with [key].
   Future<void> delete(String key);
 
-  /// Removes **all** stored values. Use with caution.
+  /// Removes **all** stored values — theme, locale, font, cached user
+  /// snapshot, everything. Use with caution.
+  ///
+  /// ⚠️ This is **not** a way to clear a subset. A caller that owns a prefixed
+  /// namespace deletes its own keys via [keys] + [delete]; reaching for
+  /// [clear] because it is shorter signs the user out of their own settings.
+  /// `RequestCacheInterceptor.invalidateAll` used to do exactly that.
   Future<void> clear();
 
   /// Returns `true` if [key] exists in the store.
   bool containsKey(String key);
+
+  /// Every key currently in the store.
+  ///
+  /// Exists so a component that owns a **prefixed namespace** can clear its own
+  /// entries without touching anyone else's — the only correct way to implement
+  /// a scoped "clear all mine". Synchronous, like [containsKey], because every
+  /// adapter can answer it without I/O.
+  Iterable<String> keys();
 }

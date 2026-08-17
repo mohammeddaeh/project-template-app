@@ -81,6 +81,9 @@ class HiveStorageAdapter implements StorageService {
   @override
   bool containsKey(String key) => _box.containsKey(key);
 
+  @override
+  Iterable<String> keys() => _box.keys.map((k) => k.toString()).toList();
+
   // ── Internal ─────────────────────────────────────────────────────────────────
 
   Future<void> _wrap(

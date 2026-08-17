@@ -21,20 +21,21 @@ import 'package:bloc/bloc.dart';
 ///
 /// ## Why not cancel the request instead
 ///
-/// Because this template already *teaches* that it does, and it does not.
-/// `core/CLAUDE.md` prescribes `close() { _useCase.cancel(); ... }` as
-/// **mandatory** for every paginated cubit — but [BaseUseCase.resetCancelToken]
-/// has no caller anywhere in `lib/`, so the token is always null and every one
-/// of those `cancel()` calls is a no-op.
+/// This template used to *teach* that it did, and it did not. `core/CLAUDE.md`
+/// prescribed `close() { _useCase.cancel(); }` as **mandatory** for every
+/// paginated cubit, over a `BaseUseCase` cancellation API that had no caller
+/// anywhere in `lib/` — the token was always null and every one of those calls
+/// was a no-op. The dead API has since been deleted (see [BaseUseCase]); this
+/// paragraph stays because the lesson outlives it.
 ///
-/// This matters more here than in any single app: a template propagates its
-/// beliefs to every project generated from it. The protection reads as present
-/// in review and is absent at runtime, once per project, forever.
+/// It matters more in a template than in any single app: a template propagates
+/// its beliefs to every project generated from it. A protection that reads as
+/// present in review and is absent at runtime ships once per project, forever.
 ///
-/// Cancellation is still worth wiring properly one day (it frees the socket);
-/// this is orthogonal. Even a correctly cancelled request can land in the
-/// window between "response parsed" and "cubit closed", so the guard is needed
-/// either way.
+/// And cancellation was never the right guard anyway. A response can land in
+/// the window between "body parsed" and "cubit closed" however promptly the
+/// request was aborted, so the check has to be at the `emit` — here,
+/// unconditionally, rather than in each cubit whose author remembered.
 ///
 /// ## What this deliberately does NOT do
 ///

@@ -5,7 +5,9 @@
 
 Reusable infinite-scroll pagination for REST-backed lists.
 
-> **ملاحظة:** لا يوجد حالياً feature حقيقية بالتيمبليت تستهلك `PaginationCubit` ببيانات REST فعلية. أقرب مرجع حي لنمط REST كامل (data→domain→presentation) هو `lib/modules/multi_device/` (انظر §3 أدناه)؛ الأمثلة بهذا الملف افتراضية (`Items`/`ItemsCubit`) لتوضيح النمط المطلوب تنفيذه في feature جديدة.
+> **المرجع الحيّ:** [`lib/Features/notes/presentation/cubits/notes_list_cubit.dart`](../lib/Features/notes/presentation/cubits/notes_list_cubit.dart) — أول `PaginationCubit` بالقالب على endpoint حقيقي (`GET /api/v1/notes`)، بالحذف والتعديل التفاؤليَّين، والشاشة بـ[`notes_screen.dart`](../lib/Features/notes/presentation/pages/notes_screen.dart).
+>
+> الأمثلة أدناه تبقى افتراضية (`Items`/`ItemsCubit`) لأنها تشرح النمط مجرَّداً؛ عند بناء feature جديدة **اقرأ `notes/` أولاً** فهي النمط نفسه مطبَّقاً.
 
 ## 1) Components
 

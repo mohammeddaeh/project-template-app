@@ -147,18 +147,30 @@ class ProductsRepositoryImpl extends BaseRepository implements ProductsRepositor
 ## 5) UseCase Pattern
 
 ```dart
-return _repository.getProducts(
-  cancelToken: resetCancelToken<DioCancelTokenWrapper>(
-    DioCancelTokenWrapper(),
-  ).raw,
-);
+@injectable
+class GetProducts extends BaseUseCase<Either<Failure, List<Product>>, ProductsParams> {
+  GetProducts(this._repository);
+  final ProductsRepository _repository;
+
+  @override
+  Future<Either<Failure, List<Product>>> call(ProductsParams params) =>
+      _repository.getProducts(query: params.paginationQuery);
+}
 ```
 
-### Cancellation (REST)
+### Cancellation (REST) — لا توجد طبقة إلغاء بالقالب، بقصد
 
-- `BaseUseCase` stores one `BaseCancelToken`.
-- REST uses `DioCancelTokenWrapper` (`core/infra/network/cancellation/`) → `.raw` gives `CancelToken`.
-- Calling `cancel()` on the use case cancels the in-flight request.
+`BaseUseCase` كان يحمل `BaseCancelToken` و`resetCancelToken()` و`cancel()`، وهذا الملف كان يوثّقها. **حُذفت (2026-08-17) لأنها لم تعمل قط**: `resetCancelToken` بلا مستدعٍ واحد بـ`lib/`، فالتوكن `null` دائماً وكل `cancel()` لا شيء — بينما `core/CLAUDE.md` يصفها «إلزامية» لحماية الـcubits من `Bad state: Cannot emit new states after calling close`.
+
+- **الحارس الحقيقي** لذلك الانهيار هو `SafeCubit` — غير مشروط، ومثبَّت بـ`test/safe_cubit_test.dart`. راجع `core/foundation/domain/safe_cubit.dart`.
+- **من احتاج إلغاءً فعلياً** (لتحرير المقبس، وهي حاجة مختلفة) يمرّر `CancelToken` الخاص بـDio من موضع الاستدعاء:
+  ```dart
+  final token = CancelToken();
+  await _api.getProducts(cancelToken: token);   // @CancelRequest() بـretrofit
+  token.cancel();
+  ```
+  و`CancelledFailure` تُترجم النتيجة أصلاً، و`FailureUiMapper` يردّها `Silent()`.
+- **ولن يكفي وحده**: الردّ قد يصل بين «تحليل الاستجابة» و«إغلاق الـcubit» مهما أُلغي بسرعة. الإلغاء تحسينٌ للموارد، لا بديل عن `SafeCubit`.
 
 ## 6) Cubit Error Pattern
 
@@ -214,7 +226,6 @@ import 'package:app_template/core/infra/network/rest/api_urls.dart';
 import 'package:app_template/core/foundation/contracts/api_response.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/network/boundary/base_repository.dart';
-import 'package:app_template/core/infra/network/cancellation/dio_cancel_token_wrapper.dart';
 
 // ❌ Wrong — outdated paths (removed from codebase)
 import 'package:app_template/core/network/api/api_service.dart';

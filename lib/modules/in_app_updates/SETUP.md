@@ -4,6 +4,23 @@
 
 ---
 
+## ⓪ العَلَم — `AppFeatures.inAppUpdates`
+
+```dart
+// lib/core/platform/features/app_features.dart
+static const inAppUpdates = true;
+```
+
+**الموديول الوحيد الذي لا يُشغَّل من `ModulesBootstrap`** — يحتاج `BuildContext` لعرض حواره، فيُستدعى من شاشة مركَّبة فعلاً (بعد الدخول، أو عند العودة من الخلفية):
+
+```dart
+await InAppUpdatesModule.checkAndPrompt(context, iosAppId: '123456789');
+```
+
+الحارس داخل `checkAndPrompt` نفسها، فالسطر يبقى مكانه بلا شرط ويظل العَلَم هو الجواب الوحيد عن «هل هذا مفعَّل؟». **كان بلا عَلَم إطلاقاً** حتى 2026-08-17: تعطيلُه كان يعني حذف الاستدعاء، ومعرفةُ حالته تعني قراءة كل شاشة.
+
+---
+
 ## ① Android — لا إعداد إضافي
 
 يعمل مع أي تطبيق منشور على Google Play — لا متطلبات إضافية.

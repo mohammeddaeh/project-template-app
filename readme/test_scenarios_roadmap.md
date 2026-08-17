@@ -203,7 +203,7 @@
 
 ### 11 — Platform Services Demo
 **النوع:** تفاعلي
-**الموديول المرتبط:** `lib/core/platform/` + `lib/core/infra/config/app_features.dart`
+**الموديول المرتبط:** `lib/core/platform/` + `lib/core/platform/features/app_features.dart`
 
 **ما تُظهره الشاشة:**
 - قائمة كل الـ Platform Services المتاحة
@@ -211,7 +211,7 @@
 - إذا معطّل: يُظهر شرح كيفية التفعيل (سطر واحد في `app_features.dart`)
 - خدمات: Biometrics · Clipboard · Share · File · AppLifecycle
 
-**الربط الدائم:** `lib/core/infra/config/app_features.dart` — أي flag جديد → يُضاف تلقائياً.
+**الربط الدائم:** `lib/core/platform/features/app_features.dart` — أي flag جديد → يُضاف تلقائياً.
 
 ---
 

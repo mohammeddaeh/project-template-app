@@ -55,4 +55,7 @@ class InMemoryStorageAdapter implements StorageService {
 
   @override
   bool containsKey(String key) => _store.containsKey(key);
+
+  @override
+  Iterable<String> keys() => _store.keys.toList();
 }

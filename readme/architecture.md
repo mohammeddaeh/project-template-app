@@ -9,19 +9,49 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 
 ## Documentation Index
 
+> **الفهرس كامل** — كل ملف `.md` بالمستودع مذكور هنا. ملفٌ يُضاف بلا سطر هنا يصير غير مكتشَف: القارئ لا يبحث عمّا لا يعلم بوجوده.
+
+### ابدأ من هنا
+
 | File | When to read / update |
 |------|----------------------|
-| [`core_architecture.md`](core_architecture.md) | **Primary** — principles, layers, modification rules |
-| [`new_developer_guide.md`](new_developer_guide.md) | Onboarding, first setup, feedback & locale API |
-| [`rest_api.md`](rest_api.md) | REST endpoints, import paths, common mistakes, AI generation |
-| [`pagination.md`](pagination.md) | Infinite scroll lists |
-| [`widgets.md`](widgets.md) | Widget placement, feedback & locale widgets |
-| [`scripts.md`](scripts.md) | Scripts, build/release, code generation, troubleshooting |
-| [`../lib/core/platform/PLATFORM_SERVICES.md`](../lib/core/platform/PLATFORM_SERVICES.md) | Optional platform services P6-P10 — how to enable & use |
-| [`../lib/core/infra/network/NETWORK.md`](../lib/core/infra/network/NETWORK.md) | Network interceptors, cache, retry, TokenRefresh, BaseRepository |
-| [`widgets_usage.md`](widgets_usage.md) | **Widget Usage Guide** — كل الويدجتات مع أمثلة الاستخدام |
-| [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync module — quick setup |
-| [`sync.md`](sync.md) | **Offline Sync — Engineering Reference** (architecture, lifecycle, failure scenarios, roadmap) |
+| [`core_architecture.md`](core_architecture.md) | **الأساس** — المبادئ، الطبقات، قواعد التعديل |
+| [`new_developer_guide.md`](new_developer_guide.md) | Onboarding، أول تشغيل، feedback & locale API |
+| [`../CLAUDE.md`](../CLAUDE.md) | جدول القرار + قانون المرآة + مزامنة التوثيق الإلزامية |
+
+### الطبقات والأنماط
+
+| File | When to read / update |
+|------|----------------------|
+| [`rest_api.md`](rest_api.md) | REST endpoints، مسارات الاستيراد، الأخطاء الشائعة، التوليد |
+| [`error_flow.md`](error_flow.md) | **مسار الخطأ كاملاً عبر النصفين** — ترتيب الـinterceptors، `Failure`→`UiAction`، `error-handler.ts`، أخطاء المستخدم المتوقَّعة |
+| [`pagination.md`](pagination.md) | قوائم بتمرير لا نهائي — المرجع الحيّ `Features/notes/` |
+| [`widgets.md`](widgets.md) | **أين** يوضع الـwidget |
+| [`widgets_usage.md`](widgets_usage.md) | **كيف** يُستعمل كل widget — أمثلة كاملة |
+| [`../lib/core/infra/network/NETWORK.md`](../lib/core/infra/network/NETWORK.md) | الـinterceptors، الكاش، إعادة المحاولة، `TokenRefresh`، `BaseRepository` |
+| [`../lib/core/platform/PLATFORM_SERVICES.md`](../lib/core/platform/PLATFORM_SERVICES.md) | خدمات المنصّة الاختيارية — التفعيل والاستخدام |
+
+### الموديولات الاختيارية
+
+| File | When to read / update |
+|------|----------------------|
+| [`permissions.md`](permissions.md) | `modules/access_control/` + `core/authz/` — الصلاحيات |
+| [`data_transfer.md`](data_transfer.md) | `modules/data_transfer/` — الاستيراد والتصدير |
+| [`sync.md`](sync.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
+| [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync — إعداد سريع (اقرأه أولاً) |
+| [`../lib/modules/multi_device/README.md`](../lib/modules/multi_device/README.md) | الأجهزة والجلسات النشطة |
+| `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates |
+
+### العمليات والخارطة
+
+| File | When to read / update |
+|------|----------------------|
+| [`scripts.md`](scripts.md) | السكربتات، البناء والإصدار، التوليد، حلّ المشاكل |
+| [`template_enhancements.md`](template_enhancements.md) | خارطة تطوير القالب — جدول الحالة + تفاصيل كل بند |
+| [`test_scenarios_roadmap.md`](test_scenarios_roadmap.md) | سيناريوهات `Features/test/` — قانون المرآة |
+| [`integration_audit.md`](integration_audit.md) | **سجلّ تاريخي** — تدقيق عقد الـwire (2026-08-11) وإصلاحه (2026-08-12) |
+| [`template_vs_qirtas.md`](template_vs_qirtas.md) | **قراءة لحظية** — انحراف القالب عن قرطاس بالاتجاهين (2026-08-17) + أولويات النقل. لا يُصان: يُعاد التدقيق ويُعاد كتابته |
+| [`realtime_design.md`](realtime_design.md) | **تصميم لم يُبنَ** — مزامنة الجلسات اللحظية بين الأجهزة. لا كود له بالقالب |
 
 ---
 
@@ -49,7 +79,7 @@ core/
 │   │                 Permission/Storage/Cache/Unknown (16 types)
 │   ├── domain/       base_usecase, base_cancel_token, use_case_params, no_params
 │   ├── contracts/    api_response, pagination_query, pagination_data_entity,
-│   │                 auth_network_gateway, locale_provider, session_reader
+│   │                 auth_network_gateway, locale_provider, token_refresh_gateway
 │   ├── extensions/   num_extensions
 │   ├── utils/        validators
 │   └── value_objects/ Email, PhoneNumber, DateRange → Either<ValidationFailure, T>
@@ -60,7 +90,7 @@ core/
 │   ├── locale/       app_locale (enum: arabic/english + isRtl)
 │   ├── logging/      log_service (static) + LogDelegate (interface)
 │   ├── observability/ app_bloc_observer
-│   ├── features/     app_features (central toggle), feature_permission_map
+│   ├── features/     app_features (central toggle)
 │   ├── connectivity/ network_state, connectivity_service,
 │   │                 network_state_monitor, network_state_monitor_impl
 │   ├── permissions/  app_permission, app_permission_status,
@@ -88,9 +118,8 @@ core/
 │   │   │                 request_cache_interceptor
 │   │   ├── security/     certificate_pinning_config [AppFeatures.certificatePinning]
 │   │   ├── boundary/     base_repository
-│   │   └── cancellation/ dio_cancel_token_wrapper
 │   ├── errors/       failure_mapper, dio_failure_mapper, failure_mapper_registry,
-│   │                 server_message_extractor, prefetch_stage_exception
+│   │                 server_message_extractor
 │   └── session/      auth_event_bus, locale_provider_impl
 │
 └── di/           ← Composition root (injectable/GetIt)
@@ -104,21 +133,63 @@ core/
 
 ## Optional Modules (`lib/modules/`)
 
-> كل وحدة مستقلة تماماً — تُفعَّل بأمر واحد بعد `configureInjection()`.  
-> كل وحدة تحتوي `SETUP.md` بخطوات التفعيل الكاملة.
+> **نقطة التفعيل الوحيدة**: `ModulesBootstrap.initializeAll(getIt)` بـ`main.dart`
+> بعد `configureInjection()` مباشرة — **لا يُستدعى أي موديول من `main.dart` مباشرةً**،
+> والترتيب مفروض بالكود هناك لا بالتعليقات. كل وحدة تحتوي `SETUP.md` بخطوات التفعيل.
 
-| Module | Entry Point | Packages |
-|--------|-------------|---------|
-| `access_control/` ✅ | `AccessControlPlugin.initialize(getIt)` — عبر `ModulesBootstrap` | dio (retrofit) |
-| `sync/` ✅ | `SyncSDK.initialize(config, getIt)` — called in `main.dart` | sqflite |
-| `multi_device/` ✅ | `MultiDevicePlugin.initialize(getIt)` | dio (retrofit) |
-| `push_notifications/` | `PushNotificationsModule.initialize(getIt, config: ...)` | firebase_messaging |
-| `crash_reporting/` | `CrashReportingModule.initialize(enabled: kReleaseMode)` | firebase_crashlytics |
-| `analytics/` | `AnalyticsModule.initialize(getIt, enabled: kReleaseMode)` | firebase_analytics |
-| `remote_config/` | `RemoteConfigModule.initialize(getIt, defaults: {...})` | firebase_remote_config |
-| `in_app_updates/` | `InAppUpdatesModule.checkAndPrompt(context)` | in_app_update |
+| Module | العلَم (`AppFeatures`) | افتراضياً | نقطة التفعيل | Packages |
+|---|---|---|---|---|
+| `data_transfer/` | `dataTransfer` | ✅ **ON** | `DataTransferPlugin.initialize(di)` | dio · file_picker |
+| `access_control/` | `accessControl` | ⬜ OFF | `AccessControlPlugin.initialize(di)` | dio (retrofit) |
+| `multi_device/` | `multiDevice` | ⬜ OFF | `MultiDevicePlugin.initialize(di)` | dio (retrofit) |
+| `sync/` | `offlineSync` | ⬜ OFF | `SyncSDK.initialize(config, di)` | sqflite |
+| `push_notifications/` | `pushNotifications` | ⬜ OFF | `PushNotificationsModule.initialize(di)` | firebase_messaging |
+| `crash_reporting/` | `crashReporting` | ⬜ OFF | `CrashReportingModule.initialize()` | firebase_crashlytics |
+| `analytics/` | `analytics` | ⬜ OFF | `AnalyticsModule.initialize(di)` | firebase_analytics |
+| `remote_config/` | `remoteConfig` | ⬜ OFF | `RemoteConfigModule.initialize(di)` | firebase_remote_config |
+| `in_app_updates/` | `inAppUpdates` | ⬜ OFF | `InAppUpdatesModule.checkAndPrompt(context)` — **من شاشة لا من `ModulesBootstrap`** (يحتاج `BuildContext`)، والحارس داخل الدالة | in_app_update |
 
-> `realtime/` موجود كـ `README.md` تخطيطي فقط حتى الآن — لا يحتوي كود مُنفَّذ.
+> **العَلَم هو العمود المهم.** الجدول السابق لم يحمله، فكان يقرأ الجميعَ كموصولين —
+> و`sync/` كان موسوماً `✅` مع «called in `main.dart`»، وهو **مطفأ** ولا يُستدعى من
+> `main.dart` بل من `ModulesBootstrap` تحت شرط. و`data_transfer/` — الموديول الوحيد
+> المشتعل افتراضياً — **كان غائباً عن الجدول تماماً** (صُحِّح 2026-08-17).
+>
+> **و`in_app_updates/` هو النموذج الصحيح لموديول لا يمرّ بـ`ModulesBootstrap`**:
+> يحتاج `BuildContext` فلا مكان له بالإقلاع، **فحمل عَلَمه وحارسه داخل دالته**
+> (`if (!AppFeatures.inAppUpdates) return;`). الشكل الخاطئ — كود كامل بلا علم وبلا
+> حارس — لا يُطفأ لأنه لا يُشعَل، ووقع فعلاً بمشروع قرطاس المبنيّ على هذا القالب.
+
+> `realtime/` **لم يعد موجوداً بـ`lib/modules/`** — كان مجلداً يحوي وثيقة تصميم بلا سطر Dart واحد، فيُقرأ من شجرة المجلدات موديولاً قائماً. نُقلت الوثيقة إلى [`realtime_design.md`](realtime_design.md) وحُذف المجلد (2026-08-17). **مجلد فارغ باسم ميزة هو ادّعاء بوجودها.**
+
+---
+
+## 🧟 جرد «المبنيّ بلا مستهلك»
+
+**بمستودع قالب، هذا هو الوضع الطبيعي لمعظم الموديولات** — تُشحن مطفأة ليُشعلها
+المشروع. ولهذا بالذات يجب أن يكون الجرد مكتوباً: التمييز بين *سطحٍ يُقصد أن ينتظر*
+و*سلسلةٍ انقطعت بالخطأ* لا يقوم به المصرِّف ولا `dart analyze` ولا الاختبارات —
+**كلها خضراء في الحالتين**. الفرق أن الأول له علم يُشعله، والثاني لا.
+
+| ما هو | الحالة |
+|---|---|
+| `presentation/shared/mutation_result.dart` | **لا يستورده شيء بالقالب** — البند #19 كان `✅` بجدول [`template_enhancements.md`](template_enhancements.md) بمعنى «الملف وصل». النمط يُغلق حين يستهلكه أول cubit طفرة هنا |
+| `presentation/shared/sync/widgets/` (`SyncUiHost` · `PendingChangesChip`) | يتراجعان لبعضهما ولا يركّبهما شيء — `sync` مطفأ أصلاً |
+| `core/foundation/extensions/num_extensions.dart` · `platform/extensions/{string,datetime}_extensions.dart` | ثلاثة ملفات **لا يستوردها أي ملف** |
+| `core/foundation/value_objects/` | جزيرة مغلقة: الثلاثة يصدّرها الـbarrel، والـbarrel لا يستورده أحد |
+| `platform/storage/adapters/shared_prefs_storage_adapter.dart` | محوِّل بديل — المُسجَّل فعلاً هو `HiveStorageAdapter` |
+| `resources/fonts.dart` (`AppFontFamilies`) | مولَّد بـ`sync_fonts.dart` ولا يقرأه شيء — مصدر الحقيقة المستعمَل `core/infra/config/app_fonts.dart` |
+| `modules/sync/sync_plugin.dart` | **مدخل ثانٍ ميت** — `ModulesBootstrap` يستدعي `SyncSDK.initialize` من `sdk/sync_sdk.dart` |
+| barrels `modules/{analytics,crash_reporting,in_app_updates,push_notifications,remote_config}/<name>.dart` | ملفات `export` لا يستوردها أحد — `ModulesBootstrap` يستورد `*_module.dart` مباشرةً |
+
+**حُذف بدل أن يُدرَج** (2026-08-17): `resources/translations/locale_keys.g.dart`
+(نسخة قديمة بـ٥٨ مفتاحاً بجوار الحيّة بـ٦٠٤) · `modules/multi_device/domain/failures/`
+(ملف re-export بلا مستورِد) — إضافةً إلى ما حُذف بنفس الجولة (`session_reader` ·
+`base_cancel_token` · `dio_cancel_token_wrapper` · `prefetch_stage_exception` ·
+`updated_at_filter` · `network_stability_probe` · `feature_permission_map` ·
+`app_text_styles` · `default_svg_img`).
+
+> **أي شيء تُنهي وصله: احذف صفّه من الجرد بنفس التغيير.** جردٌ يذكر موصولاً يُدرّب
+> القارئ على تجاهل الجرد كلّه.
 
 ---
 

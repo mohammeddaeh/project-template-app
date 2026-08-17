@@ -17,11 +17,11 @@ core/
 
 ### Layer Contents
 
-**foundation/** — `Failure` sealed types, `BaseUseCase`, `BaseCancelToken`, `Params`, `NoParams`, `ApiResponse<T>`, `PaginationQuery`, `PaginationDataEntity`, `AuthNetworkGateway`, `TokenRefreshGateway`, `LocaleProvider`, `SessionReader`, `validators`, `num_extensions`, `value_objects`
+**foundation/** — `Failure` sealed types, `BaseUseCase`, `SafeCubit`, `Params`, `NoParams`, `ApiResponse<T>`, `PaginationQuery`, `PaginationDataEntity`, `AuthNetworkGateway`, `TokenRefreshGateway`, `LocaleProvider`, `validators`, `num_extensions`, `value_objects`
 
 **platform/** — `LogService`, `PersistenceKeys`, `MediaService`, `AppBlocObserver`, `AppLocale`, `AppSettings`, `ConnectivityService`, `NetworkStateMonitor`, `AppFeatures`, `StorageService`, `SecureStorageService`, `EncryptionService`, `BiometricsService`, `PermissionsService`, `ClipboardService`, `ShareService`, `FileService`, `AppLifecycleService`
 
-**infra/** — `env/flavors`, `network` (rest/interceptors/boundary/cancellation), `errors` (mappers/registry), `session` (AuthEventBus, LocaleProviderImpl)
+**infra/** — `env/flavors`, `network` (rest/interceptors/boundary/security), `errors` (mappers/registry), `session` (AuthEventBus, LocaleProviderImpl)
 
 **di/** — `injection.dart`, `injection_module.dart`, `platform_services_registry.dart`, `injection.config.dart` (generated)
 
@@ -39,6 +39,17 @@ Exception (Dio/IO/unknown)
 - `presentation/error/` = عرض فقط — لا منطق
 - Repositories = `handle()` — لا try/catch يدوي
 - Cubits = `FailureUiMapper.toAction(failure)` — لا يعرف DioException
+
+> **المرجع الكامل للمسار عبر النصفين:** [`readme/error_flow.md`](../../readme/error_flow.md) — ترتيب الـinterceptors، 500 مقابل 503، 401 مقابل 403، وأخطاء المستخدم المتوقَّعة. **يُحدَّث مع أي تغيير هنا.**
+
+### أربع قواعد صارمة بهذا المسار
+
+| القاعدة | ما حدث فعلاً حين خُولفت |
+|---|---|
+| **`catch (_) {}` ممنوع** — كل مسار احتياطي يسجّل | `RequestCacheInterceptor` كتب مدخلات لم يستطع قراءتها قط: قراءة بلا `await` ← تحويل يرمي ← `catch` صامت. سلوكه المُلاحَظ = كاش بارد أبداً، بلا أي عَرَض يُبحث عنه |
+| **ترتيب `dio.interceptors` سلوك** | الكاش **قبل** حارس الاتصال، وإلا عمي بالحالة الوحيدة التي وُجد لأجلها. المصدر الوحيد `injection_module.dart`، ومرآته `NETWORK.md` |
+| **`Accept-language` بكل طلب** — لا داخل `if (token != null)` | كان داخلها، فكل رفض قبل الدخول (كلمة مرور خاطئة · حساب موقوف · تجاوز محاولات · بريد مكرَّر) وصل بلغة السيرفر الافتراضية |
+| **`StorageService.clear()` لا تُستدعى لمسح جزء** | من يملك بادئة يمسح مفاتيحه بـ`keys()` + `delete()`. `invalidateAll()` استدعت `clear()` فمحت الثيم واللغة والخط ولقطة المستخدم |
 
 ---
 
@@ -203,7 +214,9 @@ class {Name}Cubit extends PaginationCubit<{Entity}> {
 
 > **`PaginationCubit` يرث `SafeCubit`** (`core/foundation/domain/safe_cubit.dart`) — فكل قائمة محميّة بلا سطر إضافي. وكل cubit جديد يكتبه المشروع يرث `SafeCubit` كذلك، **لا `Cubit`**.
 >
-> **ولا تكتب `close() { _useCase.cancel(); }` ظنّاً أنها الحماية.** كانت هنا موصوفة «إلزامية» — وهي **بلا أثر**: `BaseUseCase.resetCancelToken` بلا مستدعٍ واحد في `lib/` كلّه، فالتوكن `null` دائماً وكل `cancel()` لا تفعل شيئاً. ولو عملت لما كفت: الردّ قد يصل بين «تحليل الاستجابة» و«إغلاق الـcubit» مهما أُلغي بسرعة. الحارس الحقيقي هو `SafeCubit`، وهو غير مشروط.
+> **ولا تكتب `close() { _useCase.cancel(); }` ظنّاً أنها الحماية — الدالة لم تعد موجودة.** كانت موصوفة هنا «إلزامية» فوق واجهة إلغاء بـ`BaseUseCase` **بلا مستدعٍ واحد** في `lib/` كلّه: التوكن `null` دائماً وكل `cancel()` لا تفعل شيئاً. حُذفت الواجهة الميتة (2026-08-17). ولو عملت لما كفت: الردّ قد يصل بين «تحليل الاستجابة» و«إغلاق الـcubit» مهما أُلغي بسرعة. الحارس الحقيقي هو `SafeCubit`، وهو غير مشروط.
+>
+> ومن احتاج إلغاءً فعلياً يمرّر `CancelToken` الخاص بـDio عبر `Options` عند موضع الاستدعاء — هناك يصل الطلبَ حقاً، و`CancelledFailure` تُترجم النتيجة أصلاً.
 >
 > والانهيار الذي يمنعه حقيقي ويصل نسخة الإصدار — `Bad state: Cannot emit new states after calling close` — وسببه لا أكثر من مغادرة شاشة قبل وصول ردّها. مثبَّت بـ`test/safe_cubit_test.dart`.
 

@@ -13,7 +13,9 @@ import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/core/infra/session/auth_event_bus.dart';
 import 'package:app_template/core/infra/session/locale_provider_impl.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
+import 'package:app_template/presentation/feedback/feedback_extension.dart';
 import 'package:app_template/presentation/theme/app_theme.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.dart';
 import 'package:app_template/routes/router.gr.dart';
 import 'package:app_template/shared/widgets/layout/flavor_banner.dart';
@@ -105,17 +107,50 @@ class _AppState extends State<App> {
   ///
   /// The exhaustive form is the guard: a future event added to the bus becomes
   /// a compile error here rather than a silent sign-out.
+  ///
+  /// **And it says why.** This used to navigate and nothing else: a user
+  /// mid-task was dropped onto the sign-in screen with no explanation, which
+  /// reads as the app crashing and losing their work — the two states that
+  /// most look like a bug are the two the app knows the exact cause of. The
+  /// keys existed (`sessionRevoked` was written the day the multi-device
+  /// module landed) and simply had no call site.
   void _handleAuthEvent(AuthEvent event) {
+    final String reasonKey;
+
     switch (event) {
       case AuthEvent.sessionExpired:
+        reasonKey = LocaleKeys.sessionExpiredMessage;
       case AuthEvent.sessionRevoked:
-        break;
+        // Distinct from expiry on purpose: "your session ended" invites the
+        // user to sign back in, while "another device signed you out" is the
+        // only wording that lets them notice a sign-in they did not make.
+        reasonKey = LocaleKeys.sessionRevoked;
       case AuthEvent.permissionsStale:
         // Handled by `AbilitiesStore`, which re-reads `/authz/me`. Nothing
         // about the session changed, so the user stays where they are.
         return;
     }
+
     _router.replaceAll([const LoginRoute()]);
+    _announce(reasonKey);
+  }
+
+  /// Shows the sign-out reason on the screen the user has just landed on.
+  ///
+  /// Deferred to the next frame and read off the router's navigator: the
+  /// feedback overlay lives *below* `MaterialApp`, so this State's own
+  /// `context` cannot host a toast, and the login route is not mounted until
+  /// the frame after `replaceAll`.
+  ///
+  /// Silent when no context is available — the app is tearing down, and a
+  /// missing toast must never become an exception on top of an expired
+  /// session.
+  void _announce(String messageKey) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _router.navigatorKey.currentContext;
+      if (ctx == null || !ctx.mounted) return;
+      ctx.feedback.warning(messageKey.tr());
+    });
   }
 
   @override

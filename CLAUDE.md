@@ -83,9 +83,11 @@ modules     → Features      ❌ NEVER
 
 | الملف | متى يُحدَّث |
 |---|---|
+| **`readme/README.md`** | **فهرس المجلد — يُحدَّث عند إضافة/حذف/نقل أي ملف فيه، بنفس التغيير** |
 | `readme/architecture.md` | أي تغيير هيكلي في lib/ |
 | `readme/core_architecture.md` | تغيير core/ أو مبادئ الطبقات |
 | `readme/rest_api.md` | تغيير REST flow أو network |
+| `readme/error_flow.md` | **ترتيب الـinterceptors · `Failure`/`FailureUiMapper` · `error-handler.ts`/`MESSAGES` · ترتيب middleware بـ`app.ts` · أي حدث بـ`AuthEventBus`** — يشمل النصفين معاً |
 | `readme/pagination.md` | تغيير PaginationCubit أو PaginationBuilderWdg |
 | `readme/widgets.md` | تغيير presentation/ أو shared/widgets/ |
 | `readme/scripts.md` | إضافة/تعديل سكربت |
@@ -94,6 +96,32 @@ modules     → Features      ❌ NEVER
 | `readme/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
 | `readme/data_transfer.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
 | `readme/permissions.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
+| `readme/widgets_usage.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود |
+| `readme/test_scenarios_roadmap.md` | تنفيذ سيناريو بـ`Features/test/` أو تغيير حالته |
+| `readme/sync.md` | تغيير `modules/sync/` (مبنيّ ومطفأ) |
+| `readme/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
+
+> **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** الأربعة الأخيرة كانت خارجه حتى
+> 2026-08-17، واثنان منها انحرفا فعلاً. الفهرس بـ[`readme/README.md`](readme/README.md)
+> يحمل عمود «الحالة الحقيقية للكود» لكل ملف — أضف الصفّ هناك وهنا معاً.
+
+## 🧟 قاعدة صارمة — تحقّق أن السلسلة موصولة **قبل** أن تبني عليها
+
+**لا تفترض أن صنفاً مبنيّاً وموثَّقاً يعمل.** افتح مستدعيه أولاً: مَن يُسجّله بالـDI؟
+مَن يُركّبه بالشجرة؟ مَن يستورده؟ لو كان الجواب «لا أحد»، فأنت أمام **سطح قالبٍ لا
+سلسلةٍ عاملة** — والجرد الكامل بـ[`readme/architecture.md`](readme/architecture.md)
+§«المبنيّ بلا مستهلك».
+
+**ولهذه القاعدة وزن خاص بمستودع قالب**: هنا، «مبنيّ بلا مستهلك» هو الوضع **الطبيعي
+والمقصود** لمعظم الموديولات — تُشحن مطفأة ليُشعلها المشروع. فالتمييز بين *سطحٍ يُقصد
+أن ينتظر* و*سلسلةٍ انقطعت بالخطأ* لا يقوم به المصرِّف ولا التحليل ولا الاختبارات:
+**كلها خضراء في الحالتين**. لا يقوم به إلا التوثيق، ولذلك:
+
+| القاعدة | التفصيل |
+|---|---|
+| كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `architecture.md` |
+| `✅` بجدول `template_enhancements.md` تعني **«له مستهلك هنا»** | لا «الملف وصل». البند #19 كان `✅` بلا مستورِد واحد — صُحِّح إلى `◐` (2026-08-17) |
+| ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد، أو يُحذف. `modules/in_app_updates/` مثال حيّ: كود كامل + تبعية تُشحن، بلا علم وبلا مستدعٍ — لا يُطفأ لأنه لا يُشعَل |
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 

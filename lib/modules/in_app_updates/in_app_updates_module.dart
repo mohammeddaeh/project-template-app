@@ -2,6 +2,7 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:in_app_update/in_app_update.dart';
@@ -39,6 +40,11 @@ abstract final class InAppUpdatesModule {
     UpdateMode mode = UpdateMode.flexible,
     String? iosAppId,
   }) async {
+    // The guard lives here, not at the call site, so the application keeps one
+    // unconditional line and the flag stays the single answer to "is this on?".
+    // Same shape as every other module's `initialize()`.
+    if (!AppFeatures.inAppUpdates) return;
+
     if (Platform.isAndroid) {
       await _checkAndroid(context, mode);
     } else if (Platform.isIOS && iosAppId != null) {

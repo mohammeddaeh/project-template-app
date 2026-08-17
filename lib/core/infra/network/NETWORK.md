@@ -29,27 +29,36 @@ lib/core/infra/network/
 
 ---
 
-## ترتيب الـ Interceptors مهم!
+## ترتيب الـ Interceptors — قاعدة صارمة
+
+**الترتيب سلوكٌ لا تنظيم.** Dio ينفّذ `onRequest` بترتيب التسجيل و`onError`/`onResponse` بالعكس، فنقل سطر بـ`injection_module.dart` يغيّر ما يراه المستخدم. **المصدر الوحيد للترتيب هو `InjectableModule.dioInstance`** — وهذا الرسم مرآته:
 
 ```
-Request يُرسَل ───►  [AuthInterceptor]
-                          ↓ يُضيف Authorization header
-                     [InternetCheckerInterceptor]
+Request يُرسَل ───►  [RequestCacheInterceptor]        ← 1
+                          ↓ يردّ من الكاش (resolve) أو يُمرّر
+                     [InternetCheckerInterceptor]     ← 2
                           ↓ يرفض فوراً إذا لا يوجد اتصال
-                     [RetryInterceptor]
-                          ↓ يُعيد المحاولة عند الفشل
-                     [RequestCacheInterceptor]
-                          ↓ يُعيد من الكاش أو يُمرّر للشبكة
+                     [AuthInterceptor]                ← 3
+                          ↓ Accept-language دائماً · Authorization إن وُجد توكن
+                     [TokenRefreshInterceptor]        ← 4 (إن سُجِّل TokenRefreshGateway)
+                     [RetryInterceptor]               ← 5
+                     [NetworkLogInterceptor]          ← 6 (debug فقط)
                      ──► API Server
 
-Response يعود ◄───  [RequestCacheInterceptor]
-                          ↑ يُخزّن الـ GET responses
-                     [TokenRefreshInterceptor]
-                          ↑ يُجدّد التوكن عند 401 ويُعيد الطلب
-                     ──► HandleBodyResponse
-                          ↑ يُحوّل الأخطاء إلى Failure
+Response يعود ◄───  بالعكس: Log → Retry → Refresh → Auth → InternetChecker → Cache
+                          ↑ الكاش يُخزّن هنا (onResponse)
+                     ──► HandleBodyResponse  →  Failure
                      ──► Repository.handle()
 ```
+
+### القاعدتان اللتان لا تُخالَفان
+
+| القاعدة | ما يحدث لو خُولفت |
+|---|---|
+| **الكاش قبل حارس الاتصال** | كان بعده. Dio يرفض الطلب بالحارس **قبل** أن يبلغ الكاشَ أصلاً، فالكاش يعمى في الحالة الوحيدة التي وُجد لأجلها: جهاز بلا شبكة يملك القائمة نفسها مخزَّنة من دقيقة. المستخدم يرى «لا يوجد اتصال» وجوابُه على القرص |
+| **`AuthInterceptor` قبل `TokenRefreshInterceptor`** | التجديد يُعيد إرسال طلبٍ بلا رأس `Authorization` فيُرفض ثانيةً — حلقة 401 لا تنتهي |
+
+> ⚠️ هذا الرسم **كان يصف ترتيباً لم يُطبَّق قط** (Auth أولاً ثم الحارس ثم Retry ثم الكاش). رسمٌ لا يطابق التسجيل أسوأ من غياب الرسم: القارئ يستنتج منه سلوكاً ولا يفتح `injection_module.dart` ليتأكد. **أي تعديل على `dio.interceptors.addAll([...])` يُحدِّث هذه الكتلة في نفس الـcommit.**
 
 ---
 

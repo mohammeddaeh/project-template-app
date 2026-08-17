@@ -25,7 +25,7 @@ cd ios && pod install
 ```text
 lib/
   core/                 infrastructure (foundation/, platform/, infra/, di/)
-  modules/              optional runtime modules (sync/, multi_device/, realtime/, analytics/, ...)
+  modules/              optional runtime modules (sync/, multi_device/, access_control/, data_transfer/, ...)
   Features/<name>/      data / domain / presentation (cubits, pages)
   presentation/         theme, UI extensions, error UI, feedback, locale, pagination
   shared/               reusable widgets (barrel: widgets.dart)
@@ -41,7 +41,7 @@ scripts/
 | `core/platform/` | Flutter/OS wrappers — locale, connectivity, permissions, notifications, logging... |
 | `core/infra/` | Implementation — network, env, errors, session |
 | `core/di/` | Composition root (injectable/GetIt) — يستورد كل شيء |
-| `modules/` | Optional runtime modules — `sync/`, `multi_device/`, `realtime/`, `analytics/`, `crash_reporting/`, `remote_config/`, `push_notifications/`, `in_app_updates/` (انظر [`architecture.md`](architecture.md)) |
+| `modules/` | Optional runtime modules — `sync/`, `multi_device/`, `access_control/`, `data_transfer/`, `analytics/`, `crash_reporting/`, `remote_config/`, `push_notifications/`, `in_app_updates/` (انظر [`architecture.md`](architecture.md)) |
 | `Features/` | Isolated business modules — لا استيراد بين Features |
 | `presentation/` | Theme, UI extensions, `FailureUiMapper`, `AppFeedbackService`, `LocaleSwitcher`, `PaginationCubit` |
 | `shared/` | Cross-feature widgets |

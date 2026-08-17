@@ -434,12 +434,16 @@ abstract final class AppThemeData {
   /// size, where display alternates read as noise and their wider advances push
   /// against rows that already ellipsize.
   ///
-  /// Set here rather than in `AppTextStyles`, and that is the whole reason it
-  /// reaches everything: `context.ts.*` builds every style by `copyWith` on this
-  /// same `TextTheme`, so both it and a direct `context.textTheme.headlineLarge`
-  /// pick the features up. Adding them in one of the two would have left the
-  /// other rendering the plain forms — the same heading looking different
-  /// depending on which accessor a screen happened to use.
+  /// Set on the `TextTheme` itself, which is why it reaches everything: this
+  /// is the one object `context.textTheme.*` resolves against, so no screen can
+  /// pick up a heading without the features.
+  ///
+  /// There was briefly a second accessor — `context.ts.*` in
+  /// `presentation/theme/app_text_styles.dart` — building its own styles from
+  /// scratch. It has been deleted: it had no call site, it contradicted the
+  /// typography rule in `lib/CLAUDE.md` (`context.textTheme` only), and a
+  /// second style source is exactly how the same heading ends up rendering
+  /// differently depending on which accessor a screen happened to use.
   static TextTheme _textTheme(
     Color primary,
     Color secondary,

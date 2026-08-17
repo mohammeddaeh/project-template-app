@@ -36,6 +36,28 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 /// cached GET. If a resource needs invalidation logic to stay correct, prefer
 /// not caching it at all.
 ///
+/// ## ⚠️ Why this file is the reason `catch (_)` is banned in this template
+///
+/// For its whole life this interceptor **wrote entries it could never read
+/// back**. [StorageService.readString] returns a `Future<String?>`; the read
+/// path did not `await` it, compared the *Future* against `null` (never null),
+/// then cast it to `String`. Every cacheable request threw a cast error on the
+/// first hit — into a bare `catch (_) {}` that logged nothing and fell through
+/// to the network.
+///
+/// So the module behaved exactly like a cold cache forever: correct answers,
+/// full latency, growing storage. `dart analyze` was clean, every test passed,
+/// and there was no symptom to search for. The bug was not the missing `await`
+/// — that is a typo anyone makes. The bug was the empty catch that made the
+/// typo unobservable.
+///
+/// Two rules came out of it, and both are enforced here:
+/// 1. **A fallback path logs.** `catch (_) {}` converts a defect into a
+///    behaviour, and a behaviour nobody specified is one nobody will fix.
+/// 2. **Ordering matters.** This interceptor must sit *before*
+///    `InternetCheckerInterceptor` in `injection_module.dart`, or an offline
+///    device is rejected before the cache it exists to serve is ever consulted.
+///
 /// ## Registration
 /// Created manually in [InjectionModule] — NOT annotated with `@injectable`.
 class RequestCacheInterceptor extends Interceptor {
@@ -65,18 +87,18 @@ class RequestCacheInterceptor extends Interceptor {
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
-  ) {
+  ) async {
     if (!_isCacheable(options)) return handler.next(options);
 
     final cacheKey = _buildKey(options);
     final ttl = options.extra[ttlKey] as Duration? ?? defaultTtl;
     final raw = _storage.containsKey('$_keyPrefix$cacheKey')
-        ? _storage.readString('$_keyPrefix$cacheKey')
+        ? await _storage.readString('$_keyPrefix$cacheKey')
         : null;
 
     if (raw != null) {
       try {
-        final entry = _CacheEntry.fromJson(raw as String);
+        final entry = _CacheEntry.fromJson(raw);
         if (entry.isValid(ttl)) {
           LogService.info('Cache HIT — ${options.path}', tag: 'CACHE');
           return handler.resolve(
@@ -94,8 +116,16 @@ class RequestCacheInterceptor extends Interceptor {
           );
         }
         LogService.info('Cache STALE — ${options.path}', tag: 'CACHE');
-      } catch (_) {
-        // Corrupt cache entry — fall through to network
+      } catch (e) {
+        // Corrupt entry — fall through to the network, but **say so**. This
+        // catch used to be silent, and it is what hid the bug above for the
+        // module's entire life: every read threw, every throw was swallowed,
+        // and the only symptom was a cache that never hit. A fallback path
+        // that cannot be observed is indistinguishable from a broken one.
+        LogService.warning(
+          'Cache entry unreadable — ${options.path}: $e',
+          tag: 'CACHE',
+        );
       }
     }
 
@@ -130,8 +160,27 @@ class RequestCacheInterceptor extends Interceptor {
     return _storage.delete('$_keyPrefix$key');
   }
 
-  /// Removes **all** cached HTTP responses.
-  Future<void> invalidateAll() => _storage.clear();
+  /// Removes **all** cached HTTP responses — and nothing else.
+  ///
+  /// This used to be `_storage.clear()`, which empties the whole box: theme,
+  /// language, chosen font, the cached user snapshot the splash screen reads
+  /// before navigating. A method named "invalidate the HTTP cache" signed the
+  /// user out of every preference they had set, and the doc comment right here
+  /// promised it only touched cached responses.
+  ///
+  /// Nothing in the template called it, which is the only reason it never
+  /// shipped as a bug report — the trap was armed and waiting for the first
+  /// project to reach for it.
+  Future<void> invalidateAll() async {
+    final ours = _storage
+        .keys()
+        .where((k) => k.startsWith(_keyPrefix))
+        .toList(growable: false);
+
+    for (final key in ours) {
+      await _storage.delete(key);
+    }
+  }
 
   // ── Internal ──────────────────────────────────────────────────────────────
 

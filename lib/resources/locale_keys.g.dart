@@ -32,6 +32,7 @@ abstract class  LocaleKeys {
   static const permissionPermanentlyDenied = 'permissionPermanentlyDenied';
   static const sessionTimedOut = 'sessionTimedOut';
   static const sessionRevoked = 'sessionRevoked';
+  static const sessionExpiredMessage = 'sessionExpiredMessage';
   static const notPrimaryDevice = 'notPrimaryDevice';
   static const deviceNotFound = 'deviceNotFound';
   static const invalidPassword = 'invalidPassword';

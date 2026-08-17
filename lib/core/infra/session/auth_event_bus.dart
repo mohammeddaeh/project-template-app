@@ -72,6 +72,12 @@ class AuthEventBus {
   }
 
   /// For testing only — resets bus state between test runs.
-  // ignore: invalid_use_of_visible_for_testing_member
-  void resetForTest() => _sessionExpiredFired = false;
+  ///
+  /// Delegates to [resetSessionState] rather than re-listing the flags: the
+  /// hand-written copy reset only `_sessionExpiredFired`, so a test that
+  /// emitted [AuthEvent.sessionRevoked] silently poisoned every test after it
+  /// — the second emit was deduplicated away and the assertion failed in a
+  /// file that had nothing to do with the cause. A flag added to this class
+  /// now cannot be forgotten here.
+  void resetForTest() => resetSessionState();
 }

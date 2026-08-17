@@ -78,6 +78,9 @@ class SharedPrefsStorageAdapter implements StorageService {
   @override
   bool containsKey(String key) => _prefs.containsKey(key);
 
+  @override
+  Iterable<String> keys() => _prefs.getKeys();
+
   // ── Internal ─────────────────────────────────────────────────────────────────
 
   Future<void> _wrap(

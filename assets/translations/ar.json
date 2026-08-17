@@ -28,6 +28,7 @@
   "permissionPermanentlyDenied": "الإذن مرفوض نهائياً، افتح إعدادات التطبيق لتفعيله",
   "sessionTimedOut": "انتهت صلاحية الجلسة",
   "sessionRevoked": "تم تسجيل خروجك من جهاز آخر",
+  "sessionExpiredMessage": "انتهت جلستك. يرجى تسجيل الدخول من جديد.",
   "notPrimaryDevice": "لا تملك صلاحية تسجيل خروج الأجهزة الأخرى",
   "deviceNotFound": "الجهاز غير موجود أو تم إلغاؤه مسبقاً",
   "invalidPassword": "كلمة مرور مطلوبة",

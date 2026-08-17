@@ -121,6 +121,26 @@ abstract final class AppFeatures {
   /// governs the client only.
   static const multiDevice = false;
 
+  /// Enable the in-app update prompt.
+  ///
+  /// The odd one out among the modules, and unavoidably so: it needs a
+  /// `BuildContext` to show its dialog, so it cannot be started from
+  /// `ModulesBootstrap` like the others. The **application** calls it, once,
+  /// from a screen that is already mounted — after sign-in, or on resume:
+  ///
+  /// ```dart
+  /// await InAppUpdatesModule.checkAndPrompt(context, iosAppId: '123456789');
+  /// ```
+  ///
+  /// **When false**: `checkAndPrompt` returns immediately without touching the
+  /// Play API, so the call site can stay in place across builds and flavours.
+  ///
+  /// The flag exists because this was the one module with **none** — so the
+  /// only way to disable it was to delete the call, and the only way to answer
+  /// "is this on?" was to read every screen. Every other module answers that in
+  /// this file; this one made a reader hunt.
+  static const inAppUpdates = false;
+
   // ── Firebase-backed modules ───────────────────────────────────────────────
   // All require google-services.json (Android) / GoogleService-Info.plist (iOS).
   // ModulesBootstrap calls Firebase.initializeApp() once when any are enabled.

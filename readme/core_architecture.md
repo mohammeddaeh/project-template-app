@@ -83,7 +83,7 @@ presentation──►  foundation + infra  (للأخطاء عبر Failure فقط
 | التقسيمة | المحتوى |
 |----------|---------|
 | `foundation/errors/` | `Failure` sealed classes + `ParseFailure`(`ParseErrorKind`) + `ValidationFailure` + `PermissionFailure`(`PermissionDeniedReason`) + `StorageFailure`(`StorageOperation`) — أنواع فقط، لا mapping |
-| `foundation/domain/` | `BaseUseCase`, `BaseCancelToken`, `Params`, `NoParams` |
+| `foundation/domain/` | `BaseUseCase`, `SafeCubit`, `Params`, `NoParams` |
 | `foundation/contracts/` | `ApiResponse<T>`, `PaginationQuery`, `PaginationDataEntity` — عقود مشتركة |
 | `foundation/extensions/` | `string_extensions`, `num_extensions`, `datetime_extensions` |
 | `foundation/utils/` | `Validators` — قواعد نقية بدون UI |
@@ -110,7 +110,7 @@ presentation──►  foundation + infra  (للأخطاء عبر Failure فقط
 | `platform/share/` | `ShareService` (interface) + `ShareServiceImpl` (share_plus) |
 | `platform/files/` | `FileService` (interface) + `FileServiceImpl` (file_picker + open_filex) |
 | `platform/lifecycle/` | `AppLifecycleService` (interface) + `AppLifecycleServiceImpl` (WidgetsBindingObserver) |
-| `platform/features/` | `AppFeatures` (central toggles), `feature_permission_map` |
+| `platform/features/` | `AppFeatures` — كل الأعلام. **خريطة الأذونات الأصلية تعيش بـ`scripts/sync_permissions.dart` وحده** |
 | `platform/notifications/` | `LocalNotificationsService` (interface), `FlnNotificationsAdapter`, `DisabledNotificationsAdapter` |
 
 ### 3.3 `infra/` — Implementation
@@ -120,12 +120,11 @@ presentation──►  foundation + infra  (للأخطاء عبر Failure فقط
 | التقسيمة | المحتوى |
 |----------|---------|
 | `infra/config/` | `env.dart`, `env_config.dart`, `flavors_settings.dart` |
-| `infra/network/rest/` | `api_urls.dart`, `handle_body_response.dart`, `updated_at_filter.dart` (delta-sync URL builder � optional) |
+| `infra/network/rest/` | `api_urls.dart`, `handle_body_response.dart` |
 | `infra/network/interceptors/` | `auth_interceptor`, `internet_checker_interceptor`, `token_refresh_interceptor`, `retry_interceptor`, `request_cache_interceptor` |
 | `infra/network/security/` | `certificate_pinning_config` — SHA-256 fingerprint pinning (OFF by default) |
 | `infra/network/boundary/` | `base_repository.dart` — `handle()` للـ repositories |
-| `infra/network/cancellation/` | `dio_cancel_token_wrapper.dart` |
-| `infra/errors/` | `failure_mapper.dart`, `dio_failure_mapper.dart` (يصطاد `FormatException` المُغلَّف)، `failure_mapper_registry.dart` (`FormatException`/`TypeError` مباشرةً → `ParseFailure`)، `server_message_extractor.dart`, `prefetch_stage_exception.dart` |
+| `infra/errors/` | `failure_mapper.dart`, `dio_failure_mapper.dart` (يصطاد `FormatException` المُغلَّف)، `failure_mapper_registry.dart` (`FormatException`/`TypeError` مباشرةً → `ParseFailure`)، `server_message_extractor.dart` |
 | `infra/session/` | `auth_event_bus.dart`, `locale_provider_impl.dart` |
 
 > **ملاحظة:** `core/di/` (injection.dart, injection_module.dart, injection.config.dart) هو جذر التركيب — مستوى مستقل يُوازي `foundation/` و`platform/` و`infra/`، وليس داخل `infra/`. مسموح له باستيراد كل شيء بما في ذلك Features/ و routes/.
@@ -151,7 +150,6 @@ lib/core/
 │   │   ├── pagination_data_entity.dart
 │   │   ├── auth_network_gateway.dart ← interface: getToken() + clearSession()
 │   │   ├── locale_provider.dart     ← interface: languageCode
-│   │   └── session_reader.dart      ← interface: getUserId()
 │   ├── extensions/
 │   │   └── num_extensions.dart      ← (string/datetime في platform/extensions/)
 │   ├── utils/
@@ -194,7 +192,6 @@ lib/core/
 │   │   └── permissions_service_impl.dart
 │   ├── features/                    ← ✅ Feature Activation System
 │   │   ├── app_features.dart        (central toggle — edit here to enable features)
-│   │   └── feature_permission_map.dart (docs for sync_permissions.dart script)
 │   ├── notifications/
 │   │   ├── local_notifications_service.dart   (abstract interface)
 │   │   └── adapters/fln_notifications_adapter, disabled_notifications_adapter
@@ -229,14 +226,11 @@ lib/core/
 │   │   │   └── certificate_pinning_config.dart   ← SHA-256 fingerprint [AppFeatures.certificatePinning]
 │   │   ├── boundary/
 │   │   │   └── base_repository.dart
-│   │   └── cancellation/
-│   │       └── dio_cancel_token_wrapper.dart
 │   ├── errors/
 │   │   ├── failure_mapper.dart
 │   │   ├── dio_failure_mapper.dart
 │   │   ├── failure_mapper_registry.dart
 │   │   ├── server_message_extractor.dart
-│   │   └── prefetch_stage_exception.dart
 │   └── session/
 │       ├── auth_event_bus.dart
 │       └── locale_provider_impl.dart  ← AppLocaleProvider @LazySingleton(as: LocaleProvider)
@@ -301,7 +295,7 @@ Page / Screen
 Cubit.callMethod()
     │
     ▼ Features/*/domain/usecases/
-UseCase(params)   ← DioCancelTokenWrapper من infra/network/cancellation/
+UseCase(params)
     │
     ▼ Features/*/domain/repositories/ (interface)
     ▼ Features/*/data/repositories/  (impl)

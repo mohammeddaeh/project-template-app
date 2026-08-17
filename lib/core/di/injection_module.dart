@@ -107,13 +107,24 @@ abstract class InjectableModule {
     authInterceptor.handlesSessionExpiry = !hasRefresh;
 
     dio.interceptors.addAll([
-      // 1. Network guard: blocks requests immediately when device is offline
+      // 1. Response cache: serves opt-in GETs from local storage within TTL.
+      //
+      //    FIRST, ahead of the offline guard, and that order is the whole
+      //    point of the module. Dio runs `onRequest` hooks in registration
+      //    order, so with the guard in front an offline device was rejected
+      //    before the cache was ever consulted — the cache went dark in
+      //    precisely the situation it exists for. A cached list the user read
+      //    a minute ago is a better answer than "no internet".
+      RequestCacheInterceptor(getIt<StorageService>()),
+
+      // 2. Network guard: blocks requests immediately when device is offline.
+      //    Reached only for requests the cache could not answer.
       getIt<InternetCheckerInterceptor>(),
 
-      // 2. Auth: injects Bearer token + Accept-Language header
+      // 3. Auth: injects Bearer token + Accept-Language header
       authInterceptor,
 
-      // 3. Token refresh: silently refreshes on 401 + retries original request.
+      // 4. Token refresh: silently refreshes on 401 + retries original request.
       //    Active only when the project registers a TokenRefreshGateway impl.
       //    Created here (not via GetIt) to avoid a circular Dio dependency.
       if (hasRefresh)
@@ -123,11 +134,8 @@ abstract class InjectableModule {
           getIt<AuthNetworkGateway>(),
         ),
 
-      // 4. Retry: exponential back-off on 5xx / connection errors (max 3 times)
+      // 5. Retry: exponential back-off on 5xx / connection errors (max 3 times)
       RetryInterceptor(dio),
-
-      // 5. Response cache: serves GET responses from local storage within TTL
-      RequestCacheInterceptor(getIt<StorageService>()),
 
       // 6. Dev-only logging, last so it sees the final outcome after auth,
       //    retry and cache have had their say. One line per success, the whole
