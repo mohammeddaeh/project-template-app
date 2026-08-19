@@ -1,10 +1,11 @@
 // ignore_for_file: avoid_print
 /// يقرأ flavor_settings.json ويُحدِّث تلقائياً:
-///   1. android/app/build.gradle.kts             — productFlavors + applicationId لكل flavor (بين علامات BEGIN/END FLAVORS)
-///   2. android/app/src/{f}/res/values/strings.xml — اسم التطبيق لكل flavor
-///   3. flutter_launcher_icons-{f}.yaml          — ملفات إعداد الأيقونات
-///   4. يُشغِّل flutter_launcher_icons لكل flavor
-///   5. .vscode/launch.json                      — إعدادات تشغيل VSCode
+///   1. .env.{f}.json                            — ملف بيئة لكل flavor من .env.example.json (لا يلمس قيمة موجودة)
+///   2. android/app/build.gradle.kts             — productFlavors + applicationId لكل flavor (بين علامات BEGIN/END FLAVORS)
+///   3. android/app/src/{f}/res/values/strings.xml — اسم التطبيق لكل flavor
+///   4. flutter_launcher_icons-{f}.yaml          — ملفات إعداد الأيقونات
+///   5. يُشغِّل flutter_launcher_icons لكل flavor
+///   6. .vscode/launch.json                      — إعدادات تشغيل VSCode
 ///
 /// تشغيل من جذر المشروع:
 ///   dart run scripts/sync_flavors.dart           — إعداد الـ flavors
@@ -17,6 +18,10 @@ import 'dart:io';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const _settingsFile = 'flavor_settings.json';
+const _envExampleFile = '.env.example.json';
+
+/// يُستخدم فقط لو غاب `.env.example.json` أو كان تالفاً.
+const _envFallback = <String, dynamic>{'BASE_URL': 'https://api.example.com'};
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
@@ -35,26 +40,36 @@ void main(List<String> args) async {
 
   print('📋  Flavors found: ${flavors.keys.join(', ')}\n');
 
-  // 2. Validate icon files exist before doing any work
+  // 2. Create any missing .env.{flavor}.json (git-ignored — never reaches a clone)
+  final envNeedsEditing = _ensureEnvFiles(root, flavors);
+
+  // 3. Validate icon files exist before doing any work
   _validateIcons(root, flavors);
 
-  // 3. Inject productFlavors into android/app/build.gradle.kts
+  // 4. Inject productFlavors into android/app/build.gradle.kts
   _updateBuildGradle(root, flavors);
 
-  // 4. Create per-flavor strings.xml (app name — most reliable approach)
+  // 5. Create per-flavor strings.xml (app name — most reliable approach)
   _updateAndroidStrings(root, flavors);
 
-  // 5. Generate flutter_launcher_icons-{flavor}.yaml files
+  // 6. Generate flutter_launcher_icons-{flavor}.yaml files
   _generateIconYamls(root, flavors);
 
-  // 6. Run flutter_launcher_icons for each flavor
+  // 7. Run flutter_launcher_icons for each flavor
   await _runIconGeneration(root, flavors);
 
-  // 7. Generate .vscode/launch.json
+  // 8. Generate .vscode/launch.json
   _generateLaunchJson(root, flavors);
 
   print('\n✅  sync_flavors done.\n');
   print('─────────────────────────────────────────────────────────────────');
+  if (envNeedsEditing.isNotEmpty) {
+    print('  ⚠️  Set the real API URL in these files before building:');
+    for (final name in envNeedsEditing) {
+      print('      $name');
+    }
+    print('');
+  }
   print('  Next: clean & rebuild the app to see the new icons.');
   print('  flutter clean && flutter pub get');
   print('─────────────────────────────────────────────────────────────────\n');
@@ -101,7 +116,97 @@ Map<String, dynamic> _loadSettings(Directory root) {
   return jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
 }
 
-// ── Step 2 — validate icons ───────────────────────────────────────────────────
+// ── Step 2 — ensure .env.{flavor}.json ────────────────────────────────────────
+
+/// ملفات `.env.{flavor}.json` مُتجاهَلة في git (تحمل روابط API حقيقية)، فمن
+/// يستنسخ المشروع لا تصله — وبدونها ينكسر `flutter run` عند
+/// `--dart-define-from-file`. هذه الخطوة تُنشئ الناقص منها بالشكل الصحيح من
+/// `.env.example.json`، وتُكمل أي مفتاح جديد في ملف قديم.
+///
+/// **لا تُعدَّل قيمة موجودة أبداً** — الموجود يبقى كما هو.
+/// تُرجع أسماء الملفات التي ما زالت تحتاج تعبئة يدوية.
+List<String> _ensureEnvFiles(Directory root, Map<String, dynamic> flavors) {
+  final template = _loadEnvTemplate(root);
+  final needsEditing = <String>[];
+
+  for (final flavor in flavors.keys) {
+    final name = '.env.$flavor.json';
+    final file = File('${root.path}/$name');
+
+    // (أ) غير موجود — يُنشأ من القالب
+    if (!file.existsSync()) {
+      _writeJson(file, template);
+      print('🆕  $name created from $_envExampleFile — fill in the real URL');
+      needsEditing.add(name);
+      continue;
+    }
+
+    final current = _readJsonOrNull(file);
+    if (current == null) {
+      _error('$name is not valid JSON — left untouched. Fix it manually.');
+      needsEditing.add(name);
+      continue;
+    }
+
+    // (ب) موجود لكن ينقصه مفتاح أضافه القالب لاحقاً
+    final missing = template.keys.where((k) => !current.containsKey(k));
+    if (missing.isNotEmpty) {
+      final merged = <String, dynamic>{
+        for (final k in template.keys) k: current[k] ?? template[k],
+        ...current, // مفاتيح إضافية خاصة بالمشروع تبقى كما هي
+      };
+      _writeJson(file, merged);
+      print('➕  $name — added missing key(s): ${missing.join(', ')}');
+      needsEditing.add(name);
+      continue;
+    }
+
+    // (ج) موجود وكامل — لكن هل ما زال يحمل قيمة المثال؟
+    // قيمة فارغة في القالب = مفتاح اختياري، لا placeholder — لا تُنبِّه عليها.
+    final placeholders = template.entries
+        .where((e) => e.value != '' && current[e.key] == e.value)
+        .map((e) => e.key);
+    if (placeholders.isNotEmpty) {
+      _warn('$name still holds example value(s): ${placeholders.join(', ')}');
+      needsEditing.add(name);
+    } else {
+      print('🔐  $name ok');
+    }
+  }
+
+  return needsEditing;
+}
+
+Map<String, dynamic> _loadEnvTemplate(Directory root) {
+  final example = File('${root.path}/$_envExampleFile');
+  if (!example.existsSync()) {
+    _warn('$_envExampleFile not found — using built-in defaults.');
+    return Map<String, dynamic>.of(_envFallback);
+  }
+  final parsed = _readJsonOrNull(example);
+  if (parsed == null || parsed.isEmpty) {
+    _warn('$_envExampleFile is empty or invalid — using built-in defaults.');
+    return Map<String, dynamic>.of(_envFallback);
+  }
+  return parsed;
+}
+
+Map<String, dynamic>? _readJsonOrNull(File file) {
+  try {
+    final decoded = jsonDecode(file.readAsStringSync());
+    return decoded is Map<String, dynamic> ? decoded : null;
+  } on FormatException {
+    return null;
+  }
+}
+
+void _writeJson(File file, Map<String, dynamic> data) {
+  file.writeAsStringSync(
+    '${const JsonEncoder.withIndent('  ').convert(data)}\n',
+  );
+}
+
+// ── Step 3 — validate icons ───────────────────────────────────────────────────
 
 void _validateIcons(Directory root, Map<String, dynamic> flavors) {
   var missing = false;
@@ -123,7 +228,7 @@ void _validateIcons(Directory root, Map<String, dynamic> flavors) {
   }
 }
 
-// ── Step 3 — inject productFlavors into build.gradle.kts ─────────────────────
+// ── Step 4 — inject productFlavors into build.gradle.kts ─────────────────────
 
 void _updateBuildGradle(Directory root, Map<String, dynamic> flavors) {
   final file = File('${root.path}/android/app/build.gradle.kts');
@@ -183,7 +288,7 @@ String _replaceBetweenMarkers(String content, String newBlock) {
   return '${content.substring(0, androidClose)}\n\n$newBlock\n${content.substring(androidClose)}';
 }
 
-// ── Step 4 — per-flavor strings.xml ──────────────────────────────────────────
+// ── Step 5 — per-flavor strings.xml ──────────────────────────────────────────
 
 String _loadPubspecVersion() {
   final file = File('pubspec.yaml');
@@ -234,7 +339,7 @@ void _updateAndroidStrings(Directory root, Map<String, dynamic> flavors) {
   }
 }
 
-// ── Step 5 — flutter_launcher_icons yaml ─────────────────────────────────────
+// ── Step 6 — flutter_launcher_icons yaml ─────────────────────────────────────
 
 void _generateIconYamls(Directory root, Map<String, dynamic> flavors) {
   for (final entry in flavors.entries) {
@@ -265,7 +370,7 @@ void _generateIconYamls(Directory root, Map<String, dynamic> flavors) {
   }
 }
 
-// ── Step 6 — run flutter_launcher_icons ──────────────────────────────────────
+// ── Step 7 — run flutter_launcher_icons ──────────────────────────────────────
 
 Future<void> _runIconGeneration(
   Directory root,
@@ -295,7 +400,7 @@ Future<void> _runIconGeneration(
   }
 }
 
-// ── Step 7 — .vscode/launch.json ─────────────────────────────────────────────
+// ── Step 8 — .vscode/launch.json ─────────────────────────────────────────────
 
 void _generateLaunchJson(Directory root, Map<String, dynamic> flavors) {
   final configs = <Map<String, dynamic>>[];

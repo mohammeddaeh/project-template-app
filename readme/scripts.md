@@ -15,7 +15,7 @@ dart run scripts/<script_name>.dart
 |---|---|
 | `codegen.dart` | توليد الكود (build_runner + مفاتيح الترجمة) |
 | `export.dart` | تصدير APK مع إدارة الإصدار تلقائياً |
-| `sync_flavors.dart` | إعداد/إزالة flavors (Android productFlavors + أسماء + أيقونات + launch.json) |
+| `sync_flavors.dart` | إعداد/إزالة flavors (ملفات `.env` + Android productFlavors + أسماء + أيقونات + launch.json) |
 | `gen_assets.dart` | مسح `assets/` وتوليد `lib/resources/assets.gen.dart` |
 | `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
 | `sync_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
@@ -103,15 +103,34 @@ dart run scripts/sync_flavors.dart --reset   # إزالة كل شيء تابع �
 ```
 
 يقرأ `flavor_settings.json` ويُحدِّث تلقائياً:
-1. `android/app/build.gradle.kts` — يحقن `productFlavors` + `applicationId` لكل flavor بين علامتَي `// BEGIN FLAVORS` / `// END FLAVORS`
-2. `android/app/src/{flavor}/res/values/strings.xml` — اسم التطبيق (مع رقم الإصدار إذا `showVersion: true`)
-3. `flutter_launcher_icons-{flavor}.yaml` — ملف إعداد لكل flavor
-4. يُشغّل `flutter_launcher_icons` لكل flavor لتوليد الأيقونات
-5. `.vscode/launch.json` — إعدادات تشغيل VSCode لكل flavor
+1. `.env.{flavor}.json` — يُنشئ الناقص منها من `.env.example.json` (تفصيل أدناه)
+2. `android/app/build.gradle.kts` — يحقن `productFlavors` + `applicationId` لكل flavor بين علامتَي `// BEGIN FLAVORS` / `// END FLAVORS`
+3. `android/app/src/{flavor}/res/values/strings.xml` — اسم التطبيق (مع رقم الإصدار إذا `showVersion: true`)
+4. `flutter_launcher_icons-{flavor}.yaml` — ملف إعداد لكل flavor
+5. يُشغّل `flutter_launcher_icons` لكل flavor لتوليد الأيقونات
+6. `.vscode/launch.json` — إعدادات تشغيل VSCode لكل flavor
 
-`--reset` يحذف مجلدات `android/app/src/{dev,staging,prod}`، ملفات `flutter_launcher_icons-*.yaml`، كتلة `productFlavors` من `build.gradle.kts`، و`.vscode/launch.json` — إعادة المشروع لوضع Flutter عادي بلا flavors.
+`--reset` يحذف مجلدات `android/app/src/{dev,staging,prod}`، ملفات `flutter_launcher_icons-*.yaml`، كتلة `productFlavors` من `build.gradle.kts`، و`.vscode/launch.json` — إعادة المشروع لوضع Flutter عادي بلا flavors. **لا يحذف ملفات `.env.*.json`** — فهي تحمل روابط حقيقية لا يولّدها شيء.
 
 > ضع أيقونات PNG بحجم 1024×1024 في المسارات المذكورة بـ `flavor_settings.json` (انظر [`assets/app_icons/README.md`](../assets/app_icons/README.md)) قبل تشغيل السكربت.
+
+### 3.1) ملفات البيئة — تُنشأ تلقائياً
+
+`.env.dev.json` · `.env.staging.json` · `.env.prod.json` **مُتجاهَلة في `.gitignore`** (تحمل روابط API حقيقية)، فمن يستنسخ المشروع لا تصله — و`--dart-define-from-file` ينكسر عند أول `flutter run`. لذلك يضمنها السكربت في كل تشغيل:
+
+| الحالة | ما يفعله السكربت |
+|---|---|
+| الملف غير موجود | يُنشئه بكل مفاتيح `.env.example.json` بقيمها المثالية — `🆕` |
+| موجود لكن ينقصه مفتاح أضافه القالب لاحقاً | يضيف المفتاح الناقص فقط — `➕` |
+| موجود وكامل وما زال يحمل قيمة المثال | تحذير `⚠️` بالمفتاح — القيمة لا تُلمس |
+| موجود ومعبَّأ | `🔐 ok` |
+| موجود لكنه JSON تالف | `❌` ويُترك كما هو — يُصلَح يدوياً |
+
+**قيمة موجودة لا تُعدَّل أبداً** — التشغيل المتكرر آمن. قيمة فارغة `""` في القالب تعني مفتاحاً اختيارياً فلا يُنبَّه عليها.
+
+المصدر هو `.env.example.json` (مرفوع في git) — **أضف كل مفتاح بيئة جديد إليه**، وإلا لن يصل مَن يستنسخ المشروع. الملف الوحيد المطلوب اليوم: `BASE_URL` (يقرأه [`lib/core/infra/config/env.dart`](../lib/core/infra/config/env.dart)).
+
+فما يحتاجه المطوّر الجديد هو تشغيل السكربت ثم لصق الروابط الحقيقية في الملفات الثلاثة — السكربت يطبع أسماءها في نهاية تشغيله.
 
 ---
 
@@ -185,6 +204,8 @@ dart run scripts/sync_permissions.dart
 | `.tr()` text doesn't update on locale switch | أضف `context.locale;` في أعلى `build()` / `BlocBuilder.builder` |
 | `injection.config.dart` hash collision (DI fails) | أعد تسمية alias المكرر يدوياً (مثال: `_i693` → `_i6931`) في الملف المولَّد |
 | APK غير موجود بعد `export.dart` | تحقق من وجود `.env.{flavor}.json` بجذر المشروع قبل البناء |
+| `.env.{flavor}.json` مفقود بعد استنساخ المشروع | طبيعي — مُتجاهَل في git. شغّل `dart run scripts/sync_flavors.dart` فيُنشئها، ثم ضع الروابط الحقيقية |
+| `Env.baseUrl` فارغ رغم وجود ملف البيئة | شغّل عبر `--dart-define-from-file=.env.{flavor}.json`، أو من VSCode بإعداد الـflavor المولَّد — `flutter run` المجرَّد لا يقرأ الملف |
 
 ## 8) Script Usage Rules
 

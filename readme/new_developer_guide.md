@@ -8,7 +8,10 @@
 ```bash
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
+dart run scripts/sync_flavors.dart          # flavors + ملفات البيئة + launch.json
 ```
+
+**ملفات `.env.{dev,staging,prod}.json` لا تصل مع الاستنساخ** — مُتجاهَلة في git لأنها تحمل روابط API حقيقية. `sync_flavors.dart` يُنشئ الناقص منها من `.env.example.json` ويطبع أسماءها؛ ضع فيها الروابط الحقيقية التي استلمتها. تفصيل السلوك: [`scripts.md` §3.1](scripts.md).
 
 بعد استنساخ التيمبليت لمشروع جديد، عدّل يدوياً: اسم التطبيق (`flavor_settings.json` → `displayName`)، bundle ID/`applicationId` (`android/app/build.gradle.kts` + `flavor_settings.json`)، واسم package في `pubspec.yaml` إذا لزم. لا يوجد سكربت آلي لهذه الخطوة حالياً.
 
@@ -123,7 +126,7 @@ Guide: [`pagination.md`](pagination.md)
 |--------|---------|
 | `codegen.dart` | build_runner + localization codegen |
 | `export.dart` | Version bump + APK export |
-| `sync_flavors.dart` | Flavor setup/reset (Android productFlavors, names, icons, launch.json) |
+| `sync_flavors.dart` | Flavor setup/reset (`.env.{flavor}.json`, Android productFlavors, names, icons, launch.json) |
 | `gen_assets.dart` | Generate `lib/resources/assets.gen.dart` |
 | `sync_fonts.dart` | Register fonts + generate `app_fonts.dart` |
 | `sync_permissions.dart` | Sync AndroidManifest/Info.plist from `AppFeatures` |
