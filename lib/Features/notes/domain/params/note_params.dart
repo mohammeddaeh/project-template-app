@@ -12,12 +12,12 @@ class ListNotesParams extends UseCaseParams {
 class SaveNoteParams extends UseCaseParams {
   const SaveNoteParams({this.id, required this.title, this.body}) : super();
 
-  final int? id;
+  final String? id;
   final String title;
   final String? body;
 }
 
 class DeleteNoteParams extends UseCaseParams {
   const DeleteNoteParams({required this.id}) : super();
-  final int id;
+  final String id;
 }

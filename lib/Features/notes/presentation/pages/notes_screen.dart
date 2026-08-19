@@ -7,6 +7,7 @@ import 'package:app_template/Features/notes/domain/entities/note.dart';
 import 'package:app_template/Features/notes/presentation/cubits/notes_list_cubit.dart';
 import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
 import 'package:app_template/presentation/feedback/feedback_extension.dart';
+import 'package:app_template/presentation/shared/sync/widgets/pending_changes_chip.dart';
 import 'package:app_template/presentation/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
@@ -46,6 +47,13 @@ class NotesScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(LocaleKeys.notes.tr()),
             actions: [
+              // **The entire cost of showing sync state on a screen.**
+              //
+              // Renders nothing when `AppFeatures.offlineSync` is off or when
+              // there is nothing pending, and resolves its own cubits — so this
+              // line is safe on every build, including the ones that deleted
+              // the module. See `presentation/shared/sync/widgets/`.
+              const PendingChangesChip(),
               // **The entire cost of making a feature transferable, client-side.**
               //
               // No import/export code lives in `Features/notes/` beyond this

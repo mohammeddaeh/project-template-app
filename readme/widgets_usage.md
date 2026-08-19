@@ -844,6 +844,28 @@ DefaultTabController(
 
 ---
 
+## §20-ب · AttachmentView — عرض مرفق
+
+```dart
+AttachmentView(attachmentId: attachment.id, height: 180)
+```
+
+مكتفٍ بذاته: يحلّ الملف بنفسه ويختفي بلا ضرر حين يكون `AppFeatures.offlineSync`
+مطفأً. ويرسم **ثلاث حالات لا اثنتين**:
+
+| الحالة | ما يُعرض |
+|---|---|
+| على القرص | الصورة |
+| غير موجود + إنترنت | يُنزَّل ويُتحقَّق منه ثم يُعرض |
+| **غير موجود + offline** | «غير متوفّر دون اتصال» — **بلون محايد لا خطأ** |
+| فشلٌ حقيقي (الخادم أجاب وشيءٌ فشل) | بلون الخطأ + إعادة محاولة بالضغط |
+
+> **لماذا الثالثة ليست خطأً:** ملفٌ اختياري أُخلي الأسبوع الماضي على جهازٍ خارج
+> التغطية اليوم هو نظامٌ يعمل كما صُمِّم. ورسمُ خطأٍ أحمر له يعلّم المستخدم أن
+> التطبيق معطوب — ومن تعلّم ذلك يتوقف عن الإبلاغ عن الأعطال الحقيقية.
+
+---
+
 ## §21 · Dialogs — حوارات
 
 ```dart
@@ -863,6 +885,17 @@ final confirmed = await AppConfirmDialog.show(
   messageKey: LocaleKeys.areYouSure,
 );
 if (confirmed == true && context.mounted) _proceed();
+
+// ── رسالة تحمل رقماً — `messageArgs` ──
+// «لديك تغييرات غير مُرسَلة» يُتجاهَل؛ «٣٧ تغييراً لم يصل» لا يُتجاهَل.
+// المفتاح بالترجمة يحمل `{count}`.
+await AppConfirmDialog.show(
+  context,
+  titleKey: LocaleKeys.logoutPendingWorkTitle,
+  messageKey: LocaleKeys.logoutPendingWorkMessage,
+  messageArgs: {'count': '$pendingOperations'},
+  isDestructive: true,
+);
 
 // ── ورقة سفلية ──
 context.showAppBottomSheet(

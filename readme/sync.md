@@ -10,11 +10,41 @@
 
 ---
 
-> ## ✅ IMPLEMENTATION STATUS: COMPLETE — BACKEND INTEGRATION REQUIRED
+> ## ◐ IMPLEMENTATION STATUS: PUSH-ONLY — **هذا الملف يصف التصميم لا الكود**
 >
-> All five confirmed defects have been fixed in the codebase (see [Section 3](#3-critical-fixes)).
-> The module is structurally production-ready. **Backend contract compliance is the only remaining blocker.**
-> See [SETUP.md](../lib/modules/sync/SETUP.md) → "Roadmap checklist" before deployment.
+> **صُحِّح 2026-08-17.** كان الرأس يقول «✅ COMPLETE — structurally production-ready»
+> فوق موديول ينقصه نصفه، ولم يكشف ذلك مصرِّف ولا اختبار ولا مراجعة، لأن الادّعاء
+> لم يكن مربوطاً بمعيار قابل للتشغيل.
+>
+> ### الموجود فعلاً
+>
+> قاعدة sqflite بهجرات وفحص سلامة · طابور دفعٍ بأولويات وتراجع أسّي وقفل ·
+> حلّ تعارض · ترحيل نسخ الحمولة · **عقد سيرفر كامل على `notes`** (uuid ·
+> `/delta` · `Idempotency-Key` · 409) · وعلمٌ يُشعل أو يُعطّل ولا يُسقط التطبيق.
+>
+> **ومنذ 2026-08-18 (P2 · P3 · P4):** مثالٌ مرجعي حيّ على `notes` (عقد · مُنفِّذ
+> دفع · مُنفِّذ سحب · ديكور · repository يعمل دون اتصال) · **مسار سحب** بمؤشر
+> keyset ومؤشرٍ لكل كيان بـ`sync_meta` · `SyncGate` يفحص التوكن والاتصال ويسجّل
+> سبب الرفض · و**قراءة تفاعلية ونوعية**: `SyncChangeNotifier` يُبلِّغ عن كل
+> كتّاب `synced_entities` الثلاثة، و`readTyped` يستعمل عقد الفيتشر، والقائمة
+> تُحدِّث نفسها بلا polling.
+>
+> ### غير الموجود — ولا تبنِ عليه
+>
+> **الملفات والمرفقات كلياً** · Manifest وحصّة التخزين · التشغيل بالخلفية.
+> و**`Assignment`/`Location`** لن تُبنى هنا أبداً — شكلٌ مجالي يبنيه المشروع.
+>
+> وما تقرؤه أدناه عن «كل قراءة UI من القاعدة المحلية» (§1.1) صار **ممكناً** لا
+> افتراضياً: القراءة اليوم شبكةٌ-أولاً مع تخزين ما يمرّ ورجوعٍ محليّ عند الفشل.
+> والقلب الكامل إلى محلي-أولاً قرارُ مشروعٍ صارت أدواته موجودة.
+>
+> ### المراجع التنفيذية — وهي المصدر، لا هذا الملف
+>
+> [`lib/modules/sync/PLAN.md`](../lib/modules/sync/PLAN.md) الحالة والمراحل ·
+> [`ARCHITECTURE.md`](../lib/modules/sync/ARCHITECTURE.md) التصميم وجداول v4 ·
+> [`SETUP.md`](../lib/modules/sync/SETUP.md) التركيب و**عقد الحذف** ·
+> [`LOAD_TEST_PLAN.md`](../lib/modules/sync/LOAD_TEST_PLAN.md) ·
+> [`RULES.md`](../lib/modules/sync/RULES.md) القواعد السارية
 
 ---
 

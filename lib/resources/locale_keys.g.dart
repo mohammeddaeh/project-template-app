@@ -153,6 +153,8 @@ abstract class  LocaleKeys {
   static const logOut = 'logOut';
   static const logoutConfirmTitle = 'logoutConfirmTitle';
   static const logoutConfirmMessage = 'logoutConfirmMessage';
+  static const logoutPendingWorkTitle = 'logoutPendingWorkTitle';
+  static const logoutPendingWorkMessage = 'logoutPendingWorkMessage';
   static const exitAppTitle = 'exitAppTitle';
   static const exitAppMessage = 'exitAppMessage';
   static const tabHome = 'tabHome';
@@ -457,6 +459,14 @@ abstract class  LocaleKeys {
   static const typeFullName = 'typeFullName';
   static const testAuthFlowTitle = 'testAuthFlowTitle';
   static const testAuthFlowSubtitle = 'testAuthFlowSubtitle';
+  static const attachments = 'attachments';
+  static const attachmentAdd = 'attachmentAdd';
+  static const attachmentsEmpty = 'attachmentsEmpty';
+  static const attachmentCaptureFailed = 'attachmentCaptureFailed';
+  static const attachmentLoading = 'attachmentLoading';
+  static const attachmentUnavailable = 'attachmentUnavailable';
+  static const attachmentOfflineUnavailable = 'attachmentOfflineUnavailable';
+  static const attachmentFailed = 'attachmentFailed';
   static const notes = 'notes';
   static const noteTitle = 'noteTitle';
   static const noteBody = 'noteBody';

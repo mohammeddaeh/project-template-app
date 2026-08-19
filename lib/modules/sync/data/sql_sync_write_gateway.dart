@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import '../config/sync_mode.dart';
 import '../config/sync_settings_store.dart';
+import '../domain/sync_change_notifier.dart';
 import '../domain/sync_status.dart';
 import '../domain/sync_write_gateway.dart';
 import '../validation/sync_contract_validator.dart';
@@ -14,12 +15,14 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
     this._settingsStore,
     this._uuid,
     this._contractValidator,
+    this._notifier,
   );
 
   final SyncDatabase _database;
   final SyncSettingsStore _settingsStore;
   final Uuid _uuid;
   final SyncContractValidator _contractValidator;
+  final SyncChangeNotifier _notifier;
 
   @override
   Future<void> write(SyncWriteCommand command) async {
@@ -108,12 +111,23 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
         });
       }
     });
+
+    // The user just saved or deleted something. Any screen following this
+    // entity has to see it now — this is the write that makes an offline app
+    // feel instant, and it is the one most easily forgotten, because the
+    // gateway does not go through `SyncEntityStore` at all.
+    _notifier.notify(command.entityName);
   }
 
   SyncStatus _pendingStatus(SyncJobType type) => switch (type) {
         SyncJobType.create => SyncStatus.pendingCreate,
         SyncJobType.update => SyncStatus.pendingUpdate,
         SyncJobType.delete => SyncStatus.pendingDelete,
+        // A file upload does not change the entity's own content — the row is
+        // exactly what the server already has. It is `pending` rather than
+        // `pendingUpdate` so a screen shows "not finished syncing" without
+        // claiming the text was edited.
+        SyncJobType.fileUpload => SyncStatus.pending,
       };
 
   SyncJobType _mergeType({

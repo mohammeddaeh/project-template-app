@@ -129,6 +129,12 @@ class _AppState extends State<App> {
         // Handled by `AbilitiesStore`, which re-reads `/authz/me`. Nothing
         // about the session changed, so the user stays where they are.
         return;
+      case AuthEvent.sessionRefreshDeferred:
+        // A refresh that never reached a server. The session is untouched and
+        // the user is mid-task — navigating here would sign them out for a
+        // dropped packet, which is precisely the defect this event was split
+        // out of. The offline banner already tells them what they need.
+        return;
     }
 
     _router.replaceAll([const LoginRoute()]);

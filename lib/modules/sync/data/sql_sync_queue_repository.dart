@@ -1,12 +1,14 @@
+import '../domain/sync_change_notifier.dart';
 import '../domain/sync_queue_job.dart';
 import '../domain/sync_queue_repository.dart';
 import '../domain/sync_status.dart';
 import 'sync_database.dart';
 
 class SqlSyncQueueRepository implements SyncQueueRepository {
-  SqlSyncQueueRepository(this._database);
+  SqlSyncQueueRepository(this._database, this._notifier);
 
   final SyncDatabase _database;
+  final SyncChangeNotifier _notifier;
 
   @override
   Future<void> enqueue({
@@ -86,7 +88,20 @@ class SqlSyncQueueRepository implements SyncQueueRepository {
     final db = await _database.database;
     final rows = await db.query(
       'sync_queue',
-      where: 'next_retry_at <= ?',
+      // `retry_count < max_retries` is what ends a job's life.
+      //
+      // Without it the only filter was the back-off clock, so a write the
+      // server will never accept — a 422 whose payload is wrong, an entity
+      // whose executor was deleted — came due again every ten minutes for as
+      // long as the app existed. `_handleJobFailure` already computed
+      // `exceeded`, marked the row `failed` and wrote a `deadLetter` line to
+      // the operations log; the queue simply never read any of it back.
+      //
+      // The row is **kept, not deleted**: it holds the payload and the last
+      // error, which is what makes a dead job diagnosable. It is excluded from
+      // execution, not from existence — `max_retries` per row (default 5,
+      // schema v3) stays the single source of truth, and no column changes.
+      where: 'next_retry_at <= ? AND retry_count < max_retries',
       whereArgs: [nowMs],
       orderBy: 'priority ASC, next_retry_at ASC, created_at ASC',
       limit: limit,
@@ -176,6 +191,11 @@ class SqlSyncQueueRepository implements SyncQueueRepository {
         whereArgs: [entityName, localId],
       );
     });
+
+    // A push finished — succeeded, failed, or conflicted. The row's badge
+    // changes even though its content did not, and a list showing "pending"
+    // next to an item that synced ten minutes ago is a list nobody trusts.
+    _notifier.notify(entityName);
   }
 
   @override

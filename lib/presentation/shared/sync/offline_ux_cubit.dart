@@ -8,7 +8,7 @@ import 'package:app_template/presentation/error/ui_action.dart';
 import 'package:app_template/presentation/error/failure_ui_mapper.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../modules/sync/domain/sync_queue_repository.dart';
+import 'package:app_template/modules/sync/sync_plugin.dart';
 
 part 'offline_ux_state.dart';
 

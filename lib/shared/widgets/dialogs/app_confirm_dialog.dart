@@ -39,6 +39,11 @@ class AppConfirmDialog {
     BuildContext context, {
     required String titleKey,
     required String messageKey,
+    /// Placeholders for [messageKey] — `{count}` in the translation, `{'count': '37'}`
+    /// here. Exists because a confirmation whose stakes are a number is a
+    /// different question at 1 and at 500, and a message that cannot hold the
+    /// number has to hedge into something nobody reads.
+    Map<String, String>? messageArgs,
     String? confirmKey,
     String? cancelKey,
     bool isDestructive = false,
@@ -50,7 +55,7 @@ class AppConfirmDialog {
       barrierDismissible: barrierDismissible,
       child: _AppConfirmDialogContent(
         title:         titleKey.tr(),
-        message:       messageKey.tr(),
+        message:       messageKey.tr(namedArgs: messageArgs),
         confirmText:   (confirmKey ?? LocaleKeys.confirm).tr(),
         cancelText:    (cancelKey  ?? LocaleKeys.cancel).tr(),
         isDestructive: isDestructive,

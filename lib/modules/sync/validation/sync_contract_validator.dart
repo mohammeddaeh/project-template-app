@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:get_it/get_it.dart';
 
+import 'package:app_template/core/platform/logging/log_service.dart';
+
 import '../automation/sync_feature_contract.dart';
 import '../domain/sync_write_gateway.dart';
 import '../domain/syncable_repository.dart';
@@ -26,10 +28,54 @@ class SyncContractValidator {
   final SyncQueueRepository _queueRepository;
   final SyncContractMigrator _migrator;
 
-  void validatePreInitialization() {
+  /// Returns `true` when the module is configured well enough to start.
+  ///
+  /// ## «غير مُعدّ» ليست حالة خطأ — وهذا التمييز هو كل الفرق
+  ///
+  /// كانت هذه الدالة ترمي على القائمة الفارغة: مشروعٌ يقلب
+  /// `AppFeatures.offlineSync` إلى `true` قبل أن يكتب أول عقد كان **يفقد
+  /// الإقلاع كلياً** — الرمية تصعد عبر `SyncSDK.initialize` ثم
+  /// `ModulesBootstrap.initializeAll` إلى `_bootstrap` **قبل `runApp`**، فلا
+  /// شاشة ولا رسالة ولا أثر يدلّ على أن السبب علمٌ قُلب.
+  ///
+  /// والعلَم في هذا القالب عقدٌ معناه «أشعل الموديول أو دعه مطفأً» — لا
+  /// «أسقط التطبيق». فصفر عقود تعني الآن: الموديول غير مُعدّ بعد، يُسجَّل
+  /// ويُترك مطفأً، والتطبيق يعمل.
+  ///
+  /// أمّا **التعارض الحقيقي** فيبقى رمياً: executor مكرَّر · عقد بلا executor
+  /// يشترطه · نسخة عقد لا يدعمها executor. هذه ليست «لم يُعَدّ بعد» بل
+  /// «أُعِدّ خطأً»، وتمريرها بصمت يعني طابوراً يُنفَّذ بالمُنفِّذ الخطأ.
+  bool validatePreInitialization() {
     _validateCoreDependencies(_di);
+
+    final readiness = _describeReadiness(_di);
+    if (readiness != null) {
+      LogService.warning(
+        'Sync module NOT started — $readiness. '
+        'The app runs normally with sync disabled. '
+        'See lib/modules/sync/SETUP.md to configure it.',
+        tag: 'SYNC',
+      );
+      return false;
+    }
+
     _validateExecutorContracts(_di);
-    _validateDecoratorAvailability(_di);
+    return true;
+  }
+
+  /// Returns a human-readable reason when the module is simply not configured,
+  /// or `null` when it has everything it needs to start.
+  String? _describeReadiness(GetIt di) {
+    if (_allContracts(di).isEmpty) {
+      return 'no SyncFeatureContractBase is registered';
+    }
+    if (!di.isRegistered<SyncExecutor>()) {
+      return 'no SyncExecutor is registered';
+    }
+    if (!di.isRegistered<SyncRepositoryDecorator>()) {
+      return 'no SyncRepositoryDecorator is registered';
+    }
+    return null;
   }
 
   void validatePostDecoration() {
@@ -108,20 +154,11 @@ class SyncContractValidator {
     }
   }
 
+  /// Runs only after [_describeReadiness] confirmed contracts and executors
+  /// exist — so everything it throws is a genuine misconfiguration, never a
+  /// "not set up yet".
   void _validateExecutorContracts(GetIt di) {
     final contracts = _allContracts(di);
-    if (contracts.isEmpty) {
-      throw SyncContractValidationException(
-        'no sync feature contracts were registered. '
-        'Register at least one SyncFeatureContractBase implementation.',
-      );
-    }
-
-    if (!di.isRegistered<SyncExecutor>()) {
-      throw SyncContractValidationException(
-        'no SyncExecutor instances registered in DI graph.',
-      );
-    }
 
     // Build Map<entityName, SyncExecutor> and count duplicates in one pass — O(m).
     // This avoids a repeated firstWhere() inside the version-check loop below (was O(n×m)).
@@ -160,14 +197,6 @@ class SyncContractValidator {
           'does not support current contract version ${contract.contractVersion}.',
         );
       }
-    }
-  }
-
-  void _validateDecoratorAvailability(GetIt di) {
-    if (!di.isRegistered<SyncRepositoryDecorator>()) {
-      throw SyncContractValidationException(
-        'no SyncRepositoryDecorator registrations found.',
-      );
     }
   }
 

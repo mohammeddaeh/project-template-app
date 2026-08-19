@@ -7,7 +7,7 @@ import 'package:sqflite/sqflite.dart';
 
 class SyncDatabase {
   static const String dbName = 'app_sync.db';
-  static const int dbVersion = 3;
+  static const int dbVersion = 4;
 
   Database? _db;
 
@@ -31,7 +31,26 @@ class SyncDatabase {
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON;');
-        await db.execute('PRAGMA journal_mode = WAL;');
+        // `rawQuery`, not `execute` — and the difference is fatal, not stylistic.
+        //
+        // `PRAGMA journal_mode` **returns a row** (the mode it settled on). On
+        // Android sqflite routes `execute` to `SQLiteDatabase.execSQL`, which
+        // refuses any statement that returns rows:
+        //
+        //   DatabaseException(unknown error (code 0 SQLITE_OK): Queries can be
+        //   performed using SQLiteDatabase query or rawQuery methods only.)
+        //   sql 'PRAGMA journal_mode = WAL;' args [] during open, closing...
+        //
+        // Confirmed on a device, not inferred: the throw escapes `openDatabase`
+        // before `onCreate` runs, so **no table is ever created** — the file
+        // held nothing but Android's own `android_metadata`. It then travels up
+        // through `getAllJobs` → `migrateAndValidateQueuedJobs` into the catch
+        // in `SyncSDK.initialize`, which disables the module and lets the app
+        // continue. The observable result was an app running fully online with
+        // `AppFeatures.offlineSync = true`, no crash and no failing test.
+        //
+        // `_checkIntegrity` below already uses `rawQuery` for the same reason.
+        await db.rawQuery('PRAGMA journal_mode = WAL;');
       },
     );
   }
@@ -65,6 +84,7 @@ class SyncDatabase {
 
   Future<void> _onCreate(Database db, int version) async {
     await _createV3Schema(db);
+    await _createV4Schema(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -91,6 +111,87 @@ class SyncDatabase {
         'CREATE INDEX idx_sync_queue_due ON sync_queue(priority ASC, next_retry_at ASC, created_at ASC);',
       );
     }
+    if (oldVersion < 4) {
+      // Purely additive — two new tables and their indexes. No existing column
+      // changes type or meaning, so an upgrade cannot lose a queued write.
+      await _createV4Schema(db);
+    }
+  }
+
+  /// Attachments and their download queue.
+  ///
+  /// **No BLOBs.** The bytes live in the app's private documents directory and
+  /// this table holds only what is needed to find, verify and re-fetch them.
+  /// A 5 GB round stored as BLOBs would be a 5 GB database file that
+  /// `PRAGMA integrity_check` walks on every launch, that `VACUUM` needs 5 GB
+  /// of free space to compact, and that cannot resume a partial download at all.
+  Future<void> _createV4Schema(Database db) async {
+    await db.execute('''
+      CREATE TABLE attachments(
+        attachment_id    TEXT PRIMARY KEY,
+        entity_name      TEXT NOT NULL,
+        entity_local_id  TEXT NOT NULL,
+        role             TEXT NULL,
+        remote_url       TEXT NULL,
+        local_path       TEXT NULL,
+        file_name        TEXT NOT NULL,
+        mime_type        TEXT NULL,
+        size_bytes       INTEGER NULL,
+        checksum         TEXT NULL,
+        checksum_algo    TEXT NULL,
+        bytes_received   INTEGER NOT NULL DEFAULT 0,
+        download_status  TEXT NOT NULL DEFAULT 'absent',
+        upload_status    TEXT NOT NULL DEFAULT 'notApplicable',
+        origin           TEXT NOT NULL,
+        is_required      INTEGER NOT NULL DEFAULT 0,
+        last_accessed_at INTEGER NULL,
+        retry_count      INTEGER NOT NULL DEFAULT 0,
+        last_error       TEXT NULL,
+        created_at       INTEGER NOT NULL,
+        updated_at       INTEGER NOT NULL
+      );
+    ''');
+
+    // Every attachment of a row, which is how a screen asks for its own files.
+    await db.execute(
+      'CREATE INDEX idx_attachments_entity ON attachments(entity_name, entity_local_id);',
+    );
+
+    // The cache manager's sweep: what may be evicted, oldest first. `origin`
+    // and `is_required` are in the index because they are the filter, not the
+    // result — a sweep that had to read every row to discard most of them would
+    // cost more than the space it reclaims.
+    await db.execute(
+      'CREATE INDEX idx_attachments_evictable ON attachments(origin, is_required, last_accessed_at);',
+    );
+
+    // Files still owed to the server. Partial, because the rows that matter are
+    // a tiny minority and this index is consulted on every sync cycle.
+    await db.execute(
+      "CREATE INDEX idx_attachments_pending_upload ON attachments(upload_status) "
+      "WHERE upload_status NOT IN ('uploaded', 'notApplicable');",
+    );
+
+    await db.execute('''
+      CREATE TABLE download_queue(
+        job_id        TEXT PRIMARY KEY,
+        attachment_id TEXT NOT NULL,
+        priority      INTEGER NOT NULL DEFAULT 50,
+        retry_count   INTEGER NOT NULL DEFAULT 0,
+        max_retries   INTEGER NOT NULL DEFAULT 5,
+        next_retry_at INTEGER NOT NULL,
+        created_at    INTEGER NOT NULL,
+        status        TEXT NOT NULL DEFAULT 'pending',
+        last_error    TEXT NULL
+      );
+    ''');
+
+    await db.execute(
+      'CREATE INDEX idx_download_queue_due ON download_queue(priority ASC, next_retry_at ASC, created_at ASC);',
+    );
+    await db.execute(
+      'CREATE UNIQUE INDEX idx_download_queue_attachment ON download_queue(attachment_id);',
+    );
   }
 
   Future<void> _createV3Schema(Database db) async {

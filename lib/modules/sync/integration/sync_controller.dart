@@ -6,6 +6,7 @@ import 'package:app_template/core/platform/connectivity/connectivity_service.dar
 import '../config/sync_mode.dart';
 import '../config/sync_settings_store.dart';
 import '../engine/sync_engine.dart';
+import 'sync_gate.dart';
 
 /// Triggers [SyncEngine.runPendingJobs] when:
 /// - Network connectivity is restored.
@@ -19,11 +20,13 @@ class SyncController {
     this._settingsStore,
     this._connectivity,
     this._syncEngine,
+    this._gate,
   );
 
   final SyncSettingsStore _settingsStore;
   final Connectivity _connectivity;
   final SyncEngine _syncEngine;
+  final SyncGate _gate;
 
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   Timer? _periodicTimer;
@@ -71,17 +74,7 @@ class SyncController {
     });
   }
 
-  Future<bool> _canSyncNow() async {
-    final settings = await _settingsStore.getSettings();
-    if (settings.mode != SyncMode.active || !settings.syncEnabled) return false;
-
-    // Use template ConnectivityService — single platform abstraction point.
-    final online = await ConnectivityService.isOnline();
-    if (!online) return false;
-
-    if (!settings.wifiOnly) return true;
-
-    final current = await _connectivity.checkConnectivity();
-    return current.contains(ConnectivityResult.wifi);
-  }
+  /// Delegates to [SyncGate], which asks more than connectivity — and says why
+  /// when it refuses. See that class for what it checks and what it does not.
+  Future<bool> _canSyncNow() => _gate.allows();
 }

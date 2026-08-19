@@ -23,7 +23,7 @@ class NoteFormCubit extends SafeCubit<NoteFormState> {
   final SaveNoteUseCase _saveNote;
 
   Future<void> submit({
-    required int? id,
+    required String? id,
     required String title,
     String? body,
   }) async {

@@ -30,7 +30,7 @@
 | [`integration_audit.md`](integration_audit.md) | ✅ **سجلّ مغلق** — خمسة أعطال wire قاطعة، مُصلَحة ومثبَّتة بالطرفين. اقرأه قبل أي عمل يمسّ المصادقة أو شكل أي رد |
 | [`template_enhancements.md`](template_enhancements.md) | **خارطة التطوير — المصدر الوحيد.** بعمودَي حالة (قرطاس / القالب)؛ `✅` بعمود القالب تعني **«له مستهلك هنا»** لا «الملف موجود» |
 | [`test_scenarios_roadmap.md`](test_scenarios_roadmap.md) | خارطة `Features/test/` — لكل سيناريو حالته بالجدول |
-| [`sync.md`](sync.md) | `modules/sync/` **مبنيّ ومطفأ** (`AppFeatures.offlineSync = false`) — وبلا endpoints بالباك |
+| [`sync.md`](sync.md) | ◐ **يصف التصميم لا الكود.** `modules/sync/` صار **يدفع ويسحب** على مثال `notes` حيّ (P0→P3)، والناقص: الملفات · Manifest · الخلفية. الحالة والمراحل: [`lib/modules/sync/PLAN.md`](../lib/modules/sync/PLAN.md) |
 | [`realtime_design.md`](realtime_design.md) | ❌ **غير مبنيّ** — لا `lib/modules/realtime/` أصلاً. ولا تخلطه بـ`modules/multi_device/` المبنيّ |
 
 ---

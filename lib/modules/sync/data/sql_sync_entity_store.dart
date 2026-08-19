@@ -1,14 +1,24 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 
+import 'package:app_template/core/platform/logging/log_service.dart';
+
+import '../automation/sync_feature_contract.dart';
+import '../domain/sync_change_notifier.dart';
 import '../domain/sync_entity_record.dart';
 import '../domain/sync_entity_store.dart';
 import '../domain/sync_status.dart';
 import 'sync_database.dart';
 
 class SqlSyncEntityStore implements SyncEntityStore {
-  SqlSyncEntityStore(this._database);
+  SqlSyncEntityStore(this._database, this._notifier);
 
   final SyncDatabase _database;
+  final SyncChangeNotifier _notifier;
+
+  @override
+  Stream<void> watch(String entityName) => _notifier.watch(entityName);
 
   @override
   Future<void> upsertRecord(SyncEntityRecord record) async {
@@ -16,10 +26,16 @@ class SqlSyncEntityStore implements SyncEntityStore {
     await db.transaction((txn) async {
       await txn.insert('synced_entities', _toMap(record), conflictAlgorithm: ConflictAlgorithm.replace);
     });
+    // After the commit, never before: a listener that refreshes on the
+    // announcement would otherwise read the state that existed before it.
+    _notifier.notify(record.entityName);
   }
 
   @override
-  Future<void> upsertRecords(List<SyncEntityRecord> records) async {
+  Future<void> upsertRecords(
+    List<SyncEntityRecord> records, {
+    bool notify = true,
+  }) async {
     if (records.isEmpty) return;
     final db = await _database.database;
     await db.transaction((txn) async {
@@ -33,6 +49,12 @@ class SqlSyncEntityStore implements SyncEntityStore {
       }
       await batch.commit(noResult: true);
     });
+
+    if (notify) {
+      for (final entity in records.map((r) => r.entityName).toSet()) {
+        _notifier.notify(entity);
+      }
+    }
   }
 
   @override
@@ -58,6 +80,85 @@ class SqlSyncEntityStore implements SyncEntityStore {
     );
 
     return rows.map(_fromMap).toList();
+  }
+
+  @override
+  Future<List<SyncEntityRecord>> getRecordsAfter({
+    required String entityName,
+    required int limit,
+    SyncPageCursor? cursor,
+    bool includeDeleted = false,
+  }) async {
+    final db = await _database.database;
+
+    final where = StringBuffer('entity_name = ?');
+    final args = <Object?>[entityName];
+    if (!includeDeleted) where.write(' AND is_deleted = 0');
+
+    if (cursor != null) {
+      // Strictly *after* the cursor in `(updated_at DESC, local_id DESC)` order.
+      // The second clause is what makes rows sharing a millisecond resumable:
+      // without it a page boundary inside such a group skips the rest of it.
+      where.write(' AND (updated_at < ? OR (updated_at = ? AND local_id < ?))');
+      args..add(cursor.updatedAt)..add(cursor.updatedAt)..add(cursor.localId);
+    }
+
+    final rows = await db.query(
+      'synced_entities',
+      where: where.toString(),
+      whereArgs: args,
+      orderBy: 'updated_at DESC, local_id DESC',
+      limit: limit,
+    );
+
+    return rows.map(_fromMap).toList();
+  }
+
+  @override
+  Future<SyncTypedPage<T>> readTyped<T>({
+    required SyncFeatureContract<T> contract,
+    required int limit,
+    SyncPageCursor? cursor,
+    bool includeDeleted = false,
+  }) async {
+    final records = await getRecordsAfter(
+      entityName: contract.entityName,
+      limit: limit,
+      cursor: cursor,
+      includeDeleted: includeDeleted,
+    );
+
+    final parsed = <T>[];
+    for (final record in records) {
+      try {
+        parsed.add(
+          contract.fromJson(jsonDecode(record.dataJson) as Map<String, dynamic>),
+        );
+      } catch (e) {
+        // Skipped, not fatal — one unreadable row must not blank a list. And
+        // logged, because a store that silently drops rows is indistinguishable
+        // from one that never had them.
+        LogService.error(
+          'Unreadable ${contract.entityName} row "${record.localId}" — skipped.',
+          tag: 'SYNC',
+          error: e,
+        );
+      }
+    }
+
+    return SyncTypedPage<T>(
+      items: parsed,
+      hasMore: records.length == limit,
+      // From the last **record**, not the last parsed item: a row that failed
+      // to parse still holds its place in the ordering, and a cursor that
+      // skipped over it would re-serve it on every page from here on.
+      nextCursor: records.isEmpty
+          ? null
+          : SyncPageCursor(
+              updatedAt: records.last.updatedAt,
+              localId: records.last.localId,
+            ),
+    );
   }
 
   @override

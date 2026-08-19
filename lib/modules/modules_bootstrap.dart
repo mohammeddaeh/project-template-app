@@ -9,8 +9,7 @@ import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
 import 'package:app_template/modules/multi_device/multi_device_plugin.dart';
 import 'package:app_template/modules/push_notifications/push_notifications_module.dart';
 import 'package:app_template/modules/remote_config/remote_config_module.dart';
-import 'package:app_template/modules/sync/sdk/sync_sdk.dart';
-import 'package:app_template/modules/sync/sdk/sync_sdk_config.dart';
+import 'package:app_template/modules/sync/sync_plugin.dart';
 
 /// Single, ordered activation point for ALL optional modules.
 ///

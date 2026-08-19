@@ -35,7 +35,7 @@
 | `modules/data_transfer/` | **استيراد/تصدير عام — صفر Dart لكل feature.** الشاشتان تُبنيان من `GET /data-transfer/resources`، فـfeature تُعلن قابليتها بالباك تظهر بنسخة مبنية قبل وجودها. سطر الدخول: `DataTransferSheet.show(context, resource: 'notes')`. علَم: `AppFeatures.dataTransfer`. ⚠️ `/export` يردّ **بايتات لا مغلّفاً** — راجع `readme/data_transfer.md` |
 | `modules/access_control/` | **صلاحيات عامة — صفر Dart لكل صلاحية.** المفتاح يُعلَن في السطر الذي يحميه بالباك (`requirePermission('notes.update')`)، ويُلمّ تلقائياً، فتظهر بطاقته في شاشة الأدوار المبنيّة من `GET /authz/catalog`. سطر الدخول: `Can(permission: PermKeys.notesDelete, child: …)` — **والمفتاح لا يُكتب نصّاً خاماً أبداً**: `PermKeys` مولَّد من `permissions.lock.json`، فمفتاحٌ يحذفه الباك يكسر البناء بدل أن يُخفي زرّاً للأبد بصمت. علَم: `AppFeatures.accessControl` + `AUTHZ_ENABLED` بالباك. ⚠️ **بوابة العميل ليست حدّ الأمان** — راجع `readme/permissions.md` |
 | `modules/multi_device/` | الأجهزة والجلسات النشطة. علَم: `AppFeatures.multiDevice` |
-| `modules/sync/` | محرّك المزامنة دون اتصال. علَم: `AppFeatures.offlineSync` |
+| `modules/sync/` | محرّك المزامنة دون اتصال. علَم: `AppFeatures.offlineSync`. يدفع ويسحب، بمثال حيّ على `notes` بالطرفين. **المرفقات مبنيّة** (تخزين خاص · `Range` · checksum · Cache Manager). ⚠️ بلا Manifest ولا حصّة ولا خلفية. اقرأ [`lib/modules/sync/PLAN.md`](lib/modules/sync/PLAN.md) قبل البناء عليه |
 
 > `Features/test/` **لا تُبنى في production** — `AppFeatures.debugSkipLogin = false` يخفيها تماماً.
 
@@ -98,7 +98,12 @@ modules     → Features      ❌ NEVER
 | `readme/permissions.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
 | `readme/widgets_usage.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود |
 | `readme/test_scenarios_roadmap.md` | تنفيذ سيناريو بـ`Features/test/` أو تغيير حالته |
-| `readme/sync.md` | تغيير `modules/sync/` (مبنيّ ومطفأ) |
+| `readme/sync.md` | تغيير `modules/sync/` — راجع رأس الملف لحدود ما هو مبنيّ |
+| `lib/modules/sync/PLAN.md` | **إنهاء أي مرحلة P0–P9** — الحالة والتاريخ ومعيار القبول. ويُحدَّث معه سجلّ النقل بـ`Qirtas/qirtas_app/lib/modules/sync/PORT_STATUS.md` |
+| `lib/modules/sync/ARCHITECTURE.md` | تغيير مخطَّط v4 · دورة حياة حزمة أو ملف · ترتيب الدورة · شروط `SyncGate` |
+| `lib/modules/sync/SETUP.md` | تغيير خطوات التركيب · **أو أي منفذ جديد يمسّ عقد الحذف** |
+| `lib/modules/sync/LOAD_TEST_PLAN.md` | تغيير سيناريو تجريب أو محور قياس أو عتبة |
+| `lib/modules/sync/RULES.md` | **أي رقم يخرج من P8** — لا يُملأ من تقدير |
 | `readme/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
 
 > **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** الأربعة الأخيرة كانت خارجه حتى

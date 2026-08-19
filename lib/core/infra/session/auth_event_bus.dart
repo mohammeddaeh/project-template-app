@@ -12,6 +12,29 @@ enum AuthEvent {
   /// [MultiDeviceInterceptor] fires this; app.dart shows a specific message.
   sessionRevoked,
 
+  /// A token refresh **could not be delivered** — the request never reached a
+  /// server. Transient by definition, and **not** a reason to sign anyone out.
+  ///
+  /// ## The distinction this event exists to make
+  ///
+  /// [sessionExpired] used to cover both cases, because the refresh path caught
+  /// every exception in one `catch` and treated them alike. But "the server
+  /// refused this credential" and "this request never arrived" are opposite
+  /// facts: the first is terminal, the second clears the moment the signal does.
+  ///
+  /// Conflating them signs a user out for a dropped packet. On a phone that is
+  /// a nuisance; on a field device holding a queue of unsynced work it is worse
+  /// than a nuisance, because the user is ejected to a login screen they cannot
+  /// pass — there is no network to log in with — while their morning's work
+  /// sits in a queue behind an account the app no longer believes in.
+  ///
+  /// **Nothing navigates on this event.** The session stays exactly as it was;
+  /// the next request retries, and the one after that. It is emitted so the app
+  /// can say "not synced yet" instead of saying nothing.
+  ///
+  /// Not deduplicated: every failed attempt is a fresh fact about right now.
+  sessionRefreshDeferred,
+
   /// The server refused an action the client believed was allowed (403 with
   /// `permission_missing`).
   ///

@@ -7,6 +7,7 @@ import 'package:app_template/Features/notes/domain/entities/note.dart';
 import 'package:app_template/Features/notes/presentation/cubits/note_form_cubit.dart';
 import 'package:app_template/presentation/extensions/extensions.dart';
 import 'package:app_template/presentation/feedback/feedback_extension.dart';
+import 'package:app_template/presentation/shared/sync/widgets/attachments_section.dart';
 import 'package:app_template/presentation/shared/refresh/refresh_cubit.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/shared/widgets/widgets.dart';
@@ -136,6 +137,31 @@ class _NoteFormScreenState extends State<NoteFormScreen> {
                       maxLines: 6,
                       textInputAction: TextInputAction.newline,
                     ),
+                    // **The entire cost of giving a feature attachments on
+                    // screen** — capture, offline viewing, upload state and
+                    // re-download all come from this one line. Renders nothing
+                    // when `AppFeatures.offlineSync` is off.
+                    //
+                    // ## Only when editing, and that is a real limitation
+                    //
+                    // An attachment needs an entity id to belong to, and a note
+                    // being created has not been given one yet: today
+                    // `SyncAwareNotesRepository` generates it at save time.
+                    //
+                    // Client-generated identity makes the alternative possible —
+                    // the form could mint the uuid on open, and photographs
+                    // could be taken against a note that does not exist on any
+                    // server. A project that collects evidence before filling in
+                    // the text will want exactly that; it is left out here
+                    // because it complicates the reference form for a case the
+                    // template cannot know it has.
+                    if (_isEditing) ...[
+                      const SizedBox(height: 24),
+                      AttachmentsSection(
+                        entityName: 'notes',
+                        entityLocalId: widget.note!.id,
+                      ),
+                    ],
                     const SizedBox(height: 32),
                     BlocBuilder<RefreshCubit, RefreshState>(
                       bloc: _refreshCubit,

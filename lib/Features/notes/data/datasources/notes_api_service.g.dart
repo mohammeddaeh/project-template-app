@@ -42,10 +42,48 @@ class _NotesApiService implements NotesApiService {
   }
 
   @override
-  Future<HttpResponse<dynamic>> create(NoteRequestDto body) async {
+  Future<HttpResponse<dynamic>> delta({
+    String? updatedSince,
+    String? afterId,
+    String? includeDeleted,
+    int? limit,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'updated_since': updatedSince,
+      r'after_id': afterId,
+      r'include_deleted': includeDeleted,
+      r'limit': limit,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/notes/delta',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> create(
+    NoteRequestDto body, {
+    String? idempotencyKey,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'Idempotency-Key': idempotencyKey};
+    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _options = _setStreamType<HttpResponse<dynamic>>(
@@ -65,10 +103,16 @@ class _NotesApiService implements NotesApiService {
   }
 
   @override
-  Future<HttpResponse<dynamic>> update(int id, NoteRequestDto body) async {
+  Future<HttpResponse<dynamic>> update(
+    String id,
+    NoteRequestDto body, {
+    String? idempotencyKey,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'Idempotency-Key': idempotencyKey};
+    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _options = _setStreamType<HttpResponse<dynamic>>(
@@ -88,10 +132,16 @@ class _NotesApiService implements NotesApiService {
   }
 
   @override
-  Future<HttpResponse<dynamic>> delete(int id) async {
+  Future<HttpResponse<dynamic>> delete(
+    String id, {
+    int? version,
+    String? idempotencyKey,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'version': version};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'Idempotency-Key': idempotencyKey};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)

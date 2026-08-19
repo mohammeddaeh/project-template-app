@@ -55,13 +55,21 @@ enum SyncStatus {
 enum SyncJobType {
   create,
   update,
-  delete;
+  delete,
+
+  /// Bytes the device owes the server.
+  ///
+  /// The enum carried only the three above while `SyncQueueJob.priority`
+  /// documented «90 = file uploads» — an ordering for a job type that could not
+  /// be expressed. Priority now means something on both ends.
+  fileUpload;
 
   static SyncJobType fromRaw(String raw) => switch (raw) {
-        'create' => SyncJobType.create,
-        'update' => SyncJobType.update,
-        'delete' => SyncJobType.delete,
-        _        => SyncJobType.update,
+        'create'     => SyncJobType.create,
+        'update'     => SyncJobType.update,
+        'delete'     => SyncJobType.delete,
+        'fileUpload' => SyncJobType.fileUpload,
+        _            => SyncJobType.update,
       };
 
   String get raw => name;
@@ -72,8 +80,31 @@ enum SyncConflictStrategy {
   /// Apply server version — discard local change. Default for shared data.
   serverWins,
 
-  /// Re-push local version with [X-Force-Override] header.
-  /// Backend must support this header to avoid re-conflicting.
+  /// Keep the local content and make it win — by **rebasing onto the server's
+  /// current version**, not by asking the server to ignore its own rules.
+  ///
+  /// ## What this used to say, and why it could never work
+  ///
+  /// «Re-push local version with `X-Force-Override` header. Backend must
+  /// support this header.» No backend in this project ever did, and the
+  /// resulting path was a closed loop: 409 → re-queue unchanged → the same
+  /// stale base version → 409 → … until `max_retries` marked the job `failed`.
+  /// A strategy named "the client wins" ended with the client losing, five
+  /// attempts later, silently.
+  ///
+  /// ## What it does now
+  ///
+  /// The 409 carries `server_version`. The resolver takes the version number
+  /// from it and stamps it onto the queued payload, leaving the **content**
+  /// untouched. The retry then arrives with a base the server agrees with, so
+  /// the optimistic check passes and the local content is written.
+  ///
+  /// No header, no special endpoint, no server-side exception to the concurrency
+  /// rule — the client simply says "I have seen your version, and I still mean
+  /// this." Which is what winning a conflict actually is.
+  ///
+  /// Falls back to [manual] when the server sends no `server_version`: without
+  /// a base to rebase onto there is nothing to do but ask a person.
   clientWins,
 
   /// Compare [updated_at] timestamps — the newer write wins.

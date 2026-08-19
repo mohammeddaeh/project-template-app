@@ -48,20 +48,73 @@ class SyncSDK {
 
     LogService.debug('SyncSDK initializing...', tag: 'SYNC');
 
-    await registerSyncCore(di);
-    await _applyConfig(di, config);
+    // A module never takes the app down with it.
+    //
+    // Every throw below used to escape into `ModulesBootstrap.initializeAll`,
+    // which is awaited in `main._bootstrap()` **before `runApp`** — so any
+    // failure here, including the ordinary "this project has not configured
+    // sync yet", produced an app that never rendered a frame. No screen, no
+    // message, nothing pointing back at a flag someone flipped.
+    //
+    // The flag's contract is "turn the module on, or leave it off". Sync
+    // failing to start is a disabled module, and the app is expected to keep
+    // running without it.
+    try {
+      await registerSyncCore(di);
+      await _applyConfig(di, config);
 
-    // Release any stale lock left by a previous crash before starting.
-    await di<SyncLock>().releaseIfStale();
+      // Release any stale lock left by a previous crash before starting.
+      await di<SyncLock>().releaseIfStale();
 
-    di<SyncContractValidator>().validatePreInitialization();
-    await di<SyncContractValidator>().migrateAndValidateQueuedJobs();
-    await applySyncRepositoryDecorators(di);
-    di<SyncContractValidator>().validatePostDecoration();
-    await di<SyncController>().init();
+      final validator = di<SyncContractValidator>();
 
-    _isInitialized = true;
-    LogService.debug('SyncSDK initialized.', tag: 'SYNC');
+      // Not configured yet (no contracts / executors / decorators) — already
+      // logged by the validator. Leave the module off and let the app run.
+      if (!validator.validatePreInitialization()) return;
+
+      await validator.migrateAndValidateQueuedJobs();
+
+      // **The engine starts before the repositories are swapped.**
+      //
+      // The order used to be the other way round, and it left a window with no
+      // way out of it: a failure between decoration and `init()` produced
+      // repositories that queue writes into a store nothing drains. Every save
+      // would appear to succeed, forever, and nothing would ever be sent —
+      // while `GetIt` registrations, once replaced, cannot be rolled back.
+      //
+      // Reversed, the same failure leaves the plain online repositories in
+      // place: the app behaves exactly as it does with the module switched off,
+      // which is a state it is designed to work in.
+      await di<SyncController>().init();
+      await applySyncRepositoryDecorators(di);
+      validator.validatePostDecoration();
+
+      _isInitialized = true;
+      LogService.debug('SyncSDK initialized.', tag: 'SYNC');
+    } catch (e, st) {
+      LogService.error(
+        'SyncSDK failed to initialize — module disabled, app continues. '
+        'If repository decorators were applied before the failure, those '
+        'repositories now read from a local store that nothing drains: treat '
+        'this as a release blocker, not a warning.',
+        tag: 'SYNC',
+        error: e,
+        stackTrace: st,
+      );
+      await _disposeQuietly(di);
+      _isInitialized = false;
+    }
+  }
+
+  /// Best-effort teardown after a failed [initialize]. Never rethrows —
+  /// a failure while cleaning up a failure must not reach the app either.
+  static Future<void> _disposeQuietly(GetIt di) async {
+    if (!di.isRegistered<SyncController>()) return;
+    try {
+      await di<SyncController>().dispose();
+    } catch (e) {
+      LogService.warning('SyncController disposal failed: $e', tag: 'SYNC');
+    }
   }
 
   static Future<void> shutdown(GetIt di) async {

@@ -51,6 +51,25 @@ class _LogoutSectionState extends State<LogoutSection> {
     }
   }
 
+  /// Second gate: the user has already said "sign out", and the device turns
+  /// out to be holding work that exists nowhere else.
+  ///
+  /// Signing out strands it — the queue outlives the token, and only the
+  /// account that wrote those operations can ever push them. So this is not a
+  /// warning to acknowledge; it is a decision, and it is the user's.
+  Future<void> _confirmDiscardPending(int pendingOperations) async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      titleKey: LocaleKeys.logoutPendingWorkTitle,
+      messageKey: LocaleKeys.logoutPendingWorkMessage,
+      messageArgs: {'count': '$pendingOperations'},
+      isDestructive: true,
+    );
+    if (confirmed == true && mounted) {
+      _cubit.logout(force: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr() on locale change
@@ -60,6 +79,12 @@ class _LogoutSectionState extends State<LogoutSection> {
       listener: (context, state) {
         state.maybeWhen(
           error: (msg) => context.feedback.error(msg),
+          // The cubit refused to decide on the user's behalf, so ask. A second
+          // dialog for a second question: the first asked "sign out?", this one
+          // says what signing out costs *right now* — and the count is the whole
+          // message. "You have unsynced work" is ignorable; "37 changes have not
+          // been sent" is not.
+          pendingWork: (count) => _confirmDiscardPending(count),
           orElse: () {},
         );
       },

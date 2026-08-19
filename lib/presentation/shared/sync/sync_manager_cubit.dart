@@ -3,8 +3,7 @@ import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../modules/sync/domain/sync_queue_repository.dart';
-import '../../../modules/sync/integration/sync_controller.dart';
+import 'package:app_template/modules/sync/sync_plugin.dart';
 
 part 'sync_manager_state.dart';
 

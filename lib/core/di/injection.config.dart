@@ -16,6 +16,8 @@ import 'package:app_template/core/foundation/contracts/locale_provider.dart'
     as _i702;
 import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart'
     as _i371;
+import 'package:app_template/core/foundation/contracts/unsynced_work_probe.dart'
+    as _i428;
 import 'package:app_template/core/infra/network/interceptors/auth_interceptor.dart'
     as _i275;
 import 'package:app_template/core/infra/network/interceptors/internet_checker_interceptor.dart'
@@ -151,6 +153,16 @@ import 'package:app_template/Features/notes/data/datasources/notes_remote_dataso
     as _i723;
 import 'package:app_template/Features/notes/data/repositories/notes_repository_impl.dart'
     as _i6;
+import 'package:app_template/Features/notes/data/sync/notes_attachment_target.dart'
+    as _i62;
+import 'package:app_template/Features/notes/data/sync/notes_feature_contract.dart'
+    as _i685;
+import 'package:app_template/Features/notes/data/sync/notes_sync_decorator.dart'
+    as _i938;
+import 'package:app_template/Features/notes/data/sync/notes_sync_executor.dart'
+    as _i394;
+import 'package:app_template/Features/notes/data/sync/notes_sync_pull_executor.dart'
+    as _i720;
 import 'package:app_template/Features/notes/domain/repositories/notes_repository.dart'
     as _i319;
 import 'package:app_template/Features/notes/domain/usecases/notes_usecases.dart'
@@ -159,10 +171,7 @@ import 'package:app_template/Features/notes/presentation/cubits/note_form_cubit.
     as _i47;
 import 'package:app_template/Features/notes/presentation/cubits/notes_list_cubit.dart'
     as _i1004;
-import 'package:app_template/modules/sync/domain/sync_queue_repository.dart'
-    as _i652;
-import 'package:app_template/modules/sync/integration/sync_controller.dart'
-    as _i882;
+import 'package:app_template/modules/sync/sync_plugin.dart' as _i590;
 import 'package:app_template/presentation/feedback/app_feedback_service.dart'
     as _i52;
 import 'package:app_template/presentation/shared/connectivity/connectivity_cubit.dart'
@@ -180,6 +189,7 @@ import 'package:hive_flutter/hive_flutter.dart' as _i986;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     as _i973;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:uuid/uuid.dart' as _i706;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -197,6 +207,13 @@ extension GetItInjectableX on _i174.GetIt {
     await gh.lazySingletonAsync<_i986.Box<dynamic>>(
       () => injectableModule.appStorageBox,
       preResolve: true,
+    );
+    await gh.lazySingletonAsync<_i460.SharedPreferences>(
+      () => injectableModule.sharedPreferences,
+      preResolve: true,
+    );
+    gh.lazySingleton<_i428.UnsyncedWorkProbe>(
+      () => injectableModule.unsyncedWorkProbe,
     );
     gh.lazySingleton<_i434.EncryptionService>(
       () => injectableModule.encryptionService,
@@ -219,6 +236,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i27.DeviceLabelService>(() => _i27.DeviceLabelService());
     gh.lazySingleton<_i921.NavigationCubit>(() => _i921.NavigationCubit());
     gh.lazySingleton<_i988.AppTheme>(() => _i988.AppTheme());
+    gh.lazySingleton<_i590.SyncRepositoryDecorator>(
+      () => const _i938.NotesSyncRepositoryDecorator(),
+    );
+    gh.lazySingleton<_i590.AttachmentUploadTarget>(
+      () => _i62.NotesAttachmentUploadTarget(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i979.NetworkStateMonitor>(
       () => _i894.NetworkStateMonitorImpl(),
     );
@@ -226,6 +249,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i493.ConnectivityCubit(gh<_i979.NetworkStateMonitor>()),
     );
     gh.lazySingleton<_i135.MediaService>(() => _i347.MediaServiceImpl());
+    gh.lazySingleton<_i590.SyncFeatureContractBase>(
+      () => const _i685.NotesFeatureContract(),
+    );
     gh.lazySingleton<_i888.UrlLauncherService>(
       () => _i866.UrlLauncherServiceImpl(),
     );
@@ -257,12 +283,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => injectableModule.verifyEmailApiService(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i702.LocaleProvider>(() => _i259.AppLocaleProvider());
-    gh.lazySingleton<_i442.SyncManagerCubit>(
-      () => _i442.SyncManagerCubit(
-        gh<_i882.SyncController>(),
-        gh<_i652.SyncQueueRepository>(),
-      ),
-    );
     gh.lazySingleton<_i235.InternetCheckerInterceptor>(
       () => _i235.InternetCheckerInterceptor(
         gh<_i973.InternetConnectionChecker>(),
@@ -280,6 +300,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i615.RegisterRemoteDataSource>(
       () => _i615.RegisterRemoteDataSource(gh<_i342.RegisterApiService>()),
     );
+    gh.lazySingleton<_i442.SyncManagerCubit>(
+      () => _i442.SyncManagerCubit(
+        gh<_i590.SyncController>(),
+        gh<_i590.SyncQueueRepository>(),
+      ),
+    );
     gh.lazySingleton<_i414.MeRemoteDataSource>(
       () => _i414.MeRemoteDataSource(gh<_i713.MeApiService>()),
     );
@@ -292,7 +318,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i644.OfflineUxCubit>(
       () => _i644.OfflineUxCubit(
         gh<_i979.NetworkStateMonitor>(),
-        gh<_i652.SyncQueueRepository>(),
+        gh<_i590.SyncQueueRepository>(),
       ),
     );
     gh.lazySingleton<_i997.PasswordResetRemoteDataSource>(
@@ -324,8 +350,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i148.HandleBodyResponse>(),
       ),
     );
+    gh.lazySingleton<_i590.SyncExecutor>(
+      () => _i394.NotesSyncExecutor(gh<_i723.NotesRemoteDataSource>()),
+    );
     gh.lazySingleton<_i188.AuthNetworkGateway>(
       () => injectableModule.authNetworkGateway(gh<_i512.SessionRepository>()),
+    );
+    gh.lazySingleton<_i590.SyncPullExecutor>(
+      () => _i720.NotesSyncPullExecutor(gh<_i723.NotesRemoteDataSource>()),
     );
     gh.singleton<_i508.CurrentUserRepository>(
       () => _i508.CurrentUserRepository(gh<_i104.StorageService>()),
@@ -426,9 +458,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i179.VerifyEmailUseCase>(
       () => _i179.VerifyEmailUseCase(gh<_i784.VerifyEmailRepository>()),
     );
-    gh.factory<_i478.LogoutCubit>(
-      () => _i478.LogoutCubit(gh<_i850.LogoutUseCase>()),
-    );
     gh.factory<_i351.GetCurrentUserUseCase>(
       () => _i351.GetCurrentUserUseCase(gh<_i475.MeRepository>()),
     );
@@ -436,12 +465,19 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1004.NotesListCubit(
         gh<_i750.ListNotesUseCase>(),
         gh<_i750.DeleteNoteUseCase>(),
+        gh<_i319.NotesRepository>(),
       ),
     );
     gh.factory<_i680.VerifyEmailCubit>(
       () => _i680.VerifyEmailCubit(
         gh<_i179.VerifyEmailUseCase>(),
         gh<_i848.ResendVerificationUseCase>(),
+      ),
+    );
+    gh.factory<_i478.LogoutCubit>(
+      () => _i478.LogoutCubit(
+        gh<_i850.LogoutUseCase>(),
+        gh<_i428.UnsyncedWorkProbe>(),
       ),
     );
     gh.factory<_i47.NoteFormCubit>(

@@ -18,10 +18,19 @@ final class ServerWinsResolution extends ConflictResolution {
   final SyncEntityRecord serverRecord;
 }
 
-/// Re-push local version with force flag.
+/// Keep the local content and retry it **rebased onto [rebaseToVersion]**.
+///
+/// The version is the server's current one, taken from the 409 body. Re-queuing
+/// the job with its original base version instead would hit the same optimistic
+/// check and produce the same 409 — a loop that ends in `failed` and looks, from
+/// the outside, exactly like a server that keeps rejecting a valid write.
+///
+/// `null` means the server sent no `server_version`, so there is nothing to
+/// rebase onto and the engine escalates to manual resolution.
 final class ClientWinsResolution extends ConflictResolution {
-  const ClientWinsResolution({required this.localRecord});
+  const ClientWinsResolution({required this.localRecord, this.rebaseToVersion});
   final SyncEntityRecord localRecord;
+  final int? rebaseToVersion;
 }
 
 /// Merged record — non-conflicting fields from client, conflicting from server.
@@ -57,7 +66,7 @@ class SyncConflictResolver {
 
     return switch (strategy) {
       SyncConflictStrategy.serverWins => _serverWins(localRecord, conflict),
-      SyncConflictStrategy.clientWins => ClientWinsResolution(localRecord: localRecord),
+      SyncConflictStrategy.clientWins => _clientWins(localRecord, conflict),
       SyncConflictStrategy.lastWriteWins =>
         _lastWriteWins(localRecord, conflict),
       SyncConflictStrategy.merge => _merge(localRecord, conflict),
@@ -67,6 +76,36 @@ class SyncConflictResolver {
           conflictFields: conflict.conflictFields,
         ),
     };
+  }
+
+  /// Local content, server base.
+  ///
+  /// Without `server_version` there is no base to rebase onto — and re-queuing
+  /// the job unchanged would repeat the conflict until the job dies. Escalating
+  /// to manual is the only honest answer: the client cannot win a race it has
+  /// no way to re-enter.
+  ConflictResolution _clientWins(
+    SyncEntityRecord local,
+    ConflictFailure conflict,
+  ) {
+    final serverVersion = conflict.serverVersion?['version'] as int?;
+    if (serverVersion == null) {
+      LogService.warning(
+        'clientWins for ${local.entityName}/${local.localId} has no '
+        'server_version to rebase onto — escalating to manual rather than '
+        'retrying into the same conflict.',
+        tag: 'SYNC',
+      );
+      return ManualResolutionRequired(
+        localRecord: local,
+        serverSnapshot: conflict.serverVersion ?? const {},
+        conflictFields: conflict.conflictFields,
+      );
+    }
+    return ClientWinsResolution(
+      localRecord: local,
+      rebaseToVersion: serverVersion,
+    );
   }
 
   ConflictResolution _serverWins(
@@ -90,7 +129,9 @@ class SyncConflictResolver {
   ) {
     final sv = conflict.serverVersion;
     final cv = conflict.clientVersion;
-    if (sv == null) return ClientWinsResolution(localRecord: local);
+    // No server snapshot means no basis for the comparison this strategy is —
+    // and no base to rebase onto either. Hand it to a person.
+    if (sv == null) return _clientWins(local, conflict);
     final serverUpdatedAt = sv['updated_at'];
     final clientUpdatedAt = cv?['updated_at'];
     final serverMs = _parseUpdatedAt(serverUpdatedAt);
@@ -99,7 +140,9 @@ class SyncConflictResolver {
     if (serverMs >= clientMs) {
       return _serverWins(local, conflict);
     }
-    return ClientWinsResolution(localRecord: local);
+    // The client wrote later, so its content stands — but it still has to be
+    // rebased, or the retry hits the same optimistic check it just failed.
+    return _clientWins(local, conflict);
   }
 
   ConflictResolution _merge(
@@ -108,7 +151,10 @@ class SyncConflictResolver {
   ) {
     final sv = conflict.serverVersion;
     if (sv == null || conflict.conflictFields.isEmpty) {
-      return ClientWinsResolution(localRecord: local);
+      // Nothing to merge — either the server sent no snapshot, or it named no
+      // conflicting field, which means the local content stands as it is. It
+      // still needs a rebase to get past the optimistic check.
+      return _clientWins(local, conflict);
     }
     try {
       final localData = jsonDecode(local.dataJson) as Map<String, dynamic>;

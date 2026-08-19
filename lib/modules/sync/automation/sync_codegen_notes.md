@@ -1,7 +1,16 @@
 # Sync Feature Adapter Generator (Design Contract)
 
-This SDK now supports auto-discovered decorators/executors through DI.
-To reach zero-boilerplate onboarding, code-generation should produce feature sync files from `SyncFeatureContract`.
+> ⚠️ **This document describes a planned / historical code-generation approach.
+> It is not the currently implemented runtime mechanism.** No generator, no
+> `source_gen` builder and no `generated/` output exists in this repository.
+> Feature sync adapters are written by hand — see `SETUP.md` §Step 3 and the
+> reference implementation in `lib/Features/notes/data/sync/`.
+
+What the SDK *does* support today is auto-discovery of decorators and executors
+through DI: `SyncSDK.initialize` resolves every registered `SyncExecutor`,
+`SyncPullExecutor` and `SyncRepositoryDecorator` from the container, so adding
+an entity needs no edit to the module. Everything below describes generating
+those files rather than writing them, and remains a proposal.
 
 ## Input expected from feature developer
 

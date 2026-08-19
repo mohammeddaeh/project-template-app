@@ -52,6 +52,12 @@ class NotesRepositoryImpl extends BaseRepository implements NotesRepository {
         return const Right(null);
       });
 
+  /// Nothing changes behind an online-only repository's back: every row it
+  /// serves came from a request the caller made, and there is no local store
+  /// for a background process to write into.
+  @override
+  Stream<void> watch() => const Stream<void>.empty();
+
   /// A 422 arrives with `errors: {field: [messages]}`, and `HandleBodyResponse`
   /// already turned that into the message carried here — so the form shows the
   /// server's own wording for "title is required" rather than a local guess at

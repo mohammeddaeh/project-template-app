@@ -55,14 +55,15 @@ extension LogoutStatePatterns on LogoutState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LogoutInitial value)?  initial,TResult Function( LogoutLoading value)?  loading,TResult Function( LogoutSuccess value)?  success,TResult Function( LogoutError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LogoutInitial value)?  initial,TResult Function( LogoutLoading value)?  loading,TResult Function( LogoutSuccess value)?  success,TResult Function( LogoutError value)?  error,TResult Function( LogoutPendingWork value)?  pendingWork,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LogoutInitial() when initial != null:
 return initial(_that);case LogoutLoading() when loading != null:
 return loading(_that);case LogoutSuccess() when success != null:
 return success(_that);case LogoutError() when error != null:
-return error(_that);case _:
+return error(_that);case LogoutPendingWork() when pendingWork != null:
+return pendingWork(_that);case _:
   return orElse();
 
 }
@@ -80,14 +81,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LogoutInitial value)  initial,required TResult Function( LogoutLoading value)  loading,required TResult Function( LogoutSuccess value)  success,required TResult Function( LogoutError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LogoutInitial value)  initial,required TResult Function( LogoutLoading value)  loading,required TResult Function( LogoutSuccess value)  success,required TResult Function( LogoutError value)  error,required TResult Function( LogoutPendingWork value)  pendingWork,}){
 final _that = this;
 switch (_that) {
 case LogoutInitial():
 return initial(_that);case LogoutLoading():
 return loading(_that);case LogoutSuccess():
 return success(_that);case LogoutError():
-return error(_that);case _:
+return error(_that);case LogoutPendingWork():
+return pendingWork(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +106,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LogoutInitial value)?  initial,TResult? Function( LogoutLoading value)?  loading,TResult? Function( LogoutSuccess value)?  success,TResult? Function( LogoutError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LogoutInitial value)?  initial,TResult? Function( LogoutLoading value)?  loading,TResult? Function( LogoutSuccess value)?  success,TResult? Function( LogoutError value)?  error,TResult? Function( LogoutPendingWork value)?  pendingWork,}){
 final _that = this;
 switch (_that) {
 case LogoutInitial() when initial != null:
 return initial(_that);case LogoutLoading() when loading != null:
 return loading(_that);case LogoutSuccess() when success != null:
 return success(_that);case LogoutError() when error != null:
-return error(_that);case _:
+return error(_that);case LogoutPendingWork() when pendingWork != null:
+return pendingWork(_that);case _:
   return null;
 
 }
@@ -128,13 +131,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function()?  success,TResult Function( String errorMessage)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function()?  success,TResult Function( String errorMessage)?  error,TResult Function( int pendingOperations)?  pendingWork,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LogoutInitial() when initial != null:
 return initial();case LogoutLoading() when loading != null:
 return loading();case LogoutSuccess() when success != null:
 return success();case LogoutError() when error != null:
-return error(_that.errorMessage);case _:
+return error(_that.errorMessage);case LogoutPendingWork() when pendingWork != null:
+return pendingWork(_that.pendingOperations);case _:
   return orElse();
 
 }
@@ -152,13 +156,14 @@ return error(_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function()  success,required TResult Function( String errorMessage)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function()  success,required TResult Function( String errorMessage)  error,required TResult Function( int pendingOperations)  pendingWork,}) {final _that = this;
 switch (_that) {
 case LogoutInitial():
 return initial();case LogoutLoading():
 return loading();case LogoutSuccess():
 return success();case LogoutError():
-return error(_that.errorMessage);case _:
+return error(_that.errorMessage);case LogoutPendingWork():
+return pendingWork(_that.pendingOperations);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +180,14 @@ return error(_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function()?  success,TResult? Function( String errorMessage)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function()?  success,TResult? Function( String errorMessage)?  error,TResult? Function( int pendingOperations)?  pendingWork,}) {final _that = this;
 switch (_that) {
 case LogoutInitial() when initial != null:
 return initial();case LogoutLoading() when loading != null:
 return loading();case LogoutSuccess() when success != null:
 return success();case LogoutError() when error != null:
-return error(_that.errorMessage);case _:
+return error(_that.errorMessage);case LogoutPendingWork() when pendingWork != null:
+return pendingWork(_that.pendingOperations);case _:
   return null;
 
 }
@@ -345,6 +351,72 @@ class _$LogoutErrorCopyWithImpl<$Res>
   return _then(LogoutError(
 errorMessage: null == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class LogoutPendingWork implements LogoutState {
+  const LogoutPendingWork({required this.pendingOperations});
+  
+
+ final  int pendingOperations;
+
+/// Create a copy of LogoutState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LogoutPendingWorkCopyWith<LogoutPendingWork> get copyWith => _$LogoutPendingWorkCopyWithImpl<LogoutPendingWork>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LogoutPendingWork&&(identical(other.pendingOperations, pendingOperations) || other.pendingOperations == pendingOperations));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,pendingOperations);
+
+@override
+String toString() {
+  return 'LogoutState.pendingWork(pendingOperations: $pendingOperations)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LogoutPendingWorkCopyWith<$Res> implements $LogoutStateCopyWith<$Res> {
+  factory $LogoutPendingWorkCopyWith(LogoutPendingWork value, $Res Function(LogoutPendingWork) _then) = _$LogoutPendingWorkCopyWithImpl;
+@useResult
+$Res call({
+ int pendingOperations
+});
+
+
+
+
+}
+/// @nodoc
+class _$LogoutPendingWorkCopyWithImpl<$Res>
+    implements $LogoutPendingWorkCopyWith<$Res> {
+  _$LogoutPendingWorkCopyWithImpl(this._self, this._then);
+
+  final LogoutPendingWork _self;
+  final $Res Function(LogoutPendingWork) _then;
+
+/// Create a copy of LogoutState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? pendingOperations = null,}) {
+  return _then(LogoutPendingWork(
+pendingOperations: null == pendingOperations ? _self.pendingOperations : pendingOperations // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

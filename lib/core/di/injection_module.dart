@@ -10,6 +10,7 @@ import 'package:app_template/Features/auth/login/data/datasources/auth_api_servi
 import 'package:app_template/Features/auth/register/data/datasources/register_api_service.dart';
 import 'package:app_template/Features/notes/data/datasources/notes_api_service.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
+import 'package:app_template/core/foundation/contracts/unsynced_work_probe.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart';
 import 'package:app_template/core/infra/network/interceptors/auth_interceptor.dart';
@@ -37,6 +38,7 @@ import 'package:app_template/routes/router.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'injection.dart';
 
@@ -63,6 +65,27 @@ abstract class InjectableModule {
   StorageService storageService(Box<dynamic> box) =>
       HiveStorageAdapter(box);
 
+  /// Resolved before DI finishes, because the one thing that asks for it does so
+  /// **synchronously**: `registerSyncCore` binds
+  /// `SharedPrefsSyncSettingsStore(getIt())`, and `SyncSDK.initialize` resolves
+  /// that store as its first act. Registered async without `@preResolve`, the
+  /// synchronous `getIt<SharedPreferences>()` would throw "not ready yet"
+  /// instead — the same failure one word further along.
+  ///
+  /// It was missing entirely until now, and the shape of that absence is worth
+  /// keeping in mind: the binding is lazy, so nothing failed at registration.
+  /// `SyncSDK.initialize` caught the throw, logged it, and disabled the module —
+  /// so `AppFeatures.offlineSync = true` produced an app that ran fully online,
+  /// with no crash, no red test and a clean `dart analyze`.
+  ///
+  /// This is a *second* persistence backend next to [StorageService]'s Hive box,
+  /// used by the sync module alone. That duplication is recorded as ب١٢ in
+  /// `lib/modules/sync/PLAN.md` and is deliberately not addressed here.
+  @preResolve
+  @lazySingleton
+  Future<SharedPreferences> get sharedPreferences =>
+      SharedPreferences.getInstance();
+
   /// Secure encrypted storage — tokens and credentials only.
   /// Adapter: [FlutterSecureStorageAdapter] (Keychain / Keystore).
   /// NEVER store tokens in [StorageService].
@@ -72,6 +95,16 @@ abstract class InjectableModule {
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
     ),
   );
+
+  /// Asked by anything destructive — signing out, switching accounts — before
+  /// it acts.
+  ///
+  /// The default answers zero, which is the truth for an app with no offline
+  /// queue. `registerSyncCore` replaces it with a queue-backed implementation
+  /// when the sync module is switched on, so no caller ever has to ask whether
+  /// it is — a question none of them should be able to answer.
+  @lazySingleton
+  UnsyncedWorkProbe get unsyncedWorkProbe => const NoUnsyncedWorkProbe();
 
   /// Symmetric encryption for sensitive data stored in [StorageService].
   /// Default adapter: [AesEncryptionAdapter] (AES-256-CBC + HMAC-SHA256,

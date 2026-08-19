@@ -25,9 +25,19 @@ abstract class PersistenceKeys {
   /// Used by [SyncLock] to detect stale locks after app crashes.
   static const String syncLockAcquiredAt = 'sync_lock_acquired_at_ms';
 
-  /// Epoch-ms timestamp of the last successful full delta-sync download.
-  /// Used as the `updated_since` cursor on next sync.
-  static const String syncLastDownloadAt = 'sync_last_download_at_ms';
+  // `syncLastDownloadAt` was here, described as "the `updated_since` cursor for
+  // the next sync", and read by **nothing** for its entire life — because no
+  // pull path existed to read it.
+  //
+  // It moved to `sync_meta` (`modules/sync/data/sync_cursor_store.dart`) when
+  // one was built, for three reasons. A module writing into `core/` is the
+  // dependency direction this template forbids, and it is how a deleted module
+  // leaves orphans in the heart of the app. The table it belongs in had been
+  // shipped since schema v1 with no reader. And a single global key could never
+  // be what a cursor has to be: **one per entity** — with one shared cursor, an
+  // entity whose pull failed still has the cursor advanced by whichever entity
+  // succeeded after it, and everything it missed in that window is skipped
+  // forever.
 
   // ── Current-user cache (CurrentUserRepository) ─────────────────────────────
   // The token itself stays in SecureStorage ([token] above); these hold the

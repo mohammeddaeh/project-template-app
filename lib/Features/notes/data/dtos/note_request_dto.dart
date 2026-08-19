@@ -6,7 +6,21 @@
 /// at least one). Restating it here would be the client enforcing a policy it
 /// does not own.
 class NoteRequestDto {
-  const NoteRequestDto({this.title, this.body});
+  const NoteRequestDto({this.title, this.body, this.id, this.version});
+
+  /// Client-generated identity, sent on create only.
+  ///
+  /// Absent for an online create — the server fills one in. Present for a
+  /// queued one, because a note written with no network already exists on the
+  /// device: it was displayed, maybe edited, possibly deleted, all before any
+  /// server saw it.
+  final String? id;
+
+  /// The version this write believes it is editing. Absent means unconditional.
+  ///
+  /// Sent by the queue so a stale write is refused with a 409 carrying both
+  /// sides, instead of overwriting an edit nobody saw.
+  final int? version;
 
   final String? title;
 
@@ -18,7 +32,9 @@ class NoteRequestDto {
   final String? body;
 
   Map<String, dynamic> toJson() => {
+        if (id != null) 'id': id,
         if (title != null) 'title': title,
         if (body != null) 'body': body,
+        if (version != null) 'version': version,
       };
 }
