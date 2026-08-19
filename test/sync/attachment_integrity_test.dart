@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_template/modules/sync/domain/attachment_record.dart';
@@ -314,6 +315,138 @@ void main() {
       );
     });
 
+    test('a transient failure costs one attempt; a permanent one retires it',
+        () async {
+      // The module already distinguishes these — `FailureMapperRegistry` is the
+      // one place that turns a transport error into a typed Failure. A 500 may
+      // succeed next cycle; a 422 whose checksum cannot match never will, and
+      // re-sending it costs a full multipart upload every cycle forever.
+      final dir = Directory.systemTemp.createTempSync('attachment_retry');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1, 2, 3]);
+
+      Future<int> attemptsAfter(int status) async {
+        final record = _record(
+          origin: AttachmentOrigin.device,
+          upload: AttachmentUploadStatus.pending,
+        ).copyWith(localPath: file.path);
+        final store = _RecoveryStore([record]);
+        await AttachmentUploadManager(store, [_FailingTarget(status)])
+            .uploadPending();
+        return store.saved.last.retryCount;
+      }
+
+      expect(await attemptsAfter(500), 1, reason: '5xx is transient');
+      expect(
+        await attemptsAfter(422),
+        AttachmentUploadManager.maxUploadAttempts,
+        reason: '422 will refuse identically next cycle — retire it',
+      );
+      expect(
+        await attemptsAfter(403),
+        AttachmentUploadManager.maxUploadAttempts,
+        reason: 'a permission that will not appear is permanent',
+      );
+    });
+
+    test('a 401 keeps its attempts — the refresh layer may still repair it',
+        () async {
+      // Retiring an irreplaceable photograph because a token expired mid-round
+      // would be the module causing the loss it exists to prevent.
+      final dir = Directory.systemTemp.createTempSync('attachment_401');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1]);
+
+      final store = _RecoveryStore([
+        _record(
+          origin: AttachmentOrigin.device,
+          upload: AttachmentUploadStatus.pending,
+        ).copyWith(localPath: file.path),
+      ]);
+      await AttachmentUploadManager(store, [_FailingTarget(401)]).uploadPending();
+
+      expect(store.saved.last.retryCount, 1);
+    });
+
+    test('a file missing from disk is retired at once, not retried forever',
+        () async {
+      // It will not be on disk next cycle either. Left retryable, this branch
+      // re-selected the row every cycle and re-emitted its IRRECOVERABLE error
+      // for a condition that can never change.
+      final store = _RecoveryStore([
+        _record(
+          origin: AttachmentOrigin.device,
+          upload: AttachmentUploadStatus.pending,
+        ).copyWith(localPath: '/nowhere/gone.jpg'),
+      ]);
+
+      await AttachmentUploadManager(store, [_RecordingTarget()]).uploadPending();
+
+      expect(store.saved.single.uploadStatus, AttachmentUploadStatus.failed);
+      expect(
+        store.saved.single.retryCount,
+        AttachmentUploadManager.maxUploadAttempts,
+      );
+    });
+
+    test('a row at the ceiling is no longer offered for upload', () async {
+      final store = _RecoveryStore([
+        _record(
+          origin: AttachmentOrigin.device,
+          upload: AttachmentUploadStatus.failed,
+        ).copyWith(retryCount: AttachmentUploadManager.maxUploadAttempts),
+      ]);
+      final target = _RecordingTarget();
+
+      final sent =
+          await AttachmentUploadManager(store, [target]).uploadPending();
+
+      expect(sent, 0);
+      expect(target.seen, isEmpty, reason: 'a retired upload must not be re-sent');
+    });
+
+    test('a confirmed upload records where the bytes can be fetched from',
+        () async {
+      // A device row is born with no url. Confirming the upload is when one
+      // becomes true — and without it the row is both reclaimable (confirmed)
+      // and unfetchable (no url), which is how an uploaded photograph becomes
+      // unreachable.
+      final dir = Directory.systemTemp.createTempSync('attachment_url');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1]);
+
+      // Built without a url, which is how `AttachmentCapture` creates one: the
+      // file was born here and nothing else knew about it.
+      final record = AttachmentRecord(
+        attachmentId: 'att-captured',
+        entityName: 'notes',
+        entityLocalId: 'note-1',
+        fileName: 'photo.jpg',
+        origin: AttachmentOrigin.device,
+        downloadStatus: AttachmentDownloadStatus.downloaded,
+        uploadStatus: AttachmentUploadStatus.pending,
+        localPath: file.path,
+        createdAt: 1755500000000,
+        updatedAt: 1755500000000,
+      );
+      expect(record.remoteUrl, isNull, reason: 'the premise of this test');
+
+      final store = _RecoveryStore([record]);
+      final target = _RecordingTarget();
+
+      await AttachmentUploadManager(store, [target]).uploadPending();
+
+      final saved = store.saved.last;
+      expect(saved.uploadStatus, AttachmentUploadStatus.uploaded);
+      expect(
+        saved.remoteUrl,
+        isNotNull,
+        reason: 'a confirmed device file with no url is reclaimable and '
+            'unfetchable at the same time',
+      );
+      expect(saved.remoteUrl, contains(record.attachmentId));
+    });
+
     test('pending → uploading → interruption → recovered and re-sent', () async {
       // The whole scenario, through the production manager. The store hands
       // back the row exactly as the fixed query now would; nothing downstream
@@ -359,8 +492,11 @@ class _RecoveryStore implements AttachmentStore {
   final List<AttachmentRecord> saved = [];
 
   @override
-  Future<List<AttachmentRecord>> findPendingUploads({int limit = 50}) async =>
-      _pending;
+  Future<List<AttachmentRecord>> findPendingUploads({
+    int limit = 50,
+    int maxRetries = 5,
+  }) async =>
+      _pending.where((r) => r.retryCount < maxRetries).toList();
 
   @override
   Future<void> upsert(AttachmentRecord record) async => saved.add(record);
@@ -376,6 +512,10 @@ class _RecordingTarget implements AttachmentUploadTarget {
 
   @override
   String get entityName => 'notes';
+
+  @override
+  String contentUrlFor(String attachmentId) =>
+      'https://server.test/attachments/$attachmentId/content';
 
   @override
   Future<String> upload({
@@ -414,3 +554,34 @@ AttachmentRecord _record({
       createdAt: 1755500000000,
       updatedAt: 1755500000000,
     );
+
+/// Refuses with a given HTTP status, the way Dio surfaces one.
+class _FailingTarget implements AttachmentUploadTarget {
+  _FailingTarget(this.status);
+
+  final int status;
+
+  @override
+  String get entityName => 'notes';
+
+  @override
+  String contentUrlFor(String attachmentId) => 'https://server.test/$attachmentId';
+
+  @override
+  Future<String> upload({
+    required AttachmentRecord record,
+    required File file,
+    required String idempotencyKey,
+  }) async {
+    final options = RequestOptions(path: '/attachments');
+    throw DioException(
+      requestOptions: options,
+      type: DioExceptionType.badResponse,
+      response: Response<dynamic>(
+        requestOptions: options,
+        statusCode: status,
+        data: {'status': false, 'message': 'refused'},
+      ),
+    );
+  }
+}

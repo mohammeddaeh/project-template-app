@@ -20,7 +20,13 @@ abstract class AttachmentStore {
   /// re-fetched from where it came; a photograph taken in the field and not yet
   /// sent exists nowhere else. When bandwidth is scarce — which is the only
   /// time this ordering matters — the irreplaceable bytes go first.
-  Future<List<AttachmentRecord>> findPendingUploads({int limit = 50});
+  /// [maxRetries] retires a row rather than deleting it: at or above the
+  /// ceiling it stops being offered for execution but keeps its payload path
+  /// and last error, which is what makes a dead upload diagnosable.
+  Future<List<AttachmentRecord>> findPendingUploads({
+    int limit = 50,
+    int maxRetries = 5,
+  });
 
   /// Files that should be on disk and are not.
   Future<List<AttachmentRecord>> findMissingDownloads({

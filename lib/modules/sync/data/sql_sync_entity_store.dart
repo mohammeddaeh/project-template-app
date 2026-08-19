@@ -162,6 +162,41 @@ class SqlSyncEntityStore implements SyncEntityStore {
   }
 
   @override
+  Future<Map<String, SyncEntityRecord>> findByLocalIds({
+    required String entityName,
+    required List<String> localIds,
+  }) async {
+    if (localIds.isEmpty) return const {};
+
+    final db = await _database.database;
+    // Chunked because SQLite caps the number of bound variables (999 by
+    // default) and a caller is free to hand over a whole page. The pull uses
+    // 200, comfortably inside one chunk; the loop is here so a larger page
+    // never turns into a `too many SQL variables` error at the worst moment.
+    const chunkSize = 500;
+    final found = <String, SyncEntityRecord>{};
+
+    for (var start = 0; start < localIds.length; start += chunkSize) {
+      final chunk = localIds.sublist(
+        start,
+        start + chunkSize > localIds.length ? localIds.length : start + chunkSize,
+      );
+      final placeholders = List.filled(chunk.length, '?').join(', ');
+      final rows = await db.query(
+        'synced_entities',
+        where: 'entity_name = ? AND local_id IN ($placeholders)',
+        whereArgs: [entityName, ...chunk],
+      );
+      for (final row in rows) {
+        final record = _fromMap(row);
+        found[record.localId] = record;
+      }
+    }
+
+    return found;
+  }
+
+  @override
   Future<SyncEntityRecord?> getRecordByLocalId({
     required String entityName,
     required String localId,

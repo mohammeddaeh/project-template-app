@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'package:app_template/modules/sync/config/sync_mode.dart';
 import 'package:app_template/modules/sync/config/sync_settings.dart';
@@ -227,7 +228,7 @@ SyncController _buildController(SyncSettings settings) {
     settingsStore,
     connectivity,
     engine,
-    SyncGate(settingsStore, connectivity, _UnusedSession()),
+    SyncGate(settingsStore, connectivity, _UnusedSession(), _UnusedReachability()),
   );
 }
 
@@ -286,4 +287,12 @@ class _SilentStreamHandler extends MockStreamHandler {
 
   @override
   void onCancel(Object? arguments) {}
+}
+
+/// Never consulted: `init()` binds a listener and reads settings; it does not
+/// run a cycle, so the gate is never asked anything.
+class _UnusedReachability implements InternetConnectionChecker {
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      throw StateError('InternetConnectionChecker touched during init()');
 }

@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 
 import '../automation/sync_feature_contract.dart';
 import '../config/sync_mode.dart';
+import '../config/sync_settings.dart';
 import '../config/sync_settings_store.dart';
 import '../data/sync_cursor_store.dart';
 import '../data/sync_operations_log.dart';
@@ -55,11 +56,57 @@ class SyncEngine {
   static int _cycleCount = 0;
 
   /// Full sync cycle: acquire lock → push queue → release lock.
-  Future<void> runPendingJobs({int batchSize = 30}) async {
-    final settings = await _settingsStore.getSettings();
-    if (settings.mode != SyncMode.active || !settings.syncEnabled) return;
+  /// True while this isolate is inside a cycle.
+  ///
+  /// `SyncLock` is persisted, and persisting it costs an `await` between the
+  /// read and the write — a window in which a second trigger reads "free" and
+  /// both proceed. Three independent triggers (the periodic timer, the
+  /// connectivity listener, a manual tap) make that window reachable, and two
+  /// cycles writing the same rows is what the lock exists to prevent.
+  ///
+  /// Dart's single-threaded event loop is what makes this flag sufficient
+  /// *within* an isolate: check and set happen with no `await` between them, so
+  /// nothing can interleave. The persisted lock still does the job it is the
+  /// only one that can — surviving a process death, so a crashed cycle does not
+  /// leave the next one blocked forever.
+  bool _cycleInProgress = false;
 
-    final acquired = await _syncLock.tryAcquire();
+  Future<void> runPendingJobs({int batchSize = 30}) async {
+    // Guard first, and synchronously. Everything below may suspend.
+    if (_cycleInProgress) {
+      LogService.debug('SyncEngine skipped — a cycle is already running.',
+          tag: 'SYNC');
+      return;
+    }
+    _cycleInProgress = true;
+
+    try {
+      await _runCycle(batchSize: batchSize);
+    } finally {
+      _cycleInProgress = false;
+    }
+  }
+
+  Future<void> _runCycle({required int batchSize}) async {
+    // Inside the guard, so a throw from either of these cannot escape into a
+    // timer callback or a stream listener as an unhandled async error — the two
+    // call sites that have no `onError` and no owner.
+    final SyncSettings settings;
+    final bool acquired;
+    try {
+      settings = await _settingsStore.getSettings();
+      if (settings.mode != SyncMode.active || !settings.syncEnabled) return;
+      acquired = await _syncLock.tryAcquire();
+    } catch (e, st) {
+      LogService.error(
+        'SyncEngine could not start — settings or lock unreadable.',
+        tag: 'SYNC',
+        error: e,
+        stackTrace: st,
+      );
+      return;
+    }
+
     if (!acquired) {
       LogService.debug('SyncEngine skipped — lock held.', tag: 'SYNC');
       return;
@@ -80,10 +127,27 @@ class SyncEngine {
     } catch (e, st) {
       LogService.error('SyncEngine failed', tag: 'SYNC', error: e, stackTrace: st);
     } finally {
+      // Release first, and on its own. A throw anywhere later in this block
+      // would skip it and leave the lock held for its full ten-minute timeout,
+      // blocking every cycle in between.
       await _syncLock.release();
+
       _cycleCount++;
       if (_cycleCount % 50 == 0) {
-        await _opsLog.trim();
+        // Trimming is housekeeping, and housekeeping must not be able to fail a
+        // cycle that has already done its work — nor escape a `finally`, which
+        // would replace whatever the `catch` above had just handled.
+        try {
+          await _opsLog.trim();
+        } catch (e, st) {
+          LogService.error(
+            'Trimming the operations log failed — the log keeps growing, and '
+            'nothing else about this cycle is affected.',
+            tag: 'SYNC',
+            error: e,
+            stackTrace: st,
+          );
+        }
       }
     }
   }
@@ -261,7 +325,48 @@ class SyncEngine {
           error: e,
           stackTrace: st,
         );
+        // **Written down, not only logged.** `LogService` output does not
+        // survive the process, and a pull that has failed every cycle for a
+        // week is otherwise indistinguishable from one that has nothing to do.
+        // `sync_operations_log` is the module's existing durable record and it
+        // already carries a `failed` operation; the push path has always used
+        // it and the pull path never did.
+        await _logQuietly(
+          entityName: executor.entityName,
+          entityId: '*',
+          operation: SyncLogOperation.failed,
+          errorCode: e.runtimeType.toString(),
+          errorDetail: e.toString(),
+        );
       }
+    }
+  }
+
+  /// Records an operation without letting the recording become the failure.
+  ///
+  /// Used on the paths that are *already* handling an error: if writing the
+  /// audit row throws too, the original problem is what matters and must not be
+  /// replaced by a storage exception thrown while describing it.
+  Future<void> _logQuietly({
+    required String entityName,
+    required String entityId,
+    required SyncLogOperation operation,
+    String? errorCode,
+    String? errorDetail,
+  }) async {
+    try {
+      await _opsLog.log(
+        entityName: entityName,
+        entityId: entityId,
+        operation: operation,
+        errorCode: errorCode,
+        errorDetail: errorDetail,
+      );
+    } catch (e) {
+      LogService.warning(
+        'Could not record a $operation entry for "$entityName": $e',
+        tag: 'SYNC',
+      );
     }
   }
 
@@ -381,6 +486,12 @@ class SyncEngine {
     final incoming = <SyncEntityRecord>[];
     var skipped = 0;
 
+    // Validate the page first, then read the local rows it touches **in one
+    // query**. This used to be a `getRecordByLocalId` per record: 200 point
+    // lookups for a full page, and up to 10,000 in a single first sync, each a
+    // separate round trip across the platform channel while the sync lock is
+    // held.
+    final usable = <String, Map<String, dynamic>>{};
     for (final json in records) {
       final id = json['id'] as String?;
       if (id == null || id.isEmpty) {
@@ -391,11 +502,33 @@ class SyncEngine {
         );
         continue;
       }
+      if (_epochOf(json['updated_at']) == null) {
+        // Storing it would mean inventing an `updated_at`, and that column is
+        // the local keyset ordering — a fabricated "now" silently promotes the
+        // row to newest. Dropped and named, like a record with no id.
+        LogService.warning(
+          'Pulled "$entityName" record "$id" with an unreadable updated_at '
+          '(${json['updated_at']}) — skipped rather than stored under a '
+          'timestamp this device made up.',
+          tag: 'SYNC',
+        );
+        continue;
+      }
+      usable[id] = json;
+    }
 
-      final local = await _entityStore.getRecordByLocalId(
-        entityName: entityName,
-        localId: id,
-      );
+    if (usable.isEmpty) return;
+
+    final existing = await _entityStore.findByLocalIds(
+      entityName: entityName,
+      localIds: usable.keys.toList(),
+    );
+
+    for (final entry in usable.entries) {
+      final id = entry.key;
+      final json = entry.value;
+
+      final local = existing[id];
       if (local != null &&
           (local.syncStatus.isPending || local.syncStatus.isTerminal)) {
         skipped++;
@@ -408,7 +541,7 @@ class SyncEngine {
           entityName: entityName,
           serverId: id,
           dataJson: jsonEncode(json),
-          updatedAt: _epochOf(json['updated_at']),
+          updatedAt: _epochOf(json['updated_at'])!,
           version: (json['version'] as int?) ?? 1,
           syncStatus: SyncStatus.synced,
           // A tombstone is a row, not an absence — it is how the delete
@@ -435,13 +568,22 @@ class SyncEngine {
   }
 
   /// Server timestamps arrive as ISO-8601 strings; the store keeps epoch ms.
-  static int _epochOf(dynamic value) {
+  ///
+  /// Returns `null` when the value is absent or unreadable — it does **not**
+  /// substitute the device clock. `updated_at` is what orders every local read
+  /// (`getRecordsAfter` pages on `updated_at DESC, local_id DESC`), so a
+  /// fabricated "now" does not merely lose a timestamp: it stamps the row as
+  /// the newest thing on the device and moves it to the top of a list it does
+  /// not belong at the top of.
+  ///
+  /// The module already refuses to guess a server time — `NotesSyncPullExecutor`
+  /// fails the whole page with 502 rather than fall back to the device clock,
+  /// and says why. This is the same rule one level down, and the caller drops
+  /// the record instead of storing a misordered one.
+  static int? _epochOf(dynamic value) {
     if (value is int) return value;
-    if (value is String) {
-      return DateTime.tryParse(value)?.millisecondsSinceEpoch ??
-          DateTime.now().millisecondsSinceEpoch;
-    }
-    return DateTime.now().millisecondsSinceEpoch;
+    if (value is String) return DateTime.tryParse(value)?.millisecondsSinceEpoch;
+    return null;
   }
 
   // ── Files ───────────────────────────────────────────────────────────────────
@@ -467,6 +609,16 @@ class SyncEngine {
         tag: 'SYNC',
         error: e,
         stackTrace: st,
+      );
+      // Durable, for the same reason the pull phase records its failures: a
+      // phase that has been broken since install must not look like a phase
+      // with nothing to do.
+      await _logQuietly(
+        entityName: 'attachments',
+        entityId: '*',
+        operation: SyncLogOperation.failed,
+        errorCode: e.runtimeType.toString(),
+        errorDetail: e.toString(),
       );
     }
   }
@@ -603,6 +755,27 @@ class SyncEngine {
           entityName: job.entityName,
           localId: job.entityId,
           status: SyncStatus.conflicted,
+          lastError: 'manual_resolution_required',
+        );
+        // **The job has to stop being due, or it never stops.**
+        //
+        // This branch advanced nothing: not `retry_count`, not `next_retry_at`.
+        // The row stayed immediately due, so the next cycle pushed it, got the
+        // same 409, and landed here again — a full request per cycle, forever,
+        // for a conflict that by definition is waiting for a person.
+        // `retry_count < max_retries` could not bound it either, because the
+        // count never moved.
+        //
+        // Retiring it to the ceiling is what "manual" means: the queue stops
+        // acting, `SyncStatus.conflicted` holds the local row (the pull merge
+        // protects it), and the job is kept so the resolution UI has the
+        // payload to work from. `SyncConflictStrategy.manual` says it exactly —
+        // "no automatic resolution" — and re-sending on a timer is automatic
+        // resolution by exhaustion.
+        await _queueRepository.markJobRetry(
+          jobId: job.jobId,
+          retryCount: job.maxRetries,
+          nextRetryAt: DateTime.now().millisecondsSinceEpoch,
           lastError: 'manual_resolution_required',
         );
         await _opsLog.log(

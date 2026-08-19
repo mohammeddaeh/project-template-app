@@ -111,6 +111,19 @@ abstract class SyncEntityStore {
 
   /// Returns the single record matching [entityName] + [localId], or null.
   /// Used by conflict resolution to fetch the EXACT conflicting record.
+  /// The rows among [localIds] this device already holds, keyed by local id.
+  ///
+  /// Exists because the pull merge has to ask "do I already have this, and in
+  /// what state?" for every record on a page. One query for the page rather
+  /// than one per record: a full first sync asked up to 10,000 separate point
+  /// questions across the platform channel, with the sync lock held throughout.
+  ///
+  /// Ids the device does not hold are simply absent from the result.
+  Future<Map<String, SyncEntityRecord>> findByLocalIds({
+    required String entityName,
+    required List<String> localIds,
+  });
+
   Future<SyncEntityRecord?> getRecordByLocalId({
     required String entityName,
     required String localId,

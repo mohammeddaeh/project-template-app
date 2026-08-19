@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'package:app_template/Features/notes/data/datasources/notes_remote_datasource.dart';
 import 'package:app_template/Features/notes/data/sync/notes_sync_pull_executor.dart';
@@ -154,6 +155,7 @@ void main() {
         _FakeSettings(const SyncSettings(mode: SyncMode.active, syncEnabled: true, wifiOnly: false, periodicIntervalSeconds: null)),
         _UnusedConnectivity(),
         _FakeSession(null),
+        _UnusedReachability(),
       );
 
       expect(await gate.check(), SyncBlockReason.noSession);
@@ -166,6 +168,7 @@ void main() {
         ),
         _UnusedConnectivity(),
         _FakeSession(null),
+        _UnusedReachability(),
       );
 
       expect(await gate.check(), SyncBlockReason.disabled);
@@ -176,6 +179,7 @@ void main() {
         _FakeSettings(const SyncSettings(mode: SyncMode.passive, syncEnabled: true, wifiOnly: false, periodicIntervalSeconds: null)),
         _UnusedConnectivity(),
         _FakeSession('token'),
+        _UnusedReachability(),
       );
 
       expect(await gate.check(), SyncBlockReason.disabled);
@@ -264,4 +268,13 @@ class _UnusedConnectivity implements Connectivity {
   @override
   noSuchMethod(Invocation invocation) =>
       throw StateError('connectivity must not be consulted in these cases');
+}
+
+/// Never consulted: every gate test here blocks before reachability is asked.
+class _UnusedReachability implements InternetConnectionChecker {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => throw StateError(
+        'InternetConnectionChecker.${invocation.memberName} unexpected — the '
+        'gate should have blocked before probing the network',
+      );
 }

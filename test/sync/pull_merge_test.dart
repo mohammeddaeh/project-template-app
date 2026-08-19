@@ -225,6 +225,46 @@ void main() {
     expect(cursors.written.last.updatedSince, '2026-01-01T00:00:00.000Z');
   });
 
+  // ── Timestamps and query shape ────────────────────────────────────────────
+
+  test('a record with an unreadable updated_at is dropped, not invented', () async {
+    // `updated_at` is the local keyset ordering column. Substituting the device
+    // clock does not merely lose a timestamp — it stamps the row as the newest
+    // thing on the device and moves it to the top of a list it does not belong
+    // at the top of. The pull executor already refuses to guess a server time;
+    // this is the same rule one level down.
+    await pullOnce(records: [
+      {...serverRow(), 'updated_at': 'not-a-date'},
+      _row('n2'),
+    ]);
+
+    expect(entities.rows.containsKey('n1'), isFalse);
+    expect(entities.rows.containsKey('n2'), isTrue,
+        reason: 'one bad record must not drop the page');
+  });
+
+  test('a record with a missing updated_at is dropped too', () async {
+    final row = serverRow()..remove('updated_at');
+    await pullOnce(records: [row]);
+
+    expect(entities.rows.containsKey('n1'), isFalse);
+  });
+
+  test('the page is read in one query, not one per record', () async {
+    // This was a `getRecordByLocalId` per record: 200 point lookups for a full
+    // page and up to 10,000 in a first sync, each a separate round trip across
+    // the platform channel with the sync lock held.
+    await pullOnce(records: [_row('a'), _row('b'), _row('c'), _row('d')]);
+
+    expect(
+      entities.batchCalls,
+      1,
+      reason: '${entities.batchCalls} queries for one page',
+    );
+    expect(entities.pointLookups, 0);
+    expect(entities.rows.keys.toSet(), {'a', 'b', 'c', 'd'});
+  });
+
   // ── The invariant itself, so a future state cannot slip through ───────────
 
   test('every state except synced is protected — exhaustively', () async {
@@ -323,12 +363,29 @@ class _MemoryEntityStore implements SyncEntityStore {
 
   void put(SyncEntityRecord r) => rows[r.localId] = r;
 
+  int batchCalls = 0;
+  int pointLookups = 0;
+
+  @override
+  Future<Map<String, SyncEntityRecord>> findByLocalIds({
+    required String entityName,
+    required List<String> localIds,
+  }) async {
+    batchCalls++;
+    return {
+      for (final id in localIds)
+        if (rows[id] != null) id: rows[id]!,
+    };
+  }
+
   @override
   Future<SyncEntityRecord?> getRecordByLocalId({
     required String entityName,
     required String localId,
-  }) async =>
-      rows[localId];
+  }) async {
+    pointLookups++;
+    return rows[localId];
+  }
 
   @override
   Future<void> upsertRecords(

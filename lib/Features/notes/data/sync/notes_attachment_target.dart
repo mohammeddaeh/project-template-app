@@ -27,6 +27,13 @@ class NotesAttachmentUploadTarget implements AttachmentUploadTarget {
   @override
   String get entityName => 'notes';
 
+  /// The same shape `AttachmentMetadataSync` records for server-owned rows, so
+  /// a file uploaded from here and one learned from the server are fetched
+  /// through one url form rather than two.
+  @override
+  String contentUrlFor(String attachmentId) =>
+      '${Env.baseUrl}/attachments/$attachmentId/content';
+
   @override
   Future<String> upload({
     required AttachmentRecord record,

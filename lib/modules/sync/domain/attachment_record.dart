@@ -185,6 +185,14 @@ class AttachmentRecord {
   AttachmentRecord copyWith({
     String? localPath,
     bool clearLocalPath = false,
+    /// Where the server serves these bytes from.
+    ///
+    /// A device-captured row has none: it was born here, and nothing else knew
+    /// about it. Once an upload is confirmed the server does know, and the row
+    /// has to record that — otherwise the only copy that can be re-fetched is
+    /// unreachable, and a later eviction turns "confirmed and safe to reclaim"
+    /// into "gone".
+    String? remoteUrl,
     String? checksum,
     String? checksumAlgo,
     int? sizeBytes,
@@ -203,7 +211,7 @@ class AttachmentRecord {
       entityLocalId: entityLocalId,
       fileName: fileName,
       role: role,
-      remoteUrl: remoteUrl,
+      remoteUrl: remoteUrl ?? this.remoteUrl,
       // An explicit flag, because `null` already means "leave it alone" in
       // copyWith — and eviction's whole job is to set this back to null.
       localPath: clearLocalPath ? null : (localPath ?? this.localPath),

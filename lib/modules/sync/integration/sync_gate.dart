@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
 import 'package:app_template/core/platform/connectivity/connectivity_service.dart';
@@ -39,16 +40,36 @@ enum SyncBlockReason {
 /// |---|---|
 /// | Battery level | needs a package this template does not ship. P7. |
 /// | Free storage | only matters once files exist. P4.5. |
-/// | Server reachable | needs a health endpoint; the backend has none. P3.6 follow-up. |
+/// | Server *healthy* | needs a health endpoint; the backend has none. P3.6. Reachability **is** now checked — see [_reachability] — but "the internet answers" is not "this API is up". |
 ///
 /// They are listed rather than silently missing: a gate that looks complete is
 /// worse than one that says what it does not cover.
 class SyncGate {
-  const SyncGate(this._settingsStore, this._connectivity, this._session);
+  const SyncGate(
+    this._settingsStore,
+    this._connectivity,
+    this._session,
+    this._reachability,
+  );
 
   final SyncSettingsStore _settingsStore;
   final Connectivity _connectivity;
   final AuthNetworkGateway _session;
+
+  /// Whether traffic actually leaves the device.
+  ///
+  /// `ARCHITECTURE.md` §3 lists «اتصال فعلي (لا «واي‑فاي متصل»)» as the first
+  /// condition this gate owes, and names the cost of getting it wrong: a
+  /// captive portal answers "wifi connected" while every request in the cycle
+  /// fails, so the whole queue backs off exponentially for a reason that has
+  /// nothing to do with any of the writes.
+  ///
+  /// `ConnectivityService.isOnline` cannot answer that — it reports whether an
+  /// interface is up, and documents as much. `InternetConnectionChecker` is the
+  /// probe the template already uses for the same question in
+  /// `InternetCheckerInterceptor`, and it is already registered in DI; this
+  /// gate now asks it rather than claiming its answer.
+  final InternetConnectionChecker _reachability;
 
   /// `null` when a cycle may run; otherwise why it may not.
   Future<SyncBlockReason?> check() async {
@@ -64,9 +85,11 @@ class SyncGate {
     final token = _session.getToken();
     if (token == null || token.isEmpty) return SyncBlockReason.noSession;
 
-    // Reachability, not "an interface is up" — a captive portal answers the
-    // second and not the first.
+    // Cheap first, then real. `isOnline` rules out "no interface at all"
+    // without touching the network; only if something is up is it worth paying
+    // for a probe that actually leaves the device.
     if (!await ConnectivityService.isOnline()) return SyncBlockReason.offline;
+    if (!await _reachability.hasConnection) return SyncBlockReason.offline;
 
     if (!settings.wifiOnly) return null;
 

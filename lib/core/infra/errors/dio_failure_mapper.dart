@@ -100,16 +100,36 @@ class DioFailureMapper implements FailureMapper {
       // **every** 409 to it, which silenced every business refusal in the app —
       // and no endpoint emits the sync shape yet. Fixed 2026-08-17, ported
       // from `qirtas_app` where it shipped and was found in use.
-      final isSyncConflict =
-          map?.containsKey('server_version') == true ||
-          map?.containsKey('client_version') == true ||
-          map?.containsKey('conflict_fields') == true;
+      //
+      // ## The shape is nested, and looking only at the root missed it
+      //
+      // The server sends its refusals in the standard envelope, so the conflict
+      // payload arrives as `{status, message, data: {server_version, …}}` —
+      // `notes.int.test.ts` asserts `conflict.body.data.server_version`. Testing
+      // only the root therefore classified every real sync 409 as a
+      // `BusinessFailure`, which is the one thing the comment above says must
+      // not happen: the engine branches on `ConflictFailure`, so the resolver,
+      // its strategies and the rebase were unreachable.
+      //
+      // Both depths are accepted: the envelope is what this backend sends, and
+      // the root keeps a bare body working for any endpoint that answers that
+      // way.
+      final envelope = map?['data'];
+      final conflictBody = envelope is Map<String, dynamic> ? envelope : map;
+
+      bool carries(String key) => conflictBody?.containsKey(key) == true;
+
+      final isSyncConflict = carries('server_version') ||
+          carries('client_version') ||
+          carries('conflict_fields');
 
       if (isSyncConflict) {
+        // Read from the same depth the shape was detected at, or the two would
+        // disagree and produce a ConflictFailure with every field empty.
         return ConflictFailure(
-          serverVersion: map?['server_version'] as Map<String, dynamic>?,
-          clientVersion: map?['client_version'] as Map<String, dynamic>?,
-          conflictFields: (map?['conflict_fields'] as List?)
+          serverVersion: conflictBody?['server_version'] as Map<String, dynamic>?,
+          clientVersion: conflictBody?['client_version'] as Map<String, dynamic>?,
+          conflictFields: (conflictBody?['conflict_fields'] as List?)
                   ?.map((e) => e.toString())
                   .toList() ??
               [],

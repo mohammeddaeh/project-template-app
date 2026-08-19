@@ -66,7 +66,10 @@ class SqlAttachmentStore implements AttachmentStore {
   }
 
   @override
-  Future<List<AttachmentRecord>> findPendingUploads({int limit = 50}) async {
+  Future<List<AttachmentRecord>> findPendingUploads({
+    int limit = 50,
+    int maxRetries = 5,
+  }) async {
     final db = await _database.database;
     final rows = await db.query(
       _table,
@@ -97,7 +100,17 @@ class SqlAttachmentStore implements AttachmentStore {
       //
       // `findEvictable` below and `idx_attachments_pending_upload` both already
       // spell out this same triple; this query was the one place that did not.
-      where: "upload_status IN ('pending', 'uploading', 'failed')",
+      // `retry_count < ?` is what ends an upload's life. Without it a file the
+      // server will never accept — a checksum that cannot match, an id already
+      // holding other content — was re-sent in full on every cycle forever.
+      //
+      // The ceiling is passed in rather than hard-coded here so the policy
+      // lives in one Dart place (`AttachmentUploadManager.maxUploadAttempts`)
+      // instead of being split between a constant and a SQL literal. The row is
+      // kept, not deleted: it still holds the path and the last error.
+      where: "upload_status IN ('pending', 'uploading', 'failed') "
+          'AND retry_count < ?',
+      whereArgs: [maxRetries],
       // Device-origin first: those bytes exist nowhere else. Then oldest, so a
       // long queue drains in the order the work was done.
       orderBy: "CASE origin WHEN 'device' THEN 0 ELSE 1 END, created_at ASC",

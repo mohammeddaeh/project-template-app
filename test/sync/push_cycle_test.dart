@@ -73,7 +73,7 @@ void main() {
     await di.reset();
   });
 
-  SyncEngine buildEngine(SyncExecutor executor) {
+  SyncEngine buildEngine(SyncExecutor executor, {SyncOperationsLog? opsLog}) {
     di.registerSingleton<SyncExecutor>(executor);
     final migrator = SyncContractMigrator(di);
     final settings = _FixedSettings();
@@ -87,7 +87,7 @@ void main() {
       SyncContractValidator(di, queue, migrator),
       SyncConflictResolver(),
       SyncLock(_MemoryStorage()),
-      _SilentOpsLog(),
+      opsLog ?? _SilentOpsLog(),
       SyncCursorStore(SyncDatabase()),
     );
   }
@@ -286,6 +286,99 @@ void main() {
   });
 
   // ── Test F ─────────────────────────────────────────────────────────────────
+
+  test('H — two overlapping triggers produce one cycle, not two', () async {
+    // `SyncLock` is persisted, and persisting it costs an `await` between the
+    // read and the write. Three independent triggers — the periodic timer, the
+    // connectivity listener, a manual tap — can enter that window together and
+    // both come out holding the lock, which is exactly what it exists to
+    // prevent. The in-isolate guard closes it: check and set with nothing
+    // awaited in between.
+    queue.seed([job('n1'), job('n2')]);
+    final executor = _CountingExecutor();
+    final engine = buildEngine(executor);
+
+    await Future.wait([
+      engine.runPendingJobs(),
+      engine.runPendingJobs(),
+      engine.runPendingJobs(),
+    ]);
+
+    expect(
+      executor.calls,
+      2,
+      reason: 'each job must be executed once, not once per overlapping trigger',
+    );
+    expect(queue.successes, ['job-n1', 'job-n2']);
+  });
+
+  test('I — a failing log trim does not fail the cycle', () async {
+    // Trimming is housekeeping and runs in the `finally`. A throw there would
+    // escape the block and replace whatever the `catch` had just handled — the
+    // cycle would be reported as failed for tidying up badly.
+    // `_cycleCount` is static and trims every 50th cycle, so running 50 empty
+    // cycles crosses the boundary whatever the count happened to start at.
+    final engine = buildEngine(
+      _SelectiveExecutor(failFor: const {}),
+      opsLog: _ThrowingTrimLog(),
+    );
+
+    for (var i = 0; i < 50; i++) {
+      await expectLater(engine.runPendingJobs(), completes);
+    }
+  });
+
+  test('G — a manual conflict retires the job instead of re-pushing forever',
+      () async {
+    // `ManualResolutionRequired` advanced nothing: not retry_count, not
+    // next_retry_at. The row stayed immediately due, so every cycle re-sent it,
+    // got the same 409 and landed here again — an unbounded loop for a conflict
+    // that by definition waits for a person. `retry_count < max_retries` could
+    // not bound it either, because the count never moved.
+    entities.put(
+      SyncEntityRecord(
+        localId: 'n1',
+        entityName: 'notes',
+        serverId: 'n1',
+        dataJson: jsonEncode({'id': 'n1', 'title': 'mine', 'version': 1}),
+        updatedAt: 1,
+        version: 1,
+        syncStatus: SyncStatus.pending,
+        isDeleted: false,
+      ),
+    );
+    queue.seed([job('n1', maxRetries: 5)]);
+
+    // The strategy that exists to refuse an automatic answer.
+    await di.reset();
+    di
+      ..enableRegisteringMultipleInstancesOfOneType()
+      ..registerSingleton<SyncFeatureContractBase>(
+        const _NotesContract(conflictStrategy: SyncConflictStrategy.manual),
+      );
+
+    final engine = buildEngine(
+      NotesSyncExecutor(
+        _ThrowingDataSource(
+          _dioError(409, {
+            'status': false,
+            'message': 'conflict',
+            'data': {'conflict_fields': <String>['title']},
+          }),
+        ),
+      ),
+    );
+
+    await engine.runPendingJobs();
+
+    expect(queue.states.last.status, SyncStatus.conflicted);
+    expect(queue.successes, isEmpty, reason: 'a manual conflict is not resolved');
+    expect(
+      queue.retries.single.retryCount,
+      5,
+      reason: 'the job must stop being due — otherwise it re-pushes forever',
+    );
+  });
 
   test('F — one failing job does not stop the two behind it', () async {
     queue.seed([job('n1'), job('n2'), job('n3')]);
@@ -558,7 +651,12 @@ class _SilentOpsLog extends SyncOperationsLog {
 }
 
 class _NotesContract extends SyncFeatureContractBase {
-  const _NotesContract();
+  const _NotesContract({
+    this.conflictStrategy = SyncConflictStrategy.serverWins,
+  });
+
+  @override
+  final SyncConflictStrategy conflictStrategy;
 
   @override
   String get entityName => 'notes';
@@ -580,4 +678,45 @@ class _SilentLog implements LogDelegate {
   void debug(String message, {String? tag}) {}
   @override
   void error(String message, {String? tag, Object? error, StackTrace? stackTrace}) {}
+}
+
+class _CountingExecutor implements SyncExecutor {
+  int calls = 0;
+
+  @override
+  String get entityName => 'notes';
+
+  @override
+  Set<int> get supportedContractVersions => const {1};
+
+  @override
+  Future<Either<Failure, SyncExecutionResult>> execute(
+    SyncQueueJob job,
+    int contractVersion,
+  ) async {
+    calls++;
+    // A suspension point, so an overlapping cycle has somewhere to interleave.
+    await Future<void>.delayed(Duration.zero);
+    return Right(SyncExecutionResult(localId: job.entityId, serverId: job.entityId));
+  }
+}
+
+/// Trims badly. Housekeeping must not be able to fail a cycle that worked.
+class _ThrowingTrimLog extends SyncOperationsLog {
+  _ThrowingTrimLog() : super(SyncDatabase());
+
+  @override
+  Future<void> log({
+    required String entityName,
+    required String entityId,
+    required SyncLogOperation operation,
+    String? jobId,
+    String? serverId,
+    String? errorCode,
+    String? errorDetail,
+    String? payloadSnapshot,
+  }) async {}
+
+  @override
+  Future<void> trim() async => throw StateError('trim exploded');
 }

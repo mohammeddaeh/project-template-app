@@ -1,3 +1,5 @@
+import 'package:app_template/core/platform/logging/log_service.dart';
+
 import '../domain/sync_change_notifier.dart';
 import '../domain/sync_queue_job.dart';
 import '../domain/sync_queue_repository.dart';
@@ -176,8 +178,8 @@ class SqlSyncQueueRepository implements SyncQueueRepository {
     String? lastError,
   }) async {
     final db = await _database.database;
-    await db.transaction((txn) async {
-      await txn.update(
+    final affected = await db.transaction((txn) async {
+      return txn.update(
         'synced_entities',
         {
           'sync_status': status.raw,
@@ -192,6 +194,23 @@ class SqlSyncQueueRepository implements SyncQueueRepository {
       );
     });
 
+    // An UPDATE that matched nothing is not a no-op, it is a lost state
+    // transition: the engine believes the row is now `synced` (or `failed`, or
+    // `conflicted`) and the store still says whatever it said before. Silent,
+    // because SQL is perfectly happy to change zero rows.
+    //
+    // It is reported rather than thrown: the push already succeeded or failed
+    // on the server, and aborting the cycle here would re-send work that landed.
+    // What matters is that the divergence stops being invisible.
+    if (affected == 0) {
+      LogService.error(
+        'Sync state "${status.raw}" for $entityName/$localId matched no local '
+        'row — the entity and its queue have diverged. The write was accepted '
+        'remotely; nothing local records it.',
+        tag: 'SYNC',
+      );
+    }
+
     // A push finished — succeeded, failed, or conflicted. The row's badge
     // changes even though its content did not, and a list showing "pending"
     // next to an item that synced ten minutes ago is a list nobody trusts.
@@ -201,8 +220,15 @@ class SqlSyncQueueRepository implements SyncQueueRepository {
   @override
   Future<int> countPendingJobs() async {
     final db = await _database.database;
+    // **Counts what is still going to be attempted, not what is still stored.**
+    //
+    // A dead-lettered row stays in the table — that is deliberate, it holds the
+    // payload and the last error. But it is never selected by `getDueJobs`
+    // again, so counting it told the user there was work in flight that nothing
+    // would ever act on: a pending badge that could not reach zero, on an app
+    // that was in fact idle. The predicate matches `getDueJobs`.
     final result = await db.rawQuery(
-      'SELECT COUNT(*) AS count FROM sync_queue',
+      'SELECT COUNT(*) AS count FROM sync_queue WHERE retry_count < max_retries',
     );
     return (result.first['count'] as int?) ?? 0;
   }
