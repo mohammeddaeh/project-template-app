@@ -9,6 +9,13 @@ abstract class SyncSettingsStore {
   Future<void> setSyncEnabled(bool value);
   Future<void> setWifiOnly(bool value);
   Future<void> setPeriodicIntervalSeconds(int? value);
+
+  /// «نزّل الصور والملفّات على Wi‑Fi وحده» — راجع [SyncSettings.mediaWifiOnly].
+  Future<void> setMediaWifiOnly(bool value);
+
+  /// إذنُ التنزيل على بيانات الجوّال — راجع
+  /// [SyncSettings.mediaOverMobileApproved].
+  Future<void> setMediaOverMobileApproved(bool value);
 }
 
 class SharedPrefsSyncSettingsStore implements SyncSettingsStore {
@@ -20,6 +27,8 @@ class SharedPrefsSyncSettingsStore implements SyncSettingsStore {
   static const _enabledKey = 'sync_enabled';
   static const _wifiOnlyKey = 'sync_wifi_only';
   static const _periodicIntervalKey = 'sync_periodic_interval_seconds';
+  static const _mediaWifiOnlyKey = 'sync_media_wifi_only';
+  static const _mediaOverMobileKey = 'sync_media_over_mobile_approved';
 
   @override
   Future<SyncSettings> getSettings() async {
@@ -28,6 +37,10 @@ class SharedPrefsSyncSettingsStore implements SyncSettingsStore {
       syncEnabled: _prefs.getBool(_enabledKey) ?? true,
       wifiOnly: _prefs.getBool(_wifiOnlyKey) ?? false,
       periodicIntervalSeconds: _prefs.getInt(_periodicIntervalKey),
+      // **مُشعَلٌ افتراضياً** — راجع [SyncSettings.mediaWifiOnly] لسبب أن
+      // الافتراضين معكوسان بين الرفع والتنزيل.
+      mediaWifiOnly: _prefs.getBool(_mediaWifiOnlyKey) ?? true,
+      mediaOverMobileApproved: _prefs.getBool(_mediaOverMobileKey) ?? false,
     );
   }
 
@@ -53,5 +66,15 @@ class SharedPrefsSyncSettingsStore implements SyncSettingsStore {
       return;
     }
     await _prefs.setInt(_periodicIntervalKey, value);
+  }
+
+  @override
+  Future<void> setMediaWifiOnly(bool value) async {
+    await _prefs.setBool(_mediaWifiOnlyKey, value);
+  }
+
+  @override
+  Future<void> setMediaOverMobileApproved(bool value) async {
+    await _prefs.setBool(_mediaOverMobileKey, value);
   }
 }

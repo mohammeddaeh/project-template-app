@@ -21,7 +21,7 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 ///
 /// That is not a hypothetical. It is precisely the shape of the `data.user` /
 /// `data.account` defect that kept sign-in broken for weeks with both CI
-/// pipelines green (`readme/integration_audit.md`). So the byte path is a
+/// pipelines green (`readme/90_archive/integration_audit.md`). So the byte path is a
 /// separate, deliberately named class rather than a flag on the repository:
 /// there is no way to reach it by accident and no way to reach the JSON path by
 /// accident either.

@@ -27,7 +27,6 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
     // ── Splash ─────────────────────────────────────────────────────────────
-    AutoRoute(page: SplashRoute.page, path: '/splash', initial: true),
 
     // ── Auth ───────────────────────────────────────────────────────────────
     // `LoginRoute` is what the whole app falls back to: `app.dart` listens to
@@ -58,9 +57,6 @@ class AppRouter extends RootStackRouter {
     // should not restore the tab bar. Ordinary navigation goes to the shell.
     AutoRoute(page: HomeRoute.page, path: '/home'),
 
-    // ── Reference feature — delete with `Features/notes/` ───────────────────
-    AutoRoute(page: NotesRoute.page, path: '/notes'),
-    AutoRoute(page: NoteFormRoute.page, path: '/notes/form'),
 
     // ── Import / export (modules/data_transfer) ────────────────────────────
     //
@@ -98,44 +94,6 @@ class AppRouter extends RootStackRouter {
       guards: [PermissionRouteGuard(PermKeys.userAccessView)],
     ),
 
-    // ── Utility ────────────────────────────────────────────────────────────
-    // ── Widget Library (demo) ──────────────────────────────────────────────────
-    AutoRoute(page: WidgetLibraryDemoRoute.page, path: '/widgets-demo'),
-
-    // ── Test / Template Showcase (debug — AppFeatures.debugSkipLogin) ─────────
-    AutoRoute(page: TestDashboardRoute.page, path: '/test'),
-    AutoRoute(page: TestFormsDemoRoute.page, path: '/test/forms'),
-    AutoRoute(page: TestStatesDemoRoute.page, path: '/test/states'),
-    AutoRoute(page: TestThemeDemoRoute.page, path: '/test/theme'),
-    AutoRoute(page: TestSettingsDemoRoute.page, path: '/test/settings'),
-    AutoRoute(
-      page: TestFormValidationRoute.page,
-      path: '/test/form-validation',
-    ),
-    AutoRoute(page: TestPaginationDemoRoute.page, path: '/test/pagination'),
-    AutoRoute(page: TestCrudDemoRoute.page, path: '/test/crud'),
-    AutoRoute(
-      page: TestPredictiveBackDemoRoute.page,
-      path: '/test/predictive-back',
-    ),
-    AutoRoute(page: TestHapticsDemoRoute.page, path: '/test/haptics'),
-    AutoRoute(page: TestFeatureWizardRoute.page, path: '/test/feature-wizard'),
-    AutoRoute(page: TestNavStackRoute.page, path: '/test/nav-stack'),
-    AutoRoute(
-      page: TestPlatformServicesRoute.page,
-      path: '/test/platform-services',
-    ),
-    AutoRoute(page: TestFailureDemoRoute.page, path: '/test/failures'),
-    AutoRoute(page: TestConnectivityRoute.page, path: '/test/connectivity'),
-    AutoRoute(page: TestSyncQueueRoute.page, path: '/test/sync-queue'),
-    AutoRoute(page: TestBlocStatesRoute.page, path: '/test/bloc-states'),
-    AutoRoute(page: TestApiSimulatorRoute.page, path: '/test/api-simulator'),
-    AutoRoute(page: TestDataTransferRoute.page, path: '/test/data-transfer'),
-    // Scenario #15. Deliberately NOT guarded by `PermissionRouteGuard`: it is a
-    // debug screen whose whole job is to show what happens with and without a
-    // permission, and guarding it would hide the demonstration from the account
-    // that most needs to see it.
-    AutoRoute(page: TestAccessControlRoute.page, path: '/test/access-control'),
 
     AutoRoute(page: ErrorRoute.page, path: '/error'),
   ];

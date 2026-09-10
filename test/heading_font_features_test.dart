@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
-import 'package:app_template/presentation/theme/app_theme.dart';
+import 'package:app_template/ui/theme/app_theme.dart';
 
 /// Headings must carry the font's stylistic set, and only headings.
 ///

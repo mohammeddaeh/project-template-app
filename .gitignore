@@ -54,3 +54,8 @@ flutter_launcher_icons-*.yaml
 
 # Claude Code — memory, settings, scratchpad (personal, not project code)
 .claude/
+
+# Figma pull — .figma/token is a real credential, .figma/cache is regenerable.
+# The whole folder is ignored: a token committed once stays in history forever,
+# even after it is deleted in a later commit.
+.figma/

@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/multi_device/domain/device_session.dart';
 import 'package:app_template/modules/multi_device/presentation/active_devices_cubit.dart';
-import 'package:app_template/presentation/feedback/feedback_extension.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// "Where is my account signed in, and how do I stop that?"
 ///
@@ -287,11 +287,7 @@ class _SessionCard extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: isRevoking
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                  ? const AppProgress.circular(size: AppProgressSize.sm)
                   : TextButton.icon(
                       onPressed: onRevoke,
                       icon: const Icon(Icons.logout, size: 16),

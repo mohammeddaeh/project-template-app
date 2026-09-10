@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app_template/modules/sync/engine/attachment_upload_progress.dart';
 
 import 'package:dio/dio.dart';
 
@@ -16,6 +17,17 @@ import '../domain/attachment_store.dart';
 /// rules are the module's.
 abstract class AttachmentUploadTarget {
   String get entityName;
+
+  /// Where to report bytes-sent while [upload] runs.
+  ///
+  /// Set by [AttachmentUploadManager] before each call, so a target's `upload`
+  /// can hand it straight to Dio's `onSendProgress` without knowing anything
+  /// about who is listening. Left `null` when nothing is observing.
+  ///
+  /// It is on the target rather than a parameter of [upload] because the target
+  /// is what owns the HTTP call, and threading it through the signature would
+  /// oblige every implementation to accept a parameter most will ignore.
+  void Function(int sent, int total)? onSendProgress;
 
   /// Where the server serves an uploaded attachment's bytes from.
   ///
@@ -39,10 +51,16 @@ abstract class AttachmentUploadTarget {
 
 /// Sends the files the device owes the server — **irreplaceable ones first.**
 class AttachmentUploadManager {
-  AttachmentUploadManager(this._store, this._targets);
+  AttachmentUploadManager(this._store, this._targets, this._progress);
 
   final AttachmentStore _store;
   final List<AttachmentUploadTarget> _targets;
+
+  /// **لقطةُ «كم صعد من هذا الملفّ»** — تُبَثّ ولا تُخزَّن.
+  ///
+  /// ورفعُ ملفٍّ بمئة ميغابايت يُقرأ توقُّفاً بلا نبضٍ يقول كم بقي، فيقتل
+  /// المستخدم التطبيقَ ويعيد من الصفر.
+  final AttachmentUploadProgress _progress;
 
   static const _tag = 'SYNC-FILES';
 
@@ -122,6 +140,14 @@ class AttachmentUploadManager {
     ));
 
     try {
+      // يُوصَل قبل الاستدعاء ويُفصَل بـ`finally` أدناه: الهدفُ مفردٌ مشترك
+      // (`lazySingleton`)، وترْكُ الخطّاف موصولاً بعد انتهاء الملفّ يجعل نبضاتِ
+      // الملفّ التالي **تُنسب إلى السابق**.
+      target.onSendProgress = (sent, total) => _progress.report(
+        attachmentId: record.attachmentId,
+        sent: sent,
+        total: total,
+      );
       final serverId = await target.upload(
         record: record,
         file: File(path),
@@ -185,6 +211,11 @@ class AttachmentUploadManager {
         tag: _tag,
       );
       return false;
+    } finally {
+      // **على الطريقين معاً.** كسرةٌ متروكة عند ٠٫٧ لملفٍّ أُكِّد تجعل الشاشة
+      // تخلط «انتهى» بـ«توقّف عند سبعين بالمئة» — وهما أبعدُ ما يكونان.
+      target.onSendProgress = null;
+      _progress.clear(record.attachmentId);
     }
   }
 

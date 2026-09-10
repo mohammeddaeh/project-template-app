@@ -5,6 +5,7 @@ import '../config/sync_mode.dart';
 import '../config/sync_settings_store.dart';
 import '../domain/sync_change_notifier.dart';
 import '../domain/sync_status.dart';
+import '../domain/sync_queue_signal.dart';
 import '../domain/sync_write_gateway.dart';
 import '../validation/sync_contract_validator.dart';
 import 'sync_database.dart';
@@ -23,6 +24,13 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
   final Uuid _uuid;
   final SyncContractValidator _contractValidator;
   final SyncChangeNotifier _notifier;
+
+  /// **جرسُ الطابور** — يُقرع بعد كل صفٍّ يدخله، فيستيقظ المحرّك بدل أن يُسأل.
+  ///
+  /// ويُضبط بعد البناء لا بالمنشئ: البوّابة تُبنى بذيل التركيب، والجرسُ يُسجَّل
+  /// قبلها — فحقنُه إلزامياً يفرض ترتيباً لا يجوز أن يُلزَم به.
+  /// راجع `SyncQueueSignal`.
+  SyncQueueSignal? queueSignal;
 
   @override
   Future<void> write(SyncWriteCommand command) async {
@@ -50,7 +58,10 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
           'data_json': command.dataJson,
           'updated_at': command.updatedAt,
           'version': command.version,
-          'sync_status': shouldQueue
+          // **و`holdLocal` تكتب `pending*` بلا وظيفة** — صفٌّ كتبه المستخدم
+          // ولم يحن رفعُه ليس `synced`، وإلا كتب السحبُ فوقه وقالت الشاشة
+          // «مُزامَن» عن شغلٍ لم يغادر الجهاز. راجع `SyncWriteCommand.holdLocal`.
+          'sync_status': shouldQueue || command.holdLocal
               ? _pendingStatus(command.jobType).raw
               : SyncStatus.synced.raw,
           'is_deleted': command.isDeleted ? 1 : 0,
@@ -117,6 +128,11 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
     // feel instant, and it is the one most easily forgotten, because the
     // gateway does not go through `SyncEntityStore` at all.
     _notifier.notify(command.entityName);
+
+    // **ودخولُ الطابور يُعلَن، ولا يُسأل عنه.** بلا هذا السطر ينتظر الرفعُ
+    // تبدّلَ اتصالٍ لن يقع (الشبكة قائمة سلفاً) أو مؤقّتاً دورياً يفيق بعد
+    // دقائق — فيحفظ المستخدم وهو متّصل، ويرى «بانتظار الرفع» بلا سبب.
+    if (shouldQueue) queueSignal?.notify();
   }
 
   SyncStatus _pendingStatus(SyncJobType type) => switch (type) {

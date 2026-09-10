@@ -1,4 +1,5 @@
 ﻿import 'package:firebase_core/firebase_core.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:app_template/core/platform/features/app_features.dart';
@@ -6,6 +7,7 @@ import 'package:app_template/modules/access_control/access_control_plugin.dart';
 import 'package:app_template/modules/analytics/analytics_module.dart';
 import 'package:app_template/modules/crash_reporting/crash_reporting_module.dart';
 import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
+import 'package:app_template/modules/in_app_updates/in_app_updates_module.dart';
 import 'package:app_template/modules/multi_device/multi_device_plugin.dart';
 import 'package:app_template/modules/push_notifications/push_notifications_module.dart';
 import 'package:app_template/modules/remote_config/remote_config_module.dart';
@@ -26,6 +28,36 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 /// Firebase core → crash reporting → analytics / remote config → push →
 /// feature modules (multi-device, sync).
 abstract final class ModulesBootstrap {
+  static Future<void>? _pending;
+
+  /// **يبدأ الإقلاع ولا ينتظره** — يُنادى من `main()` قبل `runApp`.
+  ///
+  /// الفصلُ بين البدء والانتظار هو كلُّ الفائدة: هذا العمل **لا يرسم شيئاً**
+  /// (يفتح قواعد، ويجدول عمّالاً عبر platform channel)، فانتظارُه بـ`main()`
+  /// يجعله يقع **قبل** أن يرى المستخدم شيئاً. وبالفصل يجري خلف شعار النظام
+  /// وبالتوازي مع تسخين محرّك فلاتر.
+  ///
+  /// **ونداؤه مرّتين لا يعيد التهيئة**: نفس المهمّة تُعاد.
+  static Future<void> start(GetIt di) => _pending ??= initializeAll(di);
+
+  /// يكتمل حين تنتهي [start] — **ولا يرمي أبداً**.
+  ///
+  /// موديولٌ يُخفق إقلاعُه يُطفأ ويستمرّ التطبيق (وهذا عقد `AppFeatures` نفسُه:
+  /// «أشعله أو دعه»). فلو نفذ الرمي من هنا لأوقف الإقلاعَ أمام شعارٍ لا يمضي —
+  /// أي أن إخفاق موديولٍ **اختياريّ** يصير بابَ التطبيق المغلق.
+  ///
+  /// ويكتمل فوراً إن لم تُنادَ [start] أصلاً.
+  static Future<void> get ready =>
+      _pending?.catchError((Object e, StackTrace st) {
+        LogService.error(
+          'Module bootstrap failed — the app continues without those modules.',
+          tag: 'BOOTSTRAP',
+          error: e,
+          stackTrace: st,
+        );
+      }) ??
+      Future<void>.value();
+
   static Future<void> initializeAll(GetIt di) async {
     // 1. Firebase core — prerequisite for crashlytics / analytics / remote
     //    config / push. Initialised exactly once, and ONLY when at least one
@@ -67,8 +99,20 @@ abstract final class ModulesBootstrap {
     if (AppFeatures.multiDevice) {
       await MultiDevicePlugin.initialize(di);
     }
+    // **يسجّل إعداداتَه المملوكة للخادم مهمّةَ تحديثٍ بالدورة — قبل بناء
+    // المحرّك.** ولا نداءَ شبكةٍ هنا: اللافتةُ تُركَّب لاحقاً بـ`AppUpdateGate`
+    // حيث يوجد `BuildContext`.
+    if (AppFeatures.inAppUpdates) {
+      await InAppUpdatesModule.initialize(di);
+    }
     if (AppFeatures.offlineSync) {
       await SyncSDK.initialize(const SyncSdkConfig(enabled: true), di);
+      // **رفعٌ والتطبيقُ مغلق** — أندرويد وحده بقرار، ولا شيء على iOS.
+      //
+      // والسيناريو الذي وُجد له: يكتب المستخدم عملَه حيث لا تغطية، **ويُغلق
+      // التطبيق**. تمرّ التغطيةُ بالطريق — ولا شيء يرفع؛ فيصل وشغلُه ما زال
+      // على جهازه وهو يظنّه وصل. راجع `SyncBackgroundWorker`.
+      await SyncBackgroundWorker.initialize();
     }
     // Last, and order-independent: it registers a repository and two cubit
     // factories over the already-configured Dio, and nothing else waits on it.

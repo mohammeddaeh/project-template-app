@@ -105,33 +105,6 @@ void main() {
       reason: 'SharedPreferences is not pre-resolved in the generated DI.',
     );
   });
-
-  test('the generated DI registers every notes sync adapter under its abstract type', () {
-    // Source-level, because constructing these needs Dio and a Retrofit service
-    // apiece. What matters for discovery is the *type they are bound to* —
-    // `getAll<T>()` and `isRegistered<T>()` both key on it, and a missing `as:`
-    // is invisible everywhere else.
-    final generated =
-        File('lib/core/di/injection.config.dart').readAsStringSync();
-
-    for (final binding in const {
-      'SyncFeatureContractBase': 'NotesFeatureContract',
-      'SyncExecutor': 'NotesSyncExecutor',
-      'SyncPullExecutor': 'NotesSyncPullExecutor',
-      'SyncRepositoryDecorator': 'NotesSyncRepositoryDecorator',
-      'AttachmentUploadTarget': 'NotesAttachmentUploadTarget',
-    }.entries) {
-      expect(
-        RegExp(
-          'lazySingleton<_i\\d+\\.${binding.key}>\\('
-          '\\s*\\(\\) =>\\s*(const )?_i\\d+\\.${binding.value}\\(',
-        ).hasMatch(generated),
-        isTrue,
-        reason: '${binding.value} is not registered as ${binding.key}. '
-            'The module resolves it by the abstract type and will not find it.',
-      );
-    }
-  });
 }
 
 class _SilentLogDelegate implements LogDelegate {

@@ -56,6 +56,21 @@ export 'domain/sync_status.dart'
 export 'engine/sync_job_executor.dart' show SyncExecutor, SyncExecutionResult;
 export 'domain/sync_queue_job.dart' show SyncQueueJob;
 
+/// **«فارغ» جوابان لا جواب** — يفرّق المغلِّفُ بين «سُحب ولا شيء هنا» و«لم
+/// يُسحب بعد». راجع الصنف.
+
+/// **بيانٌ يملكه الخادم ولا جدولَ له بمخزن المزامنة** — راجع الصنف.
+export 'domain/sync_refresh_task.dart' show SyncRefreshTask;
+export 'domain/sync_hydration.dart' show SyncHydration;
+
+
+/// **ماذا سيصل الخادمَ من هذا الصفّ — وما الذي يحجز الباقي.**
+///
+/// تنفّذه الشريحةُ صاحبةُ الكيان، ويقرؤه من يعرض الطابور.
+export 'domain/sync_job_explainer.dart';
+
+/// **الرفعُ بالخلفية** — أندرويد وحده، ويُجدَّل من إقلاع الموديولات.
+export 'background/sync_background_worker.dart' show SyncBackgroundWorker;
 // Metadata only — nothing reads it at runtime, and the engine keys executors off
 // `SyncExecutor.entityName`. Exported because the reference adapter carries it.
 export 'engine/sync_executor_for.dart' show SyncExecutorFor;
@@ -119,3 +134,21 @@ export 'engine/attachment_download_manager.dart'
 
 // Ingesting a file the device just produced, before anything is queued.
 export 'engine/attachment_capture.dart' show AttachmentCapture;
+
+// ── السطحُ الذي يقرأه من يركّب الشريحة ────────────────────────────────────────
+// أربعةٌ تُقرأ ولا تُبنى هنا: حصيلةُ إخفاقٍ بأسماء حقولها · لقطةُ طور الدفع ·
+// ختمُ «هل جُرد هذا الحساب على هذا الجهاز» وتقدُّمُ ذلك الجرد · ونبضُ رفع
+// المرفَق. وواحدٌ تنفّذه الشريحة (`SyncRowMapper`)، واثنان تركّبهما بالـDI.
+export 'domain/sync_failure_report.dart'
+    show SyncFailureReport, SyncFailureIssue, SyncPartVerdict;
+export 'domain/sync_activity.dart' show SyncActivity, SyncActivitySnapshot;
+export 'data/sync_bootstrap_stamp.dart' show SyncBootstrapStamp;
+export 'engine/sync_bootstrap_progress.dart'
+    show SyncBootstrapProgress, SyncBootstrapResult;
+export 'engine/attachment_upload_progress.dart' show AttachmentUploadProgress;
+export 'engine/sync_row_mapper.dart' show SyncRowMapper;
+export 'engine/sync_urls.dart' show SyncUrls;
+export 'engine/rest_attachment_upload_target.dart'
+    show RestAttachmentUploadTarget;
+export 'integration/sync_private_file_ingest_service.dart'
+    show SyncPrivateFileIngestService;

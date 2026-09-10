@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart';
-import 'package:app_template/presentation/extensions/app_padding_extension.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
 /// Asks which file format, before anything is downloaded.

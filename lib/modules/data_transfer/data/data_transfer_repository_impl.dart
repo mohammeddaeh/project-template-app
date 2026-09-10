@@ -7,7 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/errors/failure_mapper_registry.dart';
 import 'package:app_template/core/infra/network/boundary/base_repository.dart';
-import 'package:app_template/core/infra/network/rest/api_urls.dart';
+import 'package:app_template/modules/data_transfer/data/data_transfer_urls.dart';
 import 'package:app_template/core/infra/network/rest/handle_body_response.dart';
 import 'package:app_template/modules/data_transfer/data/data_transfer_api_service.dart';
 import 'package:app_template/modules/data_transfer/data/models/import_report_model.dart';
@@ -60,7 +60,7 @@ class DataTransferRepositoryImpl extends BaseRepository
     Map<String, String> filters = const {},
   }) =>
       _downloadTo(
-        path: ApiUrls.transferExport(resource),
+        path: DataTransferUrls.transferExport(resource),
         fileName: '$resource-${_stamp()}.${format.wire}',
         query: {
           'format': format.wire,
@@ -77,7 +77,7 @@ class DataTransferRepositoryImpl extends BaseRepository
     required TransferFormat format,
   }) =>
       _downloadTo(
-        path: ApiUrls.transferTemplate(resource),
+        path: DataTransferUrls.transferTemplate(resource),
         fileName: '$resource-template.${format.wire}',
         query: {'format': format.wire},
       );

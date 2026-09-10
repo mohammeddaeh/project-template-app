@@ -28,7 +28,7 @@ void main() {
   /// - the module itself, and its own tests
   const allowedPrefixes = <String>[
     'lib/modules/sync/',
-    'lib/presentation/shared/sync/',
+    'lib/ui/state/sync/',
     'lib/modules/modules_bootstrap.dart',
     'lib/core/platform/features/app_features.dart',
     'test/sync/',
@@ -41,14 +41,29 @@ void main() {
   /// the import but that they are all in one predictable place, so removing the
   /// module stays a glob rather than a search:
   ///
-  ///     rm -rf lib/modules/sync lib/presentation/shared/sync lib/**/data/sync
+  ///     rm -rf lib/modules/sync lib/ui/state/sync lib/**/data/sync
   ///
   /// Hence the rule this pattern enforces: **feature sync adapters live in
   /// `<feature>/data/sync/` and nowhere else.** A contract dropped into
   /// `data/repositories/` beside the ordinary one would work perfectly and
   /// would be found, months later, by whoever deleted the module and then spent
   /// an afternoon on the compile errors.
-  final featureSyncAdapter = RegExp(r'^lib/Features/[^/]+/data/sync/');
+  final featureSyncAdapter = RegExp(r'^lib/features/[^/]+/data/sync/');
+
+  /// The fifth shape: an **optional module** that opts into the sync cycle.
+  ///
+  /// `in_app_updates` registers its settings refresh as a `SyncRefreshTask` so
+  /// the app has **one** scheduler rather than a second timer of its own. That
+  /// is a real dependency and it cannot be hidden — what it can be is *located*:
+  /// one file under `integration/`, so deletion stays a glob.
+  ///
+  ///     rm -rf lib/modules/sync lib/ui/state/sync lib/**/data/sync \
+  ///            lib/modules/*/integration
+  ///
+  /// ⚠️ And the module's own entry file is **not** allowed here on purpose. It
+  /// names no sync type — not even as a generic argument — so that a module with
+  /// one documented doorway does not quietly grow a second one.
+  final moduleSyncOptIn = RegExp(r'^lib/modules/[^/]+/integration/');
 
   /// Generated files are rewritten from annotations, so a reference inside one
   /// is a symptom of a source file elsewhere — and that source file is what
@@ -85,6 +100,7 @@ void main() {
         if (isGenerated(path)) continue;
         if (allowedPrefixes.any(path.startsWith)) continue;
         if (featureSyncAdapter.hasMatch(path)) continue;
+        if (moduleSyncOptIn.hasMatch(path)) continue;
 
         if (syncImport.hasMatch(entity.readAsStringSync())) {
           offenders.add(path);
@@ -100,7 +116,7 @@ void main() {
           'deleting the module would no longer be a folder removal:\n'
           '  ${offenders.join('\n  ')}\n\n'
           'The fix is almost never a fourth port. Either the dependency belongs '
-          'in presentation/shared/sync/, or it should go through a contract in '
+          'in ui/state/sync/, or it should go through a contract in '
           'core/foundation/contracts/ that the module implements — the way '
           'UnsyncedWorkProbe does.',
     );
@@ -109,15 +125,39 @@ void main() {
   test('a feature sync adapter outside data/sync/ is caught', () {
     // Guards the guard: the pattern above must be tight enough to reject the
     // placement it exists to prevent, or it is a hole shaped like a rule.
+    //
+    // ⚠️ And the case it rejects is lowercase `features/` — the pattern read
+    // `lib/Features/` until 2026-09-09, which matched **nothing** after the
+    // folder was renamed. A dead pattern does not fail: it silently allows the
+    // placement it was written to forbid, and this self-check is what caught it.
     expect(
-      featureSyncAdapter.hasMatch('lib/Features/notes/data/sync/x.dart'),
+      featureSyncAdapter.hasMatch('lib/features/notes/data/sync/x.dart'),
       isTrue,
     );
     expect(
-      featureSyncAdapter.hasMatch('lib/Features/notes/data/repositories/x.dart'),
+      featureSyncAdapter.hasMatch('lib/features/notes/data/repositories/x.dart'),
       isFalse,
     );
+    expect(featureSyncAdapter.hasMatch('lib/Features/notes/data/sync/x.dart'), isFalse);
     expect(featureSyncAdapter.hasMatch('lib/core/sync/x.dart'), isFalse);
+  });
+
+  test('a module opts into sync from integration/ and nowhere else', () {
+    expect(
+      moduleSyncOptIn.hasMatch(
+        'lib/modules/in_app_updates/integration/app_update_settings_refresh_task.dart',
+      ),
+      isTrue,
+    );
+    // The entry file and the data layer stay out: one doorway, not three.
+    expect(
+      moduleSyncOptIn.hasMatch('lib/modules/in_app_updates/in_app_updates_module.dart'),
+      isFalse,
+    );
+    expect(
+      moduleSyncOptIn.hasMatch('lib/modules/in_app_updates/data/x.dart'),
+      isFalse,
+    );
   });
 
   /// The module's entire public surface — the one file the outside may name.

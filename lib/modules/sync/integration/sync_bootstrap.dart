@@ -1,15 +1,26 @@
-﻿import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
+import 'package:app_template/core/infra/files/server_file_cache.dart';
+import 'package:app_template/modules/sync/domain/media_prefetch_status.dart';
+import 'package:app_template/modules/sync/engine/media_prefetch_manager.dart';
+import 'package:app_template/modules/sync/engine/attachment_upload_progress.dart';
+import 'package:app_template/core/foundation/di/get_it_all_extension.dart';
+import 'package:app_template/core/foundation/contracts/local_data_wiper.dart';
+import 'package:app_template/core/platform/lifecycle/app_lifecycle_service.dart';
 import 'package:app_template/core/foundation/contracts/unsynced_work_probe.dart';
 import 'package:dio/dio.dart';
 
 import 'package:app_template/modules/sync/data/attachment_file_store.dart';
+import 'package:app_template/modules/sync/integration/sync_local_data_wiper.dart';
 import 'package:app_template/modules/sync/data/sql_attachment_store.dart';
 import 'package:app_template/modules/sync/data/sync_cursor_store.dart';
+import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
 import 'package:app_template/modules/sync/domain/attachment_store.dart';
+import 'package:app_template/modules/sync/domain/sync_hydration.dart';
+import 'package:app_template/modules/sync/domain/sync_queue_signal.dart';
 import 'package:app_template/modules/sync/engine/attachment_cache_manager.dart';
 import 'package:app_template/modules/sync/engine/attachment_capture.dart';
 import 'package:app_template/modules/sync/engine/attachment_metadata_sync.dart';
@@ -87,6 +98,21 @@ Future<void> registerSyncCore(GetIt getIt) async {
     () => SyncUnsyncedWorkProbe(getIt<SyncQueueRepository>()),
   );
 
+  // نفس الاستبدال بالضبط، وللسبب نفسه. الافتراضي `NoLocalDataWiper` لا يمحو
+  // شيئاً — وهو الصواب لتطبيقٍ لا يحمل بياناتٍ محلية. ومع الموديول مُشعَلاً
+  // يحمل الجهاز صفوفَ حسابٍ وطابورَه وصورَه، ومن يخرج ثم يُسلّم جهازه يتركها
+  // كلَّها لمن بعده — **ويُدفع طابورُه بتوكن الداخل الجديد**.
+  if (getIt.isRegistered<LocalDataWiper>()) {
+    await getIt.unregister<LocalDataWiper>();
+  }
+  getIt.registerLazySingleton<LocalDataWiper>(
+    () => SyncLocalDataWiper(
+      getIt<SyncDatabase>(),
+      getIt<AttachmentFileStore>(),
+      getIt<StorageService>(),
+    ),
+  );
+
   if (!getIt.isRegistered<SyncBackoffPolicy>()) {
     getIt.registerLazySingleton<SyncBackoffPolicy>(SyncBackoffPolicy.new);
   }
@@ -112,6 +138,15 @@ Future<void> registerSyncCore(GetIt getIt) async {
       ),
     );
   }
+  // **«فارغ» جوابان لا جواب** — راجع `SyncHydration`.
+  if (!getIt.isRegistered<SyncHydration>()) {
+    getIt.registerLazySingleton<SyncHydration>(
+      () => SyncHydration(getIt<SyncCursorStore>()),
+    );
+  }
+  if (!getIt.isRegistered<SyncQueueSignal>()) {
+    getIt.registerLazySingleton<SyncQueueSignal>(SyncQueueSignal.new);
+  }
   if (!getIt.isRegistered<SyncWriteGateway>()) {
     getIt.registerLazySingleton<SyncWriteGateway>(
       () => SqlSyncWriteGateway(
@@ -120,7 +155,7 @@ Future<void> registerSyncCore(GetIt getIt) async {
         getIt<Uuid>(),
         getIt<SyncContractValidator>(),
         getIt<SyncChangeNotifier>(),
-      ),
+      )..queueSignal = getIt<SyncQueueSignal>(),
     );
   }
   // ── Attachments (P4.5) ─────────────────────────────────────────────────────
@@ -169,14 +204,26 @@ Future<void> registerSyncCore(GetIt getIt) async {
   // Registered only when a feature declared an upload target. Without one there
   // is nothing to send, and the engine's file phase stays a single
   // `isRegistered` check.
-  if (getIt.isRegistered<AttachmentUploadTarget>() &&
-      !getIt.isRegistered<AttachmentUploadManager>()) {
-    getIt.registerLazySingleton<AttachmentUploadManager>(
-      () => AttachmentUploadManager(
-        getIt<AttachmentStore>(),
-        getIt.getAll<AttachmentUploadTarget>().toList(),
-      ),
+  if (!getIt.isRegistered<AttachmentUploadProgress>()) {
+    getIt.registerLazySingleton<AttachmentUploadProgress>(
+      AttachmentUploadProgress.new,
     );
+  }
+  // **و`allOf` لا `getAll`** — والحارسُ `isRegistered` أمامه **يُعمي عن
+  // التسجيلات المسمّاة**، و`injectable` يفرض الاسمَ لتسجيلين تحت نوعٍ واحد:
+  // فمشروعٌ بهدفَي رفعٍ لشريحتين كان يُسكت الرفعَ كلَّه بلا سطرٍ أحمر واحد.
+  // راجع `GetItGetAllOrEmpty`.
+  if (!getIt.isRegistered<AttachmentUploadManager>()) {
+    final targets = getIt.allOf<AttachmentUploadTarget>();
+    if (targets.isNotEmpty) {
+      getIt.registerLazySingleton<AttachmentUploadManager>(
+        () => AttachmentUploadManager(
+          getIt<AttachmentStore>(),
+          targets,
+          getIt<AttachmentUploadProgress>(),
+        ),
+      );
+    }
   }
 
   if (!getIt.isRegistered<SyncCursorStore>()) {
@@ -197,6 +244,28 @@ Future<void> registerSyncCore(GetIt getIt) async {
       ),
     );
   }
+  if (!getIt.isRegistered<SyncCycleStamp>()) {
+    getIt.registerLazySingleton<SyncCycleStamp>(
+      () => SyncCycleStamp(getIt<SyncDatabase>()),
+    );
+  }
+  // ── تنزيلُ الصور والملفّات (الطورُ السادس) ──────────────────────────────────
+  if (!getIt.isRegistered<MediaPrefetchStatus>()) {
+    getIt.registerLazySingleton<MediaPrefetchStatus>(MediaPrefetchStatus.new);
+  }
+  if (!getIt.isRegistered<MediaPrefetchManager>()) {
+    getIt.registerLazySingleton<MediaPrefetchManager>(
+      // **و`ServerFileCache` هو المخزن نفسُه الذي تقرأ منه الشاشات** — فما
+      // ينزّله هذا الطور تفتحه المصغَّرةُ بلا شبكة، ولا مخزنَ ثانٍ يفترق عنه.
+      () => MediaPrefetchManager(
+        getIt,
+        getIt<ServerFileCache>(),
+        getIt<Connectivity>(),
+        getIt<SyncSettingsStore>(),
+        getIt<MediaPrefetchStatus>(),
+      ),
+    );
+  }
   if (!getIt.isRegistered<SyncEngine>()) {
     getIt.registerLazySingleton<SyncEngine>(
       () => SyncEngine(
@@ -210,6 +279,7 @@ Future<void> registerSyncCore(GetIt getIt) async {
         getIt<SyncConflictResolver>(),
         getIt<SyncLock>(),
         getIt<SyncOperationsLog>(),
+        getIt<SyncCycleStamp>(),
         getIt<SyncCursorStore>(),
       ),
     );
@@ -221,6 +291,11 @@ Future<void> registerSyncCore(GetIt getIt) async {
         getIt<Connectivity>(),
         getIt<SyncEngine>(),
         getIt<SyncGate>(),
+        getIt<SyncQueueSignal>(),
+        // مشروطةٌ بعلَمها — راجع `SyncController._lifecycle`.
+        getIt.isRegistered<AppLifecycleService>()
+            ? getIt<AppLifecycleService>()
+            : null,
       ),
     );
   }

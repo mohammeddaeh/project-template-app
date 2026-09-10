@@ -1,0 +1,53 @@
+# مخالفات بنية مسجَّلة — دَينٌ سابقٌ للفاحص، لا إذنٌ بالمزيد.
+# تُعرَض ولا تُفشِل. وأي مخالفة جديدة تُفشِل البناء.
+# لا يُعاد توليده لإسكات مخالفة جديدة (R30).
+# التوليد: dart run scripts/check_structure.dart --baseline
+#
+F04|lib/ui/feedback/feedback_type.dart|AppPalette لا يُستورد خارج app_colors.dart
+F04|lib/ui/widgets/connectivity/offline_banner.dart|لون Material جاهز — استعمل context.colors.X
+F04|lib/ui/widgets/connectivity/reconnect_countdown_chip.dart|لون Material جاهز — استعمل context.colors.X
+F04|lib/ui/widgets/connectivity/sync_progress_overlay.dart|لون Material جاهز — استعمل context.colors.X
+F04|lib/ui/widgets/indicators/page_loading_indicator.dart|لون Material جاهز — استعمل context.colors.X
+F10|lib/features/auth/change_password/presentation/pages/change_password_screen.dart|ltr: true — الحقل يتبع اتجاه الصفحة إلا لقيمة يكسرها bidi فعلاً
+F10|lib/features/auth/forgot_password/presentation/pages/forgot_password_screen.dart|ltr: true — الحقل يتبع اتجاه الصفحة إلا لقيمة يكسرها bidi فعلاً
+F10|lib/features/auth/forgot_password/presentation/pages/reset_password_screen.dart|ltr: true — الحقل يتبع اتجاه الصفحة إلا لقيمة يكسرها bidi فعلاً
+F10|lib/features/auth/login/presentation/pages/login_screen.dart|ltr: true — الحقل يتبع اتجاه الصفحة إلا لقيمة يكسرها bidi فعلاً
+F10|lib/features/auth/register/presentation/pages/register_screen.dart|ltr: true — الحقل يتبع اتجاه الصفحة إلا لقيمة يكسرها bidi فعلاً
+F10|lib/features/auth/verify_email/presentation/pages/verify_email_screen.dart|ltr: true — الحقل يتبع اتجاه الصفحة إلا لقيمة يكسرها bidi فعلاً
+F10|lib/ui/extensions/app_padding_extension.dart|اتجاه ثابت — استعمل EdgeInsetsDirectional.only(start/end:)
+F10|lib/ui/locale/variants/locale_icon_button_variant.dart|اتجاه ثابت — استعمل AlignmentDirectional.*Start/End
+F13|lib/ui/error/error_view.dart|نصّ عربي بالكود — LocaleKeys.x.tr()
+F13|lib/ui/extensions/bottomsheet_extension.dart|نصّ عربي بالكود — LocaleKeys.x.tr()
+F13|lib/ui/locale/locale_switcher_controller.dart|نصّ عربي بالكود — LocaleKeys.x.tr()
+F13|lib/ui/widgets/inputs/app_search_bar.dart|نصّ عربي بالكود — LocaleKeys.x.tr()
+F19|lib/features/auth/change_password/presentation/pages/change_password_screen.dart|build() فيه # سطر كود (الحدّ #)
+F19|lib/features/auth/forgot_password/presentation/pages/forgot_password_screen.dart|build() فيه # سطر كود (الحدّ #)
+F19|lib/features/auth/forgot_password/presentation/pages/reset_password_screen.dart|build() فيه # سطر كود (الحدّ #)
+F19|lib/features/auth/login/presentation/pages/login_screen.dart|build() فيه # سطر كود (الحدّ #)
+F19|lib/features/auth/profile/presentation/pages/profile_screen.dart|build() فيه # سطر كود (الحدّ #)
+F19|lib/features/auth/register/presentation/pages/register_screen.dart|build() فيه # سطر كود (الحدّ #)
+F19|lib/features/auth/register/presentation/pages/register_screen.dart|الملف # سطر كود (الحدّ #) — اقتطع أقساماً إلى presentation/widgets/
+F19|lib/features/auth/verify_email/presentation/pages/verify_email_screen.dart|build() فيه # سطر كود (الحدّ #)
+F19|lib/features/auth/verify_email/presentation/pages/verify_email_screen.dart|الصفحة ترسم (BoxDecoration) — انقله إلى ودجة مسمّاة
+F19|lib/features/auth/verify_email/presentation/pages/verify_email_screen.dart|الملف # سطر كود (الحدّ #) — اقتطع أقساماً إلى presentation/widgets/
+F19|lib/features/settings/presentation/pages/settings_screen.dart|الملف # سطر كود (الحدّ #) — اقتطع أقساماً إلى presentation/widgets/
+F20|lib/features/home/presentation/pages/main_shell_screen.dart|دالة تُعيد Widget (`_buildIcon`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/connectivity/reconnect_countdown_chip.dart|دالة تُعيد Widget (`_buildChip`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/initial_loading_indicator.dart|دالة تُعيد Widget (`_buildList`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/next_page_status.dart|دالة تُعيد Widget (`_child`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/page_loading_indicator.dart|دالة تُعيد Widget (`_buildDotsWave`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/page_loading_indicator.dart|دالة تُعيد Widget (`_buildLinearBar`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/page_loading_indicator.dart|دالة تُعيد Widget (`_buildPulseDots`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/page_loading_indicator.dart|دالة تُعيد Widget (`_buildShimmerBar`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/page_loading_indicator.dart|دالة تُعيد Widget (`_buildSpinner`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/page_loading_indicator.dart|دالة تُعيد Widget (`_buildStyle`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/indicators/page_loading_indicator.dart|دالة تُعيد Widget (`_buildTextSpinner`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/inputs/app_select_field.dart|دالة تُعيد Widget (`_buildDropdown`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/inputs/app_select_field.dart|دالة تُعيد Widget (`_buildTapField`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/layout/app_button.dart|دالة تُعيد Widget (`_buildLabel`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/layout/app_button.dart|دالة تُعيد Widget (`_buildLoader`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/layout/flavor_banner.dart|دالة تُعيد Widget (`_buildBanner`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/layout/primary_button.dart|دالة تُعيد Widget (`_loader`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/layout/stat_card.dart|دالة تُعيد Widget (`_buildSkeleton`) — اجعلها صنفاً يمتدّ StatelessWidget
+F20|lib/ui/widgets/lists/pagination_builder_wdg.dart|دالة تُعيد Widget (`_buildNextPageStatus`) — اجعلها صنفاً يمتدّ StatelessWidget
+F21|lib/ui/widgets/layout/flavor_banner.dart|غير مُصدَّرة من widgets.dart — أضف: export 'layout/flavor_banner.dart';

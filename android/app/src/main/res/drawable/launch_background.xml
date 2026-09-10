@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  نافذةُ الإطلاق لما دون أندرويد 12 — لونٌ صلبٌ ورسمةٌ متجهة، بلا bitmap.
+
+  **ولماذا `splash_logo_full` لا `splash.png`:** المنقّطة كانت ٢٢٧px بكثافة
+  xxxhdpi أي **٥٦٫٧dp عرضاً**، بينما ترسمه شاشة فلاتر بـ١٣٢dp — فيقفز الشعار
+  إلى ضعفَيه لحظة التسليم. والمتجهة تُقاس بالـdp فتطابقه تماماً.
+
+  **والمرساةُ هي مركزُ المرسومة** (وُسِّع ضلعُها حولها)، فـ`gravity="center"`
+  يضعها حيث تضعها الشاشة التالية بالضبط — وهو نفس ما يفعله قناعُ أندرويد 12+.
+  والمرساةُ مركزُ أصغر دائرةٍ تسع الشعار، لا مركزُ صندوقه: راجع
+  `readme/23_STARTUP_SPLASH.md` §٢.
+
+  ⛔ **مولَّد بـ`scripts/gen_splash_assets.dart` — لا يُحرَّر يدوياً.**
+-->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white"/>
+    <item android:drawable="@color/splash_background" />
+    <item
+        android:drawable="@drawable/splash_logo_full"
+        android:gravity="center" />
 </layer-list>

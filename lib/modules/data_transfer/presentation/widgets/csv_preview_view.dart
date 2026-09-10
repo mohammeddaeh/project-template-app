@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:app_template/modules/data_transfer/data/csv_preview_parser.dart';
-import 'package:app_template/presentation/extensions/app_padding_extension.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// The downloaded CSV, as a table.
 ///

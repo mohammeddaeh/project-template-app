@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/modules/access_control/domain/permission_catalog.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
 /// **The screen the whole module exists to make possible.**

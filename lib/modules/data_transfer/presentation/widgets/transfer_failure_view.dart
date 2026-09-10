@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// Renders both kinds of refusal this module produces.
 ///

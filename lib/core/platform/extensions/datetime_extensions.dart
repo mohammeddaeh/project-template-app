@@ -86,4 +86,14 @@ extension TimeAgo on DateTime {
       return LocaleKeys.lastSeenAgo_longTime.tr();
     }
   }
+
+  /// `dd/MM/yyyy` — day first, the reading order most of this template's
+  /// audiences expect. Never `MM/dd`: an Arabic reader takes the leading
+  /// number for the day, so the two orders **disagree silently** on every date
+  /// before the 13th.
+  String get dayMonthYear => DateFormat('dd/MM/yyyy').format(this);
+
+  /// [dayMonthYear] with a 24h clock in front — `HH:mm · dd/MM/yyyy`.
+  String get timeAndDayMonthYear =>
+      DateFormat('HH:mm · dd/MM/yyyy').format(this);
 }

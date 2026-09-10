@@ -1,14 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/foundation.dart';
-import 'package:app_template/Features/auth/change_password/data/datasources/change_password_api_service.dart';
-import 'package:app_template/Features/auth/verify_email/data/datasources/verify_email_api_service.dart';
-import 'package:app_template/Features/auth/forgot_password/data/datasources/password_reset_api_service.dart';
-import 'package:app_template/Features/auth/me/data/datasources/me_api_service.dart';
-import 'package:app_template/Features/auth/logout/data/datasources/logout_api_service.dart';
-import 'package:app_template/Features/auth/login/data/datasources/auth_api_service.dart';
-import 'package:app_template/Features/auth/register/data/datasources/register_api_service.dart';
-import 'package:app_template/Features/notes/data/datasources/notes_api_service.dart';
+import 'package:app_template/features/auth/change_password/data/datasources/change_password_api_service.dart';
+import 'package:app_template/features/auth/verify_email/data/datasources/verify_email_api_service.dart';
+import 'package:app_template/features/auth/forgot_password/data/datasources/password_reset_api_service.dart';
+import 'package:app_template/features/auth/me/data/datasources/me_api_service.dart';
+import 'package:app_template/features/auth/logout/data/datasources/logout_api_service.dart';
+import 'package:app_template/features/auth/login/data/datasources/auth_api_service.dart';
+import 'package:app_template/features/auth/register/data/datasources/register_api_service.dart';
+import 'package:app_template/core/foundation/contracts/local_data_wiper.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
 import 'package:app_template/core/foundation/contracts/unsynced_work_probe.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
@@ -16,6 +16,11 @@ import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dar
 import 'package:app_template/core/infra/network/interceptors/auth_interceptor.dart';
 import 'package:app_template/core/infra/network/interceptors/internet_checker_interceptor.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+
+import 'package:app_template/core/infra/config/env.dart';
+import 'package:app_template/core/infra/network/interceptors/network_origin_interceptor.dart';
+import 'package:app_template/core/platform/connectivity/server_reachability.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:dio/dio.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/notifications/adapters/disabled_notifications_adapter.dart';
@@ -32,8 +37,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:app_template/core/platform/storage/encryption_service.dart';
 import 'package:app_template/core/platform/storage/secure_storage_service.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
-import 'package:app_template/presentation/feedback/adapters/motion_toast_adapter.dart';
-import 'package:app_template/presentation/feedback/app_feedback_service.dart';
+import 'package:app_template/ui/feedback/adapters/motion_toast_adapter.dart';
+import 'package:app_template/ui/feedback/app_feedback_service.dart';
 import 'package:app_template/routes/router.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
@@ -44,9 +49,66 @@ import 'injection.dart';
 
 @module
 abstract class InjectableModule {
+  /// **يفحص مضيفَ هذا التطبيق — لا «الإنترنت»**.
+  ///
+  /// `InternetConnectionChecker.instance` بإعداده الافتراضي (v3.0.1) يُرسل
+  /// `HEAD` إلى ثلاثة APIs تجريبية عامّة — `dummyapi.online` و
+  /// `jsonplaceholder.typicode.com` و`fakestoreapi.com` — ويقرأ أيَّ ردٍّ منها
+  /// «الإنترنت يعمل». وذلك كان يُسأل **قبل كل طلب** وقبل كل دورة مزامنة.
+  ///
+  /// وشبكةٌ حكومية أو داخلية تحجب تلك النطاقات تجعل التطبيق **أوف‑لاين للأبد**
+  /// بينما الخادم متاح تماماً — ولا مزامنة تحدث إطلاقاً. الجدول الكامل لما يخرج
+  /// من ذلك: [ServerReachability].
+  ///
+  /// و**السقوط إلى الافتراضي مقصود ومُعلَن**: `BASE_URL` يُحقن بـ
+  /// `--dart-define-from-file`، وغيابُه يعني بيئةً لم تُعدّ. وعندها يبقى فحصٌ
+  /// عامّ خيراً من فحصٍ على `Uri` فارغ يرفض كل شيء — ويُسجَّل تحذير.
+  ///
+  /// > 📌 **ومشروعٌ يستوثق من مزوّدٍ خارجيّ** (Keycloak · Auth0 · Firebase) يضيف
+  /// > مضيفَه إلى [_probeHosts]: مسارُ الدخول لا يمرّ بـ`BASE_URL` عندئذٍ، وفحصٌ
+  /// > يسأل مضيفَ الـAPI وحده يمنع تسجيلَ الدخول حين يسقط الـAPI **والمزوّدُ
+  /// > قائمٌ يجيب**. و`requireAllAddressesToRespond` مُطفأ افتراضاً، أي **يكفي
+  /// > أن يجيب أحدُهما**.
   @lazySingleton
-  InternetConnectionChecker get connectionChecker =>
-      InternetConnectionChecker.instance;
+  InternetConnectionChecker get connectionChecker {
+    final hosts = <Uri>[
+      for (final raw in _probeHosts)
+        if (Uri.tryParse(raw) case final uri?)
+          if (uri.hasAuthority) uri,
+    ];
+
+    if (hosts.isEmpty) {
+      LogService.warning(
+        'BASE_URL ("${Env.baseUrl}") is not a usable URL — falling back to the '
+        'package default probes (public demo APIs). Set it so reachability '
+        "asks THIS app's server.",
+        tag: 'REACHABILITY',
+      );
+      return InternetConnectionChecker.instance;
+    }
+
+    return InternetConnectionChecker.createInstance(
+      // ثلاث ثوانٍ لا خمس: هذا الفحص يقع **بطريق كل طلب**، ومهلةٌ أطول تعني
+      // شاشةً تنتظر ثوانيَ قبل أن تُخفق بخطأٍ كانت ستُخفق به على أي حال.
+      checkTimeout: const Duration(seconds: 3),
+      addresses: [
+        for (final host in hosts)
+          AddressCheckOption(uri: host, timeout: const Duration(seconds: 3)),
+      ],
+    );
+  }
+
+  /// المضيفون الذين يُسألون. أضف إليهم مضيفَ مزوّد الهوية إن وُجد.
+  static const List<String> _probeHosts = [Env.baseUrl];
+
+  /// **جوابٌ واحد لدفعةِ طلبات** — راجع [ServerReachability] لسبب التخزين
+  /// المؤقّت.
+  @lazySingleton
+  ServerReachability serverReachability(
+    InternetConnectionChecker checker,
+    Connectivity connectivity,
+  ) => ServerReachability(checker, connectivity);
+
 
   @lazySingleton
   Connectivity get connectivity => Connectivity();
@@ -106,6 +168,15 @@ abstract class InjectableModule {
   @lazySingleton
   UnsyncedWorkProbe get unsyncedWorkProbe => const NoUnsyncedWorkProbe();
 
+  /// نفس عقد [unsyncedWorkProbe] بالضبط: افتراضٌ لا يفعل شيئاً لتطبيقٍ لا يحمل
+  /// بياناتٍ محلية، و`registerSyncCore` يستبدله بمن يمحو فعلاً.
+  ///
+  /// وبلا هذا الافتراضي يصير على كل مستدعٍ أن يسأل «هل المزامنة مُشعَلة؟» قبل
+  /// أن يمحو — وهو سؤالٌ لا شأن لشاشة الخروج به، وأولُ من ينساه يترك بيانات
+  /// حسابٍ على جهازٍ سلّمه صاحبُه لغيره.
+  @lazySingleton
+  LocalDataWiper get localDataWiper => const NoLocalDataWiper();
+
   /// Symmetric encryption for sensitive data stored in [StorageService].
   /// Default adapter: [AesEncryptionAdapter] (AES-256-CBC + HMAC-SHA256,
   /// HKDF-derived keys — authenticated encryption).
@@ -140,6 +211,13 @@ abstract class InjectableModule {
     authInterceptor.handlesSessionExpiry = !hasRefresh;
 
     dio.interceptors.addAll([
+      // 0. حارسُ المنفذ: يصرخ (بـ`debug` وحده) حين يخرج طلبٌ من خارج المنافذ
+      //    المسمّاة. **أوّلاً عمداً**: Dio ينفّذ `onRequest` بترتيب التسجيل،
+      //    وحارسٌ خلف المخبّئ لا يرى طلباً أجابه المخبّئ — وذلك بالضبط طلبٌ
+      //    خرج من شاشة. راجع `NetworkOrigin` (وهو سياسةٌ تُختار، وحذفُ هذا
+      //    السطر يُطفئها كلَّها).
+      const NetworkOriginInterceptor(),
+
       // 1. Response cache: serves opt-in GETs from local storage within TTL.
       //
       //    FIRST, ahead of the offline guard, and that order is the whole
@@ -192,10 +270,6 @@ abstract class InjectableModule {
 
   @lazySingleton
   RegisterApiService registerApiService(Dio dio) => RegisterApiService(dio);
-
-  /// Reference feature — delete with `Features/notes/`.
-  @lazySingleton
-  NotesApiService notesApiService(Dio dio) => NotesApiService(dio);
 
   @lazySingleton
   MeApiService meApiService(Dio dio) => MeApiService(dio);

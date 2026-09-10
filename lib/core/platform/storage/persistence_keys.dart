@@ -52,13 +52,29 @@ abstract class PersistenceKeys {
   /// JSON-encoded `AuthUser` snapshot — written on login and after every
   /// successful `GET /account/me` refresh.
   ///
-  /// A bridge across app restarts, never the source of truth: `SplashCubit`
+  /// A bridge across app restarts, never the source of truth: `StartupResolver`
   /// restores it so the first frame after a cached token is not empty, and
   /// `SessionSyncService` overwrites it from the server moments later.
   ///
   /// `cached_permission_keys` and `cached_is_super_admin` were removed
   /// alongside it — they persisted two fields no endpoint ever sent.
   static const String cachedCurrentUser = 'cached_current_user';
+
+  /// **آخرُ حسابٍ دخل على هذا الجهاز** — وهو ما يكشف التبديل.
+  ///
+  /// ولا يُشتقّ من [cachedCurrentUser]: تلك تُمحى عند كل خروج، وهذا يجب أن
+  /// **يبقى بعده** ليُقارَن به من يدخل لاحقاً. مفتاحان لسؤالين مختلفين: «من
+  /// بالجلسة الآن؟» و«لمن البياناتُ التي بالقاعدة؟».
+  ///
+  /// وبلا هذا لا سبيل للجهاز أن يعرف أن الداخل غيرُ صاحب ما يحمله — فيقرأ
+  /// صفوفَ الأول ويدفع طابورَه بتوكن الثاني. راجع `LocalDataWiper`.
+  static const String lastAccountUsername = 'last_account_username';
+
+  /// **أصلُ البيانات التي على هذا الجهاز** — عنوانُ الخادم الذي جاءت منه.
+  ///
+  /// يخصّ **الجهاز والبيانات معاً لا الحساب**، فلا يُمحى مع الخروج: من خرج
+  /// وعاد إلى نفس الخادم لا شيء يتبدّل عنده. راجع `DataOriginGuard`.
+  static const String dataOrigin = 'data_origin';
 
   // ── Access-control module (AbilitiesStore) ────────────────────────────────
   /// JSON-encoded `AbilitySet` — written after every successful

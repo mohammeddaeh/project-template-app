@@ -11,7 +11,7 @@ import 'package:app_template/modules/sync/automation/sync_feature_contract.dart'
 import 'package:app_template/modules/sync/config/sync_mode.dart';
 import 'package:app_template/modules/sync/config/sync_settings.dart';
 import 'package:app_template/modules/sync/config/sync_settings_store.dart';
-import 'package:app_template/modules/sync/data/sync_cursor_store.dart';
+import 'package:app_template/modules/sync/data/sync_cursor_store.dart';import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
 import 'package:app_template/modules/sync/data/sync_database.dart';
 import 'package:app_template/modules/sync/data/sync_operations_log.dart';
 import 'package:app_template/modules/sync/domain/sync_entity_record.dart';
@@ -91,6 +91,7 @@ void main() {
       SyncConflictResolver(),
       SyncLock(_MemoryStorage()),
       _SilentOpsLog(),
+      SyncCycleStamp(SyncDatabase()),
       cursors,
     );
   }

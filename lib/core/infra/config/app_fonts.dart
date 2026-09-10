@@ -72,6 +72,52 @@ abstract final class AppFonts {
   /// The heading features for [family], or empty when the family declares none.
   static List<FontFeature> headingFeaturesFor(String family) =>
       _headingFeatures[family] ?? const <FontFeature>[];
+
+  // ── Optical centre correction — NOT generated, keep below the marker ───────
+  //
+  // Same reason as [_headingFeatures] above: `sync_fonts.dart` rewrites
+  // everything between the BEGIN/END markers and emits only the five
+  // constructor arguments it knows about. A sixth field on [AppFontOption]
+  // survives until the next run of the script, then vanishes silently.
+
+  /// How far **digit and Latin** ink must move **down**, as a fraction of
+  /// `fontSize`, to sit at the optical centre of its own line box.
+  ///
+  /// An Arabic font reserves a tall ascent for tashkeel and a short descent.
+  /// `itfQomraArabic` measures `ascent 1851 / descent −998` over
+  /// `unitsPerEm 2048`: a line box of `1.391em` whose baseline sits `0.904em`
+  /// from the top — **top-heavy by design**. Arabic ink fills that box almost
+  /// exactly (`ع م ق` reach `yMin −632`), so Arabic is off-centre by only
+  /// `1.25%` and needs no correction. Digits and Latin have no descenders —
+  /// their ink spans `yMin −26 … yMax 1459` — so it all sits in the upper part
+  /// and reads visibly high inside any centred box.
+  ///
+  ///     ink centre from top = (ascent − (yMin + yMax) / 2) / unitsPerEm
+  ///                         = (1851 − 716.5) / 2048          = 0.5540em
+  ///     box centre          = (ascent − descent) / 2 / unitsPerEm
+  ///                         = 2849 / 2 / 2048                = 0.6956em
+  ///     correction          = 0.6956 − 0.5540                = 0.1416em
+  ///
+  /// **No `TextStyle` property fixes this.** `height`, `leadingDistribution`
+  /// and `StrutStyle` all distribute *leading* around the font's ascent:descent
+  /// ratio without changing that ratio, so the offset above is invariant under
+  /// every one of them. The only lever is a paint-time shift — which is what
+  /// `GlyphCenter` in `ui/widgets/misc/glyph_center.dart` applies, and the sole
+  /// consumer of this map.
+  ///
+  /// Rebalancing the `.ttf` metrics instead was measured and rejected: it moves
+  /// the error onto Arabic (`1.25%` → `15.4%` low in every centred button and
+  /// chip), or grows the line box by 20% app-wide if the descent is preserved.
+  ///
+  /// A family with no entry gets `0` — no shift, which is the correct default
+  /// for a metrically balanced family such as `NotoSans`.
+  static const Map<String, double> _opticalCenterCorrection = <String, double>{
+    'itfQomraArabic': 0.1416,
+  };
+
+  /// The optical centre correction for [family], or `0` when it needs none.
+  static double opticalCenterCorrectionFor(String family) =>
+      _opticalCenterCorrection[family] ?? 0;
 }
 
 /// A single font option: two families (one for AR, one for Latin) + display labels.

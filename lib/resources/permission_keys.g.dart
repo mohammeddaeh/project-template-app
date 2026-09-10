@@ -1,5 +1,5 @@
 // GENERATED — do not edit by hand.
-// dart run scripts/sync_permission_keys.dart
+// dart run scripts/gen_permission_keys.dart
 //
 // المصدر: permissions.lock.json (مُلتزَم به بـgit).
 // استعمله بدل النصّ الخام:
@@ -10,21 +10,6 @@
 
 abstract final class PermKeys {
   const PermKeys._();
-
-  /// `notes.create`
-  static const String notesCreate = 'notes.create';
-
-  /// `notes.delete`
-  static const String notesDelete = 'notes.delete';
-
-  /// `notes.manage`
-  static const String notesManage = 'notes.manage';
-
-  /// `notes.update`
-  static const String notesUpdate = 'notes.update';
-
-  /// `notes.view`
-  static const String notesView = 'notes.view';
 
   /// `roles.create`
   static const String rolesCreate = 'roles.create';
@@ -55,11 +40,6 @@ abstract final class PermKeys {
 
   /// كل المفاتيح — لشاشة تشخيص أو فحص.
   static const List<String> all = <String>[
-    'notes.create',
-    'notes.delete',
-    'notes.manage',
-    'notes.update',
-    'notes.view',
     'roles.create',
     'roles.delete',
     'roles.manage',

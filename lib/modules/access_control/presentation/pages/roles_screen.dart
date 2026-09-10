@@ -7,10 +7,10 @@ import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/access_control/domain/role.dart';
 import 'package:app_template/modules/access_control/presentation/cubits/roles_cubit.dart';
 import 'package:app_template/modules/access_control/presentation/pages/role_editor_screen.dart';
-import 'package:app_template/presentation/feedback/feedback_extension.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// Role administration — **the whole of it, for every application built on this
 /// template.**
@@ -161,11 +161,7 @@ class _RoleCard extends StatelessWidget {
           style: context.textTheme.bodySmall,
         ),
         trailing: busy
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
+            ? const AppProgress.circular(size: AppProgressSize.sm)
             : role.isSystem
             // No deactivate control at all: the server refuses it, and a button
             // that exists only to produce an error is worse than no button.
@@ -248,13 +244,10 @@ class _CreateRoleDialogState extends State<_CreateRoleDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextFormField(
+          CustomTextField(
             controller: _key,
-            decoration: InputDecoration(
-              labelText: LocaleKeys.roleKeyLabel.tr(),
-              helperText: LocaleKeys.roleKeyHint.tr(),
-              helperMaxLines: 2,
-            ),
+            labelText: LocaleKeys.roleKeyLabel.tr(),
+            hint: LocaleKeys.roleKeyHint.tr(),
             // Mirrors the server's `roleKeySchema`. Checked here as well so the
             // refusal arrives while the field is still focused, rather than as
             // a 422 after the dialog closes.
@@ -263,14 +256,14 @@ class _CreateRoleDialogState extends State<_CreateRoleDialog> {
                 ? null
                 : LocaleKeys.roleKeyHint.tr(),
           ),
-          TextFormField(
+          CustomTextField(
             controller: _nameAr,
-            decoration: InputDecoration(labelText: LocaleKeys.roleNameArLabel.tr()),
+            labelText: LocaleKeys.roleNameArLabel.tr(),
             validator: _required,
           ),
-          TextFormField(
+          CustomTextField(
             controller: _nameEn,
-            decoration: InputDecoration(labelText: LocaleKeys.roleNameEnLabel.tr()),
+            labelText: LocaleKeys.roleNameEnLabel.tr(),
             validator: _required,
           ),
         ],

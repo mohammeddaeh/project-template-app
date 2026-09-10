@@ -3,11 +3,10 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app_template/Features/auth/login/data/models/login_model.dart';
-import 'package:app_template/Features/auth/me/data/models/current_user_model.dart';
-import 'package:app_template/Features/auth/shared/entities/auth_user.dart';
-import 'package:app_template/Features/auth/shared/models/auth_user_model.dart';
-import 'package:app_template/Features/notes/data/models/note_model.dart';
+import 'package:app_template/features/auth/login/data/models/login_model.dart';
+import 'package:app_template/features/auth/me/data/models/current_user_model.dart';
+import 'package:app_template/features/auth/shared/entities/auth_user.dart';
+import 'package:app_template/features/auth/shared/models/auth_user_model.dart';
 import 'package:app_template/modules/access_control/data/models/access_control_models.dart';
 import 'package:app_template/modules/access_control/domain/role.dart';
 import 'package:app_template/modules/data_transfer/data/models/import_report_model.dart';
@@ -182,78 +181,6 @@ void main() {
       // TokenRefreshGatewayImpl reads exactly these two.
       expect(json['token'], isA<String>());
       expect(json['rotated'], isA<bool>());
-    });
-  });
-
-  group('GET /api/v1/notes → data (paginated)', () {
-    test('the page envelope is items/page/limit/total/total_pages', () {
-      // The pagination shape existed on both sides for months with no endpoint
-      // using it — so it had never once been parsed from a real response.
-      final json = jsonDecode(
-        File('test/fixtures/wire/notes_page.json').readAsStringSync(),
-      ) as Map<String, dynamic>;
-
-      expect(
-        json.keys.toSet(),
-        {'items', 'page', 'limit', 'total', 'total_pages'},
-      );
-
-      final items = (json['items'] as List<dynamic>)
-          .map((e) => NoteModel.fromJson(e as Map<String, dynamic>).toEntity())
-          .toList();
-      expect(items, hasLength(2));
-      expect(items.first.title, isNotEmpty);
-    });
-
-    test('a note carries every field the server sends', () {
-      final json = jsonDecode(
-        File('test/fixtures/wire/note.json').readAsStringSync(),
-      ) as Map<String, dynamic>;
-      expect(
-        json.keys.toSet(),
-        {'id', 'title', 'body', 'created_at', 'updated_at', 'version', 'is_deleted'},
-      );
-    });
-
-    test('the id is a uuid string, not a number', () {
-      // It was a server-assigned `int` until the sync contract landed. Parsing
-      // it as one now yields `null`, which `NoteModel.fromJson` would turn into
-      // `''` — every row sharing one empty id, so a list dedupes down to a
-      // single item and every edit targets whichever row was parsed last.
-      final note = NoteModel.fromJson(_fixture('note'));
-      expect(note.id, isA<String>());
-      expect(note.id, isNotEmpty);
-      expect(int.tryParse(note.id), isNull);
-    });
-
-    test('version and is_deleted survive the round trip to the entity', () {
-      // `version` is what makes an offline edit conditional; `is_deleted` is
-      // what makes a delete travel. Dropping either in the model is invisible
-      // — the list still renders — and both failures only appear later as
-      // overwritten edits and notes that come back from the dead.
-      final page = jsonDecode(
-        File('test/fixtures/wire/notes_page.json').readAsStringSync(),
-      ) as Map<String, dynamic>;
-      final second = NoteModel.fromJson(
-        (page['items'] as List<dynamic>)[1] as Map<String, dynamic>,
-      ).toEntity();
-
-      expect(second.version, 3);
-      expect(second.isDeleted, isFalse);
-    });
-
-    test('a response predating the sync contract still parses', () {
-      // Defaults matching the server's, so a deployed older backend degrades to
-      // "unconditional writes" rather than to a blank list.
-      final legacy = NoteModel.fromJson({
-        'id': '3f2a7c14-9b1e-4d5a-8c60-2e1f4a6b8d09',
-        'title': 'Buy olive oil',
-        'body': null,
-        'created_at': '2026-08-11T10:00:00.000Z',
-        'updated_at': '2026-08-11T10:00:00.000Z',
-      });
-      expect(legacy.version, 1);
-      expect(legacy.isDeleted, isFalse);
     });
   });
 

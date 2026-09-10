@@ -4,16 +4,21 @@ flutter_native_splash:
   color_dark: "#121212"
 
   # لوغو الوزارة — يظهر في المنتصف
-  image: assets/ministry_logo/logo_MOW.png
-  image_dark: assets/ministry_logo/logo_MOW.png
+  image: assets/images/ministry_logo/logo_MOW.png
+  image_dark: assets/images/ministry_logo/logo_MOW.png
 
   # Android 12+ (Splash API الجديد)
   android_12:
-    image: assets/ministry_logo/logo_MOW.png
+    image: assets/images/ministry_logo/logo_MOW.png
     icon_background_color: "#FFFFFF"
-    image_dark: assets/ministry_logo/logo_MOW.png
+    image_dark: assets/images/ministry_logo/logo_MOW.png
     icon_background_color_dark: "#121212"
 
-  android: true
+  # ⛔ **أندرويد لا يُولَّد — بقرار.** موردا أندرويد (`splash_logo_full.xml` و
+  # `splash_icon_v31.xml`) يُولَّدان بـ`scripts/gen_splash_assets.dart`، وملفّات
+  # `styles.xml` الأربعة تُحرَّر باليد. وإعادةُ التوليد من هنا **تمحوها**.
+  #
+  # وأسبابُ ذلك خمسةٌ مقيسة — راجع `readme/23_STARTUP_SPLASH.md` §٣.
+  android: false
   ios: true
   web: false

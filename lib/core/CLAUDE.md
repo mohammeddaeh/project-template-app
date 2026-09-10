@@ -1,7 +1,7 @@
 ﻿# lib/core/CLAUDE.md — Core Architecture & API Generator
 
 > يُحمَّل عند العمل في lib/core/**
-> المرجع الكامل: `readme/core_architecture.md`
+> المرجع الكامل: `readme/11_CORE.md`
 
 ---
 
@@ -30,17 +30,17 @@ core/
 ```
 Exception (Dio/IO/unknown)
     ▼ infra/errors/FailureMapperRegistry.map(error) → Failure
-    ▼ presentation/error/FailureUiMapper.toAction(failure) → UiAction
+    ▼ ui/error/FailureUiMapper.toAction(failure) → UiAction
     ▼ Feature/cubits/ → switch → emit State
 ```
 
 - `foundation/errors/` = Failure types only — لا mapping، لا Dio، لا `.tr()`
 - `infra/errors/` = mapping only — لا UI، لا localization
-- `presentation/error/` = عرض فقط — لا منطق
+- `ui/error/` = عرض فقط — لا منطق
 - Repositories = `handle()` — لا try/catch يدوي
 - Cubits = `FailureUiMapper.toAction(failure)` — لا يعرف DioException
 
-> **المرجع الكامل للمسار عبر النصفين:** [`readme/error_flow.md`](../../readme/error_flow.md) — ترتيب الـinterceptors، 500 مقابل 503، 401 مقابل 403، وأخطاء المستخدم المتوقَّعة. **يُحدَّث مع أي تغيير هنا.**
+> **المرجع الكامل للمسار عبر النصفين:** [`readme/13_ERROR_FLOW.md`](../../readme/13_ERROR_FLOW.md) — ترتيب الـinterceptors، 500 مقابل 503، 401 مقابل 403، وأخطاء المستخدم المتوقَّعة. **يُحدَّث مع أي تغيير هنا.**
 
 ### أربع قواعد صارمة بهذا المسار
 
@@ -57,7 +57,7 @@ Exception (Dio/IO/unknown)
 
 ```
 1. URL → core/infra/network/rest/api_urls.dart
-2. *_api_service.dart → Features/<name>/data/datasources/
+2. *_api_service.dart → features/<name>/data/datasources/
 3. dart run build_runner build --delete-conflicting-outputs
 4. RemoteDataSource → Repository (handle()) → UseCase → Cubit
 5. لا توضع Feature ApiService أو models داخل core/

@@ -7,10 +7,10 @@ import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/access_control/domain/permission_catalog.dart';
 import 'package:app_template/modules/access_control/domain/role.dart';
 import 'package:app_template/modules/access_control/presentation/cubits/user_access_cubit.dart';
-import 'package:app_template/presentation/feedback/feedback_extension.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// One account's access: which roles it holds, and the exceptions on top.
 ///

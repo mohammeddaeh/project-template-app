@@ -12,26 +12,36 @@
 import 'package:app_template/core/di/injection_module.dart' as _i321;
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart'
     as _i188;
+import 'package:app_template/core/foundation/contracts/local_data_wiper.dart'
+    as _i675;
 import 'package:app_template/core/foundation/contracts/locale_provider.dart'
     as _i702;
 import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart'
     as _i371;
 import 'package:app_template/core/foundation/contracts/unsynced_work_probe.dart'
     as _i428;
+import 'package:app_template/core/infra/files/server_file_cache.dart' as _i394;
 import 'package:app_template/core/infra/network/interceptors/auth_interceptor.dart'
     as _i275;
 import 'package:app_template/core/infra/network/interceptors/internet_checker_interceptor.dart'
     as _i235;
 import 'package:app_template/core/infra/network/rest/handle_body_response.dart'
     as _i148;
+import 'package:app_template/core/infra/session/account_data_cleaner.dart'
+    as _i231;
+import 'package:app_template/core/infra/session/data_origin_guard.dart'
+    as _i836;
 import 'package:app_template/core/infra/session/locale_provider_impl.dart'
     as _i259;
 import 'package:app_template/core/infra/session/session_repository.dart'
     as _i512;
+import 'package:app_template/core/infra/session/welcome_greeting.dart' as _i312;
 import 'package:app_template/core/platform/connectivity/network_state_monitor.dart'
     as _i979;
 import 'package:app_template/core/platform/connectivity/network_state_monitor_impl.dart'
     as _i894;
+import 'package:app_template/core/platform/connectivity/server_reachability.dart'
+    as _i933;
 import 'package:app_template/core/platform/device/device_label_service.dart'
     as _i27;
 import 'package:app_template/core/platform/launcher/url_launcher_service.dart'
@@ -53,135 +63,108 @@ import 'package:app_template/core/platform/storage/secure_storage_service.dart'
     as _i455;
 import 'package:app_template/core/platform/storage/storage_service.dart'
     as _i104;
-import 'package:app_template/Features/auth/change_password/data/datasources/change_password_api_service.dart'
-    as _i400;
-import 'package:app_template/Features/auth/change_password/data/datasources/change_password_remote_datasource.dart'
-    as _i7;
-import 'package:app_template/Features/auth/change_password/data/repositories/change_password_repository_impl.dart'
-    as _i716;
-import 'package:app_template/Features/auth/change_password/domain/repositories/change_password_repository.dart'
-    as _i276;
-import 'package:app_template/Features/auth/change_password/domain/usecases/change_password_usecase.dart'
-    as _i26;
-import 'package:app_template/Features/auth/change_password/presentation/cubits/change_password_cubit.dart'
-    as _i245;
-import 'package:app_template/Features/auth/forgot_password/data/datasources/password_reset_api_service.dart'
-    as _i294;
-import 'package:app_template/Features/auth/forgot_password/data/datasources/password_reset_remote_datasource.dart'
-    as _i997;
-import 'package:app_template/Features/auth/forgot_password/data/repositories/password_reset_repository_impl.dart'
-    as _i602;
-import 'package:app_template/Features/auth/forgot_password/domain/repositories/password_reset_repository.dart'
-    as _i667;
-import 'package:app_template/Features/auth/forgot_password/domain/usecases/request_reset_usecase.dart'
-    as _i300;
-import 'package:app_template/Features/auth/forgot_password/domain/usecases/reset_password_usecase.dart'
-    as _i809;
-import 'package:app_template/Features/auth/forgot_password/presentation/cubits/forgot_password_cubit.dart'
-    as _i974;
-import 'package:app_template/Features/auth/login/data/datasources/auth_api_service.dart'
-    as _i895;
-import 'package:app_template/Features/auth/login/data/datasources/auth_remote_datasource.dart'
-    as _i71;
-import 'package:app_template/Features/auth/login/data/repositories/login_repository_impl.dart'
-    as _i631;
-import 'package:app_template/Features/auth/login/domain/repositories/login_repository.dart'
-    as _i337;
-import 'package:app_template/Features/auth/login/domain/usecases/login_usecase.dart'
-    as _i779;
-import 'package:app_template/Features/auth/login/presentation/cubits/login_cubit.dart'
-    as _i21;
-import 'package:app_template/Features/auth/logout/data/datasources/logout_api_service.dart'
-    as _i315;
-import 'package:app_template/Features/auth/logout/data/datasources/logout_remote_datasource.dart'
-    as _i16;
-import 'package:app_template/Features/auth/logout/data/repositories/logout_repository_impl.dart'
-    as _i805;
-import 'package:app_template/Features/auth/logout/domain/repositories/logout_repository.dart'
-    as _i694;
-import 'package:app_template/Features/auth/logout/domain/usecases/logout_usecase.dart'
-    as _i850;
-import 'package:app_template/Features/auth/logout/presentation/cubits/logout_cubit.dart'
-    as _i478;
-import 'package:app_template/Features/auth/me/data/datasources/me_api_service.dart'
-    as _i713;
-import 'package:app_template/Features/auth/me/data/datasources/me_remote_datasource.dart'
-    as _i414;
-import 'package:app_template/Features/auth/me/data/repositories/me_repository_impl.dart'
-    as _i555;
-import 'package:app_template/Features/auth/me/domain/repositories/me_repository.dart'
-    as _i475;
-import 'package:app_template/Features/auth/me/domain/usecases/get_current_user_usecase.dart'
-    as _i351;
-import 'package:app_template/Features/auth/register/data/datasources/register_api_service.dart'
-    as _i342;
-import 'package:app_template/Features/auth/register/data/datasources/register_remote_datasource.dart'
-    as _i615;
-import 'package:app_template/Features/auth/register/data/repositories/register_repository_impl.dart'
-    as _i278;
-import 'package:app_template/Features/auth/register/domain/repositories/register_repository.dart'
-    as _i382;
-import 'package:app_template/Features/auth/register/domain/usecases/register_usecase.dart'
-    as _i523;
-import 'package:app_template/Features/auth/register/presentation/cubits/register_cubit.dart'
-    as _i947;
-import 'package:app_template/Features/auth/shared/current_user_repository.dart'
-    as _i508;
-import 'package:app_template/Features/auth/shared/session_sync_service.dart'
-    as _i723;
-import 'package:app_template/Features/auth/shared/token_refresh_gateway_impl.dart'
-    as _i295;
-import 'package:app_template/Features/auth/verify_email/data/datasources/verify_email_api_service.dart'
-    as _i553;
-import 'package:app_template/Features/auth/verify_email/data/datasources/verify_email_remote_datasource.dart'
-    as _i77;
-import 'package:app_template/Features/auth/verify_email/data/repositories/verify_email_repository_impl.dart'
-    as _i625;
-import 'package:app_template/Features/auth/verify_email/domain/repositories/verify_email_repository.dart'
-    as _i784;
-import 'package:app_template/Features/auth/verify_email/domain/usecases/resend_verification_usecase.dart'
-    as _i848;
-import 'package:app_template/Features/auth/verify_email/domain/usecases/verify_email_usecase.dart'
-    as _i179;
-import 'package:app_template/Features/auth/verify_email/presentation/cubits/verify_email_cubit.dart'
-    as _i680;
-import 'package:app_template/Features/home/presentation/cubits/navigation_cubit.dart'
-    as _i921;
-import 'package:app_template/Features/notes/data/datasources/notes_api_service.dart'
-    as _i428;
-import 'package:app_template/Features/notes/data/datasources/notes_remote_datasource.dart'
-    as _i723;
-import 'package:app_template/Features/notes/data/repositories/notes_repository_impl.dart'
-    as _i6;
-import 'package:app_template/Features/notes/data/sync/notes_attachment_target.dart'
-    as _i62;
-import 'package:app_template/Features/notes/data/sync/notes_feature_contract.dart'
-    as _i685;
-import 'package:app_template/Features/notes/data/sync/notes_sync_decorator.dart'
-    as _i938;
-import 'package:app_template/Features/notes/data/sync/notes_sync_executor.dart'
-    as _i394;
-import 'package:app_template/Features/notes/data/sync/notes_sync_pull_executor.dart'
-    as _i720;
-import 'package:app_template/Features/notes/domain/repositories/notes_repository.dart'
-    as _i319;
-import 'package:app_template/Features/notes/domain/usecases/notes_usecases.dart'
-    as _i750;
-import 'package:app_template/Features/notes/presentation/cubits/note_form_cubit.dart'
-    as _i47;
-import 'package:app_template/Features/notes/presentation/cubits/notes_list_cubit.dart'
-    as _i1004;
+import 'package:app_template/features/auth/change_password/data/datasources/change_password_api_service.dart'
+    as _i910;
+import 'package:app_template/features/auth/change_password/data/datasources/change_password_remote_datasource.dart'
+    as _i335;
+import 'package:app_template/features/auth/change_password/data/repositories/change_password_repository_impl.dart'
+    as _i532;
+import 'package:app_template/features/auth/change_password/domain/repositories/change_password_repository.dart'
+    as _i932;
+import 'package:app_template/features/auth/change_password/domain/usecases/change_password_usecase.dart'
+    as _i53;
+import 'package:app_template/features/auth/change_password/presentation/cubits/change_password_cubit.dart'
+    as _i912;
+import 'package:app_template/features/auth/forgot_password/data/datasources/password_reset_api_service.dart'
+    as _i1022;
+import 'package:app_template/features/auth/forgot_password/data/datasources/password_reset_remote_datasource.dart'
+    as _i633;
+import 'package:app_template/features/auth/forgot_password/data/repositories/password_reset_repository_impl.dart'
+    as _i507;
+import 'package:app_template/features/auth/forgot_password/domain/repositories/password_reset_repository.dart'
+    as _i904;
+import 'package:app_template/features/auth/forgot_password/domain/usecases/request_reset_usecase.dart'
+    as _i211;
+import 'package:app_template/features/auth/forgot_password/domain/usecases/reset_password_usecase.dart'
+    as _i246;
+import 'package:app_template/features/auth/forgot_password/presentation/cubits/forgot_password_cubit.dart'
+    as _i249;
+import 'package:app_template/features/auth/login/data/datasources/auth_api_service.dart'
+    as _i472;
+import 'package:app_template/features/auth/login/data/datasources/auth_remote_datasource.dart'
+    as _i858;
+import 'package:app_template/features/auth/login/data/repositories/login_repository_impl.dart'
+    as _i662;
+import 'package:app_template/features/auth/login/domain/repositories/login_repository.dart'
+    as _i1031;
+import 'package:app_template/features/auth/login/domain/usecases/login_usecase.dart'
+    as _i662;
+import 'package:app_template/features/auth/login/presentation/cubits/login_cubit.dart'
+    as _i139;
+import 'package:app_template/features/auth/logout/data/datasources/logout_api_service.dart'
+    as _i48;
+import 'package:app_template/features/auth/logout/data/datasources/logout_remote_datasource.dart'
+    as _i476;
+import 'package:app_template/features/auth/logout/data/repositories/logout_repository_impl.dart'
+    as _i813;
+import 'package:app_template/features/auth/logout/domain/repositories/logout_repository.dart'
+    as _i524;
+import 'package:app_template/features/auth/logout/domain/usecases/logout_usecase.dart'
+    as _i1015;
+import 'package:app_template/features/auth/logout/presentation/cubits/logout_cubit.dart'
+    as _i679;
+import 'package:app_template/features/auth/me/data/datasources/me_api_service.dart'
+    as _i1;
+import 'package:app_template/features/auth/me/data/datasources/me_remote_datasource.dart'
+    as _i3;
+import 'package:app_template/features/auth/me/data/repositories/me_repository_impl.dart'
+    as _i408;
+import 'package:app_template/features/auth/me/domain/repositories/me_repository.dart'
+    as _i196;
+import 'package:app_template/features/auth/me/domain/usecases/get_current_user_usecase.dart'
+    as _i502;
+import 'package:app_template/features/auth/register/data/datasources/register_api_service.dart'
+    as _i408;
+import 'package:app_template/features/auth/register/data/datasources/register_remote_datasource.dart'
+    as _i1030;
+import 'package:app_template/features/auth/register/data/repositories/register_repository_impl.dart'
+    as _i734;
+import 'package:app_template/features/auth/register/domain/repositories/register_repository.dart'
+    as _i599;
+import 'package:app_template/features/auth/register/domain/usecases/register_usecase.dart'
+    as _i595;
+import 'package:app_template/features/auth/register/presentation/cubits/register_cubit.dart'
+    as _i498;
+import 'package:app_template/features/auth/shared/current_user_repository.dart'
+    as _i258;
+import 'package:app_template/features/auth/shared/session_sync_service.dart'
+    as _i35;
+import 'package:app_template/features/auth/shared/token_refresh_gateway_impl.dart'
+    as _i819;
+import 'package:app_template/features/auth/verify_email/data/datasources/verify_email_api_service.dart'
+    as _i1072;
+import 'package:app_template/features/auth/verify_email/data/datasources/verify_email_remote_datasource.dart'
+    as _i585;
+import 'package:app_template/features/auth/verify_email/data/repositories/verify_email_repository_impl.dart'
+    as _i866;
+import 'package:app_template/features/auth/verify_email/domain/repositories/verify_email_repository.dart'
+    as _i230;
+import 'package:app_template/features/auth/verify_email/domain/usecases/resend_verification_usecase.dart'
+    as _i1006;
+import 'package:app_template/features/auth/verify_email/domain/usecases/verify_email_usecase.dart'
+    as _i893;
+import 'package:app_template/features/auth/verify_email/presentation/cubits/verify_email_cubit.dart'
+    as _i730;
+import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart'
+    as _i793;
 import 'package:app_template/modules/sync/sync_plugin.dart' as _i590;
-import 'package:app_template/presentation/feedback/app_feedback_service.dart'
-    as _i52;
-import 'package:app_template/presentation/shared/connectivity/connectivity_cubit.dart'
-    as _i493;
-import 'package:app_template/presentation/shared/sync/offline_ux_cubit.dart'
-    as _i644;
-import 'package:app_template/presentation/shared/sync/sync_manager_cubit.dart'
-    as _i442;
-import 'package:app_template/presentation/theme/app_theme.dart' as _i988;
 import 'package:app_template/routes/router.dart' as _i168;
+import 'package:app_template/ui/feedback/app_feedback_service.dart' as _i625;
+import 'package:app_template/ui/state/connectivity/connectivity_cubit.dart'
+    as _i880;
+import 'package:app_template/ui/state/sync/offline_ux_cubit.dart' as _i822;
+import 'package:app_template/ui/state/sync/sync_manager_cubit.dart' as _i492;
+import 'package:app_template/ui/theme/app_theme.dart' as _i466;
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
@@ -215,6 +198,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i428.UnsyncedWorkProbe>(
       () => injectableModule.unsyncedWorkProbe,
     );
+    gh.lazySingleton<_i675.LocalDataWiper>(
+      () => injectableModule.localDataWiper,
+    );
     gh.lazySingleton<_i434.EncryptionService>(
       () => injectableModule.encryptionService,
     );
@@ -224,7 +210,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i279.LocalNotificationsService>(
       () => injectableModule.localNotifications,
     );
-    gh.lazySingleton<_i52.AppFeedbackService>(
+    gh.lazySingleton<_i625.AppFeedbackService>(
       () => injectableModule.feedbackService,
     );
     gh.lazySingleton<_i455.SecureStorageService>(
@@ -233,81 +219,82 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i148.HandleBodyResponse>(
       () => _i148.HandleBodyResponse(),
     );
+    gh.lazySingleton<_i312.WelcomeGreeting>(() => _i312.WelcomeGreeting());
     gh.lazySingleton<_i27.DeviceLabelService>(() => _i27.DeviceLabelService());
-    gh.lazySingleton<_i921.NavigationCubit>(() => _i921.NavigationCubit());
-    gh.lazySingleton<_i988.AppTheme>(() => _i988.AppTheme());
-    gh.lazySingleton<_i590.SyncRepositoryDecorator>(
-      () => const _i938.NotesSyncRepositoryDecorator(),
-    );
-    gh.lazySingleton<_i590.AttachmentUploadTarget>(
-      () => _i62.NotesAttachmentUploadTarget(gh<_i361.Dio>()),
-    );
+    gh.lazySingleton<_i793.NavigationCubit>(() => _i793.NavigationCubit());
+    gh.lazySingleton<_i466.AppTheme>(() => _i466.AppTheme());
     gh.lazySingleton<_i979.NetworkStateMonitor>(
       () => _i894.NetworkStateMonitorImpl(),
     );
-    gh.lazySingleton<_i493.ConnectivityCubit>(
-      () => _i493.ConnectivityCubit(gh<_i979.NetworkStateMonitor>()),
+    gh.lazySingleton<_i880.ConnectivityCubit>(
+      () => _i880.ConnectivityCubit(gh<_i979.NetworkStateMonitor>()),
     );
     gh.lazySingleton<_i135.MediaService>(() => _i347.MediaServiceImpl());
-    gh.lazySingleton<_i590.SyncFeatureContractBase>(
-      () => const _i685.NotesFeatureContract(),
-    );
     gh.lazySingleton<_i888.UrlLauncherService>(
       () => _i866.UrlLauncherServiceImpl(),
     );
     gh.lazySingleton<_i1021.PermissionsService>(
       () => _i252.PermissionsServiceImpl(),
     );
-    gh.lazySingleton<_i895.AuthApiService>(
+    gh.lazySingleton<_i472.AuthApiService>(
       () => injectableModule.authApiService(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i342.RegisterApiService>(
+    gh.lazySingleton<_i408.RegisterApiService>(
       () => injectableModule.registerApiService(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i428.NotesApiService>(
-      () => injectableModule.notesApiService(gh<_i361.Dio>()),
-    );
-    gh.lazySingleton<_i713.MeApiService>(
+    gh.lazySingleton<_i1.MeApiService>(
       () => injectableModule.meApiService(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i315.LogoutApiService>(
+    gh.lazySingleton<_i48.LogoutApiService>(
       () => injectableModule.logoutApiService(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i294.PasswordResetApiService>(
+    gh.lazySingleton<_i1022.PasswordResetApiService>(
       () => injectableModule.passwordResetApiService(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i400.ChangePasswordApiService>(
+    gh.lazySingleton<_i910.ChangePasswordApiService>(
       () => injectableModule.changePasswordApiService(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i553.VerifyEmailApiService>(
+    gh.lazySingleton<_i1072.VerifyEmailApiService>(
       () => injectableModule.verifyEmailApiService(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i394.ServerFileCache>(
+      () => _i394.ServerFileCache(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i702.LocaleProvider>(() => _i259.AppLocaleProvider());
-    gh.lazySingleton<_i235.InternetCheckerInterceptor>(
-      () => _i235.InternetCheckerInterceptor(
+    gh.lazySingleton<_i858.AuthRemoteDataSource>(
+      () => _i858.AuthRemoteDataSource(
+        gh<_i472.AuthApiService>(),
+        gh<_i27.DeviceLabelService>(),
+      ),
+    );
+    gh.lazySingleton<_i335.ChangePasswordRemoteDataSource>(
+      () => _i335.ChangePasswordRemoteDataSource(
+        gh<_i910.ChangePasswordApiService>(),
+      ),
+    );
+    gh.lazySingleton<_i933.ServerReachability>(
+      () => injectableModule.serverReachability(
         gh<_i973.InternetConnectionChecker>(),
         gh<_i895.Connectivity>(),
       ),
     );
-    gh.lazySingleton<_i77.VerifyEmailRemoteDataSource>(
-      () => _i77.VerifyEmailRemoteDataSource(gh<_i553.VerifyEmailApiService>()),
-    );
-    gh.lazySingleton<_i7.ChangePasswordRemoteDataSource>(
-      () => _i7.ChangePasswordRemoteDataSource(
-        gh<_i400.ChangePasswordApiService>(),
+    gh.lazySingleton<_i633.PasswordResetRemoteDataSource>(
+      () => _i633.PasswordResetRemoteDataSource(
+        gh<_i1022.PasswordResetApiService>(),
       ),
     );
-    gh.lazySingleton<_i615.RegisterRemoteDataSource>(
-      () => _i615.RegisterRemoteDataSource(gh<_i342.RegisterApiService>()),
+    gh.lazySingleton<_i585.VerifyEmailRemoteDataSource>(
+      () =>
+          _i585.VerifyEmailRemoteDataSource(gh<_i1072.VerifyEmailApiService>()),
     );
-    gh.lazySingleton<_i442.SyncManagerCubit>(
-      () => _i442.SyncManagerCubit(
+    gh.lazySingleton<_i492.SyncManagerCubit>(
+      () => _i492.SyncManagerCubit(
         gh<_i590.SyncController>(),
         gh<_i590.SyncQueueRepository>(),
       ),
     );
-    gh.lazySingleton<_i414.MeRemoteDataSource>(
-      () => _i414.MeRemoteDataSource(gh<_i713.MeApiService>()),
+    gh.lazySingleton<_i1030.RegisterRemoteDataSource>(
+      () => _i1030.RegisterRemoteDataSource(gh<_i408.RegisterApiService>()),
     );
     gh.singleton<_i512.SessionRepository>(
       () => _i512.SessionRepository(gh<_i455.SecureStorageService>()),
@@ -315,67 +302,79 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i104.StorageService>(
       () => injectableModule.storageService(gh<_i986.Box<dynamic>>()),
     );
-    gh.lazySingleton<_i644.OfflineUxCubit>(
-      () => _i644.OfflineUxCubit(
+    gh.lazySingleton<_i235.InternetCheckerInterceptor>(
+      () => _i235.InternetCheckerInterceptor(
+        gh<_i933.ServerReachability>(),
+        gh<_i895.Connectivity>(),
+      ),
+    );
+    gh.lazySingleton<_i822.OfflineUxCubit>(
+      () => _i822.OfflineUxCubit(
         gh<_i979.NetworkStateMonitor>(),
         gh<_i590.SyncQueueRepository>(),
       ),
     );
-    gh.lazySingleton<_i997.PasswordResetRemoteDataSource>(
-      () => _i997.PasswordResetRemoteDataSource(
-        gh<_i294.PasswordResetApiService>(),
+    gh.lazySingleton<_i231.AccountDataCleaner>(
+      () => _i231.AccountDataCleaner(
+        gh<_i104.StorageService>(),
+        gh<_i675.LocalDataWiper>(),
       ),
     );
-    gh.lazySingleton<_i16.LogoutRemoteDataSource>(
-      () => _i16.LogoutRemoteDataSource(gh<_i315.LogoutApiService>()),
-    );
-    gh.lazySingleton<_i723.NotesRemoteDataSource>(
-      () => _i723.NotesRemoteDataSource(gh<_i428.NotesApiService>()),
-    );
-    gh.lazySingleton<_i71.AuthRemoteDataSource>(
-      () => _i71.AuthRemoteDataSource(
-        gh<_i895.AuthApiService>(),
-        gh<_i27.DeviceLabelService>(),
-      ),
-    );
-    gh.lazySingleton<_i382.RegisterRepository>(
-      () => _i278.RegisterRepositoryImpl(
-        gh<_i615.RegisterRemoteDataSource>(),
+    gh.lazySingleton<_i932.ChangePasswordRepository>(
+      () => _i532.ChangePasswordRepositoryImpl(
+        gh<_i335.ChangePasswordRemoteDataSource>(),
         gh<_i148.HandleBodyResponse>(),
       ),
     );
-    gh.lazySingleton<_i276.ChangePasswordRepository>(
-      () => _i716.ChangePasswordRepositoryImpl(
-        gh<_i7.ChangePasswordRemoteDataSource>(),
+    gh.lazySingleton<_i3.MeRemoteDataSource>(
+      () => _i3.MeRemoteDataSource(gh<_i1.MeApiService>()),
+    );
+    gh.lazySingleton<_i836.DataOriginGuard>(
+      () => _i836.DataOriginGuard(
+        gh<_i104.StorageService>(),
+        gh<_i512.SessionRepository>(),
+        gh<_i231.AccountDataCleaner>(),
+      ),
+    );
+    gh.factory<_i53.ChangePasswordUseCase>(
+      () => _i53.ChangePasswordUseCase(gh<_i932.ChangePasswordRepository>()),
+    );
+    gh.lazySingleton<_i476.LogoutRemoteDataSource>(
+      () => _i476.LogoutRemoteDataSource(gh<_i48.LogoutApiService>()),
+    );
+    gh.lazySingleton<_i904.PasswordResetRepository>(
+      () => _i507.PasswordResetRepositoryImpl(
+        gh<_i633.PasswordResetRemoteDataSource>(),
         gh<_i148.HandleBodyResponse>(),
       ),
     );
-    gh.lazySingleton<_i590.SyncExecutor>(
-      () => _i394.NotesSyncExecutor(gh<_i723.NotesRemoteDataSource>()),
+    gh.lazySingleton<_i599.RegisterRepository>(
+      () => _i734.RegisterRepositoryImpl(
+        gh<_i1030.RegisterRemoteDataSource>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
+    gh.factory<_i912.ChangePasswordCubit>(
+      () => _i912.ChangePasswordCubit(gh<_i53.ChangePasswordUseCase>()),
+    );
+    gh.factory<_i211.RequestResetUseCase>(
+      () => _i211.RequestResetUseCase(gh<_i904.PasswordResetRepository>()),
+    );
+    gh.factory<_i246.ResetPasswordUseCase>(
+      () => _i246.ResetPasswordUseCase(gh<_i904.PasswordResetRepository>()),
     );
     gh.lazySingleton<_i188.AuthNetworkGateway>(
       () => injectableModule.authNetworkGateway(gh<_i512.SessionRepository>()),
     );
-    gh.lazySingleton<_i590.SyncPullExecutor>(
-      () => _i720.NotesSyncPullExecutor(gh<_i723.NotesRemoteDataSource>()),
+    gh.singleton<_i258.CurrentUserRepository>(
+      () => _i258.CurrentUserRepository(gh<_i104.StorageService>()),
     );
-    gh.singleton<_i508.CurrentUserRepository>(
-      () => _i508.CurrentUserRepository(gh<_i104.StorageService>()),
-    );
-    gh.lazySingleton<_i667.PasswordResetRepository>(
-      () => _i602.PasswordResetRepositoryImpl(
-        gh<_i997.PasswordResetRemoteDataSource>(),
-        gh<_i148.HandleBodyResponse>(),
-      ),
-    );
-    gh.factory<_i26.ChangePasswordUseCase>(
-      () => _i26.ChangePasswordUseCase(gh<_i276.ChangePasswordRepository>()),
-    );
-    gh.lazySingleton<_i694.LogoutRepository>(
-      () => _i805.LogoutRepositoryImpl(
-        gh<_i16.LogoutRemoteDataSource>(),
+    gh.lazySingleton<_i524.LogoutRepository>(
+      () => _i813.LogoutRepositoryImpl(
+        gh<_i476.LogoutRemoteDataSource>(),
         gh<_i512.SessionRepository>(),
-        gh<_i508.CurrentUserRepository>(),
+        gh<_i258.CurrentUserRepository>(),
+        gh<_i231.AccountDataCleaner>(),
         gh<_i148.HandleBodyResponse>(),
       ),
     );
@@ -385,115 +384,82 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i702.LocaleProvider>(),
       ),
     );
-    gh.factory<_i245.ChangePasswordCubit>(
-      () => _i245.ChangePasswordCubit(gh<_i26.ChangePasswordUseCase>()),
-    );
-    gh.lazySingleton<_i319.NotesRepository>(
-      () => _i6.NotesRepositoryImpl(
-        gh<_i723.NotesRemoteDataSource>(),
+    gh.lazySingleton<_i230.VerifyEmailRepository>(
+      () => _i866.VerifyEmailRepositoryImpl(
+        gh<_i585.VerifyEmailRemoteDataSource>(),
+        gh<_i258.CurrentUserRepository>(),
         gh<_i148.HandleBodyResponse>(),
       ),
     );
-    gh.lazySingleton<_i475.MeRepository>(
-      () => _i555.MeRepositoryImpl(
-        gh<_i414.MeRemoteDataSource>(),
-        gh<_i508.CurrentUserRepository>(),
-        gh<_i148.HandleBodyResponse>(),
-      ),
-    );
-    gh.factory<_i523.RegisterUseCase>(
-      () => _i523.RegisterUseCase(gh<_i382.RegisterRepository>()),
-    );
-    gh.factory<_i947.RegisterCubit>(
-      () => _i947.RegisterCubit(gh<_i523.RegisterUseCase>()),
-    );
-    gh.factory<_i300.RequestResetUseCase>(
-      () => _i300.RequestResetUseCase(gh<_i667.PasswordResetRepository>()),
-    );
-    gh.factory<_i809.ResetPasswordUseCase>(
-      () => _i809.ResetPasswordUseCase(gh<_i667.PasswordResetRepository>()),
-    );
-    gh.lazySingleton<_i784.VerifyEmailRepository>(
-      () => _i625.VerifyEmailRepositoryImpl(
-        gh<_i77.VerifyEmailRemoteDataSource>(),
-        gh<_i508.CurrentUserRepository>(),
-        gh<_i148.HandleBodyResponse>(),
-      ),
-    );
-    gh.lazySingleton<_i337.LoginRepository>(
-      () => _i631.LoginRepositoryImpl(
-        gh<_i71.AuthRemoteDataSource>(),
+    gh.lazySingleton<_i1031.LoginRepository>(
+      () => _i662.LoginRepositoryImpl(
+        gh<_i858.AuthRemoteDataSource>(),
         gh<_i512.SessionRepository>(),
-        gh<_i508.CurrentUserRepository>(),
+        gh<_i258.CurrentUserRepository>(),
+        gh<_i231.AccountDataCleaner>(),
         gh<_i148.HandleBodyResponse>(),
       ),
     );
-    gh.factory<_i750.ListNotesUseCase>(
-      () => _i750.ListNotesUseCase(gh<_i319.NotesRepository>()),
+    gh.factory<_i595.RegisterUseCase>(
+      () => _i595.RegisterUseCase(gh<_i599.RegisterRepository>()),
     );
-    gh.factory<_i750.SaveNoteUseCase>(
-      () => _i750.SaveNoteUseCase(gh<_i319.NotesRepository>()),
-    );
-    gh.factory<_i750.DeleteNoteUseCase>(
-      () => _i750.DeleteNoteUseCase(gh<_i319.NotesRepository>()),
+    gh.factory<_i249.ForgotPasswordCubit>(
+      () => _i249.ForgotPasswordCubit(
+        gh<_i211.RequestResetUseCase>(),
+        gh<_i246.ResetPasswordUseCase>(),
+      ),
     );
     gh.singleton<_i371.TokenRefreshGateway>(
-      () => _i295.TokenRefreshGatewayImpl(
+      () => _i819.TokenRefreshGatewayImpl(
         gh<_i512.SessionRepository>(),
-        gh<_i508.CurrentUserRepository>(),
+        gh<_i258.CurrentUserRepository>(),
       ),
     );
-    gh.factory<_i850.LogoutUseCase>(
-      () => _i850.LogoutUseCase(gh<_i694.LogoutRepository>()),
-    );
-    gh.factory<_i974.ForgotPasswordCubit>(
-      () => _i974.ForgotPasswordCubit(
-        gh<_i300.RequestResetUseCase>(),
-        gh<_i809.ResetPasswordUseCase>(),
+    gh.lazySingleton<_i196.MeRepository>(
+      () => _i408.MeRepositoryImpl(
+        gh<_i3.MeRemoteDataSource>(),
+        gh<_i258.CurrentUserRepository>(),
+        gh<_i148.HandleBodyResponse>(),
       ),
     );
-    gh.factory<_i848.ResendVerificationUseCase>(
-      () => _i848.ResendVerificationUseCase(gh<_i784.VerifyEmailRepository>()),
+    gh.factory<_i662.LoginUseCase>(
+      () => _i662.LoginUseCase(gh<_i1031.LoginRepository>()),
     );
-    gh.factory<_i179.VerifyEmailUseCase>(
-      () => _i179.VerifyEmailUseCase(gh<_i784.VerifyEmailRepository>()),
+    gh.factory<_i1015.LogoutUseCase>(
+      () => _i1015.LogoutUseCase(gh<_i524.LogoutRepository>()),
     );
-    gh.factory<_i351.GetCurrentUserUseCase>(
-      () => _i351.GetCurrentUserUseCase(gh<_i475.MeRepository>()),
+    gh.factory<_i502.GetCurrentUserUseCase>(
+      () => _i502.GetCurrentUserUseCase(gh<_i196.MeRepository>()),
     );
-    gh.factory<_i1004.NotesListCubit>(
-      () => _i1004.NotesListCubit(
-        gh<_i750.ListNotesUseCase>(),
-        gh<_i750.DeleteNoteUseCase>(),
-        gh<_i319.NotesRepository>(),
+    gh.factory<_i1006.ResendVerificationUseCase>(
+      () => _i1006.ResendVerificationUseCase(gh<_i230.VerifyEmailRepository>()),
+    );
+    gh.factory<_i893.VerifyEmailUseCase>(
+      () => _i893.VerifyEmailUseCase(gh<_i230.VerifyEmailRepository>()),
+    );
+    gh.factory<_i139.LoginCubit>(
+      () => _i139.LoginCubit(gh<_i662.LoginUseCase>()),
+    );
+    gh.factory<_i498.RegisterCubit>(
+      () => _i498.RegisterCubit(gh<_i595.RegisterUseCase>()),
+    );
+    gh.lazySingleton<_i35.SessionSyncService>(
+      () => _i35.SessionSyncService(
+        gh<_i512.SessionRepository>(),
+        gh<_i502.GetCurrentUserUseCase>(),
       ),
     );
-    gh.factory<_i680.VerifyEmailCubit>(
-      () => _i680.VerifyEmailCubit(
-        gh<_i179.VerifyEmailUseCase>(),
-        gh<_i848.ResendVerificationUseCase>(),
+    gh.factory<_i730.VerifyEmailCubit>(
+      () => _i730.VerifyEmailCubit(
+        gh<_i893.VerifyEmailUseCase>(),
+        gh<_i1006.ResendVerificationUseCase>(),
       ),
     );
-    gh.factory<_i478.LogoutCubit>(
-      () => _i478.LogoutCubit(
-        gh<_i850.LogoutUseCase>(),
+    gh.factory<_i679.LogoutCubit>(
+      () => _i679.LogoutCubit(
+        gh<_i1015.LogoutUseCase>(),
         gh<_i428.UnsyncedWorkProbe>(),
       ),
-    );
-    gh.factory<_i47.NoteFormCubit>(
-      () => _i47.NoteFormCubit(gh<_i750.SaveNoteUseCase>()),
-    );
-    gh.factory<_i779.LoginUseCase>(
-      () => _i779.LoginUseCase(gh<_i337.LoginRepository>()),
-    );
-    gh.lazySingleton<_i723.SessionSyncService>(
-      () => _i723.SessionSyncService(
-        gh<_i512.SessionRepository>(),
-        gh<_i351.GetCurrentUserUseCase>(),
-      ),
-    );
-    gh.factory<_i21.LoginCubit>(
-      () => _i21.LoginCubit(gh<_i779.LoginUseCase>()),
     );
     return this;
   }

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'package:app_template/core/infra/config/env.dart';
-import 'package:app_template/core/infra/network/rest/api_urls.dart';
+import 'package:app_template/modules/data_transfer/data/data_transfer_urls.dart';
 
 part 'data_transfer_api_service.g.dart';
 
@@ -18,7 +18,7 @@ abstract class DataTransferApiService {
       _DataTransferApiService(dio, baseUrl: Env.baseUrl);
 
   /// Everything this backend can import or export. Drives the entire UI.
-  @GET(ApiUrls.transferResources)
+  @GET(DataTransferUrls.transferResources)
   Future<HttpResponse<dynamic>> resources();
 
   /// Phase one — upload and validate. Writes nothing server-side.

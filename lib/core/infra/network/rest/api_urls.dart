@@ -54,70 +54,19 @@ abstract class ApiUrls {
   /// the client stores whatever it receives either way.
   static const String refreshSession = '/auth/refresh';
 
-  /// The account's own devices. The token is never returned — only its digest
-  /// is stored, and only its holder ever saw the plaintext.
-  static const String sessions = '/auth/sessions';
-  static String session(dynamic id) => '/auth/sessions/$id';
-  static const String revokeOtherSessions = '/auth/sessions/revoke-others';
+  // ── تنزيلُ ملفٍّ يملكه الخادم ───────────────────────────────────────────────
 
-  // ── Authorization — generic, one set of paths for every permission ────────
-
-  /// The caller's own resolved permissions. **Any signed-in account may call
-  /// it** — needing a permission to discover your permissions is a circle with
-  /// no entry point.
-  static const String authzMe = '/authz/me';
-
-  /// Every permission the server declares, grouped by resource. Requires
-  /// `roles.view`.
+  /// `GET <files>?path=<المسار كما نزل>` — بايتاتٌ بتوكن.
   ///
-  /// The roles screen in `modules/access_control/` is built entirely from this
-  /// response — a feature guarded server-side needs **no** Dart change to
-  /// appear in it, exactly like [transferResources] for import/export.
-  static const String authzCatalog = '/authz/catalog';
-
-  static const String authzRoles = '/authz/roles';
-  static String authzRole(int id) => '/authz/roles/$id';
-  static String authzRolePermissions(int id) => '/authz/roles/$id/permissions';
-  static String authzUserAccess(int userId) => '/authz/users/$userId/access';
-  static String authzUserRoles(int userId) => '/authz/users/$userId/roles';
-  static String authzUserOverrides(int userId) => '/authz/users/$userId/overrides';
-
-  // ── Reference feature — delete together with `Features/notes/` ────────────
-
-  /// The one endpoint that exercises the paginated list contract end to end.
+  /// ⚠️ **وهذا المسارُ ليس عقداً عامّاً** — لكلّ باكٍ صيغتُه. المكتوبُ هنا هو ما
+  /// قِيس بمشروعٍ مبنيٍّ على هذا القالب؛ **بدّله بما يخدمه باكُك**، أو احذف
+  /// `ServerFileCache` كلَّه إن كانت حقولُ ملفّاتك تنزل **روابطَ جاهزة** لا
+  /// مساراتِ تخزين.
   ///
-  /// `static const String users = '/users'` used to sit here instead: a path no
-  /// router has ever served, referenced by nothing in `lib/`, left over from
-  /// the project this template was extracted from.
-  static const String notes = '/notes';
-  static String note(int id) => '/notes/$id';
-
-  // ── Import / export — generic, one set of paths for every resource ────────
-
-  /// Everything this backend can import or export, with its columns.
-  ///
-  /// The `modules/data_transfer/` screens are built entirely from this
-  /// response — a feature that becomes transferable server-side needs **no**
-  /// Dart change to appear in them.
-  static const String transferResources = '/data-transfer/resources';
-
-  /// ⚠️ **Answers file bytes, not the `{status, message, data}` envelope.**
-  ///
-  /// Never call this through a repository that runs `HandleBodyResponse`: it
-  /// parses every body as JSON and would report "something went wrong" over a
-  /// perfectly good CSV — with a `200 OK` in the server log. Use
-  /// `TransferFileDownloader`, which reads it as bytes.
-  static String transferExport(String resource) =>
-      '/data-transfer/$resource/export';
-
-  /// Empty file with the importer's expected header. Bytes, like [transferExport].
-  static String transferTemplate(String resource) =>
-      '/data-transfer/$resource/template';
-
-  /// Both import phases. `?mode=validate` (multipart) then `?mode=commit`
-  /// (`{token}`). Ordinary envelope in both directions.
-  static String transferImport(String resource) =>
-      '/data-transfer/$resource/import';
+  /// ومستدعيها الوحيد `ServerFileCache` — **ولا تُنادى من شاشة**: التنزيلُ يقع
+  /// بإصبع المستخدم وحدها (`NetworkOrigin.userFile`)، ويُخزَّن ما نزل فلا ينزل
+  /// ثانيةً.
+  static const String files = '/api/v1/files';
 
   // ── Your own features go below ────────────────────────────────────────────
 }

@@ -1,7 +1,7 @@
 # Sync Module — Quick Setup Guide
 
 > **الحالة الحقيقية والمراحل:** [`PLAN.md`](PLAN.md) · **التصميم:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
-> **الوصف القديم:** [`readme/sync.md`](../../../readme/sync.md) — يصف التصميم المقصود لا الكود القائم
+> **الوصف القديم:** [`readme/sync.md`](../../../readme/90_archive/sync_design_spec.md) — يصف التصميم المقصود لا الكود القائم
 
 ---
 
@@ -37,7 +37,7 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 | **حلّ التعارض** — خمس سياسات، الاختيار لكل كيان | ✅ | `SyncConflictResolver` · `SyncConflictStrategy` |
 | **ترحيل نسخ الحمولة** | ✅ | `SyncContractMigrator` · `contract_version` |
 | **المرفقات** — تنزيل مستأنَف · تحقق SHA-256 · رفع · تخزين خاص · إخلاء | ◐ **جزئي** | راجع [§Step 7](#step-7--attachments-optional) |
-| **مثال مرجعي حيّ** — عقد · مُنفِّذا دفع وسحب · ديكور · هدف رفع | ✅ | `lib/Features/notes/data/sync/` |
+| **مثال مرجعي حيّ** — عقد · مُنفِّذا دفع وسحب · ديكور · هدف رفع | ✅ | `lib/features/notes/data/sync/` |
 
 ## ⛔ ما **لا** يوفّره — وليس نقصاً مؤقتاً
 
@@ -96,7 +96,7 @@ await SyncSDK.initialize(
 
 ## Step 3 — Add your first entity
 
-> **مثالٌ حيّ يُنسخ منه:** [`lib/Features/notes/data/sync/`](../../Features/notes/data/sync/)
+> **مثالٌ حيّ يُنسخ منه:** [`lib/features/notes/data/sync/`](../../features/notes/data/sync/)
 > — ستة ملفات منفَّذة فعلاً (~٨٢٠ سطراً بالتعليقات) مقابل
 > `backend_template/src/features/notes/`، وكلها تستورد `sync_plugin.dart`
 > وحده. الشيفرة أدناه تشرح على كيان `mosques` **لا وجود له**؛ اقرأ `notes`
@@ -115,7 +115,7 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 ### 3a. Declare a feature contract
 
 ```dart
-// lib/Features/<name>/data/sync/<name>_feature_contract.dart
+// lib/features/<name>/data/sync/<name>_feature_contract.dart
 
 @LazySingleton(as: SyncFeatureContractBase)   // ← `as:` إلزامي · وبلا @Named
 class MosquesFeatureContract extends SyncFeatureContractBase {
@@ -151,14 +151,17 @@ class MosquesFeatureContract extends SyncFeatureContractBase {
 > يرى تسجيلاً مسمّى. الحارس يقصر الطريق قبل أن يصل `getAll` أصلاً.
 >
 > والحارس على هذا كلّه:
-> [`test/sync/feature_contract_registration_test.dart`](../../../test/sync/feature_contract_registration_test.dart)
+> ⬜ **ولا اختبارَ يحرس التسجيل** — حُذف مع الشريحة المرجعية (2026-09-08).
+> وأولُ محوّلٍ تكتبه يستحقّ اختباراً يقرأ `injection.config.dart` ويؤكّد أن كلَّ
+> صنفٍ مسجَّلٌ **تحت نوعه المجرَّد**: `getAll<T>()` يُفهرس عليه، و`as:` منسيّةٌ
+> لا يراها شيءٌ قبل وقت التشغيل.
 > — يسجّل العقد **بالشكل الذي يولّده `build_runner`** لا بالشكل الذي يريح
 > الاختبار، ويثبّت الشكلين الفاشلين معاً.
 
 ### 3b. Implement a sync executor
 
 ```dart
-// lib/Features/<name>/data/sync/<name>_sync_executor.dart
+// lib/features/<name>/data/sync/<name>_sync_executor.dart
 
 @SyncExecutorFor('mosques')
 @LazySingleton(as: SyncExecutor)
@@ -199,7 +202,7 @@ class MosquesSyncExecutor implements SyncExecutor {
 وحده. سجّل واحداً متى كان الكيان يُعدَّل من أكثر من جهاز أو من لوحة إدارة.
 
 ```dart
-// lib/Features/<name>/data/sync/<name>_sync_pull_executor.dart
+// lib/features/<name>/data/sync/<name>_sync_pull_executor.dart
 
 @LazySingleton(as: SyncPullExecutor)
 class MosquesSyncPullExecutor implements SyncPullExecutor {
@@ -219,7 +222,7 @@ class MosquesSyncPullExecutor implements SyncPullExecutor {
 
 المحرّك يخزّن مؤشر كل كيان على حدة، ويُبقيه دون تغيير عند فشل صفحة، فخطأ كيانٍ
 لا يوقف غيره ولا يقفز فوق تغييراته. المرجع الحيّ:
-[`notes_sync_pull_executor.dart`](../../Features/notes/data/sync/notes_sync_pull_executor.dart).
+`<feature>/data/sync/<feature>_sync_pull_executor.dart` بمشروعك.
 
 ### 3c. Wire write path via SyncWriteGateway
 
@@ -248,7 +251,7 @@ await _syncWriteGateway.write(SyncWriteCommand(
 > إلغاء الإلزام مُدرَج في P0 بـ[`PLAN.md`](PLAN.md) — وحتى تُنفَّذ، **سجِّل decorator**.
 
 ```dart
-// lib/Features/mosques/data/sync/mosques_sync_repository_decorator.dart
+// lib/features/mosques/data/sync/mosques_sync_repository_decorator.dart
 
 @LazySingleton(as: SyncRepositoryDecorator)
 class MosquesSyncRepositoryDecorator implements SyncRepositoryDecorator {
@@ -278,7 +281,227 @@ class MosquesSyncRepositoryDecorator implements SyncRepositoryDecorator {
 > المُحوِّل لا يأخذ `SyncSettingsStore` — الوضع والتفعيل يقرؤهما
 > `SqlSyncWriteGateway` بنفسه عند كل كتابة، ولا وجه لتمريرهما هنا. والمرجع
 > المُصرَّف هو
-> [`notes_sync_decorator.dart`](../../Features/notes/data/sync/notes_sync_decorator.dart).
+> `<feature>/data/sync/<feature>_sync_decorator.dart` بمشروعك.
+
+
+### 3e. ⚠️ و«فارغ» جوابان لا جواب — `SyncHydration`
+
+كلُّ مغلِّفٍ محلّيٍّ‑أولاً يميل إلى هذا الشكل:
+
+```dart
+final matches = local.items.where(...).toList();
+if (matches.isNotEmpty) return Right(matches);
+return inner.getSomething(...);   // ← الشبكة
+```
+
+**و«فارغ» ليست جواباً واحداً**، بل جوابين لا يفرّق بينهما هذا السطر:
+
+| المعنى | الصواب |
+|---|---|
+| «سُحب الكيان، ولا شيء يخصّ هذا المفتاح» | يُعرض فراغٌ مطمئن — **ولا شبكة** |
+| «لم يُسحب بعد» | تُسأل الشبكة |
+
+وخلطُهما يجعل **الحالة الطبيعية** — سجلٌّ بلا أبناء — تضرب الشبكةَ بكل فتحة.
+فأوف‑لاين تفشل ويرى المستخدم شاشةَ خطأ حيث يجب أن يرى «لا توجد عناصر»؛ وأونلاين
+تعمل، لكنها تدفع ثمنَ حارس الاتصال كاملاً قبل أن تُجيب.
+
+```dart
+if (matches.isNotEmpty) return Right(matches);
+// سُحب الكيانُ مرّةً على الأقل ⇒ الفراغُ صادقٌ وكامل.
+if (await _hydration.isHydrated('mosques')) return const Right([]);
+return inner.getSomething(...);
+```
+
+**ولا مؤشّرَ جديد يُخزَّن** — الجوابُ موجودٌ سلفاً: `SyncCursor.isBeginning`
+تعني «لم يُكتب مؤشّرٌ لهذا الكيان بعد»، والمحرّكُ لا يكتبه إلا **بعد** أن يدمج
+صفحةً بنجاح.
+
+⚠️ **والإخفاق يُقرأ `false`**: قاعدةٌ لا تُقرأ لا يجوز أن تُقنع المغلِّف بأن
+الفراغَ الذي يراه صادق. وأسوأُ ما تفعله `false` أن تُرسل طلباً زائداً.
+
+
+### 3f. بيانٌ يملكه الخادم ولا جدولَ له — `SyncRefreshTask`
+
+`SyncPullExecutor` يخدم كياناً **بمخزن المزامنة**: صفوفٌ لها `local_id` وختمٌ
+ونسخةٌ وشاهدةُ قبر. وبعضُ البيان ليس كذلك — لوحُ حساب، أو إعداداتٌ يملكها
+الخادم، أو قائمةٌ يردّها كاملةً بلا مؤشّر.
+
+```dart
+@LazySingleton(as: SyncRefreshTask)
+class SettingsRefreshTask implements SyncRefreshTask {
+  @override
+  String get name => 'server-settings';   // يظهر بسطر الإخفاق
+
+  @override
+  Future<void> refresh() async => _store.write(await _api.fetch());
+}
+```
+
+يناديها المحرّك **بذيل الدورة الناجحة**: بعد السحب وقبل الملفّات. وكلُّ مهمّةٍ
+تحمل حدَّ إخفاقها — لقطةٌ اختيارية لا تُسقط دورةً اكتملت — و`refresh()`
+**لا ترمي ولا تُبلّغ**: لا شاشةَ تنتظرها.
+
+**والبديلُ الذي تُنهيه** هو `unawaited(_refreshQuietly())` بكل فتحةِ شاشة:
+
+| | دورةُ المزامنة | `unawaited` بكل `build` |
+|---|---|---|
+| البوّابة | `SyncGate` — توكن · تغطية · واي‑فاي فقط | **لا شيء** |
+| الخنق | قفلٌ مستديم + نافذةُ استقرار | **لا شيء** |
+| متى | حدثٌ يستحقّ | **بكل بناء** |
+
+⚠️ **وليست بديلاً عن خدمةٍ تتبع دورةَ حياة التطبيق.** `SessionSyncService`
+يسأل «من المستخدم؟» **عند العودة إلى المقدّمة** وبسقفٍ زمنيّ خاصّ — وهي دلالةٌ
+أخرى، ولا تقع بذيل دورةٍ قد لا تجري أصلاً حين يكون `offlineSync` مطفأً.
+والقاعدة: **ما يلزم بلا مزامنة يبقى خارجها**.
+
+
+### 3g. ⚠️ ومتى **لا** يتقدّم مؤشّرٌ فوق صفٍّ تُرك
+
+الدمجُ يترك الصفَّ الذي يحمل كتابةً لم يرها الخادم (`pending*` · `failed` ·
+`conflicted`). والسؤالُ بعده: **هل يتقدّم ما يقيس «إلى أين وصلنا»؟**
+
+والجوابُ يختلف بشكل المؤشّر، ولا يُنقل من بروتوكولٍ إلى آخر:
+
+| الشكل | يتقدّم فوق المتروك؟ | لماذا |
+|---|---|---|
+| **مؤشّرٌ للكيان** (`updated_since` + `after_id`) — وهو ما بالقالب | ✅ **نعم** | الصفُّ المتروك يحمل تعديلاً **أحدثَ** سيُدفع بالدورة نفسِها، والواردُ أقدمُ بالتعريف. والمؤشّرُ **واحدٌ للكيان كلِّه**، فإيقافُه يُجمّد سحبَ الكيان بأسره حتى يحلّ إنسانٌ تعارضاً واحداً — عطلٌ أوسعُ ممّا يمنع |
+| **ختمٌ لكلِّ أبٍ** (watermark لكل سجلٍّ أعلى) | ⛔ **لا** | الختمُ يقول «هذا الأبُ مُشيَّك فلا تنزل إليه». وتقديمُه بعد تركِ ابنٍ يعني أن الدورةَ التالية **لا تسأل عن ذلك الأب أصلاً** — فتضيع حالةُ الخادم لابنه **إلى الأبد**، لا بهذه الدورة وحدها |
+
+**والفرقُ أن الأول يُعيد السؤال حتماً والثاني قد لا يُعيده.** فمشروعٌ يبني
+بروتوكولَ علامةِ مياهٍ (نداءُ فهرسٍ ثم نزولٌ إلى الأبناء) **يجب** أن يُبقي ختمَ
+الأب قديماً متى تُرك ابنٌ:
+
+```dart
+final merge = await mergeChildren(parentId, page);
+// ثمنُ الوقوف نزولٌ ثانٍ بالدورة التالية، ويزول متى ارتفع المعلَّق.
+// أمّا الثمنُ الآخر فلا يُسترجَع.
+if (merge.skipped == 0) await watermarks.write(parentId, serverStamp);
+```
+
+⚠️ **ولا يُقاس الختمُ على صفّ الأب** (`synced_entities.updated_at`): ذاك يتقدّم
+مع كل قراءةٍ ناجحة للقائمة — وهي تقع بكل فتحةِ تبويب — فيُقرأ الأبُ «محدَّثاً»
+بلا أن يُنزَّل ابنٌ واحد.
+
+
+### 3h. الصورُ والملفّات — `SyncMediaCatalog`
+
+السحبُ ينزّل **الصفوف** وحدها: حقلُ ملفٍّ ينزل مسارَ تخزينٍ نصّاً لا بايتات.
+فمن حمّل بياناته على Wi‑Fi ومضى إلى حيث لا تغطية يجد المرفقات **سطراً يُقرأ
+ولا يُرى** — ولا شيء بالشاشة قال ذلك.
+
+```dart
+@LazySingleton(as: SyncMediaCatalog)
+class NotesMediaCatalog implements SyncMediaCatalog {
+  @override
+  String get name => 'notes';
+
+  @override
+  Future<List<SyncMediaTarget>> targets() async => /* كلُّ ما تشير إليه صفوفُك */;
+}
+```
+
+**والشريحةُ تقول أين ملفّاتُها، والموديولُ ينزّلها** — `modules → features ❌`.
+
+⚠️ **ولا تُصفّي الشريحةُ ما نزل**: الجردُ **كلُّ** ما تشير إليه الصفوف، والمنفّذُ
+وحده يسأل المخزنَ أيُّها بالجهاز. وتصفيةٌ بالشريحة تعني قاعدتين لسؤالٍ واحد
+(R34) — وأسوأُ منها شريحةٌ تنسى مساراً نزل فتُعيد تنزيله بكل دورة.
+
+**ولا دفترَ يقول «ماذا نزل»**: ما بالقرص هو الجواب، وما قال الخادمُ إنه ذهب
+يُطرح. فالباقي وحده يُطلب **والاستئنافُ مجّانيّ** — انقطاعٌ بمنتصف المئة يترك
+سبعين، والجولةُ التالية تسأل عن الثلاثين.
+
+#### وموضعُه من الدورة شرطٌ لا ترتيب
+
+```
+دفعٌ ← سحبٌ ← تحديثٌ ← **ختمُ النجاح** ← إفراجُ القفل ← تنزيلُ الملفّات
+```
+
+- **خارج القفل**: القفلُ يحمي الكتابةَ بالقاعدة، وهذا يكتب بايتاتٍ بمجلَّده
+  وحده. وحبسُه تحته يجعل صفّاً يحفظه المستخدم الآن ينتظر مئةَ ميغابايتٍ تنزل
+  قبل أن يُدفع — نقيضُ «الدفعُ أوّلاً».
+- **بعد الختم**: `SyncCycleStamp` مقياسُه الصفوف، وتأخيرُه خلف تنزيلٍ يطول يجعل
+  الشاشة تقول «منذ ستّ دقائق» عن بيانٍ وصل قبل خمس.
+
+#### وWi‑Fi وحده افتراضاً — عكسَ الدفع
+
+| | `wifiOnly` (الدفع) | `mediaWifiOnly` (التنزيل) |
+|---|---|---|
+| الافتراضي | **مطفأ** | **مُشعَل** |
+| الحمولة | كتابةُ مستخدمٍ لا نسخةَ لها | ملفّاتٌ يملكها الخادم أصلاً |
+| ثمنُ التأخير | **شغلٌ لا يصل** | ساعةٌ لا تُضيّع شيئاً |
+
+**والافتراضان معكوسان لأن السؤالين معكوسان.**
+
+⚠️ **والوقوفُ حالةٌ تُبَثّ لا فراغٌ يُخفى** (`MediaPrefetchStatus`): «هل نزلت
+الصور؟» سؤالٌ يُسأل قبل الخروج، وشاشةٌ تسكت عنه تُقرأ «لا أعرف». و`onMobileData`
+هي الحَكَمُ على رسم زرّ «نزّل الآن» — **زرٌّ لا يُنفَّذ أسوأُ من غيابه**.
+
+
+---
+
+## 📐 قواعدُ «الجهازُ مصدرُ الحقيقة» — `L01…L06`
+
+> **تنطبق متى كان `offlineSync` مُشعَلاً.** وتطبيقٌ يقرأ من الشبكة بكل شاشة لا
+> يحتاجها — لكنه يحتاج أن يعرف أنه اختار ذلك، لا أن ينزلق إليه.
+
+### L01 · الـcubit لا يعرف الشبكة 🔒
+
+المستودعُ يُعيد بياناتٍ من المخزن المحلّي. ولا `isOnline` ولا `NoInternetFailure`
+يصعدان إلى `presentation/` **بمسار القراءة**.
+
+```dart
+// ❌ شاشةٌ تسأل عن الشبكة قبل أن تعرض ما تملكه
+if (!await ConnectivityService.isOnline()) emit(NoInternet());
+
+// ✅ تعرض ما بالجهاز، ومؤشّرُ المزامنة يقول الباقي
+final rows = await _getItems(parentId);
+```
+
+> **لماذا**: الصفوفُ موجودةٌ على الجهاز. ورفضُ عرضها لأن الهوائي صامت **حجبُ
+> عملِ المستخدم عنه بحجّةٍ لا تخصّه**.
+
+### L02 · `NoInternetWidget` لمسار الشبكة وحده 👁
+
+يبقى مشروعاً لما **يحتاج الشبكة فعلاً**: تسجيلُ الدخول، وتنزيلُ مرفقٍ غير
+مخزَّن. أمّا قائمةٌ لها بياناتٌ بالجهاز فلا.
+
+### L03 · كل كتابة تنجح محلياً أوّلاً 🔒
+
+```dart
+await _store.upsert(entity);              // ١ · نجح — والشاشة تُحدَّث بـwatch()
+await syncWrite(SyncWriteCommand(...));   // ٢ · صُفَّ للرفع
+```
+
+**ولا `await` على الشبكة بمسار الحفظ.** زرُّ حفظٍ ينتظر الخادمَ يجعل التطبيق
+عديمَ الفائدة **بالضبط حيث وُجد ليعمل**.
+
+### L04 · القراءة تفاعلية بـ`watch()` لا بـ`refresh()` 🔒
+
+`SyncEntityStore.watch(entityName)` يبثّ عند كل تغيير — من المستخدم أو من دورة
+المزامنة. فشاشةٌ تقرأ مرّةً ثم تنتظر سحباً لا تعرف أنه وقع **تعرض أمسَ بثقة**.
+
+### L05 · المعرّفُ المحلّيُّ يسبق معرّفَ الخادم 🔒
+
+الصفُّ يُولد بمعرّفٍ يصنعه الجهاز، ومعرّفُ الخادم يُختم عليه عند أوّل ردّ ناجح.
+⚠️ **ويُكتب فورَ الولادة لا عند اعتماد الردّ**: تأجيلُه يجعل الإخفاقَ يترك الصفَّ
+بلا معرّف، **فتُنشئ المحاولةُ التالية توأماً عند الخادم**.
+
+**وخمسُ قواعدٍ فرعية تلزم معه:**
+
+| # | القاعدة |
+|---|---|
+| L05‑أ | **لكلِّ حقلٍ مالكٌ واحد — ولا يكتبه الطرفان.** حقلٌ يكتبه الجهازُ والخادمُ معاً يفترق بصمت، ولا يُخفق شيء |
+| L05‑ب | **نيّةُ العملية تسكن الكيان لا وظيفةَ الطابور.** الوظيفةُ تُلغى وتُعاد، والنيّةُ تبقى |
+| L05‑ج | **الطابورُ هو البوّابةُ الوحيدة — ولا فعلَ «إرسال» بالواجهة.** زرٌّ يدفع مباشرةً يتخطّى البوّابة والقفل والتراجع |
+| L05‑د | **الحالةُ المعروضة من الخادم وحده — ولا يخترع الجهازُ حالة.** واشتقاقُها محلياً يجعل الشاشة تقول «مقبول» عمّا لم يُسلَّم |
+| L05‑هـ | **ما لا يُفتح لا يُعرض.** بابٌ إلى شاشةٍ تُخفق حتماً أسوأُ من غيابه |
+| L05‑و | **ما لم يؤكّده الخادم لا يُعرض كأنه مؤكَّد — «الحَجْر».** سطرٌ يقول كم حقلاً لم يصل، ومخرجان لمن مات عملُه: «أعد المحاولة» و«تراجع». **والعدّادُ الكبير لا يُنقص** |
+
+### L06 · «آخرُ مزامنة» حقيقةٌ لا تزيين 👁
+
+«ناجحة» تعني **بلا إخفاقٍ واحد** — راجع `SyncCycleStamp`. ودورةٌ دفعت تسعةَ صفوفٍ
+وأخفقت بالعاشر ليست مزامنةً ناجحة: المستخدم يقرأ الوقتَ المعروض **إقراراً بأن
+عمله كلَّه هناك**، ويحذف التطبيق بناءً عليه.
 
 ---
 
@@ -319,7 +542,7 @@ AppBar(
 
 ### Available widgets
 
-كلها بـ[`lib/presentation/shared/sync/`](../../presentation/shared/sync/) — خارج
+كلها بـ[`lib/ui/state/sync/`](../../ui/state/sync/) — خارج
 الموديول لأنها تعتمد Flutter وهو لا يعتمده.
 
 | Widget | Purpose | يحرس نفسه على العلم؟ |
@@ -340,7 +563,7 @@ AppBar(
 ## Step 6 — Backend contract (required)
 
 > **مُنفَّذ فعلاً على `notes`** بـ`backend_template` منذ 2026-08-17 (المرحلة P1 من
-> [`PLAN.md`](PLAN.md)). اقرأ `src/features/notes/` و`docs/rest_api.md` §notes —
+> [`PLAN.md`](PLAN.md)). اقرأ `src/features/notes/` و`docs/12_REST_API.md` §notes —
 > فالعقد أدناه صار كوداً يعمل واختبارات تحرسه، لا وصفاً.
 
 Your API endpoints MUST support:
@@ -427,7 +650,7 @@ never queued for push.
 ### 7a. الجانب الوحيد الخاص بالفيتشر: هدف الرفع
 
 ```dart
-// lib/Features/<name>/data/sync/<name>_attachment_target.dart
+// lib/features/<name>/data/sync/<name>_attachment_target.dart
 import 'package:app_template/modules/sync/sync_plugin.dart';
 
 @LazySingleton(as: AttachmentUploadTarget)
@@ -456,7 +679,7 @@ class MosquesAttachmentUploadTarget implements AttachmentUploadTarget {
 ```
 
 هذا كل ما يكتبه الفيتشر. المرجع الحيّ:
-[`notes_attachment_target.dart`](../../Features/notes/data/sync/notes_attachment_target.dart).
+`<feature>/data/sync/<feature>_attachment_target.dart` بمشروعك.
 
 > `AttachmentUploadManager` **لا يُسجَّل** ما لم يُسجَّل هدفٌ واحد على الأقل، فمرحلة
 > الملفات بدورة المزامنة تبقى فحص `isRegistered` واحداً بمشروعٍ بلا مرفقات.
@@ -560,16 +783,17 @@ final pending = await getIt<SyncQueueRepository>().countPendingJobs();
 القالب ويحذف المجلد — والموديول مصمَّم ليبقى ذلك عمليةً واحدة **حتى بعد أن
 يتضاعف حجمه** بمرحلة الملفات (P4.5).
 
-### المنافذ الأربعة — ولا خامس
+### المنافذ الخمسة — ولا سادس
 
 | المنفذ | ما فيه |
 |---|---|
 | `core/platform/features/app_features.dart` | `static const offlineSync` |
 | `modules/modules_bootstrap.dart` | سطرٌ واحد يستدعي `SyncSDK.initialize` |
-| `presentation/shared/sync/` | الـcubits والودجات (تعتمد Flutter فلا تسكن الموديول) |
+| `ui/state/sync/` | الـcubits والودجات (تعتمد Flutter فلا تسكن الموديول) |
 | **`<feature>/data/sync/`** | عقد الفيتشر ومُنفِّذها وديكورها و`SyncAware…Repository` |
+| **`modules/<name>/integration/`** | موديولٌ اختياريٌّ يشترك بالدورة — مستهلكُه اليوم `in_app_updates` يسجّل `SyncRefreshTask` لإعداداته |
 
-> **والرابع قاعدة موضع لا إذن استيراد.** عقدٌ ومُنفِّذ **يجب** أن يسمّيا الموديول —
+> **والرابع والخامس قاعدةُ موضعٍ لا إذنَ استيراد.** عقدٌ ومُنفِّذ **يجب** أن يسمّيا الموديول —
 > هذا معنى الاشتراك فيه. المهمّ أن تكون كلها في مكانٍ واحد متوقَّع، فيبقى الحذف
 > نمطاً لا بحثاً. عقدٌ يُوضع في `data/repositories/` بجانب العادي **يعمل تماماً**،
 > ويُكتشف بعد أشهر حين يحذف أحدهم الموديول فيقضي أصيلاً مع أخطاء الترجمة.
@@ -582,10 +806,13 @@ final pending = await getIt<SyncQueueRepository>().countPendingJobs();
 rm -rf lib/modules/sync/
 
 # 2. طبقة العرض التابعة له
-rm -rf lib/presentation/shared/sync/
+rm -rf lib/ui/state/sync/
 
 # 3. مُحوِّلات الفيتشرات — نمطٌ واحد، لأنها محصورة بمجلد متوقَّع
-rm -rf lib/Features/*/data/sync/
+rm -rf lib/features/*/data/sync/
+
+# 3‑ب. موديولٌ اختياريٌّ يشترك بالدورة — نمطٌ كذلك، ولنفس السبب
+rm -rf lib/modules/*/integration/
 
 # 4. اختباراته
 rm -rf test/sync/
@@ -605,7 +832,7 @@ flutter test
 ```
 
 > **الحارس:** `test/sync/deletion_contract_test.dart` يمسح `lib/` كلّه على كل
-> استيرادٍ لـ`modules/sync/` من خارج المنافذ الثلاثة ويفشل على أي واحد. العدد
+> استيرادٍ لـ`modules/sync/` من خارج المنافذ الخمسة ويفشل على أي واحد. العدد
 > اليوم صفر، والاختبار يبقيه صفراً بعد أن يكبر الموديول — فالحذف يظلّ ست خطوات
 > لا مطاردةَ استيرادات.
 >
@@ -629,7 +856,7 @@ flutter test
 - [x] السطح العام بملف واحد: `sync_plugin.dart` — مفروضٌ بـ`deletion_contract_test.dart`
 - [x] مسار الدفع · مسار السحب · القراءة التفاعلية (`watch`) · القراءة النوعية (`readTyped`)
 - [x] خمس سياسات تعارض قابلة للاختيار لكل كيان · ترحيل نسخ الحمولة
-- [x] مثالٌ مرجعيّ كامل يُنسخ منه: [`Features/notes/data/sync/`](../../Features/notes/data/sync/)
+- [x] مثالٌ مرجعيّ كامل يُنسخ منه: [`features/notes/data/sync/`](../../features/notes/data/sync/)
 - [x] المرفقات: تنزيلٌ مستأنَف · تحقّق · رفع · تخزين خاص — **جزئي، راجع Step 7**
 
 **نصف العميل — ما يكتبه مشروعك (لكل كيان):**

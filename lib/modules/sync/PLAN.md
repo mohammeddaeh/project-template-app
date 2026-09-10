@@ -3,7 +3,7 @@
 > **الحالة:** P0 ✅ · P1 ✅ · P0.6 ✅ · P2 ✅ · P3 ✅ · P4 ✅ · **P4.5 ✅ المرفقات** · **P4.6 ✅ Cache Manager** — يبقى **P3.5** (Bundle + Manifest + حصّة) من الطبقة الثالثة · والتحقق الميداني مؤجَّل لـP6.7
 > **آخر تحديث:** 2026-08-18 · **النطاق:** `lib/modules/sync/` + نصفه بـ`backend_template` + النسخة المطابقة بـ`Qirtas/qirtas_app`
 > **التصميم التفصيلي:** [`ARCHITECTURE.md`](ARCHITECTURE.md) — الطبقات · جداول v4 · دورتا حياة الحزمة والملف
-> **الوصف القديم:** [`../../../readme/sync.md`](../../../readme/sync.md) — يصف التصميم المقصود، لا الكود القائم
+> **الوصف القديم:** [`../../../readme/90_archive/sync_design_spec.md`](../../../readme/90_archive/sync_design_spec.md) — يصف التصميم المقصود، لا الكود القائم
 
 ---
 
@@ -46,9 +46,9 @@
 | ب٨ | **`_checkIntegrity` عند كل إقلاع** | `PRAGMA integrity_check` مسحٌ كامل — كلفته تتناسب طرداً مع حجم القاعدة | P7 |
 | ب٩ | **المزامنة تموت بموت التطبيق** | `Timer` + مستمع اتصال. صفر تبعية خلفية بـ`pubspec` | P7 |
 | ~~ب١٠~~ | ~~شروط المزامنة = الاتصال وحده~~ **أُغلق بـP3 جزئياً** | `_canSyncNow()`: الوضع · التفعيل · `isOnline` · wifiOnly. ولا توكن ولا سيرفر ولا مساحة ولا بطارية | P3 |
-| ب١١ | **سيناريو #10 بلوحة الاختبار على بيانات mock** | مسجَّل «✅ مُنفَّذ» بـ`test_scenarios_roadmap.md` وهو غير موصول بالمحرّك | P6 |
+| ب١١ | **سيناريو #10 بلوحة الاختبار على بيانات mock** | مسجَّل «✅ مُنفَّذ» بـ`00_START_HERE.md` وهو غير موصول بالمحرّك | P6 |
 | ب١٢ | **`SharedPrefsSyncSettingsStore` يتجاوز `StorageService`** | مخزنٌ رابع بمفاتيح نصّية خام | P7 |
-| ~~ب١٣~~ | ~~صفر مثال منفَّذ~~ | **أُغلق بـP2** — `Features/notes/data/sync/` | ✅ |
+| ~~ب١٣~~ | ~~صفر مثال منفَّذ~~ | **أُغلق بـP2** — `features/notes/data/sync/` | ✅ |
 
 ### ج) قرطاس نسخة طبق الأصل
 
@@ -86,7 +86,7 @@
 |---|---|
 | `core/platform/features/app_features.dart` | `offlineSync` |
 | `modules/modules_bootstrap.dart` | سطرٌ واحد يستدعي `SyncSDK.initialize` |
-| `presentation/shared/sync/` | الـcubits والودجات — طبقة عرض تعتمد Flutter فلا تسكن الموديول |
+| `ui/state/sync/` | الـcubits والودجات — طبقة عرض تعتمد Flutter فلا تسكن الموديول |
 | `<feature>/data/sync/` | عقد الفيتشر ومُنفِّذاها وديكورها — **قاعدة موضع لا إذن استيراد** (أُضيفت بـP2) |
 
 **وخطوات الحذف الكاملة تُصان بـ[`SETUP.md`](SETUP.md) §Removing this module.**
@@ -305,7 +305,7 @@
 > حصرَها في مجلدٍ واحد متوقَّع، فيبقى الحذف نمطاً لا بحثاً:
 >
 > ```bash
-> rm -rf lib/modules/sync lib/presentation/shared/sync lib/**/data/sync
+> rm -rf lib/modules/sync lib/ui/state/sync lib/**/data/sync
 > ```
 >
 > والحارس يفرضها الآن، ويفرض نفسه: اختبارٌ ثالث يتحقق أن النمط يرفض عقداً
@@ -496,7 +496,7 @@
 > وbصمة؛ وثالثُ تنفيذٍ لها هو حيث تبدأ الفروق تصير عرضية لا مقصودة، وغالباً في
 > الجزء الذي يهمّ: حصر المِلكية.
 >
-> **وأربع قواعد تفصّلها [`docs/rest_api.md`](../../../../backend_template/docs/rest_api.md)**،
+> **وأربع قواعد تفصّلها [`docs/12_REST_API.md`](../../../../backend_template/docs/rest_api.md)**،
 > أهمها أن **الخادم يحسب الـchecksum بنفسه ويتجاهل ادّعاء العميل** — تخزينُه
 > بدلاً من ذلك يجعل سلسلة التحقق دائرية: الجهاز يتحقق من تنزيله لاحقاً مقابل
 > بصمةٍ أرسلها هو.

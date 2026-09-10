@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is on -->
+    <!--
+      أندرويد 12+ — `SplashScreen API`، والنظامُ يملك الشاشة لا نحن.
+
+      **الرمز نسرٌ بلا نصّ بقرار.** النظام يقصّ `windowSplashScreenAnimatedIcon`
+      بقناعٍ دائري، وكان الرمزُ الشعارَ الكامل (٢٢٧×٢٧٥) فيُقصّ سطرُ «وزارة
+      الأوقاف» ويُكبَّر ما بقي — وهو النصّ المبتور المهزوز الذي كان يُرى.
+      و`splash_icon_v31` مولَّدٌ من مسارات الـSVG الذهبية وحدها داخل لوحةٍ
+      مربّعة تُبقي كلَّ حبرٍ داخل الدائرة.
+
+      **و`windowBackground` ليس زينة.** كان غائباً هنا، فيرث الثيمُ أبيضَ
+      `Theme.Light` — ويقع **إطارٌ أبيض** بين splash النظام وأول إطارٍ من
+      فلاتر. هو ووميضُ `NormalTheme` أدناه نصفُ ما كان يُرى ارتجافاً.
+
+      ⚠️ **وحركةُ الخروج (تكبيرُ الرمز وتلاشيه) من النظام ولا تُطفأ من XML** —
+      `windowSplashScreenAnimationDuration` يمسّ الدخول وحده. ما يجعلها غير
+      محسوسة أن ما قبلها وما بعدها متطابقان: نفس اللون، ونفس النسر، وبنفس
+      المركز.
+    -->
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <!-- Android 12+: خلفية سوداء + أيقونة شفافة = لا splash مرئي (Dark Mode) -->
-        <item name="android:windowSplashScreenBackground">@android:color/black</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_icon_blank</item>
         <item name="android:forceDarkAllowed">false</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <!-- شريطا النظام شفّافان من أول لحظة — التطبيق `edgeToEdge`، و
+             `windowFullscreen` هنا كان يُخفي شريط الحالة ثم يعيده فلاتر
+             فيقفز التخطيط. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_icon_v31</item>
+        <item name="android:windowSplashScreenAnimationDuration">0</item>
     </style>
-    <!-- Theme applied to the Android Window as soon as the process has started.
-         This theme determines the color of the Android Window while your
-         Flutter UI initializes, as well as behind your Flutter UI while its
-         running.
-         
-         This Theme is only used starting with V2 of Flutter's Android embedding. -->
+    <!-- ثيمُ النافذة بعد إقلاع العملية وحتى يرسم فلاتر أول إطار. وكان
+         `?android:colorBackground` — أي **أبيضَ** بالوضع الفاتح. -->
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowBackground">@color/splash_background</item>
     </style>
 </resources>

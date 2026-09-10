@@ -1,19 +1,37 @@
-﻿import 'package:app_template/core/platform/permissions/app_permission.dart';
+﻿import 'package:flutter/foundation.dart';
+import 'package:app_template/core/platform/permissions/app_permission.dart';
 
 /// Central feature activation file.
 ///
 /// ─── HOW TO USE ──────────────────────────────────────────────────────────────
 /// 1. Set the feature flag to `true` or `false` below.
-/// 2. Run:  dart run scripts/sync_permissions.dart
+/// 2. Run:  dart run scripts/sync_platform_permissions.dart
 ///    → AndroidManifest.xml and Info.plist are updated automatically.
 /// 3. Use the feature in your code — PermissionsService guards calls
 ///    automatically based on these flags.
 /// ─────────────────────────────────────────────────────────────────────────────
 abstract final class AppFeatures {
   // ── Debug / Development ────────────────────────────────────────────────────
-  /// تخطي تسجيل الدخول مباشرةً إلى Template Showcase.
-  /// اضبطه على false قبل إصدار أي build للإنتاج.
-  static const debugSkipLogin = true;
+
+  /// تخطّي تسجيل الدخول — **لجلسة تطوير على شاشةٍ داخلية، لا غير**.
+  ///
+  /// ## ⚠️ ولماذا مقفولٌ بـ`kDebugMode` لا مفتاحاً حرّاً
+  ///
+  /// الاسم يقول `debug`، ولم يكن شيءٌ بالكود يفرضه: ثابتٌ عاديٌّ يُصرَّف في
+  /// release كما كُتب تماماً. فمن يُشعله وينسى إطفاءه يبني نسخةَ إصدارٍ **تدخل
+  /// التطبيق بلا جلسة أصلاً** — ولا `dart analyze` ولا `check_structure` يقول
+  /// شيئاً، كلاهما أخضر.
+  ///
+  /// وثمنُ النسيان ليس شاشةً فارغة: لا توكن (كلُّ طلبٍ يخرج بلا `Authorization`
+  /// ⇒ `401`)، ولا هويّةَ مستخدمٍ لِما يُنشأ — إسنادٌ يضيع بصمت.
+  ///
+  /// **فالمفتاح اليدوي بقي، والقفل أُضيف حوله**: بدّل [_skipLoginRequested]
+  /// لجلستك، و`kReleaseMode` يُطفئه حتماً عند البناء — والمصرِّف يحذف الفرع.
+  ///
+  /// ⛔ **وكان `true` بالقالب** حتى 2026-09-08، أي أن كل مشروعٍ يُفرَّع منه كان
+  /// يبدأ بجلسةٍ متخطّاة حتى ينتبه أحد.
+  static const _skipLoginRequested = false;
+  static const debugSkipLogin = kDebugMode && _skipLoginRequested;
 
   /// طباعة الرؤوس والأجسام لكل طلب ناجح أيضاً (debug فقط).
   ///
@@ -37,7 +55,7 @@ abstract final class AppFeatures {
 
   // ── Optional modules ──────────────────────────────────────────────────────
   /// Enable local (on-device) notifications — reminders, alarms, etc.
-  /// Run `dart run scripts/sync_permissions.dart` after changing this.
+  /// Run `dart run scripts/sync_platform_permissions.dart` after changing this.
   static const localNotifications = false;
 
   // ── Optional modules ──────────────────────────────────────────────────────

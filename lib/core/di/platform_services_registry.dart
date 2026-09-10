@@ -8,6 +8,8 @@ import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/files/file_service.dart';
 import 'package:app_template/core/platform/files/file_service_impl.dart';
 import 'package:app_template/core/platform/haptics/haptic_service.dart';
+import 'package:app_template/core/platform/location/device_location_service.dart';
+import 'package:app_template/core/platform/location/device_location_service_impl.dart';
 import 'package:app_template/core/platform/haptics/haptic_service_impl.dart';
 import 'package:app_template/core/platform/lifecycle/app_lifecycle_service.dart';
 import 'package:app_template/core/platform/lifecycle/app_lifecycle_service_impl.dart';
@@ -36,6 +38,7 @@ abstract final class PlatformServicesRegistry {
 
   /// Called once from [configureDependencies] after the main DI setup.
   static void configure(GetIt getIt) {
+    _registerLocation(getIt);
     _registerBiometrics(getIt);
     _registerClipboard(getIt);
     _registerShare(getIt);
@@ -46,6 +49,15 @@ abstract final class PlatformServicesRegistry {
   }
 
   // ── P6 — Biometrics ────────────────────────────────────────────────────────
+
+  // ── الموقع ────────────────────────────────────────────────────────────────
+
+  static void _registerLocation(GetIt getIt) {
+    if (!AppFeatures.location) return;
+    getIt.registerLazySingleton<DeviceLocationService>(
+      DeviceLocationServiceImpl.new,
+    );
+  }
 
   static void _registerBiometrics(GetIt getIt) {
     if (!AppFeatures.biometrics) return;

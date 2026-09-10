@@ -9,7 +9,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:app_template/modules/sync/config/sync_mode.dart';
 import 'package:app_template/modules/sync/config/sync_settings.dart';
 import 'package:app_template/modules/sync/config/sync_settings_store.dart';
-import 'package:app_template/modules/sync/data/sync_cursor_store.dart';
+import 'package:app_template/modules/sync/data/sync_cursor_store.dart';import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
 import 'package:app_template/modules/sync/data/sync_database.dart';
 import 'package:app_template/modules/sync/data/sync_operations_log.dart';
 import 'package:app_template/modules/sync/domain/sync_entity_store.dart';
@@ -18,7 +18,7 @@ import 'package:app_template/modules/sync/engine/sync_backoff_policy.dart';
 import 'package:app_template/modules/sync/engine/sync_conflict_resolver.dart';
 import 'package:app_template/modules/sync/engine/sync_engine.dart';
 import 'package:app_template/modules/sync/integration/sync_controller.dart';
-import 'package:app_template/modules/sync/integration/sync_gate.dart';
+import 'package:app_template/modules/sync/domain/sync_queue_signal.dart';import 'package:app_template/modules/sync/integration/sync_gate.dart';
 import 'package:app_template/modules/sync/integration/sync_lock.dart';
 import 'package:app_template/modules/sync/sdk/sync_sdk_config.dart';
 import 'package:app_template/modules/sync/validation/sync_contract_migrator.dart';
@@ -221,6 +221,7 @@ SyncController _buildController(SyncSettings settings) {
     SyncConflictResolver(),
     SyncLock(_UnusedStorage()),
     SyncOperationsLog(db),
+    SyncCycleStamp(db),
     SyncCursorStore(db),
   );
 
@@ -229,6 +230,8 @@ SyncController _buildController(SyncSettings settings) {
     connectivity,
     engine,
     SyncGate(settingsStore, connectivity, _UnusedSession(), _UnusedReachability()),
+    SyncQueueSignal(),
+    null, // بلا خدمةِ دورةِ حياة — راجع `_lifecycle`
   );
 }
 
@@ -250,6 +253,12 @@ class _FixedSettingsStore implements SyncSettingsStore {
 
   @override
   Future<void> setWifiOnly(bool value) async {}
+
+  @override
+  Future<void> setMediaWifiOnly(bool value) async {}
+
+  @override
+  Future<void> setMediaOverMobileApproved(bool value) async {}
 
   @override
   Future<void> setPeriodicIntervalSeconds(int? value) async {}

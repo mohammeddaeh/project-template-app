@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/modules/multi_device/presentation/pages/active_devices_screen.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// The module's single mounting point — drop it into settings or profile.
 ///

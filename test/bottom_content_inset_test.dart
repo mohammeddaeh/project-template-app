@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:app_template/presentation/extensions/screen_sizes_extensions.dart';
+import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 
 /// The one fact every tab screen depends on and none of them can check.
 ///

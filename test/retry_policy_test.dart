@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:app_template/core/infra/network/interceptors/internet_checker_interceptor.dart';
 import 'package:app_template/core/infra/network/interceptors/retry_interceptor.dart';
 
 /// How many times the app hits a struggling server, and whether it listens when
@@ -53,6 +54,50 @@ void main() {
     return adapter.calls;
   }
 
+
+  test(
+    'a request blocked because the device has no network interface is NOT '
+    'retried — it never left the device',
+    () async {
+      // الرفضُ يصل بهيئة `connectionError`، وهي مؤهَّلةٌ للإعادة بحقّ (انقطاعٌ
+      // عابر وسطَ رحلة). والوسمُ وحده يفرّق — وبلاه تُعاد ثلاثُ محاولاتٍ
+      // بتراجعٍ ١+٢+٤ ثانية، **وثلاثتُها تُمنع من الباب نفسِه**.
+      //
+      // ⚠️ **ويُعَدُّ ما يُحاوَل لا ما يصل**: الحارسُ الذي يمنع الطلبَ يمنع كذلك
+      //    كلَّ إعادةٍ له، فعدّادُ المحوّل **صفرٌ بالحالتين** — واختبارٌ يقيسه
+      //    يمرّ وهو لا يحرس شيئاً. (قِيس: بلا الحارس `attempts=4` والمحوّل `0`.)
+      var attempts = 0;
+      final dio = dioWith(_CountingAdapter(200));
+      dio.interceptors.insert(
+        0,
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            attempts++;
+            options.extra[InternetCheckerInterceptor.blockedOfflineKey] = true;
+            handler.reject(
+              DioException(
+                type: DioExceptionType.connectionError,
+                requestOptions: options,
+              ),
+              true,
+            );
+          },
+        ),
+      );
+
+      try {
+        await dio.get<dynamic>('/x');
+      } on DioException {
+        // expected
+      }
+
+      expect(
+        attempts,
+        1,
+        reason: 'a blocked request is attempted once, never retried',
+      );
+    },
+  );
   test('503 is retried — it is the transient kind', () async {
     expect(await callsFor(_CountingAdapter(503)), 4); // 1 + 3 retries
   });

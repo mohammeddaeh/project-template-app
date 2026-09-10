@@ -1,34 +1,42 @@
 ﻿import 'dart:async';
+import 'package:app_template/modules/analytics/adapters/analytics_route_observer.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:app_template/features/startup/startup_destination.dart';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:app_template/Features/auth/shared/session_sync_service.dart';
-import 'package:app_template/Features/settings/presentation/cubits/font_preference_cubit.dart';
+import 'package:app_template/features/auth/shared/session_sync_service.dart';
+import 'package:app_template/features/settings/presentation/cubits/font_preference_cubit.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/foundation/contracts/locale_provider.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/core/infra/session/auth_event_bus.dart';
 import 'package:app_template/core/infra/session/locale_provider_impl.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
-import 'package:app_template/presentation/feedback/feedback_extension.dart';
-import 'package:app_template/presentation/theme/app_theme.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
+import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.dart';
 import 'package:app_template/routes/router.gr.dart';
-import 'package:app_template/shared/widgets/layout/flavor_banner.dart';
+import 'package:app_template/ui/widgets/layout/flavor_banner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatefulWidget {
   final AdaptiveThemeMode? savedThemeMode;
   final AppFontOption savedFont;
 
+  /// أينَ يبدأ التطبيق — قرارٌ اتُّخذ بـ`main()` قبل أول إطار.
+  final StartupDestination startAt;
+
   const App({
     super.key,
     this.savedThemeMode,
     required this.savedFont,
+    required this.startAt,
   });
 
   @override
@@ -114,6 +122,15 @@ class _AppState extends State<App> {
   /// most look like a bug are the two the app knows the exact cause of. The
   /// keys existed (`sessionRevoked` was written the day the multi-device
   /// module landed) and simply had no call site.
+  /// وجهةُ [App.startAt] كمسار.
+  ///
+  /// والمطابقةُ **شاملة** بقصد: وجهةٌ جديدة تصير خطأَ ترجمةٍ هنا، لا سقوطاً
+  /// صامتاً إلى الدخول.
+  PageRouteInfo get _startRoute => switch (widget.startAt) {
+    StartupDestination.login => const LoginRoute(),
+    StartupDestination.shell => const MainShellRoute(),
+  };
+
   void _handleAuthEvent(AuthEvent event) {
     final String reasonKey;
 
@@ -184,8 +201,17 @@ class _AppState extends State<App> {
                 CountryLocalizations.delegate,
               ],
               scrollBehavior: GlobalScrollBehavior(),
+              // **الوجهةُ الأولى تدخل من هنا لا من `initial: true`.**
+              //
+              // `deepLinkBuilder` يُنادى مرّةً بالإقلاع البارد، فيكون أوّلُ
+              // إطارٍ هو الوجهةَ الصحيحة — لا شاشةً مؤقّتة تُستبدل بعدها.
+              // و`AutoRoute(initial: true)` **يُحذف من الموجّه** لأنه يفوز على
+              // هذا؛ راجع `router.dart`.
               routerConfig: _router.config(
-                navigatorObservers: () => [],
+                // **وهو غيرُ ضارٍّ حين يكون التحليلُ مطفأً** — يقرأ `getIt` لحظةَ
+                // الحدث ويخرج إن لم تُسجَّل الخدمة. راجع الصنف.
+                navigatorObservers: () => [AnalyticsRouteObserver()],
+                deepLinkBuilder: (_) => DeepLink.single(_startRoute),
               ),
               builder: (context, child) {
                 // AnnotatedRegion يُحدِّث ألوان أيقونات شريط الحالة والتنقل
@@ -205,8 +231,13 @@ class _AppState extends State<App> {
                     systemNavigationBarIconBrightness: iconBrightness,
                     systemNavigationBarContrastEnforced: false,
                   ),
-                  child: FlavorBanner(
-                    child: child ?? const SizedBox.shrink(),
+                  // **مقاييسُ الشاشة تُحسب هنا، فوق كلّ مسارٍ وحوارٍ وورقة** —
+                  // ومعها يُقيَّد «تكبير الخط» الآتي من إعدادات النظام. راجع
+                  // [ResponsiveScope] لسبب الحدَّين ٠٫٩ و١٫٣.
+                  child: ResponsiveScope(
+                    child: FlavorBanner(
+                      child: child ?? const SizedBox.shrink(),
+                    ),
                   ),
                 );
               },

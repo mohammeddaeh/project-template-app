@@ -1,4 +1,8 @@
-﻿import 'dart:convert';
+import 'dart:convert';
+import 'package:app_template/modules/sync/engine/media_prefetch_manager.dart';
+import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
+import 'package:app_template/core/foundation/di/get_it_all_extension.dart';
+import 'package:app_template/modules/sync/domain/sync_refresh_task.dart';
 
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/errors/failure_mapper_registry.dart';
@@ -38,6 +42,7 @@ class SyncEngine {
     this._conflictResolver,
     this._syncLock,
     this._opsLog,
+    this._cycleStamp,
     this._cursorStore,
   );
 
@@ -52,6 +57,13 @@ class SyncEngine {
   final SyncLock _syncLock;
   final SyncOperationsLog _opsLog;
   final SyncCursorStore _cursorStore;
+
+  /// **متى نجحت آخرُ دورة** — السطرُ الذي لم يكن أحدٌ يكتبه.
+  ///
+  /// و`synced_entities.last_synced_at` لا تجيب السؤال: تقول متى وصل **صفٌّ**
+  /// الخادمَ، فتُعطي أحدثَ صفٍّ لا أحدثَ دورة. وجهازٌ لم يكن لديه ما يرفع لكنه
+  /// اتّصل وسحب بنجاح لا يسجّل شيئاً إطلاقاً — وهي الحالة الأشيع.
+  final SyncCycleStamp _cycleStamp;
 
   static int _cycleCount = 0;
 
@@ -70,6 +82,12 @@ class SyncEngine {
   /// only one that can — surviving a process death, so a crashed cycle does not
   /// leave the next one blocked forever.
   bool _cycleInProgress = false;
+
+  /// **هل أخفق شيءٌ بهذه الدورة؟** — يُصفَّر ببدئها، ويُقرأ قبل الختم.
+  ///
+  /// ولا يكفي `catch` وحده: طورٌ يبتلع إخفاقَه بحدّه الخاص (رفعُ ملفّ، أو صفٌّ
+  /// بالطابور) لا يرمي إلى هنا — والدورةُ مع ذلك **لم تنجح**.
+  bool _cycleFailed = false;
 
   Future<void> runPendingJobs({int batchSize = 30}) async {
     // Guard first, and synchronously. Everything below may suspend.
@@ -112,6 +130,8 @@ class SyncEngine {
       return;
     }
 
+    _cycleFailed = false;
+
     try {
       // **Push before pull, and the order is not a preference.**
       //
@@ -121,10 +141,22 @@ class SyncEngine {
       // reconstruct.
       await _processPushQueue(batchSize: batchSize);
       await _processPullPhase();
+      // **البيانُ الذي لا جدولَ له** — لوحُ حساب، أو إعداداتٌ يملكها الخادم.
+      // وبديلُه كان `unawaited(_refreshQuietly())` بكل فتحةِ شاشة: طلبٌ لا
+      // تحكمه بوّابة ولا يخنقه قفل ولا يعرف بوجوده أحد. راجع [SyncRefreshTask].
+      await _processRefreshTasks();
       // Files last: the heaviest and slowest phase, and putting it first would
       // let one interrupted 300 MB download block a text edit measured in bytes.
       await _processFileUploads();
+
+      // **«مزامنة ناجحة» تعني بلا إخفاقٍ واحد** — راجع `SyncCycleStamp`.
+      //
+      // والختمُ هنا لا بـ`finally`: دورةٌ خرجت من `catch` أدناه **انتهت ولم
+      // تنجح**، وما تعرضه الشاشة هو ما يبني عليه المستخدم قرارَه بحذف التطبيق
+      // أو بالخروج إلى الميدان.
+      if (!_cycleFailed) await _cycleStamp.markSuccess();
     } catch (e, st) {
+      _cycleFailed = true;
       LogService.error('SyncEngine failed', tag: 'SYNC', error: e, stackTrace: st);
     } finally {
       // Release first, and on its own. A throw anywhere later in this block
@@ -149,6 +181,42 @@ class SyncEngine {
           );
         }
       }
+    }
+
+    // **وأخيراً: الصورُ والملفّات النازلة — وخارج القفل.**
+    //
+    // خارجَه لأن القفل يحمي **الكتابة بالقاعدة**، وهذا الطور لا يكتب صفّاً:
+    // يكتب بايتاتٍ بمجلَّده وحده. وحبسُه تحته كان يعني أن صفّاً يحفظه المستخدم
+    // الآن ينتظر مئةَ ميغابايتٍ تنزل قبل أن يُدفع — وهو نقيضُ ترتيب الدورة
+    // كلِّه («الدفعُ أوّلاً، ولا يُفقد شيءٌ لم يغادر الجهاز»).
+    //
+    // **وبعد الختم كذلك**: `SyncCycleStamp` يقول «آخرُ مزامنةٍ نجحت» ومقياسُه
+    // الصفوف، وتأخيرُه خلف تنزيلٍ يطول يجعل الشاشة تقول «منذ ستّ دقائق» عن
+    // بيانٍ وصل قبل خمس.
+    await _processMediaDownloads();
+  }
+
+  /// **الطورُ الأخير: ما تشير إليه الصفوفُ من صورٍ وملفّات.**
+  ///
+  /// المحرّك لا يعرف أين تسكن المسارات ولا كم هي: يسأل [MediaPrefetchManager]،
+  /// وذاك يسأل جردَ كل شريحة (`SyncMediaCatalog`) — `modules → features ❌`.
+  ///
+  /// و`isRegistered` كسائر ما يُحلّ وقت التشغيل: مشروعٌ لا يشغّل هذا الطور يسقط
+  /// عنه بفحصٍ واحد. **ولا يرمي**: الرمياتُ ملتقطةٌ بالمنفّذ نفسِه، فلا يُسقط
+  /// تنزيلُ صورةٍ دورةً رفعت شغلَ يومٍ كامل.
+  Future<void> _processMediaDownloads() async {
+    if (!_getIt.isRegistered<MediaPrefetchManager>()) return;
+    try {
+      await _getIt<MediaPrefetchManager>().run();
+    } catch (e, st) {
+      // **حارسٌ ثانٍ، وموضعُه هو السبب**: النداء يقع **خارج** `try` الدورة
+      // (خارج القفل)، فرميةٌ هنا تهرب إلى مؤقّتٍ أو مستمعِ مجرى بلا مالك.
+      LogService.error(
+        'The media phase could not start — rows synced, files did not.',
+        tag: 'SYNC',
+        error: e,
+        stackTrace: st,
+      );
     }
   }
 
@@ -565,6 +633,7 @@ class SyncEngine {
         tag: 'SYNC',
       );
     }
+
   }
 
   /// Server timestamps arrive as ISO-8601 strings; the store keeps epoch ms.
@@ -593,6 +662,30 @@ class SyncEngine {
   /// Resolved from the container rather than injected, so an app that registers
   /// no upload targets — which is every app until a feature declares one — pays
   /// nothing and this phase is a single `isRegistered` check.
+
+  /// **مهامُّ التحديث — بيانٌ يملكه الخادم ولا جدولَ له بمخزن المزامنة.**
+  ///
+  /// وكلُّ مهمّةٍ تحمل حدَّ إخفاقها: لقطةٌ اختيارية لا تُسقط دورةً اكتملت.
+  ///
+  /// ⚠️ **و`allOf` لا `getAll`**: الثانية **ترمي** لنوعٍ غير مسجَّل، فمشروعٌ
+  /// بلا مهمّةِ تحديثٍ واحدة كانت ستُسقط الدورةَ كلَّها. ولا `isRegistered<T>()`
+  /// حارساً قبلها: تلك تُعمي عن التسجيلات **المسمّاة**، و`injectable` يفرض
+  /// الاسمَ لتسجيلين تحت نوعٍ واحد — فحارسٌ كهذا يُسكت الطورَ بصمت.
+  Future<void> _processRefreshTasks() async {
+    for (final task in _getIt.allOf<SyncRefreshTask>()) {
+      try {
+        await task.refresh();
+      } catch (e, st) {
+        LogService.error(
+          'Refresh task "${task.name}" failed — the screen keeps showing what '
+          'the device already had.',
+          tag: 'SYNC',
+          error: e,
+          stackTrace: st,
+        );
+      }
+    }
+  }
   Future<void> _processFileUploads() async {
     if (!_getIt.isRegistered<AttachmentUploadManager>()) return;
     try {

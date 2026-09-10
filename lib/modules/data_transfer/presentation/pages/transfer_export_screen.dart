@@ -10,11 +10,11 @@ import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart
 import 'package:app_template/modules/data_transfer/presentation/cubits/export_cubit.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_failure_view.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart';
-import 'package:app_template/presentation/extensions/app_padding_extension.dart';
-import 'package:app_template/presentation/locale/locale_extension.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/locale/locale_extension.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// Export, for whatever `resource` it is given.
 ///
@@ -231,7 +231,7 @@ class _FormState extends State<_Form> {
             top: 0,
             left: 0,
             right: 0,
-            child: LinearProgressIndicator(minHeight: 2),
+            child: AppProgress.linear(height: 2, radius: 0),
           ),
       ],
     );

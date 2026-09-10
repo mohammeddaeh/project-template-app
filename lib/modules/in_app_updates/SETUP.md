@@ -11,13 +11,16 @@
 static const inAppUpdates = true;
 ```
 
-**الموديول الوحيد الذي لا يُشغَّل من `ModulesBootstrap`** — يحتاج `BuildContext` لعرض حواره، فيُستدعى من شاشة مركَّبة فعلاً (بعد الدخول، أو عند العودة من الخلفية):
+`ModulesBootstrap` يسجّل مخزن الإعدادات المحلي ومهمة `SyncRefreshTask`، و`AppUpdateGate`
+مركّب بالقشرة لعرض الحوار من لقطة الجهاز. لا تطلب الشاشة `/settings` مباشرةً.
 
 ```dart
-await InAppUpdatesModule.checkAndPrompt(context, iosAppId: '123456789');
+const AppUpdateGate(child: AppShell());
 ```
 
-الحارس داخل `checkAndPrompt` نفسها، فالسطر يبقى مكانه بلا شرط ويظل العَلَم هو الجواب الوحيد عن «هل هذا مفعَّل؟». **كان بلا عَلَم إطلاقاً** حتى 2026-08-17: تعطيلُه كان يعني حذف الاستدعاء، ومعرفةُ حالته تعني قراءة كل شاشة.
+تجلب دورة المزامنة `GET /api/v1/settings` وتحفظ `app_version` و
+`app_download_url` و`force_update` كلقطة واحدة. يقرأ الحارس اللقطة عند التركيب
+ويستمع لتحديثها، لذلك يصل قرارٌ جديد فور انتهاء الدورة من دون طلب شبكة من الشاشة.
 
 ---
 
@@ -39,7 +42,7 @@ await InAppUpdatesModule.checkAndPrompt(context, iosAppId: '123456789');
 ## ③ الاستخدام
 
 ```dart
-// في SplashCubit أو بعد login مباشرة:
+// إن احتاج تطبيقٌ آخر استدعاءه يدوياً، فالنداء يقرأ اللقطة المحلية فقط:
 await InAppUpdatesModule.checkAndPrompt(
   context,
   mode: UpdateMode.flexible,   // flexible أو immediate

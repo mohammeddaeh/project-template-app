@@ -1,4 +1,5 @@
 ﻿import 'package:dio/dio.dart';
+import 'package:app_template/core/infra/network/interceptors/internet_checker_interceptor.dart';
 import 'package:app_template/core/infra/errors/dio_failure_mapper.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 
@@ -116,6 +117,17 @@ class RetryInterceptor extends Interceptor {
 
   static bool _isRetryable(DioException err) {
     if (err.type == DioExceptionType.cancel) return false;
+
+    // **طلبٌ مُنع لأن الجهاز بلا واجهة شبكة لا يُعاد** — راجع
+    // [InternetCheckerInterceptor.blockedOfflineKey]. الرفضُ يصل هنا بهيئة
+    // `connectionError`، وهي أدناه مؤهَّلةٌ للإعادة بحقّ (انقطاعٌ عابر وسطَ
+    // رحلة) — والوسمُ هو ما يفرّق: هذا لم يغادر الجهازَ أصلاً، وثلاثُ إعاداتٍ
+    // بتراجعٍ ١+٢+٤ ثانية تُمنع الثلاثُ من الباب نفسِه. وسبعُ ثوانٍ ثمناً
+    // لجوابٍ معلومٍ سلفاً: لا مقبس. ووضعُ الطيران لا يزول بالانتظار.
+    if (err.requestOptions.extra[InternetCheckerInterceptor.blockedOfflineKey] ==
+        true) {
+      return false;
+    }
 
     if (err.type == DioExceptionType.connectionError ||
         err.type == DioExceptionType.connectionTimeout ||

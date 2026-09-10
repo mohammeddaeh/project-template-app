@@ -28,7 +28,7 @@ import 'package:app_template/modules/access_control/integration/abilities_store.
 /// It decides whether a control is *drawn*. The server's `requirePermission`
 /// decides whether the action *happens*, and it is the only thing that does. A
 /// screen guarded here whose endpoint is unguarded there is not protected — see
-/// `readme/permissions.md`.
+/// `readme/31_MODULE_PERMISSIONS.md`.
 ///
 /// ## Hide or disable
 ///

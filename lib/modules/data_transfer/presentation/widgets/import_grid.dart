@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/widgets/inputs/custom_text_field.dart';
 
 import 'package:app_template/modules/data_transfer/domain/import_report.dart';
 import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
 /// The user's file, on screen, with the failing cells tinted — and editable.
@@ -539,13 +540,14 @@ class _CellEditorState extends State<_CellEditor> {
           children: [
             Text(widget.rowLabel, style: context.textTheme.bodySmall),
             const SizedBox(height: 12),
-            TextField(
+            // `onFieldSubmitted` as well as the button: on a phone the
+            // keyboard's done key is the natural way to finish a one-cell
+            // correction.
+            CustomTextField(
               controller: _controller,
-              autofocus: true,
-              maxLines: null,
-              // `onSubmitted` as well as the button: on a phone the keyboard's
-              // done key is the natural way to finish a one-cell correction.
-              onSubmitted: (value) => Navigator.of(context).pop(value),
+              maxLines: 3,
+              onFieldSubmitted: () =>
+                  Navigator.of(context).pop(_controller.text),
             ),
             if (widget.error != null) ...[
               const SizedBox(height: 12),

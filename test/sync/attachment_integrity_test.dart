@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:app_template/modules/sync/engine/attachment_upload_progress.dart';
+
 import 'package:app_template/modules/sync/domain/attachment_record.dart';
 import 'package:app_template/modules/sync/domain/attachment_store.dart';
 import 'package:app_template/modules/sync/engine/attachment_upload_manager.dart';
@@ -13,6 +15,10 @@ import 'package:app_template/modules/sync/engine/attachment_upload_manager.dart'
 /// process, or a photograph that exists in exactly one place. What they have in
 /// common is that getting them wrong produces no error — only an absence
 /// somebody notices weeks later.
+/// نبضُ التقدّم **لا يُقاس هنا** — له ملفُّه (`upload_progress_test.dart`).
+/// وهذا المُفرد يجعل المدير يُبنى، وتسريبُ خطّافٍ بينه ملتقطٌ هناك.
+final progress = AttachmentUploadProgress();
+
 void main() {
   group('the eviction vetoes', () {
     test('a device photo the server has not confirmed is never evictable', () {
@@ -331,7 +337,7 @@ void main() {
           upload: AttachmentUploadStatus.pending,
         ).copyWith(localPath: file.path);
         final store = _RecoveryStore([record]);
-        await AttachmentUploadManager(store, [_FailingTarget(status)])
+        await AttachmentUploadManager(store, [_FailingTarget(status)], progress)
             .uploadPending();
         return store.saved.last.retryCount;
       }
@@ -363,7 +369,7 @@ void main() {
           upload: AttachmentUploadStatus.pending,
         ).copyWith(localPath: file.path),
       ]);
-      await AttachmentUploadManager(store, [_FailingTarget(401)]).uploadPending();
+      await AttachmentUploadManager(store, [_FailingTarget(401)], progress).uploadPending();
 
       expect(store.saved.last.retryCount, 1);
     });
@@ -380,7 +386,7 @@ void main() {
         ).copyWith(localPath: '/nowhere/gone.jpg'),
       ]);
 
-      await AttachmentUploadManager(store, [_RecordingTarget()]).uploadPending();
+      await AttachmentUploadManager(store, [_RecordingTarget()], progress).uploadPending();
 
       expect(store.saved.single.uploadStatus, AttachmentUploadStatus.failed);
       expect(
@@ -399,7 +405,7 @@ void main() {
       final target = _RecordingTarget();
 
       final sent =
-          await AttachmentUploadManager(store, [target]).uploadPending();
+          await AttachmentUploadManager(store, [target], progress).uploadPending();
 
       expect(sent, 0);
       expect(target.seen, isEmpty, reason: 'a retired upload must not be re-sent');
@@ -434,7 +440,7 @@ void main() {
       final store = _RecoveryStore([record]);
       final target = _RecordingTarget();
 
-      await AttachmentUploadManager(store, [target]).uploadPending();
+      await AttachmentUploadManager(store, [target], progress).uploadPending();
 
       final saved = store.saved.last;
       expect(saved.uploadStatus, AttachmentUploadStatus.uploaded);
@@ -462,7 +468,7 @@ void main() {
 
       final store = _RecoveryStore([stranded]);
       final target = _RecordingTarget();
-      final manager = AttachmentUploadManager(store, [target]);
+      final manager = AttachmentUploadManager(store, [target], progress);
 
       final sent = await manager.uploadPending();
 
@@ -509,6 +515,9 @@ class _RecoveryStore implements AttachmentStore {
 class _RecordingTarget implements AttachmentUploadTarget {
   final List<AttachmentRecord> seen = [];
   final List<String> keys = [];
+
+  @override
+  void Function(int, int)? onSendProgress;
 
   @override
   String get entityName => 'notes';
@@ -560,6 +569,9 @@ class _FailingTarget implements AttachmentUploadTarget {
   _FailingTarget(this.status);
 
   final int status;
+
+  @override
+  void Function(int, int)? onSendProgress;
 
   @override
   String get entityName => 'notes';

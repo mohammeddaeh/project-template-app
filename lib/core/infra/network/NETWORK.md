@@ -77,7 +77,7 @@ Response يعود ◄───  بالعكس: Log → Retry → Refresh → Auth
 
 **ما تحتاج تنفيذه:**
 ```dart
-// lib/Features/<name>/data/datasources/<name>_token_refresh_gateway.dart
+// lib/features/<name>/data/datasources/<name>_token_refresh_gateway.dart
 class MyTokenRefreshGateway implements TokenRefreshGateway {
   @override
   Future<void> refresh() async {

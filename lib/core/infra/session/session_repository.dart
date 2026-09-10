@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 ///
 /// - Implements [AuthNetworkGateway] so [AuthInterceptor] can read the token
 ///   synchronously without coupling to SecureStorageService.
-/// - Token is cached in memory after [loadCachedToken] (called by SplashCubit).
+/// - Token is cached in memory after [loadCachedToken] (called by StartupResolver).
 /// - [saveToken] persists to secure storage + updates cache (called after login).
 /// - [clearSession] wipes both cache and storage (called on logout / 401).
 @singleton
@@ -45,7 +45,7 @@ class SessionRepository implements AuthNetworkGateway {
     _emit(null);
   }
 
-  /// Loads the stored token into memory — call once at app start (SplashCubit).
+  /// Loads the stored token into memory — call once at app start (StartupResolver).
   ///
   /// Does **not** emit on [tokenStream]: nothing changed hands, the same
   /// account is still signed in. Startup state is restored from each holder's

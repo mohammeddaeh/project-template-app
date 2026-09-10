@@ -37,7 +37,10 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 /// Registered last in the interceptor chain so it observes the final outcome
 /// after auth, retry and cache have had their say.
 class NetworkLogInterceptor extends Interceptor {
-  NetworkLogInterceptor({this.verbose = false, this.slowThreshold = const Duration(seconds: 2)});
+  NetworkLogInterceptor({
+    this.verbose = false,
+    this.slowThreshold = const Duration(seconds: 2),
+  });
 
   /// Print full headers/bodies on success too. Temporary debugging aid.
   final bool verbose;
@@ -52,6 +55,22 @@ class NetworkLogInterceptor extends Interceptor {
   /// Bodies are truncated in the log, not in the request. A 200 KB payload
   /// dumped in full is the same readability problem in a different costume.
   static const _maxBodyChars = 2000;
+  /// **جردُ ما لا يُطبع** — ترويسةً كان أو حقلاً بالجسد، بأي عمق.
+  ///
+  /// ومكشوفٌ بقصد: مفتاحٌ يُضاف إلى عقد الباك ولا يُضاف هنا **يُطبع خاماً ولا
+  /// يشكو شيء** — فالجردُ يُقرأ ويُوسَّع، ويُحرسه اختبارٌ يسمّي كلَّ مفتاح.
+  ///
+  /// والمقارنةُ بأحرفٍ صغيرة: الترويسات تصل بأيِّ حالة.
+  static const sensitiveKeys = _sensitiveKeys;
+
+  static const _sensitiveKeys = {
+    'authorization',
+    'password',
+    'client_secret',
+    'access_token',
+    'refresh_token',
+    'id_token',
+  };
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -59,7 +78,7 @@ class NetworkLogInterceptor extends Interceptor {
     if (verbose) {
       LogService.debug(
         '→ ${options.method} ${_target(options)}\n'
-        'headers: ${_pretty(options.headers)}\n'
+        'headers: ${_pretty(_redact(options.headers))}\n'
         'body: ${_body(options.data)}',
         tag: _tag,
       );
@@ -68,7 +87,10 @@ class NetworkLogInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     final options = response.requestOptions;
     final ms = _elapsedMs(options);
     final fromCache = response.headers.value('x-from-cache') == 'true';
@@ -163,11 +185,20 @@ class NetworkLogInterceptor extends Interceptor {
     return DateTime.now().millisecondsSinceEpoch - started;
   }
 
-  /// Path + query only. The base URL is identical on every line and repeating
-  /// it costs width that the path actually needs.
+  /// Full API URL so environment/host mistakes are visible in the console.
   static String _target(RequestOptions options) {
     final uri = options.uri;
-    return uri.hasQuery ? '${uri.path}?${uri.query}' : uri.path;
+    if (!uri.hasQuery) return uri.toString();
+    return uri
+        .replace(
+          queryParameters: uri.queryParameters.map(
+            (key, value) => MapEntry(
+              key,
+              _sensitiveKeys.contains(key.toLowerCase()) ? '<redacted>' : value,
+            ),
+          ),
+        )
+        .toString();
   }
 
   /// The bearer token is the one header that must never reach a log file —
@@ -177,26 +208,58 @@ class NetworkLogInterceptor extends Interceptor {
   static Map<String, dynamic> _redact(Map<String, dynamic> headers) {
     final copy = Map<String, dynamic>.from(headers);
     for (final key in copy.keys.toList()) {
-      if (key.toLowerCase() == 'authorization') {
+      if (_sensitiveKeys.contains(key.toLowerCase())) {
         final value = copy[key]?.toString() ?? '';
-        copy[key] = value.isEmpty ? '<empty>' : '<present, ${value.length} chars>';
+        copy[key] = value.isEmpty
+            ? '<empty>'
+            : '<present, ${value.length} chars>';
       }
     }
     return copy;
   }
 
-  static String _pretty(Map<String, dynamic> map) =>
-      map.isEmpty ? '{}' : map.entries.map((e) => '${e.key}: ${e.value}').join(', ');
+  static String _pretty(Map<String, dynamic> map) => map.isEmpty
+      ? '{}'
+      : map.entries.map((e) => '${e.key}: ${e.value}').join(', ');
 
   static String _body(dynamic data) {
     if (data == null) return '<none>';
     String text;
     try {
-      text = data is String ? data : jsonEncode(data);
+      final safeData = switch (data) {
+        FormData form => {
+          for (final field in form.fields)
+            field.key: _sensitiveKeys.contains(field.key.toLowerCase())
+                ? '<redacted>'
+                : field.value,
+          if (form.files.isNotEmpty)
+            'files': form.files.map((file) => file.key).toList(),
+        },
+        Map map => _redactBodyMap(map),
+        _ => data,
+      };
+      text = safeData is String ? safeData : jsonEncode(safeData);
     } catch (_) {
       text = data.toString();
     }
     if (text.length <= _maxBodyChars) return text;
     return '${text.substring(0, _maxBodyChars)}… (${text.length} chars total)';
   }
+
+  static Map<String, dynamic> _redactBodyMap(Map<dynamic, dynamic> map) => {
+    for (final entry in map.entries)
+      entry.key.toString():
+          _sensitiveKeys.contains(entry.key.toString().toLowerCase())
+          ? '<redacted>'
+          : switch (entry.value) {
+              Map nested => _redactBodyMap(nested),
+              List values =>
+                values
+                    .map(
+                      (value) => value is Map ? _redactBodyMap(value) : value,
+                    )
+                    .toList(),
+              final value => value,
+            },
+  };
 }

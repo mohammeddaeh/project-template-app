@@ -1,12 +1,20 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
+import 'package:app_template/core/platform/storage/storage_service.dart';
+import 'package:app_template/modules/in_app_updates/data/app_update_settings_api.dart';
+import 'package:app_template/modules/in_app_updates/data/app_update_settings_store.dart';
+import 'package:app_template/modules/in_app_updates/domain/app_update_settings.dart';
+import 'package:app_template/modules/in_app_updates/integration/app_update_settings_refresh_task.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
 
 /// Entry point for the in-app updates module.
 ///
@@ -28,6 +36,29 @@ import 'package:url_launcher/url_launcher.dart';
 /// );
 /// ```
 abstract final class InAppUpdatesModule {
+  static const _refreshTaskName = 'in-app-updates.settings-refresh';
+  static bool _initialized = false;
+  static bool _promptInProgress = false;
+  static String? _lastPromptedSignature;
+
+  /// Registers the local snapshot and the task that refreshes it inside sync.
+  /// It performs no network request itself.
+  static Future<void> initialize(GetIt di) async {
+    if (_initialized || !AppFeatures.inAppUpdates) return;
+    if (!di.isRegistered<AppUpdateSettingsStore>()) {
+      di.registerLazySingleton<AppUpdateSettingsStore>(
+        () => AppUpdateSettingsStore(di<StorageService>()),
+      );
+    }
+    if (!di.isRegistered<AppUpdateSettingsApi>()) {
+      di.registerLazySingleton<AppUpdateSettingsApi>(
+        () => AppUpdateSettingsApi(di<Dio>()),
+      );
+    }
+    registerAppUpdateRefreshTask(di, instanceName: _refreshTaskName);
+    _initialized = true;
+  }
+
   /// Checks for an available update and prompts the user.
   ///
   /// [mode] (Android only):
@@ -45,27 +76,72 @@ abstract final class InAppUpdatesModule {
     // Same shape as every other module's `initialize()`.
     if (!AppFeatures.inAppUpdates) return;
 
-    if (Platform.isAndroid) {
-      await _checkAndroid(context, mode);
-    } else if (Platform.isIOS && iosAppId != null) {
-      await _redirectIos(context, iosAppId);
+    final di = GetIt.instance;
+    if (!di.isRegistered<AppUpdateSettingsStore>()) return;
+    final settings = await di<AppUpdateSettingsStore>().read();
+    if (settings == null) return;
+
+    final currentVersion = (await PackageInfo.fromPlatform()).version;
+    if (!isVersionOlder(currentVersion, settings.version)) return;
+    final signature =
+        '${settings.version}|${settings.downloadUrl}|'
+        '${settings.forceUpdate}';
+    if (_promptInProgress || _lastPromptedSignature == signature) return;
+    if (!context.mounted) return;
+
+    _promptInProgress = true;
+    try {
+      final effectiveMode = settings.forceUpdate ? UpdateMode.immediate : mode;
+      if (Platform.isAndroid) {
+        final handled = await _checkAndroid(effectiveMode);
+        if (handled) {
+          _lastPromptedSignature = signature;
+        } else if (settings.downloadUrl.isNotEmpty && context.mounted) {
+          // Mark only when a real prompt is about to be shown. Previously this
+          // was stamped before checking Play/the URL, so an empty URL consumed
+          // the version forever and adding its link later did nothing.
+          _lastPromptedSignature = signature;
+          await _promptForUrl(context, settings);
+        }
+      } else if (Platform.isIOS) {
+        final fallback = iosAppId == null
+            ? ''
+            : 'https://apps.apple.com/app/id$iosAppId';
+        final url = settings.downloadUrl.isEmpty
+            ? fallback
+            : settings.downloadUrl;
+        if (url.isNotEmpty && context.mounted) {
+          _lastPromptedSignature = signature;
+          await _promptForUrl(
+            context,
+            AppUpdateSettings(
+              version: settings.version,
+              downloadUrl: url,
+              forceUpdate: settings.forceUpdate,
+            ),
+          );
+        }
+      }
+    } finally {
+      _promptInProgress = false;
     }
   }
 
   // ── Android ────────────────────────────────────────────────────────────────
 
-  static Future<void> _checkAndroid(
-      BuildContext context, UpdateMode mode) async {
+  static Future<bool> _checkAndroid(UpdateMode mode) async {
     try {
       final info = await InAppUpdate.checkForUpdate();
 
       if (info.updateAvailability != UpdateAvailability.updateAvailable) {
         LogService.info('InAppUpdates: no update available', tag: 'UPDATE');
-        return;
+        return false;
       }
 
       LogService.info(
-          'InAppUpdates: update available — mode=${mode.name}', tag: 'UPDATE');
+        'InAppUpdates: update available — mode=${mode.name}',
+        tag: 'UPDATE',
+      );
 
       if (mode == UpdateMode.immediate) {
         await InAppUpdate.performImmediateUpdate();
@@ -73,40 +149,56 @@ abstract final class InAppUpdatesModule {
         await InAppUpdate.startFlexibleUpdate();
         await InAppUpdate.completeFlexibleUpdate();
       }
+      return true;
     } catch (e) {
       // Not critical — update check failures should never crash the app.
       LogService.warning('InAppUpdates: check failed: $e', tag: 'UPDATE');
+      return false;
     }
   }
 
   // ── iOS ────────────────────────────────────────────────────────────────────
 
-  static Future<void> _redirectIos(
-      BuildContext context, String appId) async {
+  static Future<void> _promptForUrl(
+    BuildContext context,
+    AppUpdateSettings settings,
+  ) async {
     if (!context.mounted) return;
     final goToStore = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(LocaleKeys.updateAvailableTitle.tr()),
-        content: Text(LocaleKeys.updateAvailableMessage.tr()),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(LocaleKeys.later.tr()),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(LocaleKeys.updateNow.tr()),
-          ),
-        ],
+      barrierDismissible: !settings.forceUpdate,
+      builder: (_) => PopScope(
+        canPop: !settings.forceUpdate,
+        child: AlertDialog(
+          title: Text(LocaleKeys.updateAvailableTitle.tr()),
+          content: Text(LocaleKeys.updateAvailableMessage.tr()),
+          actions: [
+            if (!settings.forceUpdate)
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(LocaleKeys.later.tr()),
+              ),
+            TextButton(
+              onPressed: settings.forceUpdate
+                  ? () => _openUpdateUrl(settings.downloadUrl)
+                  : () => Navigator.pop(context, true),
+              child: Text(LocaleKeys.updateNow.tr()),
+            ),
+          ],
+        ),
       ),
     );
 
     if (goToStore == true) {
-      final url = Uri.parse('https://apps.apple.com/app/id$appId');
-      LogService.info('InAppUpdates: redirecting to App Store', tag: 'UPDATE');
-      await launchUrl(url, mode: LaunchMode.externalApplication);
+      await _openUpdateUrl(settings.downloadUrl);
     }
+  }
+
+  static Future<void> _openUpdateUrl(String rawUrl) async {
+    final url = Uri.tryParse(rawUrl);
+    if (url == null || !url.hasScheme) return;
+    LogService.info('InAppUpdates: opening update URL', tag: 'UPDATE');
+    await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 }
 

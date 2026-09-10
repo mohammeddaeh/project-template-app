@@ -27,7 +27,7 @@ Feature: getIt<XService>()   ← يعمل تلقائياً
 | الحزمة | `local_auth: ^3.0.1` |
 |--------|----------------------|
 | الـ flag | `AppFeatures.biometrics = true` |
-| الأذونات | نعم (يجب تشغيل `sync_permissions.dart`) |
+| الأذونات | نعم (يجب تشغيل `sync_platform_permissions.dart`) |
 
 **الاستخدام:**
 ```dart

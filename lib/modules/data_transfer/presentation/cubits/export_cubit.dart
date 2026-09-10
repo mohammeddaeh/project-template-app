@@ -4,8 +4,8 @@ import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/modules/data_transfer/domain/data_transfer_repository.dart';
 import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart';
-import 'package:app_template/presentation/error/failure_ui_mapper.dart';
-import 'package:app_template/presentation/error/ui_action.dart';
+import 'package:app_template/ui/error/failure_ui_mapper.dart';
+import 'package:app_template/ui/error/ui_action.dart';
 
 part 'export_state.dart';
 

@@ -394,7 +394,7 @@ _authSub = AuthEventBus.instance.stream.listen((event) {
 ### ٦.٥ — LoginParams (حقول اختيارية)
 
 ```dart
-// lib/Features/auth/domain/entities/login_params.dart
+// lib/features/auth/domain/entities/login_params.dart
 class LoginParams extends UseCaseParams {
   const LoginParams({
     required this.email,

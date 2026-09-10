@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
-import 'package:app_template/shared/widgets/states/failure_state_view.dart';
+import 'package:app_template/ui/widgets/states/failure_state_view.dart';
 
 /// Which failures are the reader's to fix — and the failure mode here is that
 /// **nothing looks wrong**.

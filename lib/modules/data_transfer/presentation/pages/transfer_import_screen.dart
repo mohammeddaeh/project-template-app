@@ -15,12 +15,12 @@ import 'package:app_template/modules/data_transfer/presentation/widgets/import_g
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_format_sheet.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_failure_view.dart';
-import 'package:app_template/presentation/extensions/app_padding_extension.dart';
-import 'package:app_template/presentation/feedback/feedback_extension.dart';
-import 'package:app_template/presentation/locale/locale_extension.dart';
-import 'package:app_template/presentation/theme/theme_extensions.dart';
+import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
+import 'package:app_template/ui/locale/locale_extension.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/shared/widgets/widgets.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 
 /// Import, for whatever `resource` it is given — and, like the export screen,
 /// with no mention of any feature.

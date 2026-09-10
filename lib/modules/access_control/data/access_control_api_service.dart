@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'package:app_template/core/infra/config/env.dart';
-import 'package:app_template/core/infra/network/rest/api_urls.dart';
+import 'package:app_template/modules/access_control/data/access_control_urls.dart';
 
 part 'access_control_api_service.g.dart';
 
@@ -18,22 +18,22 @@ abstract class AccessControlApiService {
       _AccessControlApiService(dio, baseUrl: Env.baseUrl);
 
   /// The caller's own resolved permissions. No permission required.
-  @GET(ApiUrls.authzMe)
+  @GET(AccessControlUrls.authzMe)
   Future<HttpResponse<dynamic>> myAbilities({
     @Query('include_declared') bool? includeDeclared,
   });
 
   /// Every permission the server declares. Requires `roles.view`.
-  @GET(ApiUrls.authzCatalog)
+  @GET(AccessControlUrls.authzCatalog)
   Future<HttpResponse<dynamic>> catalog();
 
-  @GET(ApiUrls.authzRoles)
+  @GET(AccessControlUrls.authzRoles)
   Future<HttpResponse<dynamic>> roles({
     @Query('page') int page = 1,
     @Query('limit') int limit = 50,
   });
 
-  @POST(ApiUrls.authzRoles)
+  @POST(AccessControlUrls.authzRoles)
   Future<HttpResponse<dynamic>> createRole(@Body() Map<String, dynamic> body);
 
   @PATCH('/authz/roles/{id}')

@@ -29,7 +29,6 @@ void main() {
   /// Every destination reachable from a `context.router` call in `lib/`.
   const navigatedTo = <String>[
     // Entry + auth
-    'SplashRoute',
     'LoginRoute',
     'RegisterRoute',
     'ForgotPasswordRoute',
@@ -39,8 +38,6 @@ void main() {
     // Signed in
     'MainShellRoute',
     'HomeRoute',
-    'NotesRoute',
-    'NoteFormRoute',
     // Utility
     'ErrorRoute',
   ];
@@ -56,10 +53,28 @@ void main() {
     }
   });
 
+  test('no route claims `initial: true`', () {
+    // **الوجهةُ الأولى تدخل من `deepLinkBuilder`** (راجع `app.dart`), وهو ما
+    // يجعل أوّلَ إطارٍ هو الوجهةَ الصحيحة لا شاشةً مؤقّتة تُستبدل بعدها.
+    //
+    // و`initial: true` **يفوز عليه**: مسارٌ يُعلنه يُعيد شاشةَ البداية الوسيطة
+    // من حيث لا يقصد أحد، ولا يُخفق شيء — التطبيق يعمل، ويرى المستخدم انتقالاً
+    // ثانياً لا معنى له.
+    final initials = AppRouter().routes.where((r) => r.initial).toList();
+
+    expect(
+      initials,
+      isEmpty,
+      reason: 'the first destination comes from deepLinkBuilder, not from '
+          '`initial: true` — see StartupResolver',
+    );
+  });
+
   test('the post-sign-in destination is the shell, from both entry points', () {
-    // Splash and login must agree. They did not: splash went to `HomeRoute`
-    // (the Home tab alone, no tab bar) and login to `MainShellRoute`, so where
-    // a user landed depended on whether they had signed in this launch.
+    // `StartupResolver` and login must agree. They did not, back when a splash
+    // screen decided: it went to `HomeRoute` (the Home tab alone, no tab bar)
+    // and login to `MainShellRoute` — so where a user landed depended on
+    // whether they had signed in this launch.
     expect(registered, contains(MainShellRoute.name));
     expect(MainShellRoute.name, 'MainShellRoute');
   });
