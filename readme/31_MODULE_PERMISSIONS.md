@@ -172,6 +172,31 @@ AUTHZ_ENABLED=true
 
 ---
 
+## نقاط الدخول للشاشتين (2026-09-13)
+
+كلتا الشاشتين مسجَّلتان بالراوتر (`/roles` · `/users/:userId/access`) منذ بنائهما، لكنهما تختلفان فيما يلي:
+
+| الشاشة | نقطة الدخول | لماذا الفرق |
+|---|---|---|
+| `RolesScreen` (`RolesRoute`) | **موصولة فعلاً** — `AccessControlSection` بشاشة الإعدادات (`lib/modules/access_control/presentation/widgets/access_control_section.dart`)، بنفس نمط `DevicesSection`: لا ترسم شيئاً إذا `AppFeatures.accessControl == false`، ومحميّة بـ`Can(permission: PermKeys.rolesView)` | عامّة بالكامل — تُبنى من `GET /authz/catalog` بلا افتراض أي شيء عن التطبيق |
+| `UserAccessScreen` (`UserAccessRoute`) | ⬜ **بلا نقطة دخول بالقالب — متعمَّد** | تحتاج `userId` محدداً، و«من هم المستخدمون وكيف تُعرض قائمتهم» قرارٌ يخصّ كل مشروع. بناء شاشة مستخدمين هنا لمجرد الوصول إليها يعيد القالب إلى «مثال CRUD» حُذف عمداً بتنظيف 2026-09-08 |
+
+**فالمشروع الذي يضيف شاشة مستخدمين خاصة به** يصل هذه الشاشة بسطر واحد من صف كل مستخدم:
+
+```dart
+Can(
+  permission: PermKeys.userAccessView,
+  child: IconButton(
+    icon: const Icon(Icons.admin_panel_settings_outlined),
+    onPressed: () => context.router.push(UserAccessRoute(userId: user.id)),
+  ),
+)
+```
+
+الجرد الكامل لهذا التمييز موثَّق بـ[`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك».
+
+---
+
 ## عقد الـwire
 
 | الملف هنا | يقابله بالباك |
@@ -294,4 +319,4 @@ void _handleAuthEvent(AuthEvent event) => _router.replaceAll([LoginRoute()]);
 **الفلاتر** — `lib/modules/access_control/`
 `domain/ability_set.dart` (`can`) · `domain/permission_catalog.dart` · `domain/role.dart` · `data/` · `integration/abilities_store.dart` (الحالة الحيّة) · `presentation/widgets/can.dart` (السطح كله) · `presentation/widgets/permission_matrix.dart` (الشاشة العامة) · `presentation/pages/` · `guards/permission_route_guard.dart`
 
-**الشاشة التفاعلية**: سيناريو #15 — `/test/access-control`.
+⬜ **ولا شاشةَ عرضٍ حيّة بالقالب اليوم** — حُذفت `features/test/` (2026-09-08) ومعها سيناريو #15 الذي كان يعرض `Can`/`PermissionMatrix` تفاعلياً.

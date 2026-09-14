@@ -15,6 +15,7 @@
 | [`realtime_design.md`](realtime_design.md) | تصميم مقترَح لـ`modules/realtime/` | **الموديول غير موجود** — لا `lib/modules/realtime/` أصلاً. مواصفة لم تُبنَ، لا وصف لكود. ولا تخلطه بـ`modules/multi_device/` المبنيّ |
 | [`sync_design_spec.md`](sync_design_spec.md) | المواصفة الهندسية لموديول المزامنة — 2098 سطراً، عشرون قسماً | **تصميمٌ سابق للتنفيذ**: يصف ما يجب أن يكون لا ما هو كائن، ويتجاوز الكود القائم بمسافة (Manifest · الخلفية · طابور التنزيل). الحالة الحقيقية بـ[`../../lib/modules/sync/PLAN.md`](../../lib/modules/sync/PLAN.md)، والتصميم المنفَّذ بـ[`ARCHITECTURE.md`](../../lib/modules/sync/ARCHITECTURE.md) |
 | [`sync_system_guide.md`](sync_system_guide.md) | جولة تعريفية بالإنجليزية على الموديول | استوعبها [`../../lib/modules/sync/SETUP.md`](../../lib/modules/sync/SETUP.md) بنسخة مُحدَّثة تقول ما هو مبنيّ فعلاً |
+| [`template_backport.md`](template_backport.md) | خطّة نقل ما تعلَّمه مشروع «الأوقاف» إلى القالب — سبع موجات، جدول تتبّع بـ٥١ بنداً | **سجلّ مغلق (2026-09-09).** كل بند ✅ إلا S01 (منقول قاعدةً لا كوداً بقصد — تفصيلٌ خاصٌّ بكيانات الأوقاف). مُقاسٌ لا مُقدَّر: الاختبارات ١٩٦→٢٨٨، صفر رابطٍ مكسور، صفر مخالفة `check_structure` جديدة |
 
 ---
 

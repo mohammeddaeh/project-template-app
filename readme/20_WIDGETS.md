@@ -87,18 +87,17 @@ lib/
         pages/users_screen.dart
         cubits/users_cubit.dart
         widgets/users_header.dart
-  shared/
+  ui/
     widgets/
       layout/primary_button.dart
       inputs/custom_text_field.dart
       lists/pagination_builder_wdg.dart
-  presentation/
     theme/
     extensions/
     error/
     feedback/             ← AppFeedbackService + adapters
     locale/               ← LocaleSwitcher variants + context.isAr
-    shared/
+    state/
       pagination/
       connectivity/
 ```
@@ -109,4 +108,4 @@ lib/
 - [`00_START_HERE.md`](00_START_HERE.md) — onboarding + feedback/locale API
 - [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) — project structure index
 
-*Last updated: 2026-06-17 — ui/feedback/ + ui/locale/ مضافتان*
+*Last updated: 2026-09-10 — §6 مطابَقة لبنية `lib/ui/` الحالية (كانت تُظهر `lib/shared/`/`lib/presentation/` المدمَجَين فيها)*

@@ -7,7 +7,7 @@ Reusable infinite-scroll pagination for REST-backed lists.
 
 > ⬜ **ولا مرجعَ حيٌّ بالقالب.** `PaginationCubit` مبنيٌّ ومكتمل **وبلا مستهلكٍ واحد** — حُذفت معه الشريحةُ المرجعية (2026-09-08). فأولُ قائمةٍ تبنيها هي أولُ تطبيقٍ له، وخطواتُها بـ[`04_FIRST_FEATURE.md`](04_FIRST_FEATURE.md).
 >
-> الأمثلة أدناه تبقى افتراضية (`Items`/`ItemsCubit`) لأنها تشرح النمط مجرَّداً؛ عند بناء feature جديدة **اقرأ `notes/` أولاً** فهي النمط نفسه مطبَّقاً.
+> الأمثلة أدناه تبقى افتراضية (`Items`/`ItemsCubit`) لأنها تشرح النمط مجرَّداً؛ لا مرجع pagination حيّاً بالقالب اليوم — أقرب مرجع REST كامل الطبقات (بلا pagination) هو `lib/modules/multi_device/` أدناه (§3).
 
 ## 1) Components
 

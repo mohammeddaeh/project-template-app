@@ -1,4 +1,4 @@
-﻿import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/features/auth/login/presentation/cubits/login_cubit.dart';
@@ -104,7 +104,10 @@ class _LoginScreenState extends State<LoginScreen> {
             final isLoading = state is LoginLoading;
             return KeyboardDismissWidget(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -140,8 +143,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value == null || value.trim().isEmpty) {
                             return LocaleKeys.invalidEmailAddress.tr();
                           }
-                          if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,}$')
-                              .hasMatch(value.trim())) {
+                          if (!RegExp(
+                            r'^[\w-.]+@([\w-]+\.)+[\w-]{2,}$',
+                          ).hasMatch(value.trim())) {
                             return LocaleKeys.invalidEmailAddress.tr();
                           }
                           return null;
@@ -175,9 +179,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             horizontal: 0,
                             vertical: 4,
                           ),
-                          onTap: () => context.router.push(
-                            const ForgotPasswordRoute(),
-                          ),
+                          onTap: () =>
+                              context.router.push(const ForgotPasswordRoute()),
                         ),
                       ),
                       const SizedBox(height: 32),

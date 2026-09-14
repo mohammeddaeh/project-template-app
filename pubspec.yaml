@@ -22,7 +22,6 @@ dependencies:
   # rule and may not import Flutter — so it imports `bloc` itself.
   bloc: ^9.0.0
   flutter_bloc: ^9.1.1
-  rxdart: ^0.27.7
 
   #=== DATA NETWORK ===#
   retrofit: ^4.2.0
@@ -33,12 +32,10 @@ dependencies:
   # lib/modules/sync/background/sync_background_worker.dart
   workmanager: 0.9.2
   internet_connection_checker: ^3.0.1
-  awesome_dio_interceptor: ^1.2.0
 
   #=== MANAGEMENT ===#
   get_it: ^9.2.0
   injectable: ^2.4.2
-  form_builder_validators: ^11.0.0
   dartz: ^0.10.1
   intl: ^0.20.2
   uuid: ^4.4.2
@@ -162,7 +159,6 @@ flutter:
   assets:
     - assets/lottie/
     - assets/images/vectors/
-    - assets/images/test/
     - assets/images/ministry_logo/
     - assets/app_icons/
     - assets/fonts/

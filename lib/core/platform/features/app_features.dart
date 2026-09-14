@@ -159,6 +159,26 @@ abstract final class AppFeatures {
   /// this file; this one made a reader hunt.
   static const inAppUpdates = false;
 
+  /// Enable the local session lock (PIN and/or biometrics) after idle/background.
+  ///
+  /// **When true**: `SessionGuardGate` (mounted at the shell) locks the app —
+  /// without a full sign-out — once it has been backgrounded for longer than
+  /// `SessionGuardConfig.lockAfter`. Unlocking asks for the device biometric
+  /// (if [biometrics] is also `true` and enrolled) or a local PIN the user set
+  /// up on first activation. Too many wrong PIN attempts
+  /// (`SessionGuardConfig.maxWrongAttempts`) forces a real sign-out — a short
+  /// local secret cannot tolerate unlimited guesses.
+  ///
+  /// A password entered moments ago (a live login) skips the very next lock —
+  /// see `SessionGuardFreshAuth` for why a cold start with a cached token does
+  /// NOT get the same exemption.
+  ///
+  /// **When false**: `SessionGuardPlugin.initialize()` returns immediately,
+  /// nothing is registered, and `SessionGuardGate` renders its child directly
+  /// without even building a cubit. An app built without it behaves exactly as
+  /// it did before the module existed.
+  static const sessionGuard = false;
+
   // ── Firebase-backed modules ───────────────────────────────────────────────
   // All require google-services.json (Android) / GoogleService-Info.plist (iOS).
   // ModulesBootstrap calls Firebase.initializeApp() once when any are enabled.

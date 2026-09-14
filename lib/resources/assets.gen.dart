@@ -10,7 +10,6 @@ abstract final class Assets {
 final class _AssetsImages {
   const _AssetsImages();
   _AssetsImagesMinistryLogo get ministryLogo => const _AssetsImagesMinistryLogo();
-  _AssetsImagesTest get test => const _AssetsImagesTest();
   _AssetsImagesVectors get vectors => const _AssetsImagesVectors();
 }
 
@@ -22,13 +21,6 @@ final class _AssetsImagesMinistryLogo {
 
   /// `assets/images/ministry_logo/logo_MOW.svg`
   String get logoMOWSvg => 'assets/images/ministry_logo/logo_MOW.svg';
-}
-
-final class _AssetsImagesTest {
-  const _AssetsImagesTest();
-
-  /// `assets/images/test/test.png`
-  String get test => 'assets/images/test/test.png';
 }
 
 final class _AssetsImagesVectors {

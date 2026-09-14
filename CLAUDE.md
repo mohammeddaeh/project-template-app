@@ -36,6 +36,11 @@
 > feature تطبيقية بالمستودع، وتُبنى من `readme/00_START_HERE.md` لا بالنسخ من
 > شريحة قائمة. والمحذوف: `features/notes/` (٢٣ ملفاً) · `features/test/` (٢٢ شاشة
 > demo) · معرض الودجات · ٢٦٣ مفتاح ترجمة · ٥ مفاتيح صلاحيات · ٣ اختبارات مزامنة.
+>
+> ⚠️ **ومفاتيح `notes.*` الخمسة قد تعود بـ`permissions.lock.json`** رغم هذا
+> الحذف — لأن `backend_template` لا يزال يستخدمها كمثالٍ مرجعي بـwire-contract
+> تخصّ `authz` (`test/wire_contract_test.dart` يستشهد بـ`notes.update` صراحةً).
+> **هذا توليدٌ صحيح لا انحرافاً**: الملف مولَّدٌ من الباك، لا مصدر حقيقة مستقلاً.
 
 
 | المسار | ما تفعله |
@@ -117,8 +122,7 @@ modules     → Features      ❌ NEVER
 | `readme/40_SCRIPTS.md` | إضافة/تعديل سكربت |
 | `readme/00_START_HERE.md` · `01_SETUP.md` | تغيير هيكل المشروع · خطوات الإعداد · onboarding |
 | `readme/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
-| `readme/90_archive/template_enhancements.md` | إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود |
-| **`readme/91_TEMPLATE_BACKPORT.md`** | **خطةُ النقل من مشروع «الأوقاف» — يُعدَّل عمود «القالب» بنفس التغيير الذي ينقل البند، ويُضاف صفٌّ إلى §٧ كلّما كُشف عطلٌ عامٌّ لا يعالجه القالب** |
+| **`readme/41_ROADMAP.md`** | **إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود** — حلّ محلّ `90_archive/template_enhancements.md` المؤرشَف (2026-09-13) لهذا الغرض |
 | `readme/90_archive/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
 | `readme/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
 | `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
@@ -155,7 +159,7 @@ modules     → Features      ❌ NEVER
 |---|---|
 | كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `10_ARCHITECTURE.md` |
 | `✅` بجدول `90_archive/template_enhancements.md` تعني **«له مستهلك هنا»** | لا «الملف وصل». البند #19 كان `✅` بلا مستورِد واحد — صُحِّح إلى `◐` (2026-08-17) |
-| ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد، أو يُحذف. `modules/in_app_updates/` مثال حيّ: كود كامل + تبعية تُشحن، بلا علم وبلا مستدعٍ — لا يُطفأ لأنه لا يُشعَل |
+| ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد، أو يُحذف. `modules/in_app_updates/` كان المثال الحيّ لهذا حتى 2026-09-09 — وصله علَمه وسطرُ `ModulesBootstrap` وحارسُه (`AppUpdateGate`)، فراجع الجرد الحالّ بـ[`readme/10_ARCHITECTURE.md`](readme/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك» لما هو معلَّق اليوم فعلاً |
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 

@@ -68,6 +68,19 @@ jobs:
       - name: Test
         run: flutter test
 
+      # ⬜ NOT ADDED HERE, BY DESIGN: a step that hits your backend's live
+      # `GET /openapi.json` and checks it against your own field inventory —
+      # see readme/40_SCRIPTS.md §8‑ب ("نمطٌ اختياريّ — فاحصُ عقدٍ يسأل الخادمَ
+      # الحيّ"). That check inherently reads YOUR project's fields, so no
+      # working script can ship in the template itself (it would be a dead
+      # surface with nothing to check — see R28). `wire_contract_test.dart`
+      # above only catches your OWN model drifting from a fixture YOU wrote;
+      # it cannot catch the server changing a field the fixture never knew to
+      # expect. Once your project has real fields worth guarding, write your
+      # own live checker following that pattern and add it here as its own
+      # step — needs network + a valid token, so treat a non-zero "could not
+      # run" exit code as unknown, never as success.
+
       # Advisory, not a gate — and measured, not guessed: as of 2026-08-10 this
       # reports 137 of 327 files as unformatted, because the repo predates the
       # current `dart format`. Blocking on that would make every PR red on

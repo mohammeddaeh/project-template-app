@@ -9,10 +9,14 @@
 dart run scripts/<script_name>.dart
 ```
 
-يوجد حالياً **١٠ سكربتات**:
+يوجد حالياً **١٤ سكربتاً**:
 
 | السكربت | الغرض |
 |---|---|
+| **`setup_project.dart`** | **الإعداد التفاعلي الأول لمشروع جديد** — الهوية (اسم · Application ID) + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل |
+| **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً |
+| **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الثلاثة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ `10_ARCHITECTURE.md` |
+| **`audit_template.dart`** | **تدقيقٌ ذاتيّ استشاريّ للقالب** — وصل الموديولات بإقلاعها · فجوة مزامنة حرجة · مسارات بلا نقطة تنقّل ظاهرة · ملفات readme/ خارج جدول التزامن |
 | `gen_code.dart` | توليد الكود (build_runner + مفاتيح الترجمة) |
 | `build_apk.dart` | تصدير APK مع إدارة الإصدار تلقائياً |
 | `sync_flavors.dart` | إعداد/إزالة flavors (ملفات `.env` + Android productFlavors + أسماء + أيقونات + launch.json) |
@@ -172,7 +176,9 @@ assets/vectors/logo.svg         →  Assets.vectors.logoSvg
 - PNG/JPG/... بلا تعارض → `camelCase(stem)` (مثال: `banner.png` → `banner`)
 - عند تعارض الامتدادات لنفس الاسم → `camelCase(stem) + لاحقة الامتداد` (مثال: `logo.svg` + `logo.png` → `logoSvg` / `logoPng`)
 
-يحدّث تلقائياً `lib/resources/assets.dart` (barrel) و`pubspec.yaml` (يضيف أي مسار مفقود تحت `flutter: assets:`)، ويحذف ملفات قديمة (`vectors.dart`, `icons.dart`, `images.dart`) إذا وُجدت.
+يحدّث تلقائياً `lib/resources/assets.dart` (barrel) و`pubspec.yaml` — **يضيف** أي مسار مفقود تحت `flutter: assets:` **ويحذف** أي مسارٍ زائل (مجلَّدٌ فرغ من الملفات أو حُذف كلّياً منذ آخر تشغيل) داخل الكتلة المُدارة وحدها، دون لمس المسارات الثابتة `fonts/`/`translations/`/`app_icons/` — ويحذف ملفات قديمة (`vectors.dart`, `icons.dart`, `images.dart`) إذا وُجدت.
+
+> **العطل الذي أُصلح (2026-09-13)**: كان `_syncPubspec` يضيف المسارَ الناقص فقط، فحذفُ `assets/images/test/` ترك سطره بـ`pubspec.yaml` — مجلّداً غير موجودٍ يُشحَن بكل بناء بلا تحذير. الفحصُ الآن يقارن الكتلة المُدارة بما مسحه فعلاً، لا بما أُضيف تاريخياً.
 
 ---
 
@@ -330,6 +336,11 @@ dart run scripts/pull_figma.dart --all             # كل الإطارات ال�
 ⛔ **و`2` لا تُقرأ نجاحاً.** فاحصٌ لم يعمل يقول «لا أعرف» لا «سليم»، وخلطُهما
 بـCI يجعل انقطاعَ الشبكة يبدو عقداً صحيحاً.
 
+> **و`.github/workflows/ci.yml` يحمل تذكيراً بهذا النمط** (2026-09-14) —
+> تعليقٌ بعد خطوة `Test` يشرح لماذا لا سكربت جاهزاً هنا ويوجّه لإضافة خطوة
+> مستقلة عند كتابة الفاحص الفعلي. راجع [`41_ROADMAP.md`](41_ROADMAP.md) بند #05
+> لسبب اقتصار التنفيذ على تعليقٍ توجيهي لا كودٍ فعلي.
+
 ---
 
 ## 8‑ج) `gen_splash_assets.dart` — موردا إقلاع أندرويد
@@ -355,6 +366,155 @@ dart run scripts/gen_splash_assets.dart
 > **وبدّلتَ الشعار؟** بدّل الـSVG، أعد تشغيل السكربت، وحدّث `splash_background`
 > بـ`res/values/colors.xml` ليطابق أرضيةَ أوّلِ شاشةٍ يرسمها فلاتر — واختلافُ
 > اللون بينهما **وميضٌ يُرى** لا يمسكه تحليلٌ ولا اختبار.
+
+---
+
+## 8‑د) `setup_project.dart` — الإعداد التفاعلي الأول
+
+```bash
+dart run scripts/setup_project.dart
+```
+
+يُشغَّل **مرّة واحدة**، فور استنساخ مشروع جديد من هذا القالب (راجع
+[`41_ROADMAP.md`](41_ROADMAP.md) بند #01 للسياق الكامل والنقاش). تفاعليّ بالكامل:
+
+1. **الهوية**: اسم التطبيق + Application ID أساسي واحد.
+2. **الوحدات الاختيارية ذات الكلفة الخارجية فقط** — `accessControl` ·
+   `dataTransfer` · `offlineSync` · `multiDevice` · `inAppUpdates` ·
+   `crashReporting` · `analytics` · `remoteConfig` — عبر نمط جاهز (بسيط/مؤسسي)
+   أو سؤال فردي (مخصّص). **باقي الأعلام لا يُسأل عنها عمداً** — بلا كلفة خارجية،
+   فتُترك على الافتراضي وتُفعَّل لحظة الحاجة الفعلية بالكود.
+3. يكتب: `flavor_settings.json` · `android/app/build.gradle.kts`
+   (`namespace`+`applicationId`) · `ios/Runner.xcodeproj/project.pbxproj` ·
+   `ios/Runner/Info.plist` · وصف `pubspec.yaml` · أعلام `app_features.dart`.
+4. يشغّل `sync_flavors.dart` تلقائياً لتوليد الملفات المشتقّة (strings.xml لكل
+   flavor، launch.json، أيقونات) من الهوية الجديدة.
+5. يكتب `.template_manifest.json` — كل قرار وسببه، ونسخة القالب (`git rev-parse
+   --short HEAD`) وقت الإنشاء.
+6. يطبع تذكيراً واحداً لكل خيار اختير `نعم` وله كلفة تجهيز خارجية (Firebase،
+   تنسيق مع الباك...).
+7. يُشغِّل تلقائياً: `flutter pub get` → `dart analyze lib` → `flutter test` →
+   `check_structure.dart`، ويقول صراحةً إن فشل أيٌّ منها بدل الصمت.
+
+**قاعدة صارمة يتّبعها**: لا يحذف كوداً ولا تبعيةً أبداً — يبدّل قيماً فقط. كل
+قرار قابل للتراجع بسطر واحد لاحقاً، بحكم أن كل موديول أصلاً بلا كلفة عند
+إطفائه.
+
+⛔ **خارج نطاقه عمداً** (وليس سهواً): اسم حزمة Dart (`app_template` بـ
+`pubspec.yaml`) — يمسّ كل `import` بـ`lib/`، وCLAUDE.md يصفه بـ"مرّة واحدة أو
+أبداً"؛ وإعادة توليد لوحة الألوان الكاملة من لون واحد — التدرّج اليوم يدويّ
+مدروس، ولا أداة تُنتج تدرّجاً موثوقاً من قيمة واحدة. كلاهما يبقى خطوة يدوية
+موثَّقة بـ[`01_SETUP.md`](01_SETUP.md).
+
+---
+
+## 8‑هـ) `scaffold_feature.dart` — مولّد شريحة CRUD
+
+```bash
+dart run scripts/scaffold_feature.dart <feature_name>
+# مثال:
+dart run scripts/scaffold_feature.dart invoices
+```
+
+يبني شريحة CRUD كاملة تحت `lib/features/<feature_name>/` بكل الطبقات
+الموصوفة بـ[`lib/features/CLAUDE.md`](../lib/features/CLAUDE.md) §CRUD-PATTERNS
+و[`lib/core/CLAUDE.md`](../lib/core/CLAUDE.md) §API-GENERATOR — بحقلٍ تجريبي
+واحد (`title`) **يُصرَّف ويعمل فوراً**، لا حقولاً مخمَّنة لمشروعك.
+
+**ما يكتبه:**
+- ١٨ ملفاً: `domain/{entities,repositories,params,usecases}` ·
+  `data/{dtos,models,datasources,repositories}` ·
+  `presentation/{cubits,widgets,pages}`.
+- يصل الملفات المشتركة تلقائياً: سطر جديد بـ`api_urls.dart` ·
+  `injection_module.dart` (ApiService) · مساران بـ`router.dart` (قائمة
+  ونموذج) · ٥ مفاتيح ترجمة بـ`ar.json`/`en.json` (مُرتَّبة أبجدياً بعد الإضافة).
+- يشغّل `dart run scripts/gen_code.dart` تلقائياً (لازم هنا — على خلاف
+  `setup_project.dart` — لأن هذا يمسّ DI وrouter وfreezed وترجمة معاً).
+- فحص صحة نهائي: `dart analyze lib` → `flutter test` → `check_structure.dart`.
+
+**افتراض العقد الافتراضي**: صفحة الباك تحت `data.{items, page, limit, total,
+total_pages}` (نفس شكل `test/wire_contract_test.dart`). طابِقه مع باكك الفعلي
+بـ`{feature}_remote_datasource.dart` إن اختلف.
+
+⛔ **لا اختبارات مولَّدة** — قرارٌ لا سهو: اختبار CRUD حقيقي يحتاج حقولاً
+حقيقية لا `title` تجريبياً. أضفها بـ`test/features/<feature>/` بعد تعديل
+الحقول، بالاستعانة بأمثلة `auth/`.
+
+**جُرِّب فعلياً** (2026-09-14) على نسخة معزولة: شريحة `invoices` كاملة —
+`dart analyze` نظيف، ٢٨٨ اختباراً ناجحاً، صفر مخالفة `check_structure` جديدة.
+
+---
+
+## 8‑و) `audit_template.dart` — تدقيق ذاتي للقالب
+
+```bash
+dart run scripts/audit_template.dart
+```
+
+**تشخيصيٌّ استشاريّ، لا فاحص CI حاجب** (خلافاً لـ`check_structure.dart`):
+يُشغِّل آلياً ما جرى يدوياً بمحادثة تدقيق كاملة (2026-09-13/14) — راجع
+[`41_ROADMAP.md`](41_ROADMAP.md) بند #04.
+
+**أربعة فحوص:**
+1. **وصل الموديولات بإقلاعها** — لكل مجلَّد بـ`lib/modules/`، هل ملفّ
+   `*_plugin.dart`/`*_module.dart` مستورَدٌ فعلاً بـ`modules_bootstrap.dart`؟
+2. **الفجوة الحرجة** — `AppFeatures.offlineSync == true` مع صفر تنفيذ لـ
+   `SyncFeatureContractBase`. **الفحص الوحيد المؤثّر بكود الخروج**: صفرُ زيفٍ
+   إيجابيٍّ ممكنٍ فيه.
+3. **مسارات بلا نقطة تنقّل ظاهرة** — كل `@RoutePage()` يُشتقّ اسمُ مساره
+   (نمط auto_route الافتراضي: إسقاط لاحقة `Screen`/`Page` وإلحاق `Route`، أو
+   الاسم الصريح إن وُجد)، ثم يُبحث عن أي استخدامٍ آخر له بـ`lib/` غير تسجيله
+   بـ`router.dart`.
+4. **ملفات `readme/` خارج جدول التزامن** — كل ملفٍّ بجذر `readme/` (لا
+   `90_archive/`) يجب أن يُذكر بجدول «Mandatory Documentation Sync» بـ`CLAUDE.md`.
+
+⚠️ **الفحصان ٣ و٤ فحصٌ نصّيّ لا تحليلاً دلالياً** — عرضةٌ لزيفٍ إيجابي: مسارٌ
+يُركَّب كودجة مباشرة بدل `context.router.push` لن يظهر له استخدام رغم كونه
+مستهلَكاً فعلاً (مثال حقيقي وُجد أثناء البناء: `SettingsRoute`). **النتيجة
+مرشَّحٌ للمراجعة، لا حكمٌ قاطع** — راجع دائماً
+[`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك» قبل
+اتخاذ أي إجراء بناءً عليه.
+
+**جُرِّب فعلياً** (2026-09-14) على القالب نفسه — كشف الفحص ٣ صحيحاً `UserAccessRoute`
+(المسار اليتيم المُوثَّق فعلاً بـ`10_ARCHITECTURE.md`)، مؤكِّداً عمل الأداة.
+
+---
+
+## 8‑ز) `scaffold_module.dart` — مولّد موديول اختياري جديد
+
+```bash
+dart run scripts/scaffold_module.dart <module_name>
+# مثال:
+dart run scripts/scaffold_module.dart audit_log
+```
+
+يكتب الأركان الثلاثة التي يفرضها CLAUDE.md معاً دائماً لأي موديول تحت
+`lib/modules/` — نسيان أحد الثلاثة وقع تاريخياً بالقالب (موديولٌ كامل الكود
+بلا سطر `ModulesBootstrap` حتى اكتُشف لاحقاً)، والتوليد الآلي يمنعه لأنه لا
+يترك خياراً بتخطّي ركن:
+
+1. **ملفّ المدخل** `lib/modules/<name>/<name>_plugin.dart` — نمط الحراسة
+   نفسُه بكل موديول قائم (`if (!AppFeatures.x) return;` ثم تسجيل، `LogService`
+   بكل خطوة، `reset()` للاختبارات).
+2. **العلَم** — سطرٌ جديد بـ`app_features.dart` تحت "Optional modules"،
+   افتراضُه `false`.
+3. **التسجيل** — سطرٌ جديد بـ`modules_bootstrap.dart` (`if (AppFeatures.x)
+   await XPlugin.initialize(di);`)، بعد كتلة `dataTransfer` (آخر الموديولات
+   المسجَّلة، وترتيبُها غير مهمّ حسب تعليق الملف نفسه).
+4. **صفّ التوثيق** — إضافةٌ تلقائية لجدول الموديولات بـ
+   [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) (عمود Packages يبقى `TODO` —
+   يدويّ بقصد، لا شيء يعرف تبعيات موديولٍ لم يُكتب بعد).
+
+لا يمسّ DI/router/freezed/ترجمة، فلا حاجة لـ`gen_code.dart` — فقط فحص صحة
+نهائي: `dart analyze lib` → `flutter test` → `check_structure.dart`.
+
+⛔ **لا محتوى فعلي مولَّد** — قرارٌ لا سهو: كل موديول يفعل شيئاً مختلفاً كلياً
+(Firebase، قاعدة محلية، REST...)، فما يُكتب هو **الهيكل الحارس** وحده —
+تسجيلات DI الفعلية تعليقٌ `TODO` واحد بانتظارك.
+
+**جُرِّب فعلياً** (2026-09-14) على نسخة معزولة: موديول `audit_log` — الأركان
+الثلاثة صحيحة (فُحصت يدوياً)، `dart analyze` نظيف، الاختبارات كاملة ناجحة،
+صفر مخالفة `check_structure` جديدة — من أول تشغيل بلا إصلاح.
 
 ---
 
@@ -385,4 +545,4 @@ dart run scripts/gen_splash_assets.dart
 - [`11_CORE.md`](11_CORE.md) — architecture principles
 - [`12_REST_API.md`](12_REST_API.md) — REST workflow
 
-*Last updated: 2026-07-23 — أعيدت كتابة الملف بالكامل ليطابق السكربتات الفعلية الـ6 الموجودة في `scripts/` (كان يوثّق 11 سكربتاً غير موجود ويتجاهل 3 سكربتات حقيقية).*
+*Last updated: 2026-09-13 — `gen_assets.dart` صار يحذف مسارات pubspec الزائلة لا يضيف الناقص فقط (§4). 10 سكربتات موثَّقة بالفعل بـ`scripts/` (أُضيفت `gen_assets.dart` وسكربتات لاحقة بعد إعادة الكتابة الأصلية بتاريخ 2026-07-23 التي طابقت 6 فقط).*

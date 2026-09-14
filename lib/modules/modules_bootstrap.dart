@@ -11,6 +11,7 @@ import 'package:app_template/modules/in_app_updates/in_app_updates_module.dart';
 import 'package:app_template/modules/multi_device/multi_device_plugin.dart';
 import 'package:app_template/modules/push_notifications/push_notifications_module.dart';
 import 'package:app_template/modules/remote_config/remote_config_module.dart';
+import 'package:app_template/modules/session_guard/session_guard_plugin.dart';
 import 'package:app_template/modules/sync/sync_plugin.dart';
 
 /// Single, ordered activation point for ALL optional modules.
@@ -98,6 +99,9 @@ abstract final class ModulesBootstrap {
     }
     if (AppFeatures.multiDevice) {
       await MultiDevicePlugin.initialize(di);
+    }
+    if (AppFeatures.sessionGuard) {
+      await SessionGuardPlugin.initialize(di);
     }
     // **يسجّل إعداداتَه المملوكة للخادم مهمّةَ تحديثٍ بالدورة — قبل بناء
     // المحرّك.** ولا نداءَ شبكةٍ هنا: اللافتةُ تُركَّب لاحقاً بـ`AppUpdateGate`

@@ -25,7 +25,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 |------|----------------------|
 | [`12_REST_API.md`](12_REST_API.md) | REST endpoints، مسارات الاستيراد، الأخطاء الشائعة، التوليد |
 | [`13_ERROR_FLOW.md`](13_ERROR_FLOW.md) | **مسار الخطأ كاملاً عبر النصفين** — ترتيب الـinterceptors، `Failure`→`UiAction`، `error-handler.ts`، أخطاء المستخدم المتوقَّعة |
-| [`14_PAGINATION.md`](14_PAGINATION.md) | قوائم بتمرير لا نهائي — المرجع الحيّ `features/notes/` |
+| [`14_PAGINATION.md`](14_PAGINATION.md) | قوائم بتمرير لا نهائي — بلا مرجع حيّ بالقالب اليوم |
 | [`20_WIDGETS.md`](20_WIDGETS.md) | **أين** يوضع الـwidget |
 | [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) | **كيف** يُستعمل كل widget — أمثلة كاملة |
 | [`../lib/core/infra/network/NETWORK.md`](../lib/core/infra/network/NETWORK.md) | الـinterceptors، الكاش، إعادة المحاولة، `TokenRefresh`، `BaseRepository` |
@@ -37,7 +37,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 |------|----------------------|
 | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | `modules/access_control/` + `core/authz/` — الصلاحيات |
 | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | `modules/data_transfer/` — الاستيراد والتصدير |
-| [`sync.md`](90_archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
+| [`sync_design_spec.md`](90_archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
 | [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync — إعداد سريع (اقرأه أولاً) |
 | [`../lib/modules/multi_device/README.md`](../lib/modules/multi_device/README.md) | الأجهزة والجلسات النشطة |
 | `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates |
@@ -48,7 +48,6 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 |------|----------------------|
 | [`40_SCRIPTS.md`](40_SCRIPTS.md) | السكربتات، البناء والإصدار، التوليد، حلّ المشاكل |
 | [`90_archive/template_enhancements.md`](90_archive/template_enhancements.md) | خارطة تطوير القالب — جدول الحالة + تفاصيل كل بند |
-| [`00_START_HERE.md`](00_START_HERE.md) | سيناريوهات `features/test/` — قانون المرآة |
 | [`90_archive/integration_audit.md`](90_archive/integration_audit.md) | **سجلّ تاريخي** — تدقيق عقد الـwire (2026-08-11) وإصلاحه (2026-08-12) |
 | [`90_archive/template_enhancements.md`](90_archive/template_enhancements.md) | **قراءة لحظية** — انحراف القالب عن قرطاس بالاتجاهين (2026-08-17) + أولويات النقل. لا يُصان: يُعاد التدقيق ويُعاد كتابته |
 | [`90_archive/realtime_design.md`](90_archive/realtime_design.md) | **تصميم لم يُبنَ** — مزامنة الجلسات اللحظية بين الأجهزة. لا كود له بالقالب |
@@ -147,6 +146,7 @@ core/
 | `analytics/` | `analytics` | ⬜ OFF | `AnalyticsModule.initialize(di)` | firebase_analytics |
 | `remote_config/` | `remoteConfig` | ⬜ OFF | `RemoteConfigModule.initialize(di)` | firebase_remote_config |
 | `in_app_updates/` | `inAppUpdates` | ⬜ OFF | `InAppUpdatesModule.initialize(di)` بـ`ModulesBootstrap` + `AppUpdateGate` بالقشرة | in_app_update · package_info_plus · url_launcher |
+| `session_guard/` | `sessionGuard` | ⬜ OFF | `SessionGuardPlugin.initialize(di)` بـ`ModulesBootstrap` + `SessionGuardGate` بالقشرة (الأعلى بين المعلِنَين — راجع `main_shell_page.dart`) | crypto (بصمة الرقم — لا تبعية خارجية أخرى) |
 
 > **العَلَم هو العمود المهم.** الجدول السابق لم يحمله، فكان يقرأ الجميعَ كموصولين —
 > و`sync/` كان موسوماً `✅` مع «called in `main.dart`»، وهو **مطفأ** ولا يُستدعى من
@@ -203,6 +203,8 @@ core/
 | `modules/sync/domain/sync_media_catalog.dart` + `engine/media_prefetch_manager.dart` | **تنزيلُ الصور والملفّات** — الطورُ السادس موصولٌ بذيل الدورة وخارج القفل، ومسجَّلٌ بالـDI. وبلا جردِ شريحةٍ يسقط الطورُ بفحصٍ واحد (`allOf`) |
 | `modules/sync/domain/sync_job_explainer.dart` | **ماذا سيصل الخادمَ من هذا الصفّ وما الذي يحجز الباقي** — تنفّذه الشريحة، ويقرؤه من يعرض الطابور. مُصدَّرٌ وبلا منفّذ |
 | `modules/sync/domain/sync_refresh_task.dart` + `sync_hydration.dart` | عقدان مسجَّلان ومُصدَّران، والمحرّك ينادي الأوّل بذيل الدورة — **وبلا منفّذٍ بالقالب**. النمطان بـ`lib/modules/sync/SETUP.md` §3e و§3f |
+| `<feature>/data/sync/` (المنفذ الرابع بعقد الحذف — انظر §wire الحذف بالأسفل) | ⚠️ **صفر عقود منفَّذة اليوم.** المثال الوحيد (`features/notes/data/sync/`) حُذف مع تنظيف `notes/` بتاريخ 2026-09-08 — تنظيفٌ عامٌّ لا علاقة له بـsync. `getAll<SyncFeatureContractBase>()` يعيد صفراً فعلياً بكامل `lib/`، فتفعيل `AppFeatures.offlineSync` اليوم يترك التطبيق يعمل بالكامل على الشبكة **بصمت** — بلا انهيار ولا تحذير. الحالة المُحدَّثة والمرحلة المسنَدة بـ[`lib/modules/sync/PLAN.md`](../lib/modules/sync/PLAN.md) ب١٣/ب١٤ |
+| `modules/access_control/presentation/pages/user_access_screen.dart` + مسار `/users/:userId/access` | **مبنيّةٌ بالكامل ولا نقطةَ دخولٍ إليها بالقالب** (2026-09-13). تحتاج `userId` محدداً، و«من هم المستخدمون وكيف تُعرض قائمتهم» قرارٌ يخصّ كل مشروع — بناء شاشة مستخدمين هنا يعيد القالب إلى «مثال CRUD» الذي حُذف عمداً بتنظيف 2026-09-08. المشروع يضيف زرّاً من شاشة مستخدميه الخاصة: `context.router.push(UserAccessRoute(userId: id))`، محميّاً بـ`Can(permission: PermKeys.userAccessView)`. **وشاشة الأدوار المقابلة (`RolesRoute`) عامّة فعلاً ووُصلت** بـ`AccessControlSection` بشاشة الإعدادات — الفرق أن الأدوار لا تفترض شيئاً عن نموذج المستخدمين بينما هذه الشاشة تفترض وجود واحد |
 | `platform/location/device_location_service*.dart` | خدمةُ موقعٍ خلف عقد — **مشروطةٌ بـ`AppFeatures.location`** (مطفأة افتراضاً)، فبلا العلَم لا يُسجَّل شيء. وحزمةُ `geolocator` تبقى بالتبعيات: تُحذف من `pubspec.yaml` إن كان المشروع لا يحتاج موقعاً |
 | `platform/files/private_file_ingest_service.dart` | عقدُ إدخال ملفٍّ إلى التخزين الخاصّ — بلا منفّذٍ ولا مستدعٍ |
 | `foundation/utils/natural_order.dart` | ترتيبٌ طبيعيٌّ لمعرّفاتٍ مرقّمة («٩١/٢» قبل «٩١/١٠») |
@@ -237,6 +239,9 @@ di            → everything (composition root — استثناء مقصود)
 modules       → foundation + infra only (NOT Features, NOT presentation)
 Features      → foundation + infra + modules (NOT other Features)
 presentation  → foundation + infra + platform (للـ AppLocale فقط عبر locale/)
+              → استثناءٌ موثَّق: `ui/state/<module>/` يستورد `modules/<module>/`
+                نفسَه فقط — محوّل UI خاص بموديول واحد، لا وصولٌ عامّ لـ modules/.
+                المثال القائم: `ui/state/sync/**` يستورد `modules/sync/sync_plugin.dart` وحده
 
 core          → Features      NEVER (except di/)
 core          → presentation  NEVER (except di/)

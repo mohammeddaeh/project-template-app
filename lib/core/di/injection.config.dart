@@ -33,6 +33,8 @@ import 'package:app_template/core/infra/session/data_origin_guard.dart'
     as _i836;
 import 'package:app_template/core/infra/session/locale_provider_impl.dart'
     as _i259;
+import 'package:app_template/core/infra/session/session_guard_fresh_auth.dart'
+    as _i34;
 import 'package:app_template/core/infra/session/session_repository.dart'
     as _i512;
 import 'package:app_template/core/infra/session/welcome_greeting.dart' as _i312;
@@ -223,6 +225,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i27.DeviceLabelService>(() => _i27.DeviceLabelService());
     gh.lazySingleton<_i793.NavigationCubit>(() => _i793.NavigationCubit());
     gh.lazySingleton<_i466.AppTheme>(() => _i466.AppTheme());
+    gh.lazySingleton<_i34.SessionGuardFreshAuth>(
+      () => _i34.SessionGuardFreshAuth(),
+    );
     gh.lazySingleton<_i979.NetworkStateMonitor>(
       () => _i894.NetworkStateMonitorImpl(),
     );
@@ -437,11 +442,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i893.VerifyEmailUseCase>(
       () => _i893.VerifyEmailUseCase(gh<_i230.VerifyEmailRepository>()),
     );
-    gh.factory<_i139.LoginCubit>(
-      () => _i139.LoginCubit(gh<_i662.LoginUseCase>()),
-    );
     gh.factory<_i498.RegisterCubit>(
       () => _i498.RegisterCubit(gh<_i595.RegisterUseCase>()),
+    );
+    gh.factory<_i139.LoginCubit>(
+      () => _i139.LoginCubit(
+        gh<_i662.LoginUseCase>(),
+        gh<_i34.SessionGuardFreshAuth>(),
+      ),
     );
     gh.lazySingleton<_i35.SessionSyncService>(
       () => _i35.SessionSyncService(

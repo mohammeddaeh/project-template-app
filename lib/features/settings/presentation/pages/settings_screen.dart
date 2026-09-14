@@ -2,6 +2,7 @@ import 'package:app_template/ui/theme/theme_switcher.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
+import 'package:app_template/modules/access_control/presentation/widgets/access_control_section.dart';
 import 'package:app_template/modules/multi_device/presentation/widgets/devices_section.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:app_template/features/settings/presentation/cubits/font_preference_cubit.dart';
@@ -63,6 +64,9 @@ class _SettingsBody extends StatelessWidget {
         // that check, so this list never has to and the tile can never appear
         // without the dependencies behind it.
         DevicesSection(),
+        // Same guarantee, same reason: nothing when AppFeatures.accessControl
+        // is off, and hidden from an account without `roles.view` when it is on.
+        AccessControlSection(),
         _AboutSection(),
       ],
     );

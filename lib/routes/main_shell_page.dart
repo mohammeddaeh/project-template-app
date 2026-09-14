@@ -1,4 +1,4 @@
-﻿import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart';
 import 'package:app_template/features/home/presentation/pages/home_screen.dart';
@@ -7,6 +7,7 @@ import 'package:app_template/features/auth/profile/presentation/pages/profile_sc
 import 'package:app_template/features/settings/presentation/pages/settings_screen.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/in_app_updates/presentation/app_update_gate.dart';
+import 'package:app_template/modules/session_guard/presentation/widgets/session_guard_gate.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/features/home/presentation/pages/main_shell_screen.dart';
 import 'package:app_template/ui/widgets/navigation/nav_item.dart';
@@ -32,29 +33,34 @@ class MainShellPage extends StatelessWidget {
       // ⚠️ **وكلاهما ساكنٌ حتى يُوصَل**: `AppUpdateGate` يسأل الـDI عن مخزنه
       // فلا يجده والعلَمُ مطفأ، و`WelcomeAnnouncer` يقرأ رايةً **لا رافعَ لها
       // بالقالب**. فلا نداءَ شبكةٍ ولا لافتةَ من أيّهما قبل أن يُشعَل.
-      child: AppUpdateGate(
-        child: WelcomeAnnouncer(
-          child: MainShellScreen(
-            items: [
-              NavItem(
-                icon: Icons.home_outlined,
-                activeIcon: Icons.home_rounded,
-                labelKey: LocaleKeys.tabHome,
-                screenBuilder: () => const HomeScreen(),
-              ),
-              NavItem(
-                icon: Icons.person_outline_rounded,
-                activeIcon: Icons.person_rounded,
-                labelKey: LocaleKeys.tabProfile,
-                screenBuilder: () => const ProfileScreen(),
-              ),
-              NavItem(
-                icon: Icons.settings_outlined,
-                activeIcon: Icons.settings_rounded,
-                labelKey: LocaleKeys.tabSettings,
-                screenBuilder: () => const SettingsScreen(),
-              ),
-            ],
+      //
+      // و`SessionGuardGate` **الأعلى عمداً**: قفلٌ محجوبٌ خلف لافتة تحديثٍ أو
+      // ترحيبٍ يُفشل الغرض كلَّه — يجب أن يحجب كل شيءٍ آخر، لا العكس.
+      child: SessionGuardGate(
+        child: AppUpdateGate(
+          child: WelcomeAnnouncer(
+            child: MainShellScreen(
+              items: [
+                NavItem(
+                  icon: Icons.home_outlined,
+                  activeIcon: Icons.home_rounded,
+                  labelKey: LocaleKeys.tabHome,
+                  screenBuilder: () => const HomeScreen(),
+                ),
+                NavItem(
+                  icon: Icons.person_outline_rounded,
+                  activeIcon: Icons.person_rounded,
+                  labelKey: LocaleKeys.tabProfile,
+                  screenBuilder: () => const ProfileScreen(),
+                ),
+                NavItem(
+                  icon: Icons.settings_outlined,
+                  activeIcon: Icons.settings_rounded,
+                  labelKey: LocaleKeys.tabSettings,
+                  screenBuilder: () => const SettingsScreen(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

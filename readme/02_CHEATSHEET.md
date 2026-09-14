@@ -18,6 +18,8 @@
 dart run scripts/gen_code.dart                 # ★ بعد أي DI/router/API/freezed/ترجمة
 dart analyze lib                              # ★ يجب أن يكون نظيفاً قبل أي تسليم
 dart run scripts/check_structure.dart         # ★ بنية الواجهة — يفشل بمخالفة جديدة
+dart run scripts/audit_template.dart          # تدقيق استشاري — موديولات · مسارات يتيمة · توثيق
+dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الثلاثة معاً
 dart run scripts/check_wire_contract.dart     # ★ عقد المقاسم مقابل openapi الحيّ (R01)
 dart run scripts/check_wire_contract.dart --file spec.json   # مواصفة محفوظة، بلا شبكة
 flutter run --flavor dev --dart-define-from-file=.env.dev.json
@@ -28,6 +30,7 @@ flutter run --flavor dev --dart-define-from-file=.env.dev.json
 ### إعداد
 
 ```bash
+dart run scripts/setup_project.dart           # ★ أوّل أمر بمشروع جديد — الهوية + الوحدات + فحص صحة كامل
 flutter pub get
 dart run scripts/sync_flavors.dart            # .env.* + productFlavors + أيقونات + launch.json
 dart run scripts/sync_flavors.dart --reset    # إزالة الـflavors (لا يحذف .env.*)
@@ -95,6 +98,11 @@ dart run build_runner build --delete-conflicting-outputs # gen_code.dart يشم�
 > وحده يجعل المفتاح **يظهر كنصّ خام** بالواجهة. `gen_code.dart` يولّد الاثنين.
 
 ### endpoint جديد
+
+> ★ **شريحة CRUD كاملة بأمرٍ واحد**: `dart run scripts/scaffold_feature.dart <feature_name>`
+> يبني كل الطبقات أدناه دفعة واحدة (بحقلٍ تجريبي `title` تُبدّله لاحقاً) —
+> راجع [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑هـ. **الخطوات أدناه يدوية** لمن
+> يحتاج endpoint واحداً لا شريحة كاملة.
 
 ```
 1. lib/core/infra/network/rest/api_urls.dart          ← const للمسار
@@ -277,7 +285,7 @@ AppProgress.circular(value: .65, dimension: 54,
 | تجاوزات | `color` · `trackColor` · `gradient` · `strokeWidth` · `dimension` · `height` · `radius` · `padding` · `centered` · `animate` · `adaptive` |
 
 > `value: null` ⇒ غير محدّد · `value: 0.0–1.0` ⇒ محدّد ويتحرّك. نفس الويدجت.
-> التفصيل: [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §33.
+> التفصيل: [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §26.
 
 ### توسيط الأرقام — `GlyphCenter` بالشارات
 
@@ -298,7 +306,7 @@ Container(
 يُعدَّل لو تغيّر الخط.
 
 > `StepProgressIndicator` يلفّ رقمه داخلياً. التفصيل وحدودُ الاستعمال:
-> [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §36.
+> [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §27.
 
 ### حالات الشاشة — لكل حالة widget
 

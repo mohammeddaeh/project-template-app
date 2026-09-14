@@ -136,6 +136,12 @@ flutter run                 # ❌ Env.baseUrl فارغ — كل طلب يفشل 
 
 القالب يصل باسم `app_template` وهوية `com.example.app_template`.
 
+> ★ **أسرع طريق للهوية**: `dart run scripts/setup_project.dart` — يسأل عن اسم
+> التطبيق وApplication ID تفاعلياً، ويكتب كل ما يصفه §الهوية أدناه دفعة واحدة
+> (بما فيها iOS)، ثم يشغّل `sync_flavors.dart` والفحوصات النهائية تلقائياً.
+> راجع [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د. **الفقرات أدناه تشرح ما يفعله
+> يدوياً** — لمن يفضّل التحكّم اليدوي أو يريد فهم الآلية.
+
 ### الهوية
 
 ```jsonc

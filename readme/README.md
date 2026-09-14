@@ -27,6 +27,7 @@
 | الصلاحيات — `modules/access_control/` + `core/authz/` | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) |
 | الاستيراد/التصدير — `modules/data_transfer/` | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
 | السكربتات (`codegen`, `export`, `sync_*`) | [`40_SCRIPTS.md`](40_SCRIPTS.md) |
+| ★ **ماذا نضيف بعد ليسهل بناء أي تطبيق مستقبلي** — أدوات · قدرات ناقصة | [`41_ROADMAP.md`](41_ROADMAP.md) |
 | **أول يوم بالقالب** | [`00_START_HERE.md`](00_START_HERE.md) — رود ماب بخمس مراحل، كلُّ مرحلةٍ بمعيار «تمّت» |
 | تُجهّز جهازك · تجعل القالب مشروعك | [`01_SETUP.md`](01_SETUP.md) — البيئة والهوية والأيقونات والألوان، ومزالقُها |
 | ★ **نسيتَ أمراً أو مساراً أو خطوة** | [`02_CHEATSHEET.md`](02_CHEATSHEET.md) — كلُّ شيءٍ بصفحة، ابحث بـCtrl+F |
@@ -37,8 +38,8 @@
 |---|---|
 | [`90_archive/README.md`](90_archive/README.md) | **فهرسُ الأرشيف** — ما فيه ولماذا أُرشف، **وما حُذف ولم يُؤرشَف**، وسجلُّ تنظيف القالب (2026-08-19) بآثاره المفتوحة |
 | [`90_archive/integration_audit.md`](90_archive/integration_audit.md) | ✅ **سجلّ مغلق** — خمسة أعطال wire قاطعة، مُصلَحة ومثبَّتة بالطرفين. اقرأه قبل أي عمل يمسّ المصادقة أو شكل أي رد |
-| [`91_TEMPLATE_BACKPORT.md`](91_TEMPLATE_BACKPORT.md) | ★ **خطة النقل من مشروع «الأوقاف» (2026-09-08)** — خمسُ موجاتٍ مرتّبة · **§٧ جدولُ ٢٩ حالةً لم يكن القالب يعالجها** · §٨ فخاخُ المكتبات · جدولُ تتبّعٍ بعمودَي حالة. **يصف ما ليس هنا بعد** |
-| [`90_archive/template_enhancements.md`](90_archive/template_enhancements.md) | **خارطة التطوير — المصدر الوحيد.** بعمودَي حالة (قرطاس / القالب)؛ `✅` بعمود القالب تعني **«له مستهلك هنا»** لا «الملف موجود» |
+| [`90_archive/template_backport.md`](90_archive/template_backport.md) | ✅ **سجلّ مغلق (2026-09-09)** — خطة نقل ما تعلَّمه مشروع «الأوقاف»، سبع موجات، ٥١ بنداً. كلّها ✅ إلا S01 (قاعدةً لا كوداً بقصد) |
+| [`90_archive/template_enhancements.md`](90_archive/template_enhancements.md) | ⛔ **أرشيفٌ مقفَل — لا مصدر اقتراحات جديدة بعد الآن.** بعمودَي حالة (قرطاس / القالب)؛ `✅` بعمود القالب كانت تعني **«له مستهلك هنا»** لا «الملف موجود». **الاقتراحات الجديدة اليوم بـ[`41_ROADMAP.md`](41_ROADMAP.md)** |
 | [`90_archive/sync_design_spec.md`](90_archive/sync_design_spec.md) | ◐ **يصف التصميم لا الكود.** `modules/sync/` صار **يدفع ويسحب** على مثال `notes` حيّ (P0→P3)، والناقص: الملفات · Manifest · الخلفية. الحالة والمراحل: [`lib/modules/sync/PLAN.md`](../lib/modules/sync/PLAN.md) |
 | [`90_archive/realtime_design.md`](90_archive/realtime_design.md) | ❌ **غير مبنيّ** — لا `lib/modules/realtime/` أصلاً. ولا تخلطه بـ`modules/multi_device/` المبنيّ |
 | [`90_archive/sync_system_guide.md`](90_archive/sync_system_guide.md) | جولة تعريفية بالإنجليزية على موديول المزامنة — كانت بجوار الكود (`lib/modules/sync/`) |

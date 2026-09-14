@@ -239,6 +239,11 @@ void _syncPubspec(List<_FolderNode> topFolders, {required bool dryRun}) {
   for (final node in topFolders) {
     _collectLeafPaths(node, needed);
   }
+  final neededSet = needed.toSet();
+
+  final removed = _removeStaleEntries(content, neededSet, dryRun: dryRun);
+  content = removed.content;
+  changed = changed || removed.changed;
 
   for (final assetPath in needed) {
     if (content.contains('$assetPath/')) continue;
@@ -260,6 +265,54 @@ void _syncPubspec(List<_FolderNode> topFolders, {required bool dryRun}) {
   }
 
   if (changed) pubspec.writeAsStringSync(content);
+}
+
+/// يحذف مداخلَ `assets:` **الزائلة** — مجلَّدٌ مسحته `_collectTopLevel` ولم يعد
+/// يحمل ملفاً، لكن سطره بقي بـpubspec.yaml من دورة توليدٍ سابقة.
+///
+/// **يعمل داخل الكتلة المُدارة فقط** (بين علامتَي `Auto-Generated Assets` و
+/// `End of auto-generated assets`)، ويستثني مجلَّدات `_excludedFolders`
+/// (`fonts/` · `translations/` · `app_icons/`) — هذه ثابتة ولا يديرها المسح.
+class _RemovalResult {
+  _RemovalResult(this.content, this.changed);
+  final String content;
+  final bool changed;
+}
+
+_RemovalResult _removeStaleEntries(
+  String content,
+  Set<String> neededSet, {
+  required bool dryRun,
+}) {
+  final blockStart = content.indexOf('Auto-Generated Assets');
+  final blockEnd = content.indexOf('End of auto-generated assets');
+  if (blockStart == -1 || blockEnd == -1 || blockEnd < blockStart) {
+    return _RemovalResult(content, false);
+  }
+
+  final before = content.substring(0, blockStart);
+  final block = content.substring(blockStart, blockEnd);
+  final after = content.substring(blockEnd);
+
+  var changed = false;
+  final lineRe = RegExp(r'^(\s*)-\s*(assets/[^\s]+?)/\s*\r?\n', multiLine: true);
+
+  final newBlock = block.replaceAllMapped(lineRe, (m) {
+    final path = m.group(2)!;
+    final isStaticEntry =
+        _excludedFolders.any((f) => path == '$_assetsRoot/$f');
+    if (isStaticEntry || neededSet.contains(path)) return m.group(0)!;
+
+    if (dryRun) {
+      print('⚠️  Stale in pubspec: - $path/');
+      return m.group(0)!;
+    }
+    print('➖  pubspec.yaml → إزالة مدخل زائل: $path/');
+    changed = true;
+    return '';
+  });
+
+  return _RemovalResult(changed ? before + newBlock + after : content, changed);
 }
 
 void _collectLeafPaths(_FolderNode node, List<String> paths) {

@@ -283,6 +283,7 @@ abstract class  LocaleKeys {
   static const roleStaleGrants = 'roleStaleGrants';
   static const roleSystemBadge = 'roleSystemBadge';
   static const rolesEmpty = 'rolesEmpty';
+  static const rolesManageSubtitle = 'rolesManageSubtitle';
   static const rolesTitle = 'rolesTitle';
   static const rollbackApplied = 'rollbackApplied';
   static const save = 'save';
@@ -294,6 +295,15 @@ abstract class  LocaleKeys {
   static const serverUnreachable = 'serverUnreachable';
   static const serviceUnavailable = 'serviceUnavailable';
   static const sessionExpiredMessage = 'sessionExpiredMessage';
+  static const sessionGuardBiometricReason = 'sessionGuardBiometricReason';
+  static const sessionGuardConfirmPinTitle = 'sessionGuardConfirmPinTitle';
+  static const sessionGuardEnterPin = 'sessionGuardEnterPin';
+  static const sessionGuardLockedTitle = 'sessionGuardLockedTitle';
+  static const sessionGuardPinMismatch = 'sessionGuardPinMismatch';
+  static const sessionGuardSetupPinSubtitle = 'sessionGuardSetupPinSubtitle';
+  static const sessionGuardSetupPinTitle = 'sessionGuardSetupPinTitle';
+  static const sessionGuardUseBiometrics = 'sessionGuardUseBiometrics';
+  static const sessionGuardWrongPin = 'sessionGuardWrongPin';
   static const sessionRevoked = 'sessionRevoked';
   static const sessionTimedOut = 'sessionTimedOut';
   static const settings = 'settings';

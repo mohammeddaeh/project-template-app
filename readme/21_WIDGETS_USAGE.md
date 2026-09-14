@@ -37,6 +37,8 @@
 | `DividerWidget / DashedDivider / SectionTitle` | تقسيم | §23 |
 | `Spacing` | مسافات | §24 |
 | `BadgeWidget / TagWidget` | توافق | §25 |
+| `AppProgress` | تحميل | §26 |
+| `GlyphCenter` | توسيط | §27 |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 
@@ -980,5 +982,58 @@ AppLabel(labelKey: LocaleKeys.active, variant: AppLabelVariant.success)
 
 ---
 
+## §26 · AppProgress — مؤشر تحميل/تقدّم موحَّد
+
+> بديل إلزامي لـ`CircularProgressIndicator`/`LinearProgressIndicator`/`CupertinoActivityIndicator` (R35 · F35 — فاحص آلي). `value: null` ⇒ غير محدّد، `0.0–1.0` ⇒ محدّد ويتحرّك — نفس الودجة.
+
+**Parameters**
+
+| الاسم | النوع | الافتراضي | الوصف |
+|-------|-------|-----------|-------|
+| `value` | `double?` | `null` | `null` = غير محدّد |
+| `tone` | `AppProgressTone` | `brand` | `brand` · `accent` · `success` · `warning` · `danger` · `neutral` · `onBrand` |
+| `size` | `AppProgressSize` | `md` | `xs` · `sm` · `md` · `lg` (دائري فقط) |
+| `dimension` | `double?` | — | يتجاوز `size` للدائري |
+| `centered` | `bool` | `false` | يوسّط داخل الأب |
+| `center` | `Widget?` | — | محتوى وسط الدائرة (نسبة، أيقونة) |
+| `label` | `String?` | — | نص أسفل الشريط الخطي |
+
+**Usage**
+
+```dart
+const AppProgress.circular()                                  // تحميل افتراضي
+const AppProgress.circular(size: AppProgressSize.xs)           // داخل شارة أو حقل
+const AppProgress.circular(centered: true)                     // وسط الشاشة
+AppProgress.linear(value: .65, tone: AppProgressTone.accent, label: '52 / 80')
+AppProgress.circular(
+  value: .65,
+  dimension: 54,
+  center: GlyphCenter(child: Text('65%')),
+)
+```
+
+---
+
+## §27 · GlyphCenter — توسيط بصري للأرقام واللاتيني
+
+> إلزاميّ حول أي رقم/نصّ لاتيني داخل صندوقٍ مقاسُه ثابت (دائرة شارة، مربّع، صفّ بـ`height`). `Center`/`Alignment.center`/`CircleAvatar` تُوسِّط صندوق سطر الخطّ العربي عمودي الثقل، فيبدو الرقم مرتفعاً بلا `GlyphCenter`.
+
+**Usage**
+
+```dart
+Container(
+  width: 28,
+  height: 28,
+  alignment: Alignment.center,
+  decoration: const BoxDecoration(shape: BoxShape.circle),
+  child: GlyphCenter(child: Text('$n', style: context.textTheme.labelSmall)),
+)
+```
+
+⚠️ **حدّها**: داخل صندوق يلتصق بالنصّ (`Column` بلا ارتفاع ثابت) لا موضع تُزاح إليه — الإزاحة تدفع الحبر خارج حدوده هناك. التفصيل الكامل والسبب البصري: [`lib/CLAUDE.md`](../lib/CLAUDE.md) §«توسيط الأرقام».
+
+---
+
 *Phase 4 — ExpandableSection · AppListTile · StatCard · StepProgressIndicator · 2026-06-30*
 *Phase 5 — AppButton · AppLabel · FeedbackStyle · 2026-06-30*
+*Phase 6 — AppProgress · GlyphCenter · 2026-09-10*
