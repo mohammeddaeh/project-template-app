@@ -199,16 +199,41 @@ runApp( App(startAt: …) )                             ← أوّلُ إطار 
 
 ```dart
 routerConfig: _router.config(
-  deepLinkBuilder: (_) => DeepLink.single(_startRoute),
+  deepLinkBuilder: (platformLink) => resolveDeepLink(
+    initial: platformLink.initial,
+    path: platformLink.path,
+    startRoute: _startRoute,
+  ),
 )
 ```
+
+[`resolveDeepLink`](../lib/routes/deep_link_resolver.dart) (2026-09-14) دالّةٌ
+نقيّةٌ مستخرَجةٌ عمداً — قابلةٌ للاختبار المباشر
+([`test/deep_link_resolver_test.dart`](../test/deep_link_resolver_test.dart))
+بلا تركيب `App` كاملةً. قرارُها:
+
+```
+initial && (path فارغ أو "/")  →  DeepLink.single(_startRoute)   ← إقلاعٌ عاديّ، قرارُ StartupResolver يحكم
+غير ذلك                        →  DeepLink.path(path)             ← رابطٌ حقيقيّ، يُحلّ عبر شجرة router.dart بحرّاسها
+```
+
+**قبل هذا التاريخ** كان `deepLinkBuilder` يتجاهل `PlatformDeepLink` كلّياً
+ويُعيد `_startRoute` **دائماً** — فرابطُ تفعيلٍ أو دعوةٍ وصل والتطبيقُ مغلقاً
+كان يُفتَح على وجهة `StartupResolver` العادية لا وجهته، ورابطٌ يصل والتطبيقُ
+يعمل لم يكن له مسارٌ تشغيليّ أصلاً.
 
 ⚠️ **ولا `AutoRoute(initial: true)` بأيّ مسار.** `initial` يفوز على
 `deepLinkBuilder` بالإقلاع البارد، فيدخل كلُّ مستخدمٍ من وجهةٍ واحدة مهما كانت
 جلسته — عطلٌ صامت: التطبيق يعمل، لكن صاحبَ الجلسة الصالحة يُردّ إلى الدخول.
 
-والمطابقةُ بـ`_startRoute` **شاملة** بقصد: وجهةٌ جديدة تصير خطأَ ترجمةٍ هناك، لا
-سقوطاً صامتاً إلى الدخول.
+والمطابقةُ بـ`_startRoute` بحالة الإقلاع العاديّ **شاملة** بقصد: وجهةٌ جديدة
+تصير خطأَ ترجمةٍ هناك، لا سقوطاً صامتاً إلى الدخول.
+
+⚠️ **وربطُ نظام التشغيل بالرابط نفسِه (Android `intent-filter` / iOS
+Universal Links) خارج نطاق هذا التغيير** — المبنيّ هنا هو جانبُ Flutter وحده
+(تحويل `PlatformDeepLink` إلى `PageRouteInfo`)؛ تسجيلُ المخطَّط أو النطاق على
+مستوى النظام يبقى على المشروع الذي يستهلك القالب، حسب الروابط الفعلية التي
+يحتاجها.
 
 ---
 
@@ -244,7 +269,7 @@ routerConfig: _router.config(
 - [ ] `splash_background` بـ`colors.xml` = `AppColors.bgBrand`
 - [ ] `android: false` ما زال بـ`flutter_native_splash.yaml`
 - [ ] **لا `AutoRoute(initial: true)`** بـ`router.dart`
-- [ ] `deepLinkBuilder` ما زال موصولاً بـ`app.dart`
+- [ ] `deepLinkBuilder` ما زال موصولاً بـ`app.dart` عبر `resolveDeepLink`
 - [ ] المتجهتان مطابقتان لما يكتبه `gen_splash_assets.dart`
 - [ ] لا `windowFullscreen` بأي `LaunchTheme`
 - [ ] `NormalTheme.windowBackground` = `@color/splash_background` بالأربعة

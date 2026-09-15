@@ -22,6 +22,7 @@ import 'package:app_template/modules/modules_bootstrap.dart';
 import 'package:app_template/resources/assets_files.dart';
 import 'package:app_template/resources/codegen_loader.g.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
+import 'package:app_template/ui/widgets/wrappers/error_boundary.dart';
 import 'package:app_template/app.dart';
 
 void main() async {
@@ -35,6 +36,7 @@ Future<void> _bootstrap() async {
   Bloc.observer = AppBlocObserver();
   EquatableConfig.stringify = true;
   Env.init();
+  ErrorBoundary.install();
 
   // ── ثلاثةٌ مستقلّة — تُنتظر معاً لا واحدةً خلف أخرى ─────────────────────────
   //

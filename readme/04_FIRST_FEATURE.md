@@ -425,6 +425,7 @@ dart analyze lib          # ← No issues found
 [ ] 16  ar.json + en.json + codegen · analyze · test
 [ ] —   لا نصّ مكتوباً · لا لون خام · context.locale بكل build (R10·R11·R12)
 [ ] —   لا رقمَ مقاسٍ خام · الجسد داخل ResponsiveContentBox · جُرِّبت على هاتف ولوح (R37)
+[ ] —   شاشة محروسة بصلاحية؟ راجع قائمة «كل نداء بصلاحيته» بـ31_MODULE_PERMISSIONS.md §العثرة ٦   ★ يُنسى
 ```
 
 ---

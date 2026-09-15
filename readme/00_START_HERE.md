@@ -11,7 +11,7 @@
 
 | جاهز ويعمل | مطفأ ينتظرك |
 |---|---|
-| دورة حساب كاملة (`auth/`) — دخول · تسجيل · تحقّق بريد · استعادة وتغيير كلمة مرور · بروفايل | تسعة موديولات بـ`lib/modules/` — كلٌّ بعلَم واحد بـ`AppFeatures` |
+| دورة حساب كاملة (`auth/`) — دخول · تسجيل · تحقّق بريد · استعادة وتغيير كلمة مرور · بروفايل | إحدى عشر موديولاً بـ`lib/modules/` — كلٌّ بعلَم واحد بـ`AppFeatures` |
 | شبكة: Dio + Retrofit + سلسلة interceptors + مسار خطأ موحَّد | مزامنة دون اتصال · صلاحيات · استيراد/تصدير · أجهزة متعدّدة |
 | ثيم فاتح/داكن · عربي/إنجليزي · خطوط قابلة للتبديل | تحليلات · تقارير انهيار · إشعارات · تحديثات · إعدادات بعيدة |
 | DI (`injectable` + `get_it`) · تنقّل (`auto_route`) · حالة (`bloc`) | |
@@ -176,6 +176,8 @@ dart run scripts/build_apk.dart --flavor staging --mode release --bump minor
 | استيراد/تصدير | `dataTransfer` | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
 | مزامنة دون اتصال | `offlineSync` ⛔ **مطفأ** | [`lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) · [`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) |
 | أجهزة وجلسات | `multiDevice` | `lib/modules/multi_device/SETUP.md` |
+| قفل جلسة محلّي (رقم/بصمة) | `sessionGuard` | `lib/modules/session_guard/SETUP.md` |
+| مركز إشعارات داخل التطبيق | `notificationCenter` (يحتاج `pushNotifications` أيضاً) | `lib/modules/notification_center/SETUP.md` |
 | تحليلات · انهيارات · إشعارات · إعدادات بعيدة | راجع `AppFeatures` | `lib/modules/<name>/SETUP.md` |
 
 > ⚠️ **علَمٌ مُشعَل لا يكفي.** الموديول قد يحتاج نصفاً بالباك وتسجيلاً بالـDI.

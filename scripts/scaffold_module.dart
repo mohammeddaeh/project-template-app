@@ -1,11 +1,14 @@
 // ignore_for_file: avoid_print
-/// مولّد موديول اختياري جديد — يكتب الأركان الثلاثة التي يفرضها CLAUDE.md
+/// مولّد موديول اختياري جديد — يكتب الأركان الأربعة التي يفرضها CLAUDE.md
 /// معاً دائماً لأي موديول تحت `lib/modules/`: علَم بـ`AppFeatures` · سطر
-/// تسجيل بـ`ModulesBootstrap` · صفّ بجدول `10_ARCHITECTURE.md`.
+/// تسجيل بـ`ModulesBootstrap` · صفّ بجدول `10_ARCHITECTURE.md` · صفّ بجدول
+/// «الموديولات الاختيارية» بـ`readme/00_START_HERE.md`.
 ///
-/// **لماذا الثلاثة معاً بأمرٍ واحد**: نسيان أحد الأركان وقع تاريخياً بالقالب
-/// (موديولٌ كامل الكود بلا سطر `ModulesBootstrap` حتى اكتُشف لاحقاً) — التوليد
-/// الآلي يمنعه لأنه لا يترك خياراً بتخطّي ركن.
+/// **لماذا الأربعة معاً بأمرٍ واحد**: نسيان أحد الأركان وقع تاريخياً بالقالب
+/// (موديولٌ كامل الكود بلا سطر `ModulesBootstrap` حتى اكتُشف لاحقاً؛ وموديولان
+/// آخران — `session_guard`/`notification_center` — غابا عن `00_START_HERE.md`
+/// حتى اكتُشف ذلك يدوياً بعد بنائهما) — التوليد الآلي يمنعه لأنه لا يترك
+/// خياراً بتخطّي ركن.
 ///
 /// راجع `readme/41_ROADMAP.md` بند #03 للسياق الكامل.
 ///
@@ -56,6 +59,9 @@ Future<void> main(List<String> args) async {
   _section('📋  الركن ٣ — صفّ جدول 10_ARCHITECTURE.md');
   _appendArchitectureTableRow(vars);
 
+  _section('📖  الركن ٤ — صفّ جدول 00_START_HERE.md');
+  _appendStartHereRow(vars);
+
   final healthy = await _runHealthChecks();
 
   _footer(
@@ -68,9 +74,10 @@ Future<void> main(List<String> args) async {
     'التالي:\n'
     '  1. سجّل تبعيات الموديول الفعلية بـ$pluginPath (مكان TODO).\n'
     '  2. راجع صفّ 10_ARCHITECTURE.md — عمود Packages لا يزال "TODO".\n'
-    '  3. لو احتاج الموديول واجهة عرض: راجع نمط modules/multi_device/ (Widget عام\n'
+    '  3. راجع صفّ 00_START_HERE.md — عموده الأول لا يزال وصفاً عاماً.\n'
+    '  4. لو احتاج الموديول واجهة عرض: راجع نمط modules/multi_device/ (Widget عام\n'
     '     self-contained يملك cubit داخلياً — لا يستورده المستهلك أبداً).\n'
-    '  4. أضف SETUP.md بخطوات التفعيل — كل موديول قائم يحمل واحداً.\n',
+    '  5. أضف SETUP.md بخطوات التفعيل — كل موديول قائم يحمل واحداً.\n',
   );
 
   if (!healthy) exit(1);
@@ -183,7 +190,7 @@ void _appendArchitectureTableRow(Map<String, String> vars) {
     return;
   }
   const marker =
-      '| `in_app_updates/` | `inAppUpdates` | ⬜ OFF | `InAppUpdatesModule.initialize(di)` بـ`ModulesBootstrap` + `AppUpdateGate` بالقشرة | in_app_update · package_info_plus · url_launcher |';
+      '| `notification_center/` | `notificationCenter` | ⬜ OFF | `NotificationCenterPlugin.initialize(di)` بـ`ModulesBootstrap` — يستهلك بثّ `push_notifications` (`pushNotifications` يجب أن يكون مُشعلاً أيضاً)، ولا يستدعي FCM بذاته | لا تبعية خارجية إضافية |';
   final module = vars['__module__']!;
   final camel = vars['__moduleCamel__']!;
   final featurePascal = vars['__Module__']!;
@@ -198,6 +205,34 @@ void _appendArchitectureTableRow(Map<String, String> vars) {
   }
   file.writeAsStringSync(content.replaceFirst(marker, newRow));
   print('  ✓ readme/10_ARCHITECTURE.md (عمود Packages لا يزال TODO — عدّله يدوياً)');
+}
+
+/// ب٠٠_START_HERE.md هو الملف الوحيد الذي يُقال لعضو فريق جديد أن يقرأه
+/// أولاً — وجدولُ «الموديولات الاختيارية» فيه كان يتقادم صامتاً: لا شيء كان
+/// يربطه بتوليد موديولٍ جديد، فموديولان بُنيا فعلاً (`session_guard`،
+/// `notification_center`) غابا عنه حتى اكتُشف ذلك يدوياً. هذا الركن يمنع
+/// تكرارها.
+void _appendStartHereRow(Map<String, String> vars) {
+  final file = File('readme/00_START_HERE.md');
+  if (!file.existsSync()) {
+    print('  ⚠️   readme/00_START_HERE.md غير موجود — أضف الصفّ يدوياً.');
+    return;
+  }
+  const marker =
+      '| مركز إشعارات داخل التطبيق | `notificationCenter` (يحتاج `pushNotifications` أيضاً) | `lib/modules/notification_center/SETUP.md` |';
+  final module = vars['__module__']!;
+  final camel = vars['__moduleCamel__']!;
+  final newRowLine =
+      '| وُلِّد بـ`scaffold_module.dart` — صِف الموديول هنا | `$camel` | `lib/modules/$module/SETUP.md` |';
+  final newRow = '$marker\n$newRowLine';
+  final content = file.readAsStringSync();
+  if (!content.contains(marker)) {
+    print('  ⚠️   لم أجد جدول الموديولات الاختيارية بالشكل المتوقَّع — أضف الصفّ يدوياً:');
+    print('      $newRowLine');
+    return;
+  }
+  file.writeAsStringSync(content.replaceFirst(marker, newRow));
+  print('  ✓ readme/00_START_HERE.md (العمود الأول لا يزال وصفاً عاماً — عدّله يدوياً)');
 }
 
 // ── Health checks ─────────────────────────────────────────────────────────────

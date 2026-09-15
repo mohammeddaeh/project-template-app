@@ -77,6 +77,7 @@ export 'indicators/initial_loading_indicator.dart';
 export 'indicators/next_page_status.dart';
 
 // Wrappers
+export 'wrappers/error_boundary.dart';
 export 'wrappers/keyboard_dismiss_widget.dart';
 export 'wrappers/safe_area_wrapper.dart';
 export 'wrappers/system_bar_style.dart';
@@ -105,6 +106,9 @@ export 'connectivity/subtle_offline_dot.dart';
 export 'connectivity/reconnect_countdown_chip.dart';
 export 'connectivity/connectivity_overlay.dart';
 export 'connectivity/sync_progress_overlay.dart';
+
+// Dates
+export 'dates/hijri_date_text.dart';
 
 // Misc
 export 'misc/app_text.dart';

@@ -24,6 +24,7 @@ part 'sync_manager_state.dart';
 ///     SyncRunning() => const AppProgress.circular(),
 ///     SyncSuccess(:final pendingCount) => PendingChangesChip(count: pendingCount),
 ///     SyncFailedState(:final failure) => _handleFailure(failure),
+///     SyncBlocked(:final reason) => _explainReason(reason),
 ///     ConflictDetected() => ConflictResolutionSheet(state),
 ///     SyncIdle() => const SizedBox.shrink(),
 ///   },
@@ -40,11 +41,21 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
   final SyncQueueRepository _queueRepository;
 
   /// Triggers a manual sync push cycle and updates UI state.
+  ///
+  /// A refusal (`SyncBlockReason`) emits [SyncBlocked], never [SyncSuccess] —
+  /// `triggerManualSync` used to return `void`, so a blocked cycle (no
+  /// network, no session, waiting for wifi) and a completed one were
+  /// indistinguishable here: the badge said "up to date" while nothing had
+  /// run.
   Future<void> triggerSync() async {
     if (state is SyncRunning) return;
     emit(const SyncRunning());
     try {
-      await _controller.triggerManualSync();
+      final reason = await _controller.triggerManualSync();
+      if (reason != null) {
+        emit(SyncBlocked(reason: reason));
+        return;
+      }
       final pending = await _queueRepository.countPendingJobs();
       emit(SyncSuccess(
         pendingCount: pending,

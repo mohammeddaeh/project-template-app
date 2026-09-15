@@ -46,6 +46,8 @@ class _OpenGate implements SyncGate {
   @override
   Future<bool> allows({String context = 'cycle'}) async => true;
   @override
+  Future<SyncBlockReason?> check() async => null;
+  @override
   dynamic noSuchMethod(Invocation i) =>
       throw StateError('SyncGate.${i.memberName} touched');
 }

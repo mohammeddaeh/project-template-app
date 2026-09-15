@@ -150,15 +150,19 @@ Future<bool> _runCycle(String task) async {
     final controller = getIt<SyncController>();
     // **البوّابةُ تُسأل هنا كما تُسأل بالمقدّمة** — لا جلسة ⇒ لا دورة. وتوكنٌ
     // منتهٍ بالخلفية يُنتج 401 لكل صفّ، ويستهلك محاولاتِ عملٍ سليم حتى يموت.
-    // و`triggerManualSync` تسأل `SyncGate` بنفسها، فترفض بصمتٍ متى لزم.
-    await controller.triggerManualSync();
+    final reason = await controller.triggerManualSync();
 
     // **ومرفوضٌ ليس فاشلاً.** إعادةُ `false` تجعل `WorkManager` يتراجع أسّياً
     // على «لا جلسة» — وهي حالةٌ لا يُصلحها الانتظار بل دخولُ المستخدم. و`true`
     // تعني «تمّ ولا تُعده»، والدوريّةُ تعود بعد ربع ساعة على أي حال.
     //
-    // 📌 **ويكسب المشروعُ بالتمييز** متى جعل `triggerManualSync` تردّ سببَ
-    // المنع: يُسجَّل السببُ باسمه هنا، ويبقى الردُّ `true`.
+    // والسببُ يُسجَّل باسمه إن رُفضت الدورة — لا يُلقى بعد أن صار متاحاً.
+    if (reason != null) {
+      LogService.debug(
+        'Background cycle skipped — ${reason.name}.',
+        tag: 'SYNC-BG',
+      );
+    }
     return true;
   } catch (error, stackTrace) {
     LogService.error(

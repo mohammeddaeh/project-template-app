@@ -9,6 +9,18 @@
 /// PaginationCubit، الخ) لا تخمين الحقول الحقيقية لمشروعك. عدّل الحقول بعد
 /// التوليد مباشرة.
 ///
+/// **ويربط سلسلة العقد تلقائياً** (2026-09-15) — يقرأ `AppFeatures` مباشرةً،
+/// بلا سؤالٍ تفاعلي:
+/// - `offlineSync == true` ⇒ يُضيف أربعة ملفات `data/sync/` (عقد · منفّذ دفع ·
+///   ديكور · repository واعٍ بالمزامنة) — الكتابة توليدٌ آمنٌ كامل، والقراءة
+///   عبورٌ شبكي عمداً (راجع التعليق داخل الملف الرابع، وSETUP.md §3d).
+/// - `accessControl == true` ⇒ يغلّف زرّ الإضافة بـ`Can(permission:
+///   PermKeys.xCreate, ...)` (حيث `x` اسم الشريحة) — **يكسر البناء عمداً**
+///   حتى يُضاف المفتاح فعلياً بالباك ويُعاد توليد `PermKeys`؛ لا تخمين صامت
+///   لاسم مفتاح.
+/// - كلا العلَمين مطفأٌ افتراضياً ⇒ **صفر سؤال وصفر ملف إضافي**، نفس عقد كل
+///   موديول بالقالب.
+///
 /// راجع `readme/41_ROADMAP.md` بند #02 للسياق الكامل.
 ///
 /// تشغيل من جذر المشروع:
@@ -42,11 +54,48 @@ Future<void> main(List<String> args) async {
     _die('lib/features/$feature/ موجود بالفعل — احذفه أولاً إن أردت إعادة التوليد.');
   }
 
+  // ── ربط سلسلة العقد تلقائياً — راجع readme/41_ROADMAP.md بند إضافي
+  // (اقتُرح ونُفِّذ 2026-09-15) ──────────────────────────────────────────────
+  //
+  // القراءة مباشرةً من app_features.dart لا سؤالاً تفاعلياً: مشروعٌ لم يُشعل
+  // هذين العلَمين لا يرى سؤالاً ولا ملفاً إضافياً واحداً — صفر أثر، نفس عقد كل
+  // موديول بالقالب.
+  final offlineSync = _isFlagEnabled('offlineSync');
+  final accessControl = _isFlagEnabled('accessControl');
+
   _header('🏗️   scaffold_feature — إنشاء "${vars['__Feature__']}"');
+  if (offlineSync) print('  ℹ️   AppFeatures.offlineSync مُشعَل — ستُولَّد ملفات المزامنة أيضاً.');
+  if (accessControl) {
+    print('  ℹ️   AppFeatures.accessControl مُشعَل — سيُغلَّف زرّ الإضافة بصلاحية.');
+  }
+
+  vars['__AccessControlImport__'] = accessControl
+      ? "import 'package:app_template/modules/access_control/access_control_plugin.dart';\n"
+          "import 'package:app_template/resources/permission_keys.g.dart';\n"
+      : '';
+  vars['__FabWidget__'] = accessControl
+      ? 'Can(\n'
+          "          permission: PermKeys.${vars['__featureCamel__']}Create,\n"
+          '          child: FloatingActionButton(\n'
+          '            onPressed: () => _openForm(context, null),\n'
+          '            child: const Icon(Icons.add),\n'
+          '          ),\n'
+          '        )'
+      : 'FloatingActionButton(\n'
+          '          onPressed: () => _openForm(context, null),\n'
+          '          child: const Icon(Icons.add),\n'
+          '        )';
 
   _section('📁  كتابة ملفات الشريحة');
   for (final entry in _fileTemplates.entries) {
     _writeFile(_render(entry.key, vars), _render(entry.value, vars));
+  }
+
+  if (offlineSync) {
+    _section('🔄  ملفات المزامنة — AppFeatures.offlineSync');
+    for (final entry in _syncFileTemplates.entries) {
+      _writeFile(_render(entry.key, vars), _render(entry.value, vars));
+    }
   }
 
   _section('🔗  وصل الملفات المشتركة');
@@ -59,24 +108,62 @@ Future<void> main(List<String> args) async {
   _addTranslationKeys(vars, 'assets/translations/en.json', _enTranslations);
 
   await _stream('⚙️   gen_code — توليد الكود', 'dart', ['run', 'scripts/gen_code.dart']);
+  await _stream('🎨  dart format', 'dart', ['format', featureDir.path]);
 
   final healthy = await _runHealthChecks();
+
+  if (!healthy && accessControl) {
+    print(
+      '\nℹ️   فشل التحليل هنا **متوقَّعٌ ومقصود** طالما لم يُضَف بعد —\n'
+      "   PermKeys.${vars['__featureCamel__']}Create لا وجود لها قبل أن يُعلن\n"
+      '   الباك المفتاح الحقيقي ويُعاد `gen_permission_keys.dart`. هذا هو\n'
+      '   التصميم: يستحيل نسيان تغليف الزرّ بصمت — إمّا يُصرَّف بمفتاحٍ حقيقي\n'
+      '   أو لا يُصرَّف إطلاقاً.',
+    );
+  }
 
   _footer(
     healthy
         ? '✅  "${vars['__Feature__']}" جاهزة — التحليل والاختبارات نظيفة'
-        : '⚠️   الملفات كُتبت لكن فحصاً واحداً على الأقل فشل — راجع الإخراج أعلاه',
+        : accessControl
+            ? '⚠️   الملفات كُتبت — لا يُصرَّف المشروع بعد PermKeys.${vars['__featureCamel__']}Create (متوقَّع، راجع أعلاه)'
+            : '⚠️   الملفات كُتبت لكن فحصاً واحداً على الأقل فشل — راجع الإخراج أعلاه',
   );
 
-  print(
-    'التالي:\n'
-    '  1. بدّل الحقل التجريبي "title" بحقول ${vars['__Feature__']} الحقيقية —\n'
-    '     domain/entities · data/models · data/dtos · presentation/pages.\n'
-    "  2. راجع GET ApiUrls.${vars['__featureCamel__']} مقابل عقد الباك الفعلي.\n"
-    '  3. لا اختبارات مولَّدة — أضفها بـtest/features/$feature/ (راجع أمثلة auth/).\n',
-  );
+  final next = StringBuffer('التالي:\n')
+    ..write(
+      '  1. بدّل الحقل التجريبي "title" بحقول ${vars['__Feature__']} الحقيقية —\n'
+      '     domain/entities · data/models · data/dtos · presentation/pages.\n',
+    )
+    ..write("  2. راجع GET ApiUrls.${vars['__featureCamel__']} مقابل عقد الباك الفعلي.\n")
+    ..write('  3. لا اختبارات مولَّدة — أضفها بـtest/features/$feature/ (راجع أمثلة auth/).\n');
+  if (offlineSync) {
+    next.write(
+      '  4. راجع lib/features/$feature/data/sync/sync_aware_${feature}_repository.dart —\n'
+      '     الكتابة تُصفّ فعلاً، والقراءة عبورٌ شبكي عمداً (TODO داخل الملف).\n',
+    );
+  }
+  if (accessControl) {
+    next.write(
+      '  ${offlineSync ? 5 : 4}. أضف "${vars['__featureCamel__']}.create" لصلاحيات الباك ثم '
+      'dart run scripts/gen_permission_keys.dart —\n'
+      '     زرّ الإضافة لا يُصرَّف قبلها (PermKeys.${vars['__featureCamel__']}Create غير موجودة بعد).\n',
+    );
+  }
+  print(next.toString());
 
   if (!healthy) exit(1);
+}
+
+/// يقرأ `AppFeatures.<flagName>` مباشرةً من `app_features.dart` — لا استيراد
+/// نظير هذا السكربت لا يشغَّل عبر `dart run` بسياق يعرف حزمة `app_template`.
+bool _isFlagEnabled(String flagName) {
+  final file = File('lib/core/platform/features/app_features.dart');
+  if (!file.existsSync()) return false;
+  final match = RegExp(
+    'static const $flagName\\s*=\\s*(true|false)',
+  ).firstMatch(file.readAsStringSync());
+  return match?.group(1) == 'true';
 }
 
 // ── File templates ───────────────────────────────────────────────────────────
@@ -103,6 +190,18 @@ final Map<String, String> _fileTemplates = {
   'lib/features/__feature__/presentation/widgets/__feature___item_tile.dart': _itemTileTemplate,
   'lib/features/__feature__/presentation/pages/__feature___list_screen.dart': _listScreenTemplate,
   'lib/features/__feature__/presentation/pages/__feature___form_screen.dart': _formScreenTemplate,
+};
+
+/// تُكتب فقط حين `AppFeatures.offlineSync == true` — انظر `_isFlagEnabled`.
+final Map<String, String> _syncFileTemplates = {
+  'lib/features/__feature__/data/sync/__feature___feature_contract.dart':
+      _syncFeatureContractTemplate,
+  'lib/features/__feature__/data/sync/__feature___sync_executor.dart':
+      _syncExecutorTemplate,
+  'lib/features/__feature__/data/sync/__feature___sync_repository_decorator.dart':
+      _syncRepositoryDecoratorTemplate,
+  'lib/features/__feature__/data/sync/sync_aware___feature___repository.dart':
+      _syncAwareRepositoryTemplate,
 };
 
 const _entityTemplate = r'''
@@ -327,17 +426,28 @@ abstract class __Feature__ApiService {
     @Query('limit') int limit,
   );
 
+  // `idempotencyKey` اختياريّ ومُهمَل حين لا يُمرَّر — القراءة العادية
+  // (RemoteDataSource) لا تحتاجه؛ منفّذ المزامنة وحده يمرّره عند التفعيل
+  // (راجع lib/modules/sync/SETUP.md §3b). موجودٌ دائماً هنا كي لا يُعاد توليد
+  // هذا الملف لو فُعِّلت المزامنة لاحقاً.
   @POST(ApiUrls.__featureCamel__)
-  Future<HttpResponse<dynamic>> create(@Body() __Feature__RequestDto body);
+  Future<HttpResponse<dynamic>> create(
+    @Body() __Feature__RequestDto body, {
+    @Header('Idempotency-Key') String? idempotencyKey,
+  });
 
   @PUT('${ApiUrls.__featureCamel__}/{id}')
   Future<HttpResponse<dynamic>> update(
     @Path('id') String id,
-    @Body() __Feature__RequestDto body,
-  );
+    @Body() __Feature__RequestDto body, {
+    @Header('Idempotency-Key') String? idempotencyKey,
+  });
 
   @DELETE('${ApiUrls.__featureCamel__}/{id}')
-  Future<HttpResponse<dynamic>> delete(@Path('id') String id);
+  Future<HttpResponse<dynamic>> delete(
+    @Path('id') String id, {
+    @Header('Idempotency-Key') String? idempotencyKey,
+  });
 }
 ''';
 
@@ -606,7 +716,7 @@ import 'package:app_template/features/__feature__/presentation/cubits/__feature_
 import 'package:app_template/features/__feature__/presentation/widgets/__feature___item_tile.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
-import 'package:app_template/ui/widgets/widgets.dart';
+__AccessControlImport__import 'package:app_template/ui/widgets/widgets.dart';
 
 @RoutePage()
 class __Feature__ListScreen extends StatelessWidget {
@@ -618,10 +728,7 @@ class __Feature__ListScreen extends StatelessWidget {
       create: (_) => getIt<__Feature__ListCubit>(),
       child: Scaffold(
         appBar: AppBar(title: Text(LocaleKeys.__featureCamel__ListTitle.tr())),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _openForm(context, null),
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: __FabWidget__,
         body: PaginationBuilderWdg<__Feature__ListCubit, __Feature__Entity>(
           notItemsMsg: LocaleKeys.__featureCamel__Empty.tr(),
           itemWdg: (entity) => __Feature__ItemTile(
@@ -780,6 +887,288 @@ class _FormBody extends StatelessWidget {
       ),
     ),
   );
+}
+''';
+
+// ── Sync file templates — كتابةٌ فقط حين AppFeatures.offlineSync == true ──────
+// راجع lib/modules/sync/SETUP.md §3a/§3b/§3d، وreadme/41_ROADMAP.md بند #02.
+
+const _syncFeatureContractTemplate = r'''
+import 'package:get_it/get_it.dart';
+import 'package:app_template/features/__feature__/domain/entities/__feature___entity.dart';
+import 'package:app_template/features/__feature__/domain/repositories/__feature___repository.dart';
+import 'package:app_template/modules/sync/sync_plugin.dart';
+import 'package:injectable/injectable.dart';
+
+/// وُلِّد بـ`scripts/scaffold_feature.dart` — راجع `lib/modules/sync/SETUP.md`
+/// §3a. بدّل حقول `toJson`/`fromJson` حين تبدّل حقول `__Feature__Entity`
+/// الحقيقية — **يجب أن تطابق `__Feature__Model`/`__Feature__RequestDto` حرفياً**.
+@LazySingleton(as: SyncFeatureContractBase)
+class __Feature__FeatureContract extends SyncFeatureContract<__Feature__Entity> {
+  const __Feature__FeatureContract();
+
+  @override
+  String get entityName => '__feature__';
+
+  @override
+  Type get repositoryContractType => __Feature__Repository;
+
+  @override
+  Object resolveRepository(GetIt di) => di<__Feature__Repository>();
+
+  @override
+  Map<String, dynamic> toJson(__Feature__Entity entity) => {
+    'id': entity.id,
+    'title': entity.title,
+    'created_at': entity.createdAt.toIso8601String(),
+  };
+
+  @override
+  __Feature__Entity fromJson(Map<String, dynamic> json) => __Feature__Entity(
+    id: json['id']?.toString() ?? '',
+    title: json['title'] as String? ?? '',
+    createdAt:
+        DateTime.tryParse(json['created_at'] as String? ?? '') ?? DateTime(2000),
+  );
+
+  @override
+  String localIdOf(__Feature__Entity entity) => entity.id;
+}
+''';
+
+const _syncExecutorTemplate = r'''
+import 'dart:convert';
+
+import 'package:dartz/dartz.dart';
+import 'package:app_template/core/foundation/errors/failure.dart';
+import 'package:app_template/core/infra/network/rest/handle_body_response.dart';
+import 'package:app_template/features/__feature__/data/datasources/__feature___api_service.dart';
+import 'package:app_template/features/__feature__/data/dtos/__feature___request_dto.dart';
+import 'package:app_template/modules/sync/sync_plugin.dart';
+import 'package:injectable/injectable.dart';
+
+/// وُلِّد بـ`scripts/scaffold_feature.dart` — يدفع فقط (Push)، ولا ينادي أي
+/// GET إطلاقاً. راجع `lib/modules/sync/SETUP.md` §3b.
+///
+/// يعيد استعمال [HandleBodyResponse] نفسِه المستعمَل بـ
+/// `__Feature__RepositoryImpl` — نفس حدود معالجة الخطأ (409 ⇐ `ConflictFailure`
+/// عبر `FailureMapperRegistry`)، لا نسخةً موازية منها.
+@SyncExecutorFor('__feature__')
+@LazySingleton(as: SyncExecutor)
+class __Feature__SyncExecutor implements SyncExecutor {
+  const __Feature__SyncExecutor(this._apiService, this._handler);
+
+  final __Feature__ApiService _apiService;
+  final HandleBodyResponse _handler;
+
+  @override
+  String get entityName => '__feature__';
+
+  @override
+  Set<int> get supportedContractVersions => {1};
+
+  @override
+  Future<Either<Failure, SyncExecutionResult>> execute(
+    SyncQueueJob job,
+    int contractVersion,
+  ) {
+    final payload = jsonDecode(job.payloadJson) as Map<String, dynamic>;
+    final dto = __Feature__RequestDto(title: payload['title'] as String? ?? '');
+    final key = job.effectiveIdempotencyKey;
+
+    return _handler.body(() async {
+      switch (job.type) {
+        case SyncJobType.create:
+          final res = await _apiService.create(dto, idempotencyKey: key);
+          final body = res.data as Map<String, dynamic>;
+          final data = body['data'] as Map<String, dynamic>?;
+          return Right(
+            SyncExecutionResult(
+              localId: job.entityId,
+              serverId: data?['id']?.toString(),
+            ),
+          );
+        case SyncJobType.update:
+          await _apiService.update(job.entityId, dto, idempotencyKey: key);
+          return Right(SyncExecutionResult(localId: job.entityId));
+        case SyncJobType.delete:
+          await _apiService.delete(job.entityId, idempotencyKey: key);
+          return Right(SyncExecutionResult(localId: job.entityId));
+        case SyncJobType.fileUpload:
+          // __Feature__ has no attachments — this branch is unreachable
+          // because nothing here ever enqueues a fileUpload job. See
+          // lib/modules/sync/SETUP.md §3h if this feature grows attachments.
+          throw UnsupportedError('__Feature__SyncExecutor: fileUpload');
+      }
+    });
+  }
+}
+''';
+
+const _syncRepositoryDecoratorTemplate = r'''
+import 'package:get_it/get_it.dart';
+import 'package:app_template/features/__feature__/data/sync/__feature___feature_contract.dart';
+import 'package:app_template/features/__feature__/data/sync/sync_aware___feature___repository.dart';
+import 'package:app_template/features/__feature__/domain/repositories/__feature___repository.dart';
+import 'package:app_template/modules/sync/sync_plugin.dart';
+import 'package:uuid/uuid.dart';
+import 'package:injectable/injectable.dart';
+
+/// وُلِّد بـ`scripts/scaffold_feature.dart` — راجع `lib/modules/sync/SETUP.md`
+/// §3d. **إلزاميّ** طالما `AppFeatures.offlineSync == true`: بلا هذا الصفّ
+/// يبقى `__Feature__Repository` المسجَّل هو التنفيذ الشبكي المباشر، فتُفقد كل
+/// كتابةٍ بلا اتصال بدل أن تُصفّ.
+@LazySingleton(as: SyncRepositoryDecorator)
+class __Feature__SyncRepositoryDecorator implements SyncRepositoryDecorator {
+  const __Feature__SyncRepositoryDecorator();
+
+  @override
+  Future<void> decorate(GetIt getIt) async {
+    // يُحلّ **قبل** الإلغاء — راجع التحذير بـ`SETUP.md §3d` عن سبب الترتيب.
+    final inner = getIt<__Feature__Repository>();
+    await getIt.unregister<__Feature__Repository>();
+
+    getIt.registerLazySingleton<__Feature__Repository>(
+      () => SyncAware__Feature__Repository(
+        inner,
+        getIt<SyncEntityStore>(),
+        getIt<SyncWriteGateway>(),
+        getIt<Uuid>(),
+        const __Feature__FeatureContract(),
+      ),
+    );
+  }
+}
+''';
+
+const _syncAwareRepositoryTemplate = r'''
+import 'dart:convert';
+
+import 'package:dartz/dartz.dart';
+import 'package:uuid/uuid.dart';
+import 'package:app_template/core/foundation/contracts/pagination_data_entity.dart';
+import 'package:app_template/core/foundation/errors/failure.dart';
+import 'package:app_template/features/__feature__/data/sync/__feature___feature_contract.dart';
+import 'package:app_template/features/__feature__/domain/entities/__feature___entity.dart';
+import 'package:app_template/features/__feature__/domain/params/__feature___params.dart';
+import 'package:app_template/features/__feature__/domain/repositories/__feature___repository.dart';
+import 'package:app_template/modules/sync/sync_plugin.dart';
+
+/// وُلِّد بـ`scripts/scaffold_feature.dart` — راجع `lib/modules/sync/SETUP.md`
+/// §3d وبند #02 بـ`readme/41_ROADMAP.md` للسياق الكامل.
+///
+/// **الكتابة (create/update/delete) توليدٌ آمنٌ فعلاً — تُصفّ بلا اتصال.**
+///
+/// ⚠️ **والقراءة (getList) عبورٌ مباشر للشبكة عمداً، لا توليداً ناقصاً.**
+/// قراءةٌ محلّية-أولاً حقيقية (`SyncEntityStore.readTyped`) تحتاج مؤشّر
+/// ترقيمٍ يخصّ شاشتك، ولا مثال حيٍّ بالقالب اليوم يُقتدى به بثقة (المثال
+/// المرجعي `notes/` حُذف — راجع `PLAN.md` ب١٣). توليدُ ٢٢٧ سطراً بلا تحقّقٍ
+/// حقيقيّ أخطر من عدم توليدها إطلاقاً — وهو الدرس نفسه الذي وثَّقه `PLAN.md`
+/// عن توثيقٍ ادّعى اكتمالاً لم يُختبَر قطّ. أكمل هذا الجزء بنفسك حين تحدّد
+/// شكل الترقيم الحقيقي لشاشتك (`SyncTypedPage`/`SyncPageCursor`).
+class SyncAware__Feature__Repository implements __Feature__Repository {
+  const SyncAware__Feature__Repository(
+    this._inner,
+    this._entityStore,
+    this._writeGateway,
+    this._uuid,
+    this._contract,
+  );
+
+  final __Feature__Repository _inner;
+  final SyncEntityStore _entityStore;
+  final SyncWriteGateway _writeGateway;
+  final Uuid _uuid;
+  final __Feature__FeatureContract _contract;
+
+  // TODO(sync): استبدل هذا بقراءة `SyncEntityStore.readTyped` محلّية-أولاً.
+  @override
+  Future<Either<Failure, PaginationDataEntity<__Feature__Entity>>> getList(
+    Get__Feature__ListParams params,
+  ) => _inner.getList(params);
+
+  @override
+  Future<Either<Failure, __Feature__Entity>> create(
+    Create__Feature__Params params,
+  ) async {
+    final entity = __Feature__Entity(
+      id: _uuid.v4(),
+      title: params.title,
+      createdAt: DateTime.now(),
+    );
+    await _writeLocally(entity, jobType: SyncJobType.create, existingVersion: null);
+    return Right(entity);
+  }
+
+  @override
+  Future<Either<Failure, __Feature__Entity>> update(
+    Update__Feature__Params params,
+  ) async {
+    final existing = await _entityStore.getRecordByLocalId(
+      entityName: _contract.entityName,
+      localId: params.id,
+    );
+    final entity = __Feature__Entity(
+      id: params.id,
+      title: params.title,
+      createdAt: existing != null
+          ? _contract.fromJson(jsonDecode(existing.dataJson) as Map<String, dynamic>).createdAt
+          : DateTime.now(),
+    );
+    await _writeLocally(
+      entity,
+      jobType: SyncJobType.update,
+      existingVersion: existing?.version,
+      serverId: existing?.serverId,
+    );
+    return Right(entity);
+  }
+
+  @override
+  Future<Either<Failure, bool>> delete(Delete__Feature__Params params) async {
+    final existing = await _entityStore.getRecordByLocalId(
+      entityName: _contract.entityName,
+      localId: params.id,
+    );
+    await _writeGateway.write(
+      SyncWriteCommand(
+        entityName: _contract.entityName,
+        localId: params.id,
+        serverId: existing?.serverId,
+        dataJson: existing?.dataJson ?? '{}',
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        version: (existing?.version ?? 0) + 1,
+        isDeleted: true,
+        jobType: SyncJobType.delete,
+        jobPayloadJson: '{}',
+        contractVersion: 1,
+      ),
+    );
+    return const Right(true);
+  }
+
+  Future<void> _writeLocally(
+    __Feature__Entity entity, {
+    required SyncJobType jobType,
+    required int? existingVersion,
+    String? serverId,
+  }) async {
+    final dataJson = jsonEncode(_contract.toJson(entity));
+    await _writeGateway.write(
+      SyncWriteCommand(
+        entityName: _contract.entityName,
+        localId: entity.id,
+        serverId: serverId,
+        dataJson: dataJson,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        version: (existingVersion ?? 0) + 1,
+        isDeleted: false,
+        jobType: jobType,
+        jobPayloadJson: dataJson,
+        contractVersion: 1,
+      ),
+    );
+  }
 }
 ''';
 

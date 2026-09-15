@@ -20,6 +20,7 @@ import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/routes/deep_link_resolver.dart';
 import 'package:app_template/routes/router.dart';
 import 'package:app_template/routes/router.gr.dart';
 import 'package:app_template/ui/widgets/layout/flavor_banner.dart';
@@ -203,15 +204,22 @@ class _AppState extends State<App> {
               scrollBehavior: GlobalScrollBehavior(),
               // **الوجهةُ الأولى تدخل من هنا لا من `initial: true`.**
               //
-              // `deepLinkBuilder` يُنادى مرّةً بالإقلاع البارد، فيكون أوّلُ
-              // إطارٍ هو الوجهةَ الصحيحة — لا شاشةً مؤقّتة تُستبدل بعدها.
-              // و`AutoRoute(initial: true)` **يُحذف من الموجّه** لأنه يفوز على
-              // هذا؛ راجع `router.dart`.
+              // `deepLinkBuilder` يُنادى بكل رسالة رابطٍ من النظام — إقلاعاً
+              // بارداً عادياً، أو رابطاً حقيقياً عند الإقلاع أو والتطبيق يعمل
+              // أصلاً — لا مرّة واحدة فقط كما كان يُفترض سابقاً. القرار نفسه
+              // بـ`resolveDeepLink` (`routes/deep_link_resolver.dart`) كي يبقى
+              // قابلاً للاختبار بمعزل عن هذه الشجرة. و`AutoRoute(initial: true)`
+              // **يُحذف من الموجّه** لأنه يفوز على قرار الإقلاع العادي؛ راجع
+              // `router.dart`.
               routerConfig: _router.config(
                 // **وهو غيرُ ضارٍّ حين يكون التحليلُ مطفأً** — يقرأ `getIt` لحظةَ
                 // الحدث ويخرج إن لم تُسجَّل الخدمة. راجع الصنف.
                 navigatorObservers: () => [AnalyticsRouteObserver()],
-                deepLinkBuilder: (_) => DeepLink.single(_startRoute),
+                deepLinkBuilder: (platformLink) => resolveDeepLink(
+                  initial: platformLink.initial,
+                  path: platformLink.path,
+                  startRoute: _startRoute,
+                ),
               ),
               builder: (context, child) {
                 // AnnotatedRegion يُحدِّث ألوان أيقونات شريط الحالة والتنقل

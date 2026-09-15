@@ -760,8 +760,9 @@ POST /attachments                                     ← رفع، بـ Idempote
 
 ```dart
 context.read<SyncManagerCubit>().triggerSync();
-// أو مباشرةً عبر السطح العام:
-getIt<SyncController>().triggerManualSync();
+// أو مباشرةً عبر السطح العام — تُعيد `null` إن جرت الدورة، أو SyncBlockReason
+// (لا شبكة · لا جلسة · ينتظر واي‑فاي · مُعطَّل) إن رُفضت:
+final reason = await getIt<SyncController>().triggerManualSync();
 ```
 
 ### كم من العمل لم يصل السيرفر بعد؟

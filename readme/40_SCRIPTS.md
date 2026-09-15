@@ -14,8 +14,8 @@ dart run scripts/<script_name>.dart
 | السكربت | الغرض |
 |---|---|
 | **`setup_project.dart`** | **الإعداد التفاعلي الأول لمشروع جديد** — الهوية (اسم · Application ID) + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل |
-| **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً |
-| **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الثلاثة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ `10_ARCHITECTURE.md` |
+| **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً. ويربط سلسلة المزامنة/الصلاحية تلقائياً إن كانت مُشعَلة بـ`AppFeatures` |
+| **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الأربعة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ `10_ARCHITECTURE.md` · صفّ `00_START_HERE.md` |
 | **`audit_template.dart`** | **تدقيقٌ ذاتيّ استشاريّ للقالب** — وصل الموديولات بإقلاعها · فجوة مزامنة حرجة · مسارات بلا نقطة تنقّل ظاهرة · ملفات readme/ خارج جدول التزامن |
 | `gen_code.dart` | توليد الكود (build_runner + مفاتيح الترجمة) |
 | `build_apk.dart` | تصدير APK مع إدارة الإصدار تلقائياً |
@@ -440,6 +440,27 @@ total_pages}` (نفس شكل `test/wire_contract_test.dart`). طابِقه مع 
 حقيقية لا `title` تجريبياً. أضفها بـ`test/features/<feature>/` بعد تعديل
 الحقول، بالاستعانة بأمثلة `auth/`.
 
+### ربط سلسلة العقد تلقائياً (2026-09-15)
+
+يقرأ `AppFeatures` مباشرةً من `app_features.dart` — **بلا سؤالٍ تفاعلي**، فمشروعٌ
+لم يُشعل هذين العلَمين لا يرى فرقاً ولا ملفاً إضافياً واحداً:
+
+| العلَم | ما يُضاف |
+|---|---|
+| `offlineSync == true` | أربعة ملفات `data/sync/`: عقد الفيتشر (`SyncFeatureContract<Entity>` بـ`toJson/fromJson/localIdOf`) · منفّذ دفعٍ (يعيد استعمال `HandleBodyResponse` نفسه، فمعالجة الخطأ — بما فيها 409 ⇐ `ConflictFailure` — موحَّدة لا مكرَّرة) · ديكور تسجيل (§3d) · `SyncAware<Feature>Repository`. **الكتابة توليدٌ آمنٌ كامل** (تُصفّ بلا اتصال فعلاً)، **والقراءة عبورٌ شبكي عمداً** (`TODO` صريح داخل الملف) — توليد قراءةٍ محلّية-أولاً بلا مثالٍ حيٍّ يُقتدى به (حُذف `notes/`) كان سيعني ٢٢٧ سطراً غير مُتحقَّقة، وهو بالضبط الخطأ الذي يحذّر منه `PLAN.md` (توثيقٌ يدّعي اكتمالاً لم يُختبَر) |
+| `accessControl == true` | زرّ الإضافة بالقائمة يُغلَّف بـ`Can(permission: PermKeys.<feature>Create, ...)`. **يكسر البناء عمداً** حتى يُعلن الباك المفتاح فعلياً ويُعاد `gen_permission_keys.dart` — لا تخمين صامت لاسم مفتاحٍ قد يخالف ما يفرضه الباك فعلاً |
+
+⚠️ **فشل `dart analyze` بعد التوليد مع `accessControl == true` متوقَّعٌ ومقصود**
+(`PermKeys.<feature>Create` لا وجود لها بعد) — السكربت يطبع رسالةً توضّح ذلك
+صراحةً بدل تركه يبدو عطلاً بالأداة نفسها.
+
+**جُرِّب فعلياً** (2026-09-15) على نسخة معزولة بكلا العلَمين مُشعَلين: فشلٌ
+واحدٌ دقيق ومتوقَّع (`PermKeys.invoicesCreate` غير موجودة) قبل إضافة المفتاح،
+ثم بعد إضافته لـ`permissions.lock.json` وإعادة `gen_permission_keys.dart`:
+`dart analyze` نظيف · ٣٥٢ اختباراً ناجحاً · صفر مخالفة `check_structure` جديدة ·
+`dart format --set-exit-if-changed` بلا تغيير واحد (السكربت يُشغّل `dart format`
+على مجلّد الشريحة تلقائياً الآن، وقد أُضيف لهذا السبب بالضبط).
+
 **جُرِّب فعلياً** (2026-09-14) على نسخة معزولة: شريحة `invoices` كاملة —
 `dart analyze` نظيف، ٢٨٨ اختباراً ناجحاً، صفر مخالفة `check_structure` جديدة.
 
@@ -504,6 +525,12 @@ dart run scripts/scaffold_module.dart audit_log
 4. **صفّ التوثيق** — إضافةٌ تلقائية لجدول الموديولات بـ
    [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) (عمود Packages يبقى `TODO` —
    يدويّ بقصد، لا شيء يعرف تبعيات موديولٍ لم يُكتب بعد).
+5. **صفّ «أول يوم»** — إضافةٌ تلقائية لجدول «الموديولات الاختيارية» بـ
+   [`00_START_HERE.md`](00_START_HERE.md) (2026-09-15) — **الركن الرابع**،
+   أُضيف بعد أن غاب موديولان مبنيّان فعلاً (`session_guard`،
+   `notification_center`) عن هذا الجدول تحديداً حتى اكتُشف ذلك يدوياً: لا شيء
+   كان يربط توليد موديولٍ جديد بالملف الوحيد الذي يُقال لعضو فريقٍ جديد أن
+   يقرأه أولاً. العمود الأول يبقى وصفاً عاماً — يدويّ بقصد.
 
 لا يمسّ DI/router/freezed/ترجمة، فلا حاجة لـ`gen_code.dart` — فقط فحص صحة
 نهائي: `dart analyze lib` → `flutter test` → `check_structure.dart`.
@@ -512,9 +539,9 @@ dart run scripts/scaffold_module.dart audit_log
 (Firebase، قاعدة محلية، REST...)، فما يُكتب هو **الهيكل الحارس** وحده —
 تسجيلات DI الفعلية تعليقٌ `TODO` واحد بانتظارك.
 
-**جُرِّب فعلياً** (2026-09-14) على نسخة معزولة: موديول `audit_log` — الأركان
-الثلاثة صحيحة (فُحصت يدوياً)، `dart analyze` نظيف، الاختبارات كاملة ناجحة،
-صفر مخالفة `check_structure` جديدة — من أول تشغيل بلا إصلاح.
+**جُرِّب فعلياً** (آخرها 2026-09-15) على نسخة معزولة: موديول `audit_log` —
+الأركان الأربعة صحيحة (فُحصت يدوياً)، `dart analyze` نظيف، الاختبارات كاملة
+ناجحة، صفر مخالفة `check_structure` جديدة — من أول تشغيل بلا إصلاح.
 
 ---
 

@@ -233,6 +233,39 @@ class SqlSyncQueueRepository implements SyncQueueRepository {
     return (result.first['count'] as int?) ?? 0;
   }
 
+  @override
+  Future<bool> reviveJob({required String jobId}) async {
+    final db = await _database.database;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final rows = await db.query(
+      'sync_queue',
+      where: 'job_id = ? AND retry_count >= max_retries',
+      whereArgs: [jobId],
+      limit: 1,
+    );
+    if (rows.isEmpty) return false;
+    final job = _fromMap(rows.first);
+
+    await db.transaction((txn) async {
+      await txn.update(
+        'sync_queue',
+        {'retry_count': 0, 'next_retry_at': now, 'last_error': null},
+        where: 'job_id = ?',
+        whereArgs: [jobId],
+      );
+    });
+
+    // القيد نفسه الذي يعيد الصفّ إلى `getDueJobs` — بلا هذا يبقى الكيان
+    // معروضاً «فاشلاً» رغم أن العمل عاد إلى الطابور فعلياً.
+    await markEntitySyncState(
+      entityName: job.entityName,
+      localId: job.entityId,
+      status: SyncStatus.pending,
+    );
+    return true;
+  }
+
   SyncJobType _mergedType({
     required SyncJobType existingType,
     required SyncJobType incomingType,

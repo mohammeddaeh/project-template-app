@@ -277,6 +277,9 @@ class _FakeQueueRepository implements SyncQueueRepository {
     required String payloadJson,
     required int contractVersion,
   }) async {}
+
+  @override
+  Future<bool> reviveJob({required String jobId}) async => false;
 }
 
 class _CapturingLogDelegate implements LogDelegate {

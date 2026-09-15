@@ -1,5 +1,13 @@
 part of 'sync_manager_cubit.dart';
 
+/// A manual sync was refused before it started — never reachable/no session/
+/// disabled/waiting for wifi. Distinct from [SyncFailedState]: nothing ran
+/// and nothing failed, so there is no [Failure] to show — only a reason.
+final class SyncBlocked extends SyncManagerState {
+  const SyncBlocked({required this.reason});
+  final SyncBlockReason reason;
+}
+
 /// State emitted by [SyncManagerCubit].
 sealed class SyncManagerState {
   const SyncManagerState();

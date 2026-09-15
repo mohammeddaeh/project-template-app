@@ -105,10 +105,17 @@ class SyncController {
     });
   }
 
-  Future<void> triggerManualSync() async {
-    if (await _canSyncNow()) {
-      await _runCycleNow();
-    }
+  /// `null` إن جرت الدورة فعلاً؛ وإلا سببُ الرفض — راجع [SyncGate.check].
+  ///
+  /// **ولم تكن تُعيد شيئاً قبل هذا** — تستدعي `_canSyncNow()` (غلافٌ يُسقط
+  /// السبب إلى `bool`) فيصل المستخدمُ زرَّ «مزامنة الآن» ولا يرى شيئاً حين
+  /// يُرفض الطلب، ولا طريقة له ليعرف أنه بلا شبكة أو بلا جلسة أو ينتظر
+  /// واي‑فاي. الحلّ هنا: تُسأل البوّابة مباشرةً بدل الغلاف.
+  Future<SyncBlockReason?> triggerManualSync() async {
+    final reason = await _gate.check();
+    if (reason != null) return reason;
+    await _runCycleNow();
+    return null;
   }
 
   /// **لفتةُ المستخدم** — المُطلِقُ الذي يكشف تغيُّراً وقع **عند الخادم**.

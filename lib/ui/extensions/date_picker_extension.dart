@@ -3,13 +3,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/widgets.dart' show BuildContext;
+import 'package:syncfusion_flutter_core/core.dart' show HijriDateTime;
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
-enum DatePickerDisplayMode { material, calendar, sheet }
+enum DatePickerDisplayMode { material, calendar, sheet, hijriSheet }
 
 extension DatePickerContextExtension on BuildContext {
   Future<DateTime?> showDatePicker({
@@ -39,6 +40,12 @@ extension DatePickerContextExtension on BuildContext {
         );
       case DatePickerDisplayMode.sheet:
         return await _showCalendarDatePickerSheet(
+          initDate: initial,
+          minDate: minDate,
+          maxDate: maxDate,
+        );
+      case DatePickerDisplayMode.hijriSheet:
+        return await _showHijriDatePickerSheet(
           initDate: initial,
           minDate: minDate,
           maxDate: maxDate,
@@ -173,6 +180,67 @@ extension DatePickerContextExtension on BuildContext {
                         ctx,
                         date is DateTime ? date : selected,
                       );
+                    },
+                    showActionButtons: true,
+                    selectionColor: colors.primary,
+                    todayHighlightColor: colors.primary,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// نفس شكل [_showCalendarDatePickerSheet] — التقويمُ هجريٌّ وحده، والقيمةُ
+  /// المُعادة ميلاديّةٌ دائماً (`HijriDateTime.toDateTime()`) كي لا يفرّق
+  /// المستدعي بين نمطي الاختيار. راجع `readme/41_ROADMAP.md` بند #08.
+  Future<DateTime?> _showHijriDatePickerSheet({
+    DateTime? initDate,
+    DateTime? minDate,
+    DateTime? maxDate,
+  }) async {
+    final initialHijri = HijriDateTime.fromDateTime(initDate ?? DateTime.now());
+    HijriDateTime selected = initialHijri;
+    return await material.showModalBottomSheet<DateTime?>(
+      context: this,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (ctx) {
+        return material.StatefulBuilder(
+          builder: (context, setState) {
+            return material.Padding(
+              padding: material.EdgeInsets.only(
+                bottom: material.MediaQuery.of(context).viewPadding.bottom,
+              ),
+              child: material.Column(
+                mainAxisSize: material.MainAxisSize.min,
+                children: [
+                  SfHijriDateRangePicker(
+                    initialDisplayDate: initialHijri,
+                    initialSelectedDate: selected,
+                    minDate: minDate == null
+                        ? null
+                        : HijriDateTime.fromDateTime(minDate),
+                    maxDate: maxDate == null
+                        ? null
+                        : HijriDateTime.fromDateTime(maxDate),
+                    onSelectionChanged: (details) {
+                      if (details.value is HijriDateTime) {
+                        setState(() => selected = details.value as HijriDateTime);
+                      }
+                    },
+                    selectionMode: DateRangePickerSelectionMode.single,
+                    showTodayButton: true,
+                    backgroundColor: material.Theme.of(context).cardColor,
+                    cancelText: LocaleKeys.cancel.tr(),
+                    confirmText: LocaleKeys.confirm.tr(),
+                    onCancel: () => material.Navigator.pop(ctx, null),
+                    onSubmit: (date) {
+                      final chosen = date is HijriDateTime ? date : selected;
+                      material.Navigator.pop(ctx, chosen.toDateTime());
                     },
                     showActionButtons: true,
                     selectionColor: colors.primary,

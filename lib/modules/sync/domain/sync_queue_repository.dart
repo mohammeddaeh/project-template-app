@@ -43,4 +43,18 @@ abstract class SyncQueueRepository {
 
   /// Returns count of jobs in pending/retrying state.
   Future<int> countPendingJobs();
+
+  /// Resets a dead-lettered job (`retry_count >= max_retries`) so it becomes
+  /// due again.
+  ///
+  /// The only recovery path for a job whose retry budget ran out for a
+  /// *transient* reason — a maintenance window, a week in a coverage
+  /// dead-zone — rather than because the write itself is invalid. Without
+  /// this, `getDueJobs` excludes the row forever and the work it represents
+  /// is lost until someone reproduces it by hand.
+  ///
+  /// Returns `false` if no dead-lettered job matches [jobId] — reviving a job
+  /// that is still retrying, already synced, or does not exist is a no-op,
+  /// not an error.
+  Future<bool> reviveJob({required String jobId});
 }

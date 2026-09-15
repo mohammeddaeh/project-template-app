@@ -221,13 +221,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i148.HandleBodyResponse>(
       () => _i148.HandleBodyResponse(),
     );
+    gh.lazySingleton<_i34.SessionGuardFreshAuth>(
+      () => _i34.SessionGuardFreshAuth(),
+    );
     gh.lazySingleton<_i312.WelcomeGreeting>(() => _i312.WelcomeGreeting());
     gh.lazySingleton<_i27.DeviceLabelService>(() => _i27.DeviceLabelService());
     gh.lazySingleton<_i793.NavigationCubit>(() => _i793.NavigationCubit());
     gh.lazySingleton<_i466.AppTheme>(() => _i466.AppTheme());
-    gh.lazySingleton<_i34.SessionGuardFreshAuth>(
-      () => _i34.SessionGuardFreshAuth(),
-    );
     gh.lazySingleton<_i979.NetworkStateMonitor>(
       () => _i894.NetworkStateMonitorImpl(),
     );

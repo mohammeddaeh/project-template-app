@@ -81,6 +81,18 @@ jobs:
       # step — needs network + a valid token, so treat a non-zero "could not
       # run" exit code as unknown, never as success.
 
+      # ⬜ ALSO NOT ADDED HERE, BY DESIGN: `dart run scripts/gen_permission_keys.dart
+      # --verify` — the script exists and does exactly what CI would want (fails
+      # when `permissions.lock.json` has drifted from the backend's own catalog),
+      # but `--verify` needs either `--from <perms.json>` (the output of running
+      # `npm run print:permissions` INSIDE backend_template) or `--url` + `--token`
+      # against a live backend. Neither exists in this repo's checkout — same
+      # constraint as the wire-contract checker above. Once your CI checks out
+      # (or already builds) `backend_template` alongside this repo, add a step
+      # here: run its `print:permissions` script, then
+      # `dart run scripts/gen_permission_keys.dart --verify --from ../perms.json`.
+      # See readme/31_MODULE_PERMISSIONS.md §"توصيات مستقبلية" #2.
+
       # Advisory, not a gate — and measured, not guessed: as of 2026-08-10 this
       # reports 137 of 327 files as unformatted, because the repo predates the
       # current `dart format`. Blocking on that would make every PR red on

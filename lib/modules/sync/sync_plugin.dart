@@ -101,6 +101,7 @@ export 'domain/sync_entity_record.dart' show SyncEntityRecord;
 // except through `SyncController`.
 export 'domain/sync_queue_repository.dart' show SyncQueueRepository;
 export 'integration/sync_controller.dart' show SyncController;
+export 'integration/sync_gate.dart' show SyncBlockReason;
 
 // ── Attachments ──────────────────────────────────────────────────────────────
 // A feature gives itself attachments by implementing `AttachmentUploadTarget`;

@@ -221,6 +221,13 @@ abstract class  LocaleKeys {
   static const notFound = 'notFound';
   static const notPrimaryDevice = 'notPrimaryDevice';
   static const notSpecified = 'notSpecified';
+  static const notificationCenterClearAll = 'notificationCenterClearAll';
+  static const notificationCenterClearConfirmMessage = 'notificationCenterClearConfirmMessage';
+  static const notificationCenterClearConfirmTitle = 'notificationCenterClearConfirmTitle';
+  static const notificationCenterEmpty = 'notificationCenterEmpty';
+  static const notificationCenterMarkAllRead = 'notificationCenterMarkAllRead';
+  static const notificationCenterTitle = 'notificationCenterTitle';
+  static const notificationCenterUntitled = 'notificationCenterUntitled';
   static const notifications = 'notifications';
   static const offlineListHint = 'offlineListHint';
   static const optimisticUpdates = 'optimisticUpdates';

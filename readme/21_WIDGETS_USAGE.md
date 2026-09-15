@@ -39,6 +39,8 @@
 | `BadgeWidget / TagWidget` | توافق | §25 |
 | `AppProgress` | تحميل | §26 |
 | `GlyphCenter` | توسيط | §27 |
+| `HijriDateText` | تاريخ | §28 |
+| `ErrorBoundary` / `ErrorFallback` | بنية تحتية | §29 |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 
@@ -1034,6 +1036,64 @@ Container(
 
 ---
 
+## §28 · HijriDateText — تاريخ هجري
+
+> يعرض تاريخاً ميلادياً بصيغته الهجرية — مثال: «١٥ رجب ١٤٤٦» بالعربية، أو
+> «15 Rajab 1446» بالإنكليزية. يتبع لغة الواجهة تلقائياً (`context.isAr`
+> يسجّل الاعتماد على اللغة). راجع [`readme/41_ROADMAP.md`](41_ROADMAP.md)
+> بند #08 للسياق الكامل.
+
+**Usage**
+
+```dart
+HijriDateText(entity.createdAt)
+HijriDateText(entity.createdAt, style: context.textTheme.bodySmall)
+```
+
+**اختيار تاريخ بتقويم هجري** — نمطٌ رابع لـ`context.showDatePicker` القائم،
+لا ودجة منفصلة: النتيجةُ ميلاديّةٌ دائماً (`HijriDateTime.toDateTime()`) كي
+لا يفرّق المستدعي بين نمطي الاختيار.
+
+```dart
+final picked = await context.showDatePicker(
+  mode: DatePickerDisplayMode.hijriSheet,
+);
+```
+
+⚠️ **الاستيراد المباشر لا يكفي وحده**: `HijriDateX` (`toHijri`/`toHijriString`
+على `DateTime`) بـ`core/foundation/utils/hijri_date_extension.dart` — طبقةٌ
+منفصلة بلا `BuildContext`، لمن يحتاج النصّ الهجري خارج ودجة (تصدير Excel،
+سجلّ نصّي). و`HijriCalendar.language` **ثابتٌ عامٌّ بحزمة `hijri`** لا نسخيّاً؛
+كل دالّةٍ بهذه الطبقة تضبطه بنفسها قبل كل نداء — لا تتوقّع أن يبقى مضبوطاً
+من نداءٍ سابق.
+
+---
+
+## §29 · ErrorBoundary — بديل انهيار `build()`
+
+> **`ErrorBoundary` نقطة تركيب لا ودجةٌ تُستهلك بشاشة** — تُستدعى مرّةً من
+> `main.dart` قبل `runApp`، فتستبدل شاشة فلاتر الرمادية الافتراضية بـ
+> `ErrorFallback` لأي `build()` ينهار. و`ErrorFallback` مُصدَّرةٌ من الباريل
+> (F21 يُلزم بذلك) لكن لا تُبنى يدوياً بشاشة عادية — فلاتر هو من يبنيها عبر
+> `ErrorWidget.builder`. راجع [`readme/41_ROADMAP.md`](41_ROADMAP.md) بند #10
+> للسياق الكامل.
+
+**Usage** (مرّةً واحدة، بالفعل موصولة بـ`main.dart`)
+
+```dart
+ErrorBoundary.install();   // قبل runApp — انظر lib/main.dart
+```
+
+⚠️ **النطاق محدودٌ بسلوك فلاتر نفسِه لا بكودٍ هنا**: العنصر الذي ينهار بناؤه
+هو وحده الذي يُستبدل — لا الشجرة كلّها. وهي **عرضٌ فقط**؛ `FlutterError.onError`
+(ومن ثمّ `modules/crash_reporting` إن كان مفعَّلاً) يستقبل الخطأ نفسه بصرف
+النظر عمّا يُرسم. ونصّ الاستثناء الحقيقي لا يظهر إلا بـ`kDebugMode` — بالإصدار
+يظهر `LocaleKeys.unknownError` وحده.
+
+---
+
 *Phase 4 — ExpandableSection · AppListTile · StatCard · StepProgressIndicator · 2026-06-30*
 *Phase 5 — AppButton · AppLabel · FeedbackStyle · 2026-06-30*
 *Phase 6 — AppProgress · GlyphCenter · 2026-09-10*
+*Phase 7 — HijriDateText · 2026-09-14*
+*Phase 8 — ErrorBoundary · 2026-09-14*

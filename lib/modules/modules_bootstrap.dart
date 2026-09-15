@@ -9,6 +9,7 @@ import 'package:app_template/modules/crash_reporting/crash_reporting_module.dart
 import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
 import 'package:app_template/modules/in_app_updates/in_app_updates_module.dart';
 import 'package:app_template/modules/multi_device/multi_device_plugin.dart';
+import 'package:app_template/modules/notification_center/notification_center_plugin.dart';
 import 'package:app_template/modules/push_notifications/push_notifications_module.dart';
 import 'package:app_template/modules/remote_config/remote_config_module.dart';
 import 'package:app_template/modules/session_guard/session_guard_plugin.dart';
@@ -102,6 +103,11 @@ abstract final class ModulesBootstrap {
     }
     if (AppFeatures.sessionGuard) {
       await SessionGuardPlugin.initialize(di);
+    }
+    // بعد الرقم ٤ — يستهلك بثّ `PushNotificationsService` إن كان مسجَّلاً،
+    // ولا ينادي FCM بذاته أبداً.
+    if (AppFeatures.notificationCenter) {
+      await NotificationCenterPlugin.initialize(di);
     }
     // **يسجّل إعداداتَه المملوكة للخادم مهمّةَ تحديثٍ بالدورة — قبل بناء
     // المحرّك.** ولا نداءَ شبكةٍ هنا: اللافتةُ تُركَّب لاحقاً بـ`AppUpdateGate`

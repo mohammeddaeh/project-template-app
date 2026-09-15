@@ -40,7 +40,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | [`sync_design_spec.md`](90_archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
 | [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync — إعداد سريع (اقرأه أولاً) |
 | [`../lib/modules/multi_device/README.md`](../lib/modules/multi_device/README.md) | الأجهزة والجلسات النشطة |
-| `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates |
+| `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates · session_guard · notification_center |
 
 ### العمليات والخارطة
 
@@ -147,6 +147,7 @@ core/
 | `remote_config/` | `remoteConfig` | ⬜ OFF | `RemoteConfigModule.initialize(di)` | firebase_remote_config |
 | `in_app_updates/` | `inAppUpdates` | ⬜ OFF | `InAppUpdatesModule.initialize(di)` بـ`ModulesBootstrap` + `AppUpdateGate` بالقشرة | in_app_update · package_info_plus · url_launcher |
 | `session_guard/` | `sessionGuard` | ⬜ OFF | `SessionGuardPlugin.initialize(di)` بـ`ModulesBootstrap` + `SessionGuardGate` بالقشرة (الأعلى بين المعلِنَين — راجع `main_shell_page.dart`) | crypto (بصمة الرقم — لا تبعية خارجية أخرى) |
+| `notification_center/` | `notificationCenter` | ⬜ OFF | `NotificationCenterPlugin.initialize(di)` بـ`ModulesBootstrap` — يستهلك بثّ `push_notifications` (`pushNotifications` يجب أن يكون مُشعلاً أيضاً)، ولا يستدعي FCM بذاته | لا تبعية خارجية إضافية |
 
 > **العَلَم هو العمود المهم.** الجدول السابق لم يحمله، فكان يقرأ الجميعَ كموصولين —
 > و`sync/` كان موسوماً `✅` مع «called in `main.dart`»، وهو **مطفأ** ولا يُستدعى من

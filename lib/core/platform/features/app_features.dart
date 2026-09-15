@@ -179,6 +179,20 @@ abstract final class AppFeatures {
   /// it did before the module existed.
   static const sessionGuard = false;
 
+  /// Enable the in-app notification center — a screen that lists every push
+  /// notification received in the foreground, with read/unread state.
+  ///
+  /// **Layered on top of [pushNotifications], not a replacement for it.**
+  /// `NotificationCenterPlugin.initialize()` subscribes to the already-running
+  /// `PushNotificationsService.foregroundStream` and persists each event
+  /// locally; it never talks to FCM itself. If [pushNotifications] is `false`
+  /// when this is `true`, the plugin logs a warning and registers only the
+  /// (permanently empty) store — there is nothing to listen to.
+  ///
+  /// **When false**: nothing is registered, zero overhead — same contract as
+  /// every other module here.
+  static const notificationCenter = false;
+
   // ── Firebase-backed modules ───────────────────────────────────────────────
   // All require google-services.json (Android) / GoogleService-Info.plist (iOS).
   // ModulesBootstrap calls Firebase.initializeApp() once when any are enabled.
