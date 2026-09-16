@@ -138,6 +138,7 @@ modules     → Features      ❌ NEVER
 | `lib/modules/sync/LOAD_TEST_PLAN.md` | تغيير سيناريو تجريب أو محور قياس أو عتبة |
 | `lib/modules/sync/RULES.md` | **أي رقم يخرج من P8** — لا يُملأ من تقدير |
 | `readme/90_archive/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
+| **`loadtest/README.md`** | **إضافة/تعديل أي سيناريو k6 بـ`loadtest/k6/`** — سطرٌ بجدول «السيناريوهات الموجودة» لكل ملف جديد، بنفس الـcommit |
 
 > **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** الأربعة الأخيرة كانت خارجه حتى
 > 2026-08-17، واثنان منها انحرفا فعلاً. الفهرس بـ[`readme/README.md`](readme/README.md)
