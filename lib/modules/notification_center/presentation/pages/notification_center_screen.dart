@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/notification_center/domain/notification_center_item.dart';
 import 'package:app_template/modules/notification_center/presentation/cubits/notification_center_cubit.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -37,8 +40,34 @@ class NotificationCenterScreen extends StatelessWidget {
   }
 }
 
-class _NotificationCenterView extends StatelessWidget {
+class _NotificationCenterView extends StatefulWidget {
   const _NotificationCenterView();
+
+  @override
+  State<_NotificationCenterView> createState() => _NotificationCenterViewState();
+}
+
+class _NotificationCenterViewState extends State<_NotificationCenterView> {
+  StreamSubscription<void>? _persistFailureSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    // ضغطة «تعليم الكل مقروء» أو «مسح الكل» كانت لا تُظهر شيئاً حين يفشل
+    // الحفظ على القرص — التغيير يبدو نافذاً بالواجهة (تفاؤلياً) ثم يضيع
+    // بصمتٍ عند إعادة التشغيل. راجع `NotificationCenterCubit.persistFailures`.
+    _persistFailureSubscription =
+        context.read<NotificationCenterCubit>().persistFailures.listen((_) {
+      if (!mounted) return;
+      context.feedback.error(LocaleKeys.cacheError.tr());
+    });
+  }
+
+  @override
+  void dispose() {
+    unawaited(_persistFailureSubscription?.cancel());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

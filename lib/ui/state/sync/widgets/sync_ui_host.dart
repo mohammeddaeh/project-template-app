@@ -1,5 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/core/foundation/errors/failure.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/error/failure_ui_mapper.dart';
+import 'package:app_template/ui/error/ui_action.dart';
 
 import '../offline_ux_cubit.dart';
 import '../sync_manager_cubit.dart';
@@ -86,17 +91,7 @@ class _SyncUiHostState extends State<SyncUiHost> {
         _showConflictSheet(context, state);
 
       case SyncFailedState(:final failure) when widget.showErrorSnackBar:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Sync failed: ${failure.diagnosticMessage ?? 'unknown error'}'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            action: SnackBarAction(
-              label: 'Retry',
-              textColor: Theme.of(context).colorScheme.onError,
-              onPressed: () => context.read<SyncManagerCubit>().triggerSync(),
-            ),
-          ),
-        );
+        _showFailureSnackBar(context, failure);
 
       case SyncSuccess():
         context.read<OfflineUxCubit>().refresh();
@@ -104,6 +99,28 @@ class _SyncUiHostState extends State<SyncUiHost> {
       default:
         break;
     }
+  }
+
+  /// عرضُ [failure] يمرّ بـ[FailureUiMapper] لا بحقل `diagnosticMessage`
+  /// مباشرةً — ذاك الحقل نصٌّ تقنيٌّ خامٌ **للتشخيص فقط** (راجع تحذير
+  /// `failure.dart` على تعريفه)، وكان يصل المستخدمَ حرفياً وبالإنجليزية غير
+  /// المترجَمة.
+  void _showFailureSnackBar(BuildContext context, Failure failure) {
+    final action = FailureUiMapper.toAction(failure);
+    if (action is! ShowError) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(action.message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+        action: action.canRetry
+            ? SnackBarAction(
+                label: LocaleKeys.retry.tr(),
+                textColor: Theme.of(context).colorScheme.onError,
+                onPressed: () => context.read<SyncManagerCubit>().triggerSync(),
+              )
+            : null,
+      ),
+    );
   }
 
   void _handleOfflineUxState(BuildContext context, OfflineUxState state) {

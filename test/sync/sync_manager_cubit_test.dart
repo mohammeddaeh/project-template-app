@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/modules/sync/sync_plugin.dart';
 import 'package:app_template/ui/state/sync/sync_manager_cubit.dart';
 
@@ -17,6 +18,10 @@ class _FakeSyncController implements SyncController {
   Future<void> dispose() async {}
   @override
   Future<void> checkIfStale() async {}
+
+  // لا مُطلِقَ تلقائيّاً بهذا الفاهم — يكفي stream فارغ لن يُبثّ منه شيء.
+  @override
+  Stream<Failure> get errorStream => const Stream.empty();
 }
 
 class _FakeQueueRepository implements SyncQueueRepository {

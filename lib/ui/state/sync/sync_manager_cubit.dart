@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -35,10 +37,18 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
   SyncManagerCubit(
     this._controller,
     this._queueRepository,
-  ) : super(const SyncIdle());
+  ) : super(const SyncIdle()) {
+    // المُطلِقات التلقائية (اتصالٌ يعود · مؤقّتٌ دوري · لفتةُ مستخدم) لا مستدعيَ
+    // لها يلتقط استثناءها كما يفعل `triggerSync` — فتصل هنا عبر `errorStream`
+    // بدل أن تسقط صامتة. راجع `SyncController._runCycleGuarded`.
+    _errorSubscription = _controller.errorStream.listen(
+      (failure) => emit(SyncFailedState(failure: failure)),
+    );
+  }
 
   final SyncController _controller;
   final SyncQueueRepository _queueRepository;
+  late final StreamSubscription<Failure> _errorSubscription;
 
   /// Triggers a manual sync push cycle and updates UI state.
   ///
@@ -63,15 +73,22 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
       ));
     } catch (e, st) {
       LogService.error('SyncManagerCubit error', tag: 'SYNC', error: e, stackTrace: st);
-      emit(SyncFailedState(failure: UnknownFailure(message: e.toString())));
+      // النصّ الخام يبقى بالسطر أعلاه (للتشخيص) فقط — `UnknownFailure.message`
+      // هو ما يعرضه `FailureUiMapper` حرفياً للمستخدم حين لا يكون فارغاً، فتمريرُ
+      // `e.toString()` هنا كان يسرّب استثناءً تقنياً خاماً غير مترجَم للواجهة.
+      emit(const SyncFailedState(failure: UnknownFailure()));
     }
   }
 
   /// Refreshes the pending count (e.g., after a local write).
   Future<void> refreshPendingCount() async {
-    final pending = await _queueRepository.countPendingJobs();
-    if (state is! SyncRunning) {
-      emit(SyncSuccess(pendingCount: pending));
+    try {
+      final pending = await _queueRepository.countPendingJobs();
+      if (state is! SyncRunning) {
+        emit(SyncSuccess(pendingCount: pending));
+      }
+    } catch (e, st) {
+      LogService.error('SyncManagerCubit refreshPendingCount error', tag: 'SYNC', error: e, stackTrace: st);
     }
   }
 
@@ -92,4 +109,10 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
   }
 
   void resetToIdle() => emit(const SyncIdle());
+
+  @override
+  Future<void> close() {
+    unawaited(_errorSubscription.cancel());
+    return super.close();
+  }
 }

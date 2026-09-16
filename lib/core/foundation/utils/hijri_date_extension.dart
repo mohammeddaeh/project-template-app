@@ -7,7 +7,7 @@ import 'package:hijri/hijri_calendar.dart';
 /// ضبطه **قبل** كل استدعاء لا مرّةً عند الإقلاع، وإلا بقيت النتيجة بلغة آخر
 /// نداءٍ من أي مكانٍ بالتطبيق. لهذا كل دالّةٍ هنا تأخذ [language] صراحةً
 /// وتضبطه بنفسها — لا قراءة `context.locale` مباشرةً هنا (`foundation/` لا
-/// تعرف Flutter أصلاً)؛ تلك مسؤولية الطبقة التي تستدعيها (`HijriDateText`).
+/// تعرف Flutter أصلاً)؛ تلك مسؤولية الطبقة التي تستدعيها (`AppDateText`).
 extension HijriDateX on DateTime {
   /// [language] — `'ar'` أو `'en'` (القيمتان اللتان تدعمهما الحزمة افتراضياً).
   HijriCalendar toHijri({String language = 'ar'}) {

@@ -108,7 +108,7 @@ export 'connectivity/connectivity_overlay.dart';
 export 'connectivity/sync_progress_overlay.dart';
 
 // Dates
-export 'dates/hijri_date_text.dart';
+export 'dates/app_date_text.dart';
 
 // Misc
 export 'misc/app_text.dart';

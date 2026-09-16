@@ -164,6 +164,8 @@ options.headers['Accept-language'] = _localeProvider.languageCode;
 | **الـrepositories لا تكتب try/catch** | `handle()` هو الحدّ. استثناء يُلتقط يدوياً يفوّت `FailureMapperRegistry` فيصل الشاشةَ `UnknownFailure` بدل نوع معروف |
 | **الباك لا يبني جسم خطأ يدوياً** | `res.status(x).json(...)` داخل controller يتخطّى الترجمة والتسجيل ومغلّف `data` معاً |
 | **رسالة الخطأ ليست عقداً** — العقد `data.message_key` | النصّ يتغيّر بأي إعادة صياغة، والفرع المبني عليه ينكسر باللغة التي لم يجرّبها أحد |
+| **لا widget يقرأ `failure.diagnosticMessage`** | ذاك الحقل **للتشخيص فقط** (تحذيرٌ صريح على تعريفه بـ`failure.dart`). وقع فعلاً بـ`SyncUiHost._handleSyncManagerState` (2026-09-15): سناك بار يعرض `diagnosticMessage` مباشرةً — نصٌّ إنجليزيٌّ غير مترجَم، متجاوزاً `FailureUiMapper` كليّاً. أُصلح بتمرير الفشل عبر `FailureUiMapper.toAction` كأي مكانٍ آخر |
+| **حقل `message` بـ`UnknownFailure`/`CacheFailure` ليس مكان `e.toString()`** | `FailureUiMapper` يعرض ذاك الحقل **حرفياً** حين لا يكون فارغاً — فتمريرُ نصّ استثناءٍ خام إليه يسرّبه للمستخدم حتى وهو يمرّ بالمسار «الصحيح». وقع فعلاً بـ`SyncManagerCubit.triggerSync` (2026-09-15): `UnknownFailure(message: e.toString())`. النصّ التشخيصي مكانه `LogService.error` وحده؛ الحقل يُترك فارغاً ليسقط لمفتاح الترجمة العام |
 
 ---
 

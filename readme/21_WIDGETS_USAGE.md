@@ -39,7 +39,7 @@
 | `BadgeWidget / TagWidget` | توافق | §25 |
 | `AppProgress` | تحميل | §26 |
 | `GlyphCenter` | توسيط | §27 |
-| `HijriDateText` | تاريخ | §28 |
+| `AppDateText` | تاريخ | §28 |
 | `ErrorBoundary` / `ErrorFallback` | بنية تحتية | §29 |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
@@ -1036,19 +1036,55 @@ Container(
 
 ---
 
-## §28 · HijriDateText — تاريخ هجري
+## §28 · AppDateText — عرض التاريخ الوحيد (هجري · ميلادي · الاثنان)
 
-> يعرض تاريخاً ميلادياً بصيغته الهجرية — مثال: «١٥ رجب ١٤٤٦» بالعربية، أو
-> «15 Rajab 1446» بالإنكليزية. يتبع لغة الواجهة تلقائياً (`context.isAr`
-> يسجّل الاعتماد على اللغة). راجع [`readme/41_ROADMAP.md`](41_ROADMAP.md)
-> بند #08 للسياق الكامل.
+> ودجة التاريخ **الوحيدة** بالتطبيق — بديل `HijriDateText` القديم (كان هجرياً
+> صرفاً، بلا خيارات). كل محور عرضٍ وسيطٌ: أيّ تقويم، تخطيطهما عند الاثنين (فوق
+> بعضٍ أو بسطرٍ واحد بلا قطع نصّ أبداً)، صيغة الشهر (رقماً/مختصراً/كاملاً)،
+> واللغة (والأرقام معها). راجع [`readme/41_ROADMAP.md`](41_ROADMAP.md) بند
+> #08 للسياق الكامل. **عمداً بلا محاورَ لم تُطلب** — لا ترتيب تقويمين قابلٍ
+> للتبديل، لا صيغة سنة، لا اسم يوم، لا نظام أرقام مستقلّ عن اللغة: كل محورٍ
+> هنا طُلب صراحةً، لا «قد يُحتاج لاحقاً».
 
 **Usage**
 
 ```dart
-HijriDateText(entity.createdAt)
-HijriDateText(entity.createdAt, style: context.textTheme.bodySmall)
+// هجريّ وحده — الافتراضي
+AppDateText(entity.createdAt)
+
+// ميلاديّ وحده
+AppDateText(entity.createdAt, calendar: AppDateCalendar.gregorian)
+
+// الاثنان معاً، فوق بعض — الهجريّ أوّلاً دوماً
+AppDateText(entity.createdAt, calendar: AppDateCalendar.both)
+
+// الاثنان معاً بسطرٍ واحد — يتمدّد ويلتفّ، لا يُقطع أبداً
+AppDateText(
+  entity.createdAt,
+  calendar: AppDateCalendar.both,
+  layout: AppDateLayout.inline,
+)
+
+// رقماً صرفاً بفاصلة مخصّصة — لجدول أو تصدير
+AppDateText(
+  entity.createdAt,
+  monthFormat: AppDateMonthFormat.numeric,
+  partSeparator: '-',
+)
 ```
+
+| الوسيط | الخيارات | الافتراضي |
+|---|---|---|
+| `calendar` | `hijri` · `gregorian` · `both` | `hijri` |
+| `layout` (عند `both`) | `stacked` (فوق بعض، الهجريّ أوّلاً) · `inline` (سطرٌ واحد، لا قطع) | `stacked` |
+| `monthFormat` | `numeric` · `nameShort` · `nameFull` | `nameFull` |
+| `language` | `auto` (يتبع `context.isAr`، ويقرّر معها الأرقام: شرقية بالعربية، غربية بالإنكليزية) · `arabic` · `english` | `auto` |
+| `partSeparator` | أيّ نصّ — بصيغة `numeric` فقط | `'/'` |
+| `calendarSeparator` | أيّ نصّ — بتخطيط `inline` فقط | `'  •  '` |
+| `style` | — | `context.textTheme.bodyMedium` |
+
+⚠️ **`partSeparator` لا يعمل إلا بصيغة `numeric`**: بصيغة الاسم يبقى الفصل
+مسافةً واحدة دوماً («١٥ رجب ١٤٤٦») — القراءة الطبيعية لا تحتمل فاصلةً مخصّصة.
 
 **اختيار تاريخ بتقويم هجري** — نمطٌ رابع لـ`context.showDatePicker` القائم،
 لا ودجة منفصلة: النتيجةُ ميلاديّةٌ دائماً (`HijriDateTime.toDateTime()`) كي
@@ -1062,10 +1098,10 @@ final picked = await context.showDatePicker(
 
 ⚠️ **الاستيراد المباشر لا يكفي وحده**: `HijriDateX` (`toHijri`/`toHijriString`
 على `DateTime`) بـ`core/foundation/utils/hijri_date_extension.dart` — طبقةٌ
-منفصلة بلا `BuildContext`، لمن يحتاج النصّ الهجري خارج ودجة (تصدير Excel،
-سجلّ نصّي). و`HijriCalendar.language` **ثابتٌ عامٌّ بحزمة `hijri`** لا نسخيّاً؛
-كل دالّةٍ بهذه الطبقة تضبطه بنفسها قبل كل نداء — لا تتوقّع أن يبقى مضبوطاً
-من نداءٍ سابق.
+منفصلة بلا `BuildContext`، لمن يحتاج النصّ الهجري الخام خارج ودجة (تصدير
+Excel، سجلّ نصّي) بلا كل خيارات `AppDateText`. و`HijriCalendar.language`
+**ثابتٌ عامٌّ بحزمة `hijri`** لا نسخيّاً؛ كل دالّةٍ بهذه الطبقة (وبـ`AppDateText`
+نفسِها) تضبطه بنفسها قبل كل نداء — لا تتوقّع أن يبقى مضبوطاً من نداءٍ سابق.
 
 ---
 
@@ -1097,3 +1133,4 @@ ErrorBoundary.install();   // قبل runApp — انظر lib/main.dart
 *Phase 6 — AppProgress · GlyphCenter · 2026-09-10*
 *Phase 7 — HijriDateText · 2026-09-14*
 *Phase 8 — ErrorBoundary · 2026-09-14*
+*Phase 9 — HijriDateText → AppDateText (هجري + ميلادي + تخطيط قابل للتشكيل بالكامل) · 2026-09-15*

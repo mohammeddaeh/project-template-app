@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
+import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/connectivity/connectivity_service.dart';
 import 'package:app_template/core/platform/lifecycle/app_lifecycle_service.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 
 import '../config/sync_mode.dart';
 import '../config/sync_settings_store.dart';
@@ -59,6 +61,15 @@ class SyncController {
   StreamSubscription<void>? _queueSubscription;
   Timer? _periodicTimer;
 
+  final _errorController = StreamController<Failure>.broadcast();
+
+  /// أخطاء المُطلِقات التلقائية وحدها — راجع [_runCycleGuarded]. المسار
+  /// اليدوي (`triggerManualSync`) لا يبثّ هنا: استثناؤه يصل مستدعيَه مباشرةً
+  /// (`SyncManagerCubit.triggerSync`)، وبثّه هنا أيضاً كان يفتح سباقاً بين
+  /// الحالتين — `SyncFailedState` عبر الستريم يصل بعد `SyncSuccess` اليدوية
+  /// أو قبلها بلا ترتيبٍ مضمون.
+  Stream<Failure> get errorStream => _errorController.stream;
+
   /// **ثلاثُ ثوانٍ من الهدوء، لا لحظةُ الحدث.**
   ///
   /// و`onConnectivityChanged` يُطلق مع **كل** تبدّل: انتقالٌ من واي‑فاي إلى
@@ -86,6 +97,7 @@ class SyncController {
     await _resumeSubscription?.cancel();
     _periodicTimer?.cancel();
     _stabilityTimer?.cancel();
+    await _errorController.close();
   }
 
   /// **دخولُ عملٍ الطابور يُطلق دورة** — وهو المُطلِق الذي كان ناقصاً.
@@ -100,7 +112,7 @@ class SyncController {
     _stabilityTimer?.cancel();
     _stabilityTimer = Timer(_stabilityWindow, () async {
       if (await _canSyncNow()) {
-        await _runCycleNow();
+        await _runCycleGuarded();
       }
     });
   }
@@ -148,13 +160,26 @@ class SyncController {
       return;
     }
     if (!await _canSyncNow()) return;
-    await _runCycleNow();
+    await _runCycleGuarded();
   }
 
   /// كلُّ مسارٍ يُشغّل دورةً يمرّ من هنا — فالختمُ لا يُنسى بأحدها.
   Future<void> _runCycleNow() async {
     _lastCycleAt = DateTime.now();
     await _syncEngine.runPendingJobs();
+  }
+
+  /// [_runCycleNow] لكن للمُطلِقات التلقائية — لا مستدعيَ لها يلتقط استثناءها
+  /// (مؤقّتٌ أو `Timer` مضبوطٌ ولا يُنتظَر)، فكان يسقط صامتاً كخطأ Future غير
+  /// ملتقَط: لا تحديث بالواجهة، ولا شارةَ خطأٍ، ولا سطرَ سجلّ. هنا يُسجَّل
+  /// ويُبثّ بـ[errorStream] بدلاً من ذلك.
+  Future<void> _runCycleGuarded() async {
+    try {
+      await _runCycleNow();
+    } catch (e, st) {
+      LogService.error('SyncController auto-cycle failed', tag: 'SYNC', error: e, stackTrace: st);
+      _errorController.add(const UnknownFailure());
+    }
   }
 
   void _bindResume() {
@@ -184,7 +209,7 @@ class SyncController {
     }
     _periodicTimer = Timer.periodic(Duration(seconds: seconds), (_) async {
       if (await _canSyncNow()) {
-        await _runCycleNow();
+        await _runCycleGuarded();
       }
     });
   }
