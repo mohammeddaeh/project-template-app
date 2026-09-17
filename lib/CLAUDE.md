@@ -6,6 +6,9 @@
 > **هذا الملف أوامر.** «لماذا» وراء كل قاعدة أدناه — والعطل الذي وُلدت منه —
 > بـ[`readme/03_RULES.md`](../readme/03_RULES.md)، مرقّمةً `R##` للاستشهاد بمراجعة
 > الكود. والمرجع السريع للأوامر والمسارات: [`readme/02_CHEATSHEET.md`](../readme/02_CHEATSHEET.md).
+>
+> **وللقرار البصري** (متى Card، أين focal point، كيف hierarchy — لا الصحّة
+> بل الجودة) راجع skill `.claude/skills/flutter-ui-design/SKILL.md`.
 
 ---
 

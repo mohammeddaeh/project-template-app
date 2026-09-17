@@ -32,7 +32,7 @@ Some UI infrastructure lives in `lib/ui/`:
 
 | Path | Content |
 |------|---------|
-| `ui/theme/` | Colors, palette, theme, `ThemeExtensions` |
+| `ui/theme/` | Colors, palette, theme, `ThemeExtensions`, `AppRadius`/`AppMotion`/`AppElevation` (design tokens — راجع [`41_ROADMAP.md`](41_ROADMAP.md) بند #16) |
 | `ui/extensions/` | BuildContext helpers — padding, screen size, dialog, bottom sheet |
 | `ui/error/` | `FailureUiMapper`, `UiAction` |
 | `ui/feedback/` | `AppFeedbackService` (abstract), adapters (MotionToast/SnackBar/Toast), `context.feedback.*` |
@@ -108,4 +108,6 @@ lib/
 - [`00_START_HERE.md`](00_START_HERE.md) — onboarding + feedback/locale API
 - [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) — project structure index
 
-*Last updated: 2026-09-10 — §6 مطابَقة لبنية `lib/ui/` الحالية (كانت تُظهر `lib/shared/`/`lib/presentation/` المدمَجَين فيها)*
+*Last updated: 2026-09-16 — إضافة `AppRadius`/`AppMotion`/`AppElevation` بـ`ui/theme/` (§3)*
+
+*2026-09-10 — §6 مطابَقة لبنية `lib/ui/` الحالية (كانت تُظهر `lib/shared/`/`lib/presentation/` المدمَجَين فيها)*
