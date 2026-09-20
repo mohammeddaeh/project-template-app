@@ -1,9 +1,12 @@
+import 'dart:math' as math;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_template/modules/session_guard/presentation/cubits/session_guard_cubit.dart';
 import 'package:app_template/modules/session_guard/presentation/widgets/pin_pad.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 const _pinLength = 4;
@@ -17,8 +20,14 @@ class SessionLockScreen extends StatefulWidget {
   State<SessionLockScreen> createState() => _SessionLockScreenState();
 }
 
-class _SessionLockScreenState extends State<SessionLockScreen> {
+class _SessionLockScreenState extends State<SessionLockScreen>
+    with SingleTickerProviderStateMixin {
   String _entered = '';
+  bool _wasWrongAttempt = false;
+  late final AnimationController _shakeController = AnimationController(
+    vsync: this,
+    duration: AppMotion.base,
+  );
 
   @override
   void initState() {
@@ -27,6 +36,12 @@ class _SessionLockScreenState extends State<SessionLockScreen> {
     if (cubit.canUseBiometrics) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryBiometrics());
     }
+  }
+
+  @override
+  void dispose() {
+    _shakeController.dispose();
+    super.dispose();
   }
 
   Future<void> _tryBiometrics() async {
@@ -58,6 +73,11 @@ class _SessionLockScreenState extends State<SessionLockScreen> {
       listener: (context, state) {
         // ignore: unnecessary_statements — EasyLocalization dependency
         context.locale;
+        final wrongAttempt = state is SessionGuardLocked && state.wrongAttempt;
+        if (wrongAttempt && !_wasWrongAttempt) {
+          _shakeController.forward(from: 0);
+        }
+        _wasWrongAttempt = wrongAttempt;
       },
       child: Scaffold(
         body: SafeArea(
@@ -92,11 +112,22 @@ class _SessionLockScreenState extends State<SessionLockScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    PinPad(
-                      enteredLength: _entered.length,
-                      pinLength: _pinLength,
-                      onDigit: _onDigit,
-                      onBackspace: _onBackspace,
+                    AnimatedBuilder(
+                      animation: _shakeController,
+                      builder: (context, child) {
+                        final t = _shakeController.value;
+                        final offset = math.sin(t * math.pi * 5) * 8 * (1 - t);
+                        return Transform.translate(
+                          offset: Offset(offset, 0),
+                          child: child,
+                        );
+                      },
+                      child: PinPad(
+                        enteredLength: _entered.length,
+                        pinLength: _pinLength,
+                        onDigit: _onDigit,
+                        onBackspace: _onBackspace,
+                      ),
                     ),
                     if (context.read<SessionGuardCubit>().canUseBiometrics) ...[
                       const SizedBox(height: 24),

@@ -2,12 +2,15 @@
 import 'package:app_template/modules/access_control/guards/permission_route_guard.dart';
 import 'package:app_template/resources/permission_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
+import 'package:app_template/ui/theme/app_motion.dart';
 
 CustomRoute customRouteWithAnimation({required PageInfo page}) {
   return CustomRoute(
     page: page,
-    duration: const Duration(milliseconds: 300),
-    reverseDuration: const Duration(milliseconds: 300),
+    // `AppMotion.slow` (٤٠٠ملي) لا `base` — توصيفه «كشف عنصرٍ كبير» أقرب
+    // لانتقال صفحةٍ كاملة من «انتقالٍ داخل نفس الشاشة».
+    duration: AppMotion.slow,
+    reverseDuration: AppMotion.slow,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return CupertinoPageTransition(
         primaryRouteAnimation: animation,

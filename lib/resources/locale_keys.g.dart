@@ -49,6 +49,7 @@ abstract class  LocaleKeys {
   static const confirmPassword = 'confirmPassword';
   static const continueGuest = 'continueGuest';
   static const createAccount = 'createAccount';
+  static const skipLoginDebug = 'skipLoginDebug';
   static const currentPassword = 'currentPassword';
   static const dAgo = 'dAgo';
   static const dataTransfer = 'dataTransfer';

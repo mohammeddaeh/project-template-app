@@ -45,6 +45,7 @@
   "confirmPassword": "Confirm Password",
   "continueGuest": "Continue as Guest",
   "createAccount": "Create one",
+  "skipLoginDebug": "Skip (debug only)",
   "currentPassword": "Current password",
   "dAgo": "Day ago",
   "dataTransfer": "Import & export",

@@ -41,6 +41,9 @@
 | `GlyphCenter` | توسيط | §27 |
 | `AppDateText` | تاريخ | §28 |
 | `ErrorBoundary` / `ErrorFallback` | بنية تحتية | §29 |
+| `PressableScale` | تفاعل | §30 |
+| `StatusFeedbackIndicator` | تفاعل | §31 |
+| `GuideOverlay` | onboarding | §32 |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 
@@ -1128,9 +1131,93 @@ ErrorBoundary.install();   // قبل runApp — انظر lib/main.dart
 
 ---
 
+## §30 · PressableScale — رد فعل لمسي عام
+
+> **يغلّف، لا يستبدل.** يراقب الضغط بـ`Listener` لا `GestureDetector`، فلا
+> يدخل ساحة الإيماءة ولا يتنازع مع `InkWell`/`GestureDetector` الخاص بالابن —
+> الشكل والـripple والـ`onTap` تبقى بيد الابن، هو يُضيف تصغيراً بصرياً فقط
+> أثناء الضغط (`AppMotion.pressedScale` = 0.97). يحترم "تقليل الحركة" بالنظام
+> (`MediaQuery.disableAnimations`) — الابن بلا تصغيرٍ حينها.
+
+**Usage**
+
+```dart
+PressableScale(
+  child: Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: () => ...,
+      child: ...,
+    ),
+  ),
+)
+```
+
+مستهلكٌ حيّ: `modules/session_guard/presentation/widgets/pin_pad.dart` — رد فعل
+لمسي على أزرار لوحة الأرقام.
+
+---
+
+## §31 · StatusFeedbackIndicator — أيقونة حالة دائرية
+
+> نبضة عند الانتقال إلى `StatusTone.success`، اهتزاز عند الانتقال إلى
+> `StatusTone.error` (نفس صيغة الاهتزاز بـ§30 وPIN غير الصحيح). يستهلك نفس
+> ألوان `StatusChip` (`AppColors.status*`) — **لا لونَ خاماً هنا**، ونفس
+> مؤشّر التحميل الموحَّد `AppProgress.circular` (لا `CircularProgressIndicator`
+> خام — يمنعه F35). يحترم "تقليل الحركة" — لا نبضة ولا اهتزاز عندها، الأيقونة
+> تتبدّل مباشرةً.
+
+**Usage**
+
+```dart
+StatusFeedbackIndicator(
+  tone: state.tone,      // StatusTone.success بعد نجاح إجراء
+  isLoading: state.isBusy,
+  size: 74,               // اختياري — الافتراضي 64
+)
+```
+
+⬜ **بالمكتبة بلا مستهلكٍ بعد** — مرشَّحٌ لأول شاشة إجراءٍ غير متزامن (حفظ،
+رفع، تحقّق) تحتاج ردّاً بصرياً واحداً بدل نصٍّ/toast فقط.
+
+---
+
+## §32 · GuideOverlay — onboarding coach-mark
+
+> يظلّل الشاشة ويترك فتحةً حول عنصرٍ مُشارٍ إليه بـ`GlobalKey`، مع فقاعة شرح.
+> الفتحة تُحسب من `RenderBox` **حالي** للعنصر — يجب أن يكون مبنيّاً فعلاً حين
+> يُستدعى `show`. دخول الفقاعة بـ`AppMotion.emphasizedCurve`. يحترم "تقليل
+> الحركة" — تظهر كاملةً فوراً بلا دخولٍ متحرّك.
+
+**Usage**
+
+```dart
+final addButtonKey = GlobalKey();
+
+IconButton(key: addButtonKey, onPressed: ..., icon: const Icon(Icons.add));
+
+// عند لحظة التعريف (أول تشغيل مثلاً):
+await GuideOverlay.show(
+  context,
+  targetKey: addButtonKey,
+  title: LocaleKeys.guideAddTitle.tr(),
+  message: LocaleKeys.guideAddMessage.tr(),
+  actionLabel: LocaleKeys.guideGotIt.tr(),
+);
+```
+
+⚠️ **`title`/`message`/`actionLabel` نصوصٌ جاهزة لا مفاتيح** — القرار نفسه
+كـ`AppProgress.label` (§26): الودجة عامّة، والنصّ مسؤولية موضع الاستدعاء —
+لا نصّ خامٍ افتراضي بالودجة نفسها (يخالف قاعدة الترجمة بـ`lib/CLAUDE.md`).
+
+⬜ **بالمكتبة بلا مستهلكٍ بعد** — مرشَّحٌ لأوّل جولة تعريفٍ بميزةٍ جديدة.
+
+---
+
 *Phase 4 — ExpandableSection · AppListTile · StatCard · StepProgressIndicator · 2026-06-30*
 *Phase 5 — AppButton · AppLabel · FeedbackStyle · 2026-06-30*
 *Phase 6 — AppProgress · GlyphCenter · 2026-09-10*
 *Phase 7 — HijriDateText · 2026-09-14*
 *Phase 8 — ErrorBoundary · 2026-09-14*
 *Phase 9 — HijriDateText → AppDateText (هجري + ميلادي + تخطيط قابل للتشكيل بالكامل) · 2026-09-15*
+*Phase 10 — PressableScale · StatusFeedbackIndicator · GuideOverlay · 2026-09-17*

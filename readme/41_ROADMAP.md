@@ -823,3 +823,75 @@ patterns" توثّق بالضبط ما وُصف هنا كـ"Generic UI") مطا�
 **عمداً خارج النطاق (كل البند #16 حتى الآن):** لا شاشة قائمة أُعيد تصميمها
 بعد — المستخدم طلب صراحةً تأجيل المثال العملي. أوّل استهلاكٍ فعلي للـskill
 والتوكنات معاً يكون بطلبٍ منفصل.
+
+**تمديد Token files — أول استهلاكٍ فعلي (2026-09-17):** المستخدم جرّب ودجات
+تفاعل بمشروعٍ منفصل خارج القالب (`Archive/test_apps/widgets`) وطلب استخراج ما
+يصلح توكناً عاماً منها. أربعة إضافات لـ`app_radius.dart`/`app_motion.dart`:
+
+- `AppRadius.full` (999) — انحناءٌ كاملٌ بصرف النظر عن الحجم، يختلف عن `pill`
+  (٣٢ ثابت لزرٍّ بارتفاعٍ معروف).
+- `AppMotion.emphasizedCurve` (`Curves.easeOutBack`) — دخولٌ احتفالي.
+- `AppMotion.pressedScale` (0.97) — نسبة تصغير عند الضغط.
+- `AppMotion.debounce` (300ms) — تأخير بحث/فلترة حيّة.
+
+وودجةٌ جديدة [`pressable_scale.dart`](../lib/ui/widgets/wrappers/pressable_scale.dart)
+(راجع [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §30) تراقب الضغط بـ
+`Listener` لا `GestureDetector` — لا تدخل ساحة الإيماءة، فلا تتنازع مع
+`InkWell`/`GestureDetector` الخاص بالابن.
+
+**أول استهلاكٍ حقيقي — لا سطح بلا مستدعٍ:** `modules/session_guard/` الحقيقي
+(المطفأ افتراضياً، `AppFeatures.sessionGuard = false`) كان بلا أي رد فعل
+لمسي — لا اهتزازٍ عند PIN خطأ، لا رد ضغطٍ على `PinPad`. `PressableScale` وُصل
+بأزرار `PinPad`، واهتزاز PIN الخطأ (`sin(t·π·5)·8·(1-t)`) أُضيف مباشرةً بـ
+`session_lock_screen.dart` (حالة واحدة محدَّدة — لا ودجة عامة منفصلة لها).
+
+**رُفض عمداً من نفس التجربة** — موجودٌ أصلاً وأنضج: `ShimmerLoadingWidget`،
+`AppSearchBar` (debounce)، `ListItemAppearWdg`، `ui/feedback/` (toasts)،
+`core/platform/biometrics/`، `modules/session_guard/`،
+`modules/notification_center/`، `modules/remote_config/`. وحفظ نتائج البحث
+الأخيرة (recent searches) — منطق feature (state+تخزين)، لا توكن تصميم ولا
+ودجة تفاعل، تُرك خارج القالب.
+
+**تمديدٌ ثانٍ — المرشَّحان المتبقّيان (2026-09-17):** بُنيا بمكتبة الودجات:
+
+- [`status_feedback_indicator.dart`](../lib/ui/widgets/indicators/status_feedback_indicator.dart)
+  — يستهلك `StatusTone`/`AppColors.status*` الموجودَين أصلاً بـ`StatusChip`
+  (لا لونَ جديداً)، و`AppProgress.circular` لا `CircularProgressIndicator` خام
+  (يمنعه فاحص البنية F35).
+- [`guide_overlay.dart`](../lib/ui/widgets/onboarding/guide_overlay.dart) —
+  قسمٌ جديد بالباريل (`// Onboarding`). `title`/`message`/`actionLabel` نصوصٌ
+  جاهزة لا مفاتيح ولا افتراضٍ خام — القالب يمنع `Text('نص عربي')` (F راجع
+  `lib/CLAUDE.md`)، فالودجة العامة لا تخترع نصاً افتراضياً.
+
+**بلا مستهلكٍ بعد كلاهما** — خلافاً لتوكنات الخطوة السابقة (`PressableScale`
+وُصل فوراً بـ`PinPad`)، هذان مكوّنا مكتبةٍ ينتظران أوّل شاشة إجراءٍ غير
+متزامن وأوّل جولة تعريف. مقبولٌ لودجات مكتبة (لا موديول مشروط بعلَم) — راجع
+القاعدة الصارمة أعلى الملف عن الفرق بين سطحٍ يُقصَد أن ينتظر وسلسلةٍ انقطعت.
+
+**تقليل الحركة — احترامٌ ناقص أُصلح (2026-09-17):** `PressableScale`/
+`StatusFeedbackIndicator`/`GuideOverlay` الثلاثة لم تكن تفحص
+`MediaQuery.disableAnimations` — خلافاً لـ`ListItemAppearWdg` الموجود أصلاً
+الذي يفحصها. أُضيف الفحص بثلاثتهم بنفس النمط: بلا تصغيرٍ (`PressableScale`)،
+بلا نبضة/اهتزاز (`StatusFeedbackIndicator`)، بلا دخولٍ متحرّك — الفقاعة تظهر
+كاملةً فوراً (`GuideOverlay`).
+
+**`customRouteWithAnimation` يستهلك `AppMotion` أخيراً (2026-09-17):** المدّة
+كانت رقماً خاماً (300ms) بـ`router.dart`. صارت `AppMotion.slow` (400ms) —
+`base` (250ms) توصيفه «انتقالٌ داخل نفس الشاشة»، و`slow` توصيفه «كشف عنصرٍ
+كبير»، وانتقال صفحةٍ كاملة أقرب للثاني.
+
+**تشغيلٌ فعلي كشف علّة `dart analyze`/الاختبارات لا تراها (2026-09-17):**
+`GuideOverlay` بُني بهارنس معاينة مؤقت (`lib/dev_preview_main.dart` — غير
+مُلتَزَم، حُذف بعد التحقّق) وشُغِّل فعلياً بـ`flutter run -d chrome`. أوّل
+محاولة: `_targetRect` استعمل `context` **محتوى** الـoverlay نفسِه كأصلٍ
+(`ancestor`) بـ`localToGlobal` — وذاك السياق بلا `RenderObject` بأوّل إطارٍ
+له (يُنشأ بعد اكتمال هذا الـ`build`)، فالفتحة تعود `null` والـoverlay يرسم
+`SizedBox.shrink()` **بصمتٍ تام**: لا استثناء، لا سطر بالـconsole، لا فشل
+تحليلٍ ولا اختبار — الزرّ يُضغَط ولا شيء يظهر. اكتُشف فقط لأن الضغط الفعلي
+بمتصفّحٍ حقيقي لم يُظهر شيئاً بينما الشاشة المتوقَّعة overlay مُظلَّل. الإصلاح:
+إسقاط `ancestor` كلياً — إحداثيات `localToGlobal()` **الشاملة** مطابقةٌ
+لإحداثيات الـOverlay المحلّية أصلاً (يملأ الشاشة من `(0,0)`)، فلا حاجة لأصلٍ
+نسبيّ يتطلّب `RenderObject` غير موجود بعد. **هذا بالضبط نوع العلّة التي
+`dart analyze`/`flutter test` لا يمسكانها** (لا اختبار ودجت كُتب لهذا
+المكوّن) — القاعدة أعلى الملف عن «السلسلة الموصولة» تخصّ الاستهلاك؛ هذه علّة
+داخل الودجة نفسِها لم يكشفها إلا تشغيلٌ حقيقي.

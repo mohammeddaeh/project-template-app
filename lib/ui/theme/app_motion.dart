@@ -17,4 +17,13 @@ abstract final class AppMotion {
   static const Curve fastCurve = Curves.easeOut;
   static const Curve baseCurve = Curves.easeInOutCubic;
   static const Curve slowCurve = Curves.easeOutCubic;
+
+  /// دخول احتفالي — أيقونة نجاح، ظهور عنصر يستحق لفت نظر. لا يُستعمل للخروج.
+  static const Curve emphasizedCurve = Curves.easeOutBack;
+
+  /// نسبة تصغير الابن أثناء الضغط — رد فعل لمسي لأي عنصرٍ قابل للنقر.
+  static const double pressedScale = 0.97;
+
+  /// تأخير قبل تنفيذ إجراء بعد كتابة حيّة — حقل بحث أو فلترة.
+  static const Duration debounce = Duration(milliseconds: 300);
 }

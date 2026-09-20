@@ -75,10 +75,12 @@ export 'indicators/step_progress_indicator.dart';
 export 'indicators/page_loading_indicator.dart';
 export 'indicators/initial_loading_indicator.dart';
 export 'indicators/next_page_status.dart';
+export 'indicators/status_feedback_indicator.dart';
 
 // Wrappers
 export 'wrappers/error_boundary.dart';
 export 'wrappers/keyboard_dismiss_widget.dart';
+export 'wrappers/pressable_scale.dart';
 export 'wrappers/safe_area_wrapper.dart';
 export 'wrappers/system_bar_style.dart';
 
@@ -109,6 +111,9 @@ export 'connectivity/sync_progress_overlay.dart';
 
 // Dates
 export 'dates/app_date_text.dart';
+
+// Onboarding
+export 'onboarding/guide_overlay.dart';
 
 // Misc
 export 'misc/app_text.dart';

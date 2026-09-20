@@ -108,6 +108,9 @@ lib/
 - [`00_START_HERE.md`](00_START_HERE.md) — onboarding + feedback/locale API
 - [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) — project structure index
 
-*Last updated: 2026-09-16 — إضافة `AppRadius`/`AppMotion`/`AppElevation` بـ`ui/theme/` (§3)*
+*Last updated: 2026-09-17 — `AppMotion.emphasizedCurve/pressedScale/debounce` و`AppRadius.full`؛
+`PressableScale` بـ`ui/widgets/wrappers/`، `StatusFeedbackIndicator` بـ`ui/widgets/indicators/`،
+`GuideOverlay` بـ`ui/widgets/onboarding/` (قسمٌ جديد — راجع [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §30-§32)*
+*2026-09-16 — إضافة `AppRadius`/`AppMotion`/`AppElevation` بـ`ui/theme/` (§3)*
 
 *2026-09-10 — §6 مطابَقة لبنية `lib/ui/` الحالية (كانت تُظهر `lib/shared/`/`lib/presentation/` المدمَجَين فيها)*

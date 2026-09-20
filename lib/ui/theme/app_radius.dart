@@ -13,10 +13,18 @@ abstract final class AppRadius {
   static const double lg = 20;
   static const double pill = 32;
 
+  /// انحناءٌ كاملٌ بصرف النظر عن حجم العنصر — شريحة، صورة رمزية، badge دائري.
+  /// يختلف عن [pill]: ذاك انحناءٌ ثابتٌ (٣٢) لزرٍّ بارتفاعٍ معروف، وهذا يبقى
+  /// دائرياً كاملاً مهما تغيّر الارتفاع.
+  static const double full = 999;
+
   static const BorderRadius smRadius = BorderRadius.all(Radius.circular(sm));
   static const BorderRadius mdRadius = BorderRadius.all(Radius.circular(md));
   static const BorderRadius lgRadius = BorderRadius.all(Radius.circular(lg));
   static const BorderRadius pillRadius = BorderRadius.all(
     Radius.circular(pill),
+  );
+  static const BorderRadius fullRadius = BorderRadius.all(
+    Radius.circular(full),
   );
 }

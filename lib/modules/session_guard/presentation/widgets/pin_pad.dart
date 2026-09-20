@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/widgets/wrappers/pressable_scale.dart';
 
 /// لوحة أرقامٍ للقفل المحلّي — ٠-٩ وحذفٌ للخلف. تُستعمل بشاشتي القفل والإعداد
 /// كليهما، فلا تفترض عدد الخانات (يُمرَّر [pinLength] فقط لعرض النقاط).
@@ -104,21 +105,23 @@ class _PinKey extends StatelessWidget {
   Widget build(BuildContext context) {
     if (label.isEmpty) return const SizedBox(width: 72, height: 64);
 
-    return SizedBox(
-      width: 72,
-      height: 64,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(36),
-          onTap: label == '⌫' ? onBackspace : () => onDigit(label),
-          child: Center(
-            child: label == '⌫'
-                ? Icon(
-                    Icons.backspace_outlined,
-                    color: context.colors.textMuted,
-                  )
-                : Text(label, style: context.textTheme.headlineMedium),
+    return PressableScale(
+      child: SizedBox(
+        width: 72,
+        height: 64,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(36),
+            onTap: label == '⌫' ? onBackspace : () => onDigit(label),
+            child: Center(
+              child: label == '⌫'
+                  ? Icon(
+                      Icons.backspace_outlined,
+                      color: context.colors.textMuted,
+                    )
+                  : Text(label, style: context.textTheme.headlineMedium),
+            ),
           ),
         ),
       ),
