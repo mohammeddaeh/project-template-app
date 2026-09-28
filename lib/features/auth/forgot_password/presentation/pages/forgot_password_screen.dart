@@ -58,7 +58,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _submit() {
     if (_cubit.state is ForgotPasswordLoading) return;
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!_formKey.validateAndReveal()) return;
     context.unfocus();
     _cubit.requestReset(_emailController.text.trim());
   }

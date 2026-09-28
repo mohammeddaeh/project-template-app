@@ -10,60 +10,111 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:app_template/features/auth/change_password/presentation/pages/change_password_screen.dart'
-    as _i1;
+    as _i2;
 import 'package:app_template/features/auth/forgot_password/presentation/cubits/forgot_password_cubit.dart'
-    as _i17;
+    as _i19;
 import 'package:app_template/features/auth/forgot_password/presentation/pages/forgot_password_screen.dart'
-    as _i3;
-import 'package:app_template/features/auth/forgot_password/presentation/pages/reset_password_screen.dart'
-    as _i8;
-import 'package:app_template/features/auth/login/presentation/pages/login_screen.dart'
-    as _i5;
-import 'package:app_template/features/auth/register/presentation/pages/register_screen.dart'
-    as _i7;
-import 'package:app_template/features/auth/verify_email/presentation/pages/verify_email_screen.dart'
-    as _i14;
-import 'package:app_template/features/home/presentation/pages/home_screen.dart'
     as _i4;
-import 'package:app_template/features/settings/presentation/pages/settings_screen.dart'
-    as _i10;
-import 'package:app_template/modules/access_control/presentation/pages/roles_screen.dart'
+import 'package:app_template/features/auth/forgot_password/presentation/pages/reset_password_screen.dart'
     as _i9;
-import 'package:app_template/modules/access_control/presentation/pages/user_access_screen.dart'
-    as _i13;
-import 'package:app_template/modules/data_transfer/presentation/pages/transfer_export_screen.dart'
+import 'package:app_template/features/auth/login/presentation/pages/account_login_screen.dart'
+    as _i1;
+import 'package:app_template/features/auth/login/presentation/pages/login_screen.dart'
+    as _i6;
+import 'package:app_template/features/auth/register/presentation/pages/register_screen.dart'
+    as _i8;
+import 'package:app_template/features/auth/shared/entities/remembered_account.dart'
+    as _i18;
+import 'package:app_template/features/auth/verify_email/presentation/pages/verify_email_screen.dart'
+    as _i15;
+import 'package:app_template/features/home/presentation/pages/home_screen.dart'
+    as _i5;
+import 'package:app_template/features/settings/presentation/pages/settings_screen.dart'
     as _i11;
-import 'package:app_template/modules/data_transfer/presentation/pages/transfer_import_screen.dart'
+import 'package:app_template/modules/access_control/presentation/pages/roles_screen.dart'
+    as _i10;
+import 'package:app_template/modules/access_control/presentation/pages/user_access_screen.dart'
+    as _i14;
+import 'package:app_template/modules/data_transfer/presentation/pages/transfer_export_screen.dart'
     as _i12;
-import 'package:app_template/routes/main_shell_page.dart' as _i6;
-import 'package:app_template/ui/error/error_view.dart' as _i2;
-import 'package:auto_route/auto_route.dart' as _i15;
-import 'package:flutter/material.dart' as _i16;
+import 'package:app_template/modules/data_transfer/presentation/pages/transfer_import_screen.dart'
+    as _i13;
+import 'package:app_template/routes/main_shell_page.dart' as _i7;
+import 'package:app_template/ui/error/error_view.dart' as _i3;
+import 'package:auto_route/auto_route.dart' as _i16;
+import 'package:flutter/material.dart' as _i17;
 
 /// generated route for
-/// [_i1.ChangePasswordScreen]
-class ChangePasswordRoute extends _i15.PageRouteInfo<void> {
-  const ChangePasswordRoute({List<_i15.PageRouteInfo>? children})
+/// [_i1.AccountLoginScreen]
+class AccountLoginRoute extends _i16.PageRouteInfo<AccountLoginRouteArgs> {
+  AccountLoginRoute({
+    _i17.Key? key,
+    required _i18.RememberedAccount account,
+    List<_i16.PageRouteInfo>? children,
+  }) : super(
+         AccountLoginRoute.name,
+         args: AccountLoginRouteArgs(key: key, account: account),
+         initialChildren: children,
+       );
+
+  static const String name = 'AccountLoginRoute';
+
+  static _i16.PageInfo page = _i16.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<AccountLoginRouteArgs>();
+      return _i1.AccountLoginScreen(key: args.key, account: args.account);
+    },
+  );
+}
+
+class AccountLoginRouteArgs {
+  const AccountLoginRouteArgs({this.key, required this.account});
+
+  final _i17.Key? key;
+
+  final _i18.RememberedAccount account;
+
+  @override
+  String toString() {
+    return 'AccountLoginRouteArgs{key: $key, account: $account}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AccountLoginRouteArgs) return false;
+    return key == other.key && account == other.account;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ account.hashCode;
+}
+
+/// generated route for
+/// [_i2.ChangePasswordScreen]
+class ChangePasswordRoute extends _i16.PageRouteInfo<void> {
+  const ChangePasswordRoute({List<_i16.PageRouteInfo>? children})
     : super(ChangePasswordRoute.name, initialChildren: children);
 
   static const String name = 'ChangePasswordRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i1.ChangePasswordScreen();
+      return const _i2.ChangePasswordScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i2.ErrorView]
-class ErrorRoute extends _i15.PageRouteInfo<ErrorRouteArgs> {
+/// [_i3.ErrorView]
+class ErrorRoute extends _i16.PageRouteInfo<ErrorRouteArgs> {
   ErrorRoute({
-    _i16.Key? key,
-    _i16.FlutterErrorDetails? errorDetails,
+    _i17.Key? key,
+    _i17.FlutterErrorDetails? errorDetails,
     String? message,
-    List<_i15.PageRouteInfo>? children,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          ErrorRoute.name,
          args: ErrorRouteArgs(
@@ -76,13 +127,13 @@ class ErrorRoute extends _i15.PageRouteInfo<ErrorRouteArgs> {
 
   static const String name = 'ErrorRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ErrorRouteArgs>(
         orElse: () => const ErrorRouteArgs(),
       );
-      return _i2.ErrorView(
+      return _i3.ErrorView(
         key: args.key,
         errorDetails: args.errorDetails,
         message: args.message,
@@ -94,9 +145,9 @@ class ErrorRoute extends _i15.PageRouteInfo<ErrorRouteArgs> {
 class ErrorRouteArgs {
   const ErrorRouteArgs({this.key, this.errorDetails, this.message});
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
-  final _i16.FlutterErrorDetails? errorDetails;
+  final _i17.FlutterErrorDetails? errorDetails;
 
   final String? message;
 
@@ -119,92 +170,92 @@ class ErrorRouteArgs {
 }
 
 /// generated route for
-/// [_i3.ForgotPasswordScreen]
-class ForgotPasswordRoute extends _i15.PageRouteInfo<void> {
-  const ForgotPasswordRoute({List<_i15.PageRouteInfo>? children})
+/// [_i4.ForgotPasswordScreen]
+class ForgotPasswordRoute extends _i16.PageRouteInfo<void> {
+  const ForgotPasswordRoute({List<_i16.PageRouteInfo>? children})
     : super(ForgotPasswordRoute.name, initialChildren: children);
 
   static const String name = 'ForgotPasswordRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i3.ForgotPasswordScreen();
+      return const _i4.ForgotPasswordScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i4.HomeScreen]
-class HomeRoute extends _i15.PageRouteInfo<void> {
-  const HomeRoute({List<_i15.PageRouteInfo>? children})
+/// [_i5.HomeScreen]
+class HomeRoute extends _i16.PageRouteInfo<void> {
+  const HomeRoute({List<_i16.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i4.HomeScreen();
+      return const _i5.HomeScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i5.LoginScreen]
-class LoginRoute extends _i15.PageRouteInfo<void> {
-  const LoginRoute({List<_i15.PageRouteInfo>? children})
+/// [_i6.LoginScreen]
+class LoginRoute extends _i16.PageRouteInfo<void> {
+  const LoginRoute({List<_i16.PageRouteInfo>? children})
     : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i5.LoginScreen();
+      return const _i6.LoginScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i6.MainShellPage]
-class MainShellRoute extends _i15.PageRouteInfo<void> {
-  const MainShellRoute({List<_i15.PageRouteInfo>? children})
+/// [_i7.MainShellPage]
+class MainShellRoute extends _i16.PageRouteInfo<void> {
+  const MainShellRoute({List<_i16.PageRouteInfo>? children})
     : super(MainShellRoute.name, initialChildren: children);
 
   static const String name = 'MainShellRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i6.MainShellPage();
+      return const _i7.MainShellPage();
     },
   );
 }
 
 /// generated route for
-/// [_i7.RegisterScreen]
-class RegisterRoute extends _i15.PageRouteInfo<void> {
-  const RegisterRoute({List<_i15.PageRouteInfo>? children})
+/// [_i8.RegisterScreen]
+class RegisterRoute extends _i16.PageRouteInfo<void> {
+  const RegisterRoute({List<_i16.PageRouteInfo>? children})
     : super(RegisterRoute.name, initialChildren: children);
 
   static const String name = 'RegisterRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i7.RegisterScreen();
+      return const _i8.RegisterScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i8.ResetPasswordScreen]
-class ResetPasswordRoute extends _i15.PageRouteInfo<ResetPasswordRouteArgs> {
+/// [_i9.ResetPasswordScreen]
+class ResetPasswordRoute extends _i16.PageRouteInfo<ResetPasswordRouteArgs> {
   ResetPasswordRoute({
-    _i16.Key? key,
-    required _i17.ForgotPasswordCubit cubit,
-    List<_i15.PageRouteInfo>? children,
+    _i17.Key? key,
+    required _i19.ForgotPasswordCubit cubit,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          ResetPasswordRoute.name,
          args: ResetPasswordRouteArgs(key: key, cubit: cubit),
@@ -213,11 +264,11 @@ class ResetPasswordRoute extends _i15.PageRouteInfo<ResetPasswordRouteArgs> {
 
   static const String name = 'ResetPasswordRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ResetPasswordRouteArgs>();
-      return _i8.ResetPasswordScreen(key: args.key, cubit: args.cubit);
+      return _i9.ResetPasswordScreen(key: args.key, cubit: args.cubit);
     },
   );
 }
@@ -225,9 +276,9 @@ class ResetPasswordRoute extends _i15.PageRouteInfo<ResetPasswordRouteArgs> {
 class ResetPasswordRouteArgs {
   const ResetPasswordRouteArgs({this.key, required this.cubit});
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
-  final _i17.ForgotPasswordCubit cubit;
+  final _i19.ForgotPasswordCubit cubit;
 
   @override
   String toString() {
@@ -246,44 +297,44 @@ class ResetPasswordRouteArgs {
 }
 
 /// generated route for
-/// [_i9.RolesScreen]
-class RolesRoute extends _i15.PageRouteInfo<void> {
-  const RolesRoute({List<_i15.PageRouteInfo>? children})
+/// [_i10.RolesScreen]
+class RolesRoute extends _i16.PageRouteInfo<void> {
+  const RolesRoute({List<_i16.PageRouteInfo>? children})
     : super(RolesRoute.name, initialChildren: children);
 
   static const String name = 'RolesRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i9.RolesScreen();
+      return const _i10.RolesScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i10.SettingsScreen]
-class SettingsRoute extends _i15.PageRouteInfo<void> {
-  const SettingsRoute({List<_i15.PageRouteInfo>? children})
+/// [_i11.SettingsScreen]
+class SettingsRoute extends _i16.PageRouteInfo<void> {
+  const SettingsRoute({List<_i16.PageRouteInfo>? children})
     : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
-      return const _i10.SettingsScreen();
+      return const _i11.SettingsScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i11.TransferExportScreen]
-class TransferExportRoute extends _i15.PageRouteInfo<TransferExportRouteArgs> {
+/// [_i12.TransferExportScreen]
+class TransferExportRoute extends _i16.PageRouteInfo<TransferExportRouteArgs> {
   TransferExportRoute({
     required String resource,
-    _i16.Key? key,
-    List<_i15.PageRouteInfo>? children,
+    _i17.Key? key,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          TransferExportRoute.name,
          args: TransferExportRouteArgs(resource: resource, key: key),
@@ -292,11 +343,11 @@ class TransferExportRoute extends _i15.PageRouteInfo<TransferExportRouteArgs> {
 
   static const String name = 'TransferExportRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<TransferExportRouteArgs>();
-      return _i11.TransferExportScreen(resource: args.resource, key: args.key);
+      return _i12.TransferExportScreen(resource: args.resource, key: args.key);
     },
   );
 }
@@ -306,7 +357,7 @@ class TransferExportRouteArgs {
 
   final String resource;
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   @override
   String toString() {
@@ -325,12 +376,12 @@ class TransferExportRouteArgs {
 }
 
 /// generated route for
-/// [_i12.TransferImportScreen]
-class TransferImportRoute extends _i15.PageRouteInfo<TransferImportRouteArgs> {
+/// [_i13.TransferImportScreen]
+class TransferImportRoute extends _i16.PageRouteInfo<TransferImportRouteArgs> {
   TransferImportRoute({
     required String resource,
-    _i16.Key? key,
-    List<_i15.PageRouteInfo>? children,
+    _i17.Key? key,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          TransferImportRoute.name,
          args: TransferImportRouteArgs(resource: resource, key: key),
@@ -339,11 +390,11 @@ class TransferImportRoute extends _i15.PageRouteInfo<TransferImportRouteArgs> {
 
   static const String name = 'TransferImportRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<TransferImportRouteArgs>();
-      return _i12.TransferImportScreen(resource: args.resource, key: args.key);
+      return _i13.TransferImportScreen(resource: args.resource, key: args.key);
     },
   );
 }
@@ -353,7 +404,7 @@ class TransferImportRouteArgs {
 
   final String resource;
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   @override
   String toString() {
@@ -372,12 +423,12 @@ class TransferImportRouteArgs {
 }
 
 /// generated route for
-/// [_i13.UserAccessScreen]
-class UserAccessRoute extends _i15.PageRouteInfo<UserAccessRouteArgs> {
+/// [_i14.UserAccessScreen]
+class UserAccessRoute extends _i16.PageRouteInfo<UserAccessRouteArgs> {
   UserAccessRoute({
     required int userId,
-    _i16.Key? key,
-    List<_i15.PageRouteInfo>? children,
+    _i17.Key? key,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          UserAccessRoute.name,
          args: UserAccessRouteArgs(userId: userId, key: key),
@@ -386,11 +437,11 @@ class UserAccessRoute extends _i15.PageRouteInfo<UserAccessRouteArgs> {
 
   static const String name = 'UserAccessRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<UserAccessRouteArgs>();
-      return _i13.UserAccessScreen(userId: args.userId, key: args.key);
+      return _i14.UserAccessScreen(userId: args.userId, key: args.key);
     },
   );
 }
@@ -400,7 +451,7 @@ class UserAccessRouteArgs {
 
   final int userId;
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   @override
   String toString() {
@@ -419,12 +470,12 @@ class UserAccessRouteArgs {
 }
 
 /// generated route for
-/// [_i14.VerifyEmailScreen]
-class VerifyEmailRoute extends _i15.PageRouteInfo<VerifyEmailRouteArgs> {
+/// [_i15.VerifyEmailScreen]
+class VerifyEmailRoute extends _i16.PageRouteInfo<VerifyEmailRouteArgs> {
   VerifyEmailRoute({
-    _i16.Key? key,
+    _i17.Key? key,
     required String email,
-    List<_i15.PageRouteInfo>? children,
+    List<_i16.PageRouteInfo>? children,
   }) : super(
          VerifyEmailRoute.name,
          args: VerifyEmailRouteArgs(key: key, email: email),
@@ -433,11 +484,11 @@ class VerifyEmailRoute extends _i15.PageRouteInfo<VerifyEmailRouteArgs> {
 
   static const String name = 'VerifyEmailRoute';
 
-  static _i15.PageInfo page = _i15.PageInfo(
+  static _i16.PageInfo page = _i16.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<VerifyEmailRouteArgs>();
-      return _i14.VerifyEmailScreen(key: args.key, email: args.email);
+      return _i15.VerifyEmailScreen(key: args.key, email: args.email);
     },
   );
 }
@@ -445,7 +496,7 @@ class VerifyEmailRoute extends _i15.PageRouteInfo<VerifyEmailRouteArgs> {
 class VerifyEmailRouteArgs {
   const VerifyEmailRouteArgs({this.key, required this.email});
 
-  final _i16.Key? key;
+  final _i17.Key? key;
 
   final String email;
 

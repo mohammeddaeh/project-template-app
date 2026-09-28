@@ -299,7 +299,6 @@
   "serverError": "خطأ في الخادم",
   "serverUnreachable": "تعذّر الوصول إلى الخادم. اتصالك بالشبكة يعمل، غير أنّ الخادم لا يستجيب حالياً.",
   "serviceUnavailable": "الخدمة غير متاحة مؤقتاً بسبب ضغط أو صيانة.",
-
   "sessionExpiredMessage": "انتهت جلستك، سجّل الدخول من جديد",
   "sessionGuardBiometricReason": "أثبت هويتك لفتح التطبيق",
   "sessionGuardConfirmPinTitle": "أكِّد رقم القفل",
@@ -380,5 +379,15 @@
   "welcomeGreetingAnon": "أهلاً بك",
   "welcomeReady": "حسابك جاهز على هذا الجهاز",
   "yAgo": "سنة مضت",
-  "yesterday": "أمس"
+  "yesterday": "أمس",
+  "rememberAccountTitle": "حفظ بريدك على هذا الجهاز؟",
+  "rememberAccountMessage": "في المرة القادمة تنقر صورتك وتُدخل كلمة المرور فقط. كلمة المرور لا تُحفظ.",
+  "notNow": "ليس الآن",
+  "remove": "إزالة",
+  "forgetAccountTitle": "إزالة الحساب المحفوظ؟",
+  "forgetAccountMessage": "يُحذف البريد من هذا الجهاز فقط — حسابك وبياناتك لا تتأثر، وتستطيع الدخول به متى شئت.",
+  "chooseSavedAccount": "الدخول السريع",
+  "orLoginWithAnotherAccount": "أو سجّل الدخول بحساب آخر",
+  "continueLabel": "متابعة",
+  "notThisAccount": "لست صاحب هذا الحساب؟"
 }

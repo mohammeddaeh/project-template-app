@@ -91,6 +91,14 @@ class DataOriginGuard {
     );
     _session.clearSession();
     await _accountData.clearForSignOut();
+    // الحساباتُ المحفوظة تنجو من الخروج عمداً (`clearForSignOut` لا يلمسها)،
+    // لكنها **عناوينُ على ذلك الخادم**: بطاقةٌ تبقى بعد تبدّله تَعِد بدخولٍ
+    // لحسابٍ قد لا يوجد هنا. راجع `RememberedAccountsRepository`.
+    try {
+      await _storage.delete(PersistenceKeys.rememberedAccounts);
+    } catch (e) {
+      LogService.warning('Could not clear remembered accounts: $e', tag: _tag);
+    }
     await _write(current);
     return true;
   }

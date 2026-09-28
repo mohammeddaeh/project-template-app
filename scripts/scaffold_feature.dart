@@ -830,7 +830,7 @@ class ___Feature__FormScreenState extends State<__Feature__FormScreen> {
 
   void _submit(BuildContext context) {
     setState(() => _submitted = true);
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.validateAndReveal()) return;
     if (_isLoading) return;
     context.unfocus();
     setState(() => _isLoading = true);

@@ -91,6 +91,7 @@ export 'inputs/app_search_bar.dart';
 export 'inputs/list_filter_bar.dart';
 export 'inputs/app_select_field.dart';
 export 'inputs/chip_row.dart';
+export 'inputs/form_reveal.dart';
 
 // Navigation
 export 'navigation/app_tab_bar.dart';

@@ -78,7 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _submit() {
     if (_registerCubit.state is RegisterLoading) return;
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!_formKey.validateAndReveal()) return;
     context.unfocus();
     _registerCubit.submit(
       email: _emailController.text.trim(),

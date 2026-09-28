@@ -7,7 +7,16 @@ extension ContextExtensions on BuildContext {
 
   EdgeInsets get screenPadding => MediaQuery.of(this).padding;
 
-  double get keyboardHeight => MediaQuery.of(this).viewInsets.bottom;
+  /// ارتفاع الكيبورد الظاهر الآن — صفر حين يكون مغلقاً.
+  ///
+  /// **اسمٌ واحد لقيمة واحدة**: كانت لها ثلاث تسميات (`keyboardHeight` ·
+  /// `bottomInsetsPadding` · قراءة `viewInsets` مباشرة)، واثنتان منها **بلا أي
+  /// مستدعٍ** — وهكذا بقيت الصحيحة غير مستعملة بينما كانت الأوراق السفلية تحشو
+  /// بـ[bottomPadding] (شريط الإيماءات) وتُخفي آخر حقل خلف الكيبورد.
+  ///
+  /// يُقرأ **داخل `build`** لا عند فتح الورقة: القيمة تتغيّر مع كل إطار من
+  /// ظهور الكيبورد، فقراءتها مرة واحدة تُجمّدها على صفر.
+  double get keyboardInset => MediaQuery.viewInsetsOf(this).bottom;
 
   /// شريط الإيماءات/الأزرار الخاص بالنظام فقط.
   ///
@@ -43,8 +52,6 @@ extension ContextExtensions on BuildContext {
   /// صامت تماماً: الشاشة تُبنى وتُمرَّر ولا يُرمى شيء — تكتفي بألّا تُظهر آخرها.
   /// لذلك السلوك مثبَّت بـ`test/bottom_content_inset_test.dart` لا بالمراجعة.
   double get bottomContentInset => MediaQuery.of(this).padding.bottom;
-
-  double get bottomInsetsPadding => MediaQuery.of(this).viewInsets.bottom;
 
   double get topPadding => MediaQuery.of(this).viewPadding.top;
 

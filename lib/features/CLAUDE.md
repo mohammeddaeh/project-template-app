@@ -423,7 +423,7 @@ String? _validatePassword(String? v) {
 
 ```dart
 void _submit(BuildContext context) {
-  if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.validateAndReveal()) return; // لا validate() — راجع 21_WIDGETS_USAGE §33
   context.unfocus();
   context.read<MyCubit>().submit(...);
 }
@@ -447,7 +447,7 @@ Form(
 // في _submit():
 void _submit(BuildContext context) {
   setState(() => _submitted = true);  // ← يُفعّل validation المرئي
-  if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.validateAndReveal()) return; // لا validate() — راجع 21_WIDGETS_USAGE §33
   if (_isLoading) return;             // ← يمنع Double Submit
   context.unfocus();
   setState(() => _isLoading = true);
@@ -470,7 +470,7 @@ PrimaryButton(
 - [ ] `KeyboardDismissWidget` + `SingleChildScrollView`
 - [ ] `_isLoading` + `_submitted` مُعرَّفان في الـ state
 - [ ] `Form.autovalidateMode` يعتمد على `_submitted`
-- [ ] `_submit()` تستدعي `validate()` ثم `unfocus()` ثم تتحقق `_isLoading`
+- [ ] `_submit()` تستدعي `validateAndReveal()` (لا `validate()`) ثم `unfocus()` ثم تتحقق `_isLoading`
 - [ ] كل Controller: `initState` + `dispose`
 - [ ] الزر: `isEnabled: !_isLoading` + `onTap: null` أثناء الطلب
 - [ ] أخطاء API: `context.feedback.error(msg)` لا في validator

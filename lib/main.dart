@@ -1,6 +1,8 @@
 ﻿import 'dart:async';
 import 'package:app_template/features/startup/startup_resolver.dart';
 import 'package:app_template/features/auth/shared/current_user_repository.dart';
+import 'package:app_template/features/auth/shared/remembered_accounts_repository.dart';
+import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/infra/session/data_origin_guard.dart';
 
@@ -98,6 +100,14 @@ Future<void> _bootstrap() async {
     getIt<CurrentUserRepository>(),
     getIt<DataOriginGuard>(),
   ).resolve();
+
+  // **بعد** `resolve` لا قبله: [DataOriginGuard] قد يمسح الجهاز حين يتبدّل
+  // الخادم، والحسابات المحفوظة من خادمٍ آخر لا تُعرض. وقبل `runApp` لأن شاشة
+  // الدخول تقرّر تخطيطها من هذه القائمة بأول إطار — قراءةٌ متأخّرة ترسم
+  // النموذج ثم تُدخل الصفّ فوقه.
+  if (AppFeatures.rememberedAccounts) {
+    await getIt<RememberedAccountsRepository>().ensureLoaded();
+  }
 
   // ── Run ───────────────────────────────────────────────────────────────────
   runApp(

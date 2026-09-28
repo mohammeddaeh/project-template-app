@@ -1,6 +1,7 @@
 ﻿import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
 import 'dart:async';
 
+import 'package:app_template/core/infra/session/auth_event_bus.dart';
 import 'package:app_template/core/platform/storage/persistence_keys.dart';
 import 'package:app_template/core/platform/storage/secure_storage_service.dart';
 import 'package:injectable/injectable.dart';
@@ -56,9 +57,17 @@ class SessionRepository implements AuthNetworkGateway {
   }
 
   /// Persists the token after successful login — call from the login feature.
+  ///
+  /// Re-arms [AuthEventBus] here, because a new token **is** a new session.
+  /// The bus fires `sessionExpired` once per session so a burst of 401s
+  /// navigates once — and nothing else called the re-arm, so the first expiry
+  /// of a launch routed to sign-in and every later one was swallowed: token
+  /// cleared, app left on a shell with no identity. Pinned by
+  /// `test/auth_event_rearm_test.dart` (found in Qirtas, 2026-09).
   Future<void> saveToken(String token) async {
     _cachedToken = token;
     await _secureStorage.write(PersistenceKeys.token, token);
+    AuthEventBus.instance.resetSessionState();
     _emit(token);
   }
 

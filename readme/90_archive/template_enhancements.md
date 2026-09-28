@@ -21,7 +21,9 @@
 
 **ومصدر الأدلة**: مسارات مثل `Features/admin/roles/...` تخصّ **قرطاس**، وتُذكر شاهداً على أن العطل وقع فعلاً — لا تعليماتِ تنفيذ داخل القالب. أما «طريقة الدمج» بكل بند فمكتوبة للقالب.
 
-**آخر مزامنة من قرطاس: 2026-08-10** — الطبقة الأساسية (18 · 19 · 23 · 24 · 27 · 28 · 43)، ثم الفرونت (13 · 14 · 17 · 25 · 26 · 32)، ثم الباك (20 · 21 · 33)، ثم CI (09)، ثم **حزمة `auth`** (15 · 16 بمستهلك حيّ).
+**آخر مزامنة من قرطاس: 2026-09-28** — أعطال القالب الأربعة التي أصلحها قرطاس (44 · 45 · 46 · 47)، ثم الحسابات المحفوظة (52) و`validateAndReveal` (54). وسُجّل الباقي مرشّحاً. راجع «جولة 2026-09-28» تحت جدول الحالة.
+
+**المزامنة السابقة: 2026-08-10** — الطبقة الأساسية (18 · 19 · 23 · 24 · 27 · 28 · 43)، ثم الفرونت (13 · 14 · 17 · 25 · 26 · 32)، ثم الباك (20 · 21 · 33)، ثم CI (09)، ثم **حزمة `auth`** (15 · 16 بمستهلك حيّ).
 
 > **قاعدة الاتجاه — تمنع التباعد الصامت**: أي ملف مشترك بين القالب ومشروع قائم يُعدَّل **بالقالب أولاً** ثم يُنسخ للمشروع، لا العكس. العكس هو ما جعل القالب يتأخّر ٣١ بنداً منذ تموز.
 >
@@ -116,6 +118,46 @@
 > `—` = لا ينطبق: البند #01 تغييرٌ بـ`AndroidManifest.xml` وُلد بالقالب أصلاً.
 
 > **البنود 18–33 مستنتَجة من التطبيق العملي لمشروع قرطاس (٢٦ تموز – ١٠ آب ٢٠٢٦)** — لا اقتراحات نظرية. كل بند هنا سببه عطل حقيقي شُحن ثم اكتُشف، والسبب مذكور بنصّه داخل الكود المُشار إليه.
+
+### جولة 2026-09-28 — من قرطاس (44–60)
+
+> بين 2026-08-10 و2026-09-28 بُني بقرطاس كودٌ عام كثير **ولم يصل القالب** — عكس «قاعدة الاتجاه» أعلاه. المقارنة: قائمة `test/` وقائمة `shared/widgets/` بالمشروعين، ثم بحثٌ عن كل رمز بالقالب.
+
+**أ) أعطال كانت بالقالب نفسه — نُقلت إصلاحاتها مع اختباراتها:**
+
+| # | العطل | قرطاس | **القالب** | الإصلاح |
+|---|---|---|---|---|
+| **44** | الخروج الثاني بنفس التشغيل لا يفعل شيئاً — `resetSessionState()` بلا مستدعٍ فالحافلة تبتلع كل `sessionExpired` بعد الأول | ✅ | **✅** | `SessionRepository.saveToken` يعيد التسليح + `test/auth_event_rearm_test.dart` |
+| **45** | منتقي التاريخ ينهار بخطّ نظامٍ مصغَّر — أرضية `0.9` بـ`ResponsiveScope` تساوي سقف `_DatePickerHeader` فيفشل `maxScale > minScale` | ✅ | **✅** | سقف ١٫٣ بلا أرضية + `test/text_scale_clamp_test.dart` + `22_RESPONSIVE.md` |
+| **46** | الورقة السفلية عمياء عن الكيبورد — السقف يُحسب مرة من شاشة لا تنكمش، والحشوة `viewPadding` لا `viewInsets`، و`max`+`Expanded` تفتح كل ورقة بـ٩٠٪ بمدى تمرير صفر | ✅ | **✅** | `AppBottomSheet` + `BaseBottomSheet` + `context.keyboardInset` (حُذف `keyboardHeight`/`bottomInsetsPadding` — بلا مستدعٍ) + `test/bottom_sheet_sizing_test.dart` |
+| **47** | `ConnectivityOverlay` مكتوب وموصول بـ`ConnectivityCubit` وغير مركَّب بأي مكان — والتوثيق يصف وسيط `child` غير موجود | ✅ | **✅** | `_ConnectivityLayer` داخل `MaterialApp.builder` تحت `Positioned.fill` (بلا اختبار: التركيب يُرى بالتشغيل) |
+
+**ب) أنماط عامة — مرشَّحة، لم تُنقل بعد:**
+
+| # | النمط | قرطاس | القالب | ما يلزم قبل النقل |
+|---|---|---|---|---|
+| 48 | **سبب انتهاء الجلسة** — `session_end_reason.dart` + `sessionEndFor` + `401 session_revoked` بـ`data.revoke_reason` (جدول `session_tombstones`) | ✅ | ⛔ | **محجوب بالباك**: `backend_template` لا يُصدر `revoke_reason`، فالعميل وحده يسمّي سبباً لا يصله |
+| 49 | **موزّع أحداث الإشعار** `PushEventDispatcher` (حجز الضغطة حتى يهبط الإقلاع) + `PushTokenRegistrar` + `ForegroundNotificationPresenter` + `push_event_dispatcher_test` | ✅ | ⬜ | الموزّع نقيّ ويُنقل وحده؛ المسجِّل يحتاج endpoint رموز الأجهزة بالباك |
+| 50 | **الحذف مقابل الأرشفة** — `RecordRemovalSection` + `is_deletable`/`is_archivable`/`archived_at` + `records.archive` + `record_archive_test` | ✅ | ⛔ | **محجوب بالباك**: لا أعمدة ولا أحكام إزالة بـ`backend_template` |
+| 51 | **الخروج حالة لا حدث** + جدول وجهات واحد `authLandingRoute`/`signedOutLandingRoute` | ✅ | ⬜ | القالب بلا splash (`StartupResolver`) — يُطابَق مع قرار الإقلاع هناك |
+| **52** | **الحسابات المحفوظة بشاشة الدخول** `RememberedAccountsRepository` (هوية فقط، `remember` ≠ `touch`) + اختباره | ✅ | **✅** | خلف `AppFeatures.rememberedAccounts` (**مطفأ** — قرار منتج: هاتف شخصي ≠ جهاز مشترك). `login_outcome.dart` يوحّد «ما بعد القبول» للشاشتين · `AccountLoginScreen` (`/login/account`) · `RememberedAccountsSection` يفحص العلم بنفسه · يُحمَّل بـ`main()` بعد `StartupResolver`. **وانحراف عن قرطاس**: `DataOriginGuard` يمحو القائمة حين يتبدّل الخادم — بطاقاتٌ من خادمٍ آخر تَعِد بحسابات قد لا توجد (وُلد هنا ونُقل لقرطاس 2026-09-28) |
+| 53 | **سطر حالة تحت المنتقي** `CatalogStatusLine` + `CatalogStatus.fromFailure` (تحميل · فشل · انقطاع · فارغ) | ✅ | ⬜ | **لا مستهلك بعد**: لا منتقٍ بالقالب يحمّل قائمته من الخادم (خيارات `data_transfer` تصل مع المورد). يُنقل مع أول منتقٍ كهذا، لا قبله |
+
+**ج) ودجات مشتركة — مرشَّحة:**
+
+| # | الودجة | قرطاس | القالب | ملاحظة |
+|---|---|---|---|---|
+| **54** | `form_reveal.dart` (`validateAndReveal`) + `form_reveal_test` | ✅ | **✅** | المستهلكون: شاشات `auth` الست + نموذج `scaffold_feature` + نمط `_submit` بـ`features/CLAUDE.md`. التوثيق `21_WIDGETS_USAGE` §33 |
+| 55 | `PhoneTextField` + `phone_field_rule_test` | ✅ | ⬜ | القاعدة سورية مكتوبة داخله — تُمرَّر إعداداً قبل النقل |
+| 56 | `ColorPickerField` + `color_hex_test` | ✅ | ⬜ | — |
+| 57 | `QuantityStepper` (`removeAtOne`) | ✅ | ⬜ | — |
+| 58 | `media/barcode_scanner.dart` خلف `AppFeatures.camera` | ✅ | ⬜ | — |
+| 59 | `InheritableSelectField` («يرث» خيارٌ أول مع ما يرثه) | ✅ | ⬜ | يعيش بـ`Features/admin/catalog/` هناك — يُستخرج لـ`ui/widgets/` |
+| 60 | `magnitude_bar` · `signal_card` · `app_version_footer` | ✅ | ⬜ | ثانوية |
+
+> **55–60 بلا مستهلك بالقالب** (لا حقل هاتف ولا لون ولا كمية ولا مسح): نقلُ أيٍّ منها الآن يصنع بالضبط «المبنيّ بلا مستهلك». يُنقل كلٌّ مع أول شاشة تحتاجه.
+>
+> **لا يُنقل**: المتجر والصندوق والمخزون والطباعة والكتالوج والملكية · `org_matrix` · `AccessTier` (ضيف/زبون/موظف — إلا لقالب فيه عملاء) · #29 · #30.
 
 ### مرشَّحات من مختبر الودجات (34–42)
 
@@ -1780,6 +1822,7 @@ abstract final class AppFeatures {
   static const localNotifications  = false;
   static const offlineSync         = false;
   static const multiDevice         = false;
+  static const rememberedAccounts  = false;  // ← #52 (أُضيف 2026-09-28)
 
   // ── Firebase-backed ──  (تحتاج google-services.json / GoogleService-Info.plist)
   static const crashReporting      = false;  // ← #05

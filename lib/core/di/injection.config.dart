@@ -139,6 +139,8 @@ import 'package:app_template/features/auth/register/presentation/cubits/register
     as _i498;
 import 'package:app_template/features/auth/shared/current_user_repository.dart'
     as _i258;
+import 'package:app_template/features/auth/shared/remembered_accounts_repository.dart'
+    as _i1063;
 import 'package:app_template/features/auth/shared/session_sync_service.dart'
     as _i35;
 import 'package:app_template/features/auth/shared/token_refresh_gateway_impl.dart'
@@ -373,6 +375,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i258.CurrentUserRepository>(
       () => _i258.CurrentUserRepository(gh<_i104.StorageService>()),
+    );
+    gh.singleton<_i1063.RememberedAccountsRepository>(
+      () => _i1063.RememberedAccountsRepository(gh<_i104.StorageService>()),
     );
     gh.lazySingleton<_i524.LogoutRepository>(
       () => _i813.LogoutRepositoryImpl(

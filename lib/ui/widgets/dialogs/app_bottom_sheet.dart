@@ -49,7 +49,6 @@ class AppBottomSheet {
   }) {
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final screenHeight = MediaQuery.sizeOf(context).height;
     // **عرضٌ محدود وموسَّط على اللوح.**
     //
     // ورقةٌ سفلية تعبر ١٢٨٠ بكسل ليست ورقةً بل شريطٌ يقطع الشاشة: زرّاها
@@ -69,16 +68,20 @@ class AppBottomSheet {
       enableDrag: true,
       showDragHandle: false,
       useSafeArea: true,
-      constraints: BoxConstraints(
-        maxHeight: screenHeight * maxHeightFraction,
-        maxWidth: maxWidth,
-      ),
+      // **العرض وحده هنا؛ الارتفاع داخل الـbuilder.**
+      //
+      // قيد يُبنى مرة واحدة عند الفتح لا يعرف شيئاً عن الكيبورد: كان السقف
+      // `screenHeight * 0.9` محسوباً من شاشة **لا تنكمش** حين يظهر، فتدّعي
+      // الورقة ارتفاعاً ثلثه السفلي مرسوم تحته. السقف صار يُحسب مع كل إطار من
+      // `MediaQuery` الخاص بالمحتوى، فينكمش معه.
+      constraints: BoxConstraints(maxWidth: maxWidth),
       builder: (_) => _AppBottomSheetContent(
         title: title,
         titleWidget: titleWidget,
         isScrollable: isScrollable,
         showDivider: showDivider,
         contentPadding: contentPadding,
+        maxHeightFraction: maxHeightFraction,
         child: child,
       ),
     );
@@ -96,6 +99,7 @@ class _AppBottomSheetContent extends StatelessWidget {
     this.titleWidget,
     required this.isScrollable,
     required this.showDivider,
+    required this.maxHeightFraction,
     this.contentPadding,
   });
 
@@ -104,15 +108,31 @@ class _AppBottomSheetContent extends StatelessWidget {
   final Widget? titleWidget;
   final bool isScrollable;
   final bool showDivider;
+  final double maxHeightFraction;
   final EdgeInsets? contentPadding;
 
   @override
   Widget build(BuildContext context) {
-    final effectivePadding = contentPadding ??
-        EdgeInsets.fromLTRB(24, 0, 24, 24 + context.bottomPadding);
+    // **ارتفاع الكيبورد يدخل الحشوة، لا `viewPadding`.**
+    //
+    // كانت الحشوة `24 + context.bottomPadding` — وهذا شريط إيماءات النظام، لا
+    // الكيبورد. والأسوأ أن `SafeArea` تحت هذا الودجت تقرأ `padding.bottom`
+    // التي **تهبط إلى صفر** أثناء فتح الكيبورد، فيختفي آخر حقل خلفه: حقل السعر
+    // بآخر الورقة يُكتب فيه أعمى. يُقرأ هنا لا في `show()` — القيمة تتغيّر مع
+    // كل إطار من ظهور الكيبورد، و`show()` تُنفَّذ مرة واحدة.
+    final keyboardInset = context.keyboardInset;
+    final effectivePadding =
+        (contentPadding ?? EdgeInsets.fromLTRB(24, 0, 24, 24 + context.bottomPadding))
+            .copyWith(bottom: (contentPadding?.bottom ?? (24 + context.bottomPadding)) + keyboardInset);
 
     final body = Column(
-      mainAxisSize: isScrollable ? MainAxisSize.max : MainAxisSize.min,
+      // **دائماً `min`.**
+      //
+      // كانت `max` مع `Expanded` داخل قيد فضفاض، فتتمدّد الورقة إلى السقف مهما
+      // كان محتواها: ورقةٌ فيها سطران تُفتح بطول قائمة كاملة. والأسوأ أن مدى
+      // التمرير يصير **صفراً** (المحتوى = الورقة)، فحتى السحب لا يرفع حقلاً
+      // اختفى خلف الكيبورد — لا رفع ولا تمرير.
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Drag handle
@@ -144,7 +164,10 @@ class _AppBottomSheetContent extends StatelessWidget {
 
         // المحتوى
         if (isScrollable)
-          Expanded(
+          // `Flexible(loose)` لا `Expanded`: يأخذ مقاس المحتوى، ولا يُشغَّل
+          // التمرير إلا حين يتجاوزه السقف. السقف حدٌّ أعلى، لا ارتفاعٌ مطلوب.
+          Flexible(
+            fit: FlexFit.loose,
             child: SingleChildScrollView(
               padding: effectivePadding,
               child: child,
@@ -160,7 +183,14 @@ class _AppBottomSheetContent extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: body,
+      child: ConstrainedBox(
+        // السقف يُحسب من الشاشة **ناقص الكيبورد**، فلا يبقى جزء من الورقة
+        // مرسوماً تحته حين يطول المحتوى.
+        constraints: BoxConstraints(
+          maxHeight: (context.sh - keyboardInset) * maxHeightFraction,
+        ),
+        child: body,
+      ),
     );
   }
 }

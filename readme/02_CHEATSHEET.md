@@ -407,6 +407,7 @@ res.fold((failure) {
 | `camera` · `microphone` · `location` · `photos` · `contacts` · `bluetooth` … | أذونات المنصّة — ثم `sync_platform_permissions.dart` |
 | `offlineSync` | ⛔ **مطفأ** — المحرّك كامل ويُشحن ساكناً: إشعالُه بلا محوّلِ شريحةٍ يترك التطبيق يعمل على الشبكة **بلا انهيارٍ ولا تحذير**. راجع [`lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) |
 | `accessControl` · `multiDevice` | موديولات `lib/modules/` — **مطفأة** |
+| `rememberedAccounts` | صفّ الحسابات المحفوظة فوق نموذج الدخول + سؤال «احفظ بريدك؟» بعد أول دخول. **مطفأ** — هوية فقط بلا كلمة مرور، والقائمة تنجو من الخروج. راجع `RememberedAccountsRepository` |
 | `dataTransfer` | ✅ **مُشعَل** — شاشتاه تُبنيان من ردّ الخادم، فلا Dart لكل مورد. راجع [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
 
 ---

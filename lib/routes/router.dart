@@ -36,6 +36,12 @@ class AppRouter extends RootStackRouter {
     // AuthEventBus and does `replaceAll([LoginRoute()])` when a session
     // expires, so this entry is load-bearing far beyond the login screen.
     AutoRoute(page: LoginRoute.page, path: '/login'),
+    // Password for a saved account (`AppFeatures.rememberedAccounts`). Literal
+    // path, no `:email`: the screen is reached by tapping a card the login
+    // screen already holds, and it carries the whole `RememberedAccount` in its
+    // constructor — a path parameter would advertise a deep link into
+    // someone's sign-in screen from an address anyone could type.
+    AutoRoute(page: AccountLoginRoute.page, path: '/login/account'),
     AutoRoute(page: RegisterRoute.page, path: '/register'),
     AutoRoute(page: ForgotPasswordRoute.page, path: '/forgot-password'),
     AutoRoute(page: ResetPasswordRoute.page, path: '/reset-password'),

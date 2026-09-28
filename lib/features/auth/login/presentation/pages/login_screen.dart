@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/features/auth/login/presentation/cubits/login_cubit.dart';
-import 'package:app_template/features/auth/shared/entities/auth_user.dart';
+import 'package:app_template/features/auth/login/presentation/login_outcome.dart';
+import 'package:app_template/features/auth/login/presentation/widgets/remembered_accounts_section.dart';
+import 'package:app_template/features/auth/login/presentation/widgets/sign_up_prompt.dart';
+import 'package:app_template/features/auth/shared/remembered_accounts_repository.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/ui/extensions/extensions.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
@@ -29,11 +34,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final _refreshCubit = RefreshCubit();
 
   late final LoginCubit _loginCubit;
+  late final RememberedAccountsRepository _remembered;
 
   @override
   void initState() {
     super.initState();
     _loginCubit = getIt<LoginCubit>();
+    _remembered = getIt<RememberedAccountsRepository>();
   }
 
   @override
@@ -51,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _submit() {
     if (_loginCubit.state is LoginLoading) return;
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!_formKey.validateAndReveal()) return;
     context.unfocus();
     _loginCubit.login(
       email: _emailController.text.trim(),
@@ -61,32 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onStateChanged(BuildContext context, LoginState state) {
     state.maybeWhen(
-      // A successful sign-in does not always mean "go into the app".
-      //
-      // `pendingApproval` and `rejected` are successes at the credential level
-      // and dead ends at the account level: the password was right and there is
-      // nothing inside to show them. Routing them to the main shell lands them
-      // on an app whose every screen refuses them, with no explanation.
-      //
-      // This template ships no approval flow, so everyone goes to the shell.
-      // If your project has one, add a status screen and switch here:
-      //
-      //   switch (entity.user.status) {
-      //     AuthUserStatus.pendingApproval ||
-      //     AuthUserStatus.rejected => const RegistrationStatusRoute(),
-      //     _ => const MainShellRoute(),
-      //   }
-      //
-      // `pendingVerification` IS wired, because the backend ships it: such an
-      // account signs in successfully and belongs on the code screen — the one
-      // destination it can act on. Refusing the session instead would leave
-      // someone holding an account they can neither use nor repair.
-      success: (entity) => context.router.replaceAll([
-        if (entity.user.status == AuthUserStatus.pendingVerification)
-          VerifyEmailRoute(email: entity.user.email)
-        else
-          const MainShellRoute(),
-      ]),
+      // Where each account status lands — and the save prompt — live in
+      // `handleLoginSuccess`, shared with `AccountLoginScreen`. See there.
+      success: (entity) => unawaited(
+        handleLoginSuccess(context, entity, remembered: _remembered),
+      ),
       error: (message) => context.feedback.error(message),
       orElse: () {},
     );
@@ -129,6 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: context.colors.textMuted,
                         ),
                       ),
+                      const RememberedAccountsSection(),
                       const SizedBox(height: 40),
                       CustomTextField(
                         controller: _emailController,
@@ -198,27 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // `push`, not `replace`: coming back from registration
-                      // must return to a sign-in screen that still has the
-                      // address typed in it.
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            LocaleKeys.dontHaveAccount.tr(),
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: context.colors.textMuted,
-                            ),
-                          ),
-                          PrimaryButton(
-                            text: LocaleKeys.createAccount.tr(),
-                            isTextOnly: true,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            onTap: () =>
-                                context.router.push(const RegisterRoute()),
-                          ),
-                        ],
-                      ),
+                      const SignUpPrompt(),
                       if (kDebugMode)
                         Center(
                           child: PrimaryButton(

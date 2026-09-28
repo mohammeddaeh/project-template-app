@@ -159,6 +159,25 @@ abstract final class AppFeatures {
   /// this file; this one made a reader hunt.
   static const inAppUpdates = false;
 
+  /// Offer to remember an account on this device after a successful sign-in,
+  /// and show saved accounts as a compact row above the login form.
+  ///
+  /// **Identity only** — email, name, recency. No password, no token: a saved
+  /// card skips the email field and nothing else. See
+  /// `RememberedAccountsRepository`.
+  ///
+  /// **When true**: the first sign-in of an account asks "remember it?"; a yes
+  /// adds a card to the login screen, and tapping the card opens a password-only
+  /// screen. The list survives sign-out by design — it describes *who has signed
+  /// in here before*, not who is signed in now.
+  ///
+  /// **When false**: no prompt, no row, nothing read or written. The login
+  /// screen is exactly the plain form. Off by default because it is a product
+  /// decision: welcome on a personal phone, unwanted on a kiosk.
+  ///
+  /// Ported from Qirtas (built on this template), 2026-09-28.
+  static const rememberedAccounts = false;
+
   /// Enable the local session lock (PIN and/or biometrics) after idle/background.
   ///
   /// **When true**: `SessionGuardGate` (mounted at the shell) locks the app —

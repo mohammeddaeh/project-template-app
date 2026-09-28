@@ -383,5 +383,15 @@ abstract class  LocaleKeys {
   static const welcomeReady = 'welcomeReady';
   static const yAgo = 'yAgo';
   static const yesterday = 'yesterday';
+  static const rememberAccountTitle = 'rememberAccountTitle';
+  static const rememberAccountMessage = 'rememberAccountMessage';
+  static const notNow = 'notNow';
+  static const remove = 'remove';
+  static const forgetAccountTitle = 'forgetAccountTitle';
+  static const forgetAccountMessage = 'forgetAccountMessage';
+  static const chooseSavedAccount = 'chooseSavedAccount';
+  static const orLoginWithAnotherAccount = 'orLoginWithAnotherAccount';
+  static const continueLabel = 'continueLabel';
+  static const notThisAccount = 'notThisAccount';
 
 }

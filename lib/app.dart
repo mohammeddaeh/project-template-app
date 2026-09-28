@@ -23,6 +23,8 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/deep_link_resolver.dart';
 import 'package:app_template/routes/router.dart';
 import 'package:app_template/routes/router.gr.dart';
+import 'package:app_template/ui/state/connectivity/connectivity_cubit.dart';
+import 'package:app_template/ui/widgets/connectivity/connectivity_overlay.dart';
 import 'package:app_template/ui/widgets/layout/flavor_banner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -241,10 +243,12 @@ class _AppState extends State<App> {
                   ),
                   // **مقاييسُ الشاشة تُحسب هنا، فوق كلّ مسارٍ وحوارٍ وورقة** —
                   // ومعها يُقيَّد «تكبير الخط» الآتي من إعدادات النظام. راجع
-                  // [ResponsiveScope] لسبب الحدَّين ٠٫٩ و١٫٣.
+                  // [ResponsiveScope] لسبب السقف ١٫٣ وغياب الأرضية.
                   child: ResponsiveScope(
                     child: FlavorBanner(
-                      child: child ?? const SizedBox.shrink(),
+                      child: _ConnectivityLayer(
+                        child: child ?? const SizedBox.shrink(),
+                      ),
                     ),
                   ),
                 );
@@ -252,6 +256,37 @@ class _AppState extends State<App> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Mounts the app-wide offline signal over every route.
+///
+/// [ConnectivityOverlay] and its three widgets were written, documented, and
+/// wired to a registered [ConnectivityCubit] — and then mounted nowhere. So the
+/// app's answer to "the network stopped" was whatever each individual screen
+/// happened to do about it. Found first in Qirtas (built on this template),
+/// where the gap had shipped; mounted here the same way.
+///
+/// It sits inside `MaterialApp.builder` so it covers every route including
+/// dialogs and sheets, and under `Positioned.fill` because the overlay's own
+/// children are positioned — given loose constraints it would collapse to
+/// nothing and place its banner off-screen.
+class _ConnectivityLayer extends StatelessWidget {
+  const _ConnectivityLayer({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<ConnectivityCubit>.value(
+      value: getIt<ConnectivityCubit>(),
+      child: Stack(
+        children: [
+          child,
+          const Positioned.fill(child: ConnectivityOverlay()),
+        ],
       ),
     );
   }

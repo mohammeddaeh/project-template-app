@@ -65,9 +65,9 @@ extension ShowAppBottomSheet on BuildContext {
     FocusManager.instance.primaryFocus?.unfocus();
 
     final ratio = maxHeightRatio ?? size.maxHeightRatio;
-    final screenHeight = MediaQuery.sizeOf(this).height;
 
     final sheet = BaseBottomSheet(
+      maxHeightRatio: ratio,
       title: title,
       titleWidget: titleWidget,
       actions: actions,
@@ -86,9 +86,9 @@ extension ShowAppBottomSheet on BuildContext {
       enableDrag: true,
       showDragHandle: false,
       useSafeArea: true,
-      constraints: BoxConstraints(
-        maxHeight: ratio >= 1.0 ? double.infinity : screenHeight * ratio,
-      ),
+      // الارتفاع يُقيَّد داخل [BaseBottomSheet] — قيدٌ يُبنى هنا مرة واحدة لا
+      // يرى الكيبورد، ولا ينكمش معه. (وكان `double.infinity` مع `ratio >= 1.0`
+      // يعني ورقة بلا سقف إطلاقاً.)
       builder: (_) => sheet,
     );
   }
@@ -107,6 +107,7 @@ class BaseBottomSheet extends StatelessWidget {
     this.isScrollable = true,
     this.bottomPadding,
     this.showTopLine = true,
+    this.maxHeightRatio = 0.9,
   }) : assert(
          child == null || actions == null,
          'لا تستخدم child و actions معاً.',
@@ -127,19 +128,29 @@ class BaseBottomSheet extends StatelessWidget {
   final double? bottomPadding;
   final bool showTopLine;
 
+  /// **سقف** الارتفاع كنسبة من الشاشة (ناقصاً الكيبورد) — لا ارتفاعاً مطلوباً.
+  final double maxHeightRatio;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final theme = Theme.of(context);
     final effectiveBottom = bottomPadding ?? config.bottomPadding;
+    // الكيبورد يدخل الحشوة — نفس علّة `AppBottomSheet`: `bottomPadding` شريط
+    // إيماءات، و`SafeArea` تحته تهبط لصفر وقت الكتابة.
+    final keyboardInset = context.keyboardInset;
     final effectivePadding =
-        padding ??
-        EdgeInsets.fromLTRB(
-          config.horizontalPadding,
-          0,
-          config.horizontalPadding,
-          effectiveBottom + context.bottomPadding,
-        );
+        (padding ??
+                EdgeInsets.fromLTRB(
+                  config.horizontalPadding,
+                  0,
+                  config.horizontalPadding,
+                  effectiveBottom + context.bottomPadding,
+                ))
+            .copyWith(
+              bottom:
+                  (padding?.bottom ?? (effectiveBottom + context.bottomPadding)) + keyboardInset,
+            );
 
     final content = Column(
       mainAxisSize: MainAxisSize.min,
@@ -170,15 +181,22 @@ class BaseBottomSheet extends StatelessWidget {
 
     final columnChildren = <Widget>[
       if (showTopLine) _TopLine(parentContext: context, config: config),
-      if (isScrollable) Expanded(child: body) else body,
+      // `Flexible(loose)` لا `Expanded`، و`min` لا `max`: الورقة بمقاس محتواها،
+      // والتمرير لا يعمل إلا فوق السقف.
+      if (isScrollable) Flexible(fit: FlexFit.loose, child: body) else body,
     ];
 
     return SafeArea(
       top: false,
-      child: Column(
-        mainAxisSize: isScrollable ? MainAxisSize.max : MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: columnChildren,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: (context.sh - keyboardInset) * maxHeightRatio.clamp(0.1, 0.95),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: columnChildren,
+        ),
       ),
     );
   }

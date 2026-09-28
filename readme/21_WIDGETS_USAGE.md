@@ -44,6 +44,7 @@
 | `PressableScale` | تفاعل | §30 |
 | `StatusFeedbackIndicator` | تفاعل | §31 |
 | `GuideOverlay` | onboarding | §32 |
+| `validateAndReveal` | نماذج | §33 |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 
@@ -927,8 +928,12 @@ AppFilterSheet(
 const OfflineBanner()           // شريط أحمر أعلى الشاشة
 const SubtleOfflineDot()        // نقطة حمراء مضغوطة
 ReconnectCountdownChip(onRetry: _retry)   // chip مع عدّ تنازلي
-ConnectivityOverlay(child: Scaffold(...)) // طبقة تغطي الشاشة
 ```
+
+> `ConnectivityOverlay` **لا يُركَّب بشاشة، ولا يأخذ `child`**. هو مركَّب مرة
+> واحدة بـ`_ConnectivityLayer` داخل `MaterialApp.builder` بـ`app.dart`، تحت
+> `Positioned.fill`، فيغطي كل مسار وورقة. قبل 2026-09-28 كان مكتوباً وموصولاً
+> بـ`ConnectivityCubit` وغير مركَّب بأي مكان، والسطر هنا كان يصف وسيطاً غير موجود.
 
 ---
 
@@ -1214,6 +1219,36 @@ await GuideOverlay.show(
 
 ---
 
+## §33 · `validateAndReveal` — التمرير لأول حقل ناقص
+
+> امتداد على `GlobalKey<FormState>` بـ`ui/widgets/inputs/form_reveal.dart`، مُصدَّر بـ`widgets.dart`. نُقل من قرطاس (2026-09-28، بند #54).
+
+```dart
+// بدل: if (!(_formKey.currentState?.validate() ?? false)) return;
+if (!_formKey.validateAndReveal()) return;
+```
+
+`Form.validate()` تُعلّم الحقول الناقصة بالأحمر وتترك الشاشة حيث هي. بنموذج
+أطول من شاشة، القارئ يرى التوست ولا يرى الحقل — فيقرأ الرفض عطلاً («يقول
+مطلوب ولا أرى أين»). `validateAndReveal` تتحقق، ثم تمشي شجرة النموذج نفسها
+لتجد **أول** `FormFieldState` فاشل بترتيب الرسم، فتُمرّر إليه وتضع المؤشر فيه
+إن كان حقل كتابة.
+
+| القرار | لماذا |
+|---|---|
+| **بلا مفتاح لكل حقل** | كل حقول المكتبة تبني `FormField` داخلها، فالمشي عليها يكفي. قائمة مفاتيح يدوية تُنسى بأول حقل يُضاف، والنسيان صامت |
+| **الأول لا الأخير** | القارئ يُصلح من الأعلى للأسفل؛ القفز للأخير يُخفي ما قبله |
+| **المؤشر لحقل الكتابة وحده** | المنتقي لا `focusNode` له، والتمرير يكفيه |
+| **نقصٌ خارج الحقول يُظهره المستدعي** | قيمة لا يحرسها `FormField` لا حالة خطأ لها، فيُعلّمها المستدعي ثم يستدعي `revealFirstInvalid()` |
+| **⚠️ النموذج داخل `ListView`** | `ListView` يبني المرئي وحده، والحقل غير المبنيّ **لا يُتحقَّق منه أصلاً** — نموذج بحقول كثيرة يُحفظ بحقل مطلوب فارغ. استعمل `SingleChildScrollView + Column` بكل نموذج |
+
+يُثبَّت بـ`test/form_reveal_test.dart`: الفشل هنا **صامت** — التوست يظهر والحقل
+يحمرّ، والشاشة وحدها لا تتحرك.
+
+المستهلكون: شاشات `features/auth/` الست (الدخول · التسجيل · التحقق · نسيان/إعادة/تغيير كلمة المرور).
+
+---
+
 *Phase 4 — ExpandableSection · AppListTile · StatCard · StepProgressIndicator · 2026-06-30*
 *Phase 5 — AppButton · AppLabel · FeedbackStyle · 2026-06-30*
 *Phase 6 — AppProgress · GlyphCenter · 2026-09-10*
@@ -1221,3 +1256,4 @@ await GuideOverlay.show(
 *Phase 8 — ErrorBoundary · 2026-09-14*
 *Phase 9 — HijriDateText → AppDateText (هجري + ميلادي + تخطيط قابل للتشكيل بالكامل) · 2026-09-15*
 *Phase 10 — PressableScale · StatusFeedbackIndicator · GuideOverlay · 2026-09-17*
+*Phase 11 — validateAndReveal (من قرطاس) · 2026-09-28*

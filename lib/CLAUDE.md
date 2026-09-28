@@ -210,7 +210,7 @@ body: ResponsiveContentBox(
 | `context.sh * 0.08` فراغاً رأسياً | `ResponsiveGap(24)` + `minHeight` من `LayoutBuilder` |
 | `MediaQuery.of(context).size` بشاشة | `context.screen` |
 | `if (width > 600)` مكتوبةً بالشاشة | `s.isTablet` · `s.pick(...)` |
-| `textScaleFactor: 1.0` لإسكات كسرٍ بالتخطيط | `ResponsiveScope` يقيّده أصلاً (٠٫٩–١٫٣) — أصلح التخطيط |
+| `textScaleFactor: 1.0` لإسكات كسرٍ بالتخطيط | `ResponsiveScope` يقيّده أصلاً (سقف ١٫٣ بلا أرضية) — أصلح التخطيط |
 | `setPreferredOrientations` بشاشة | `OrientationPolicy` — الهاتف عموديٌّ واللوح بالاتجاهين، ويُقرَّر مركزياً |
 
 النِّسبةُ من الارتفاع **لا تتقلّص مع الكيبورد**، فتدفع الزرَّ خارج الحدّ على

@@ -63,7 +63,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   void _submit() {
     if (widget.cubit.state is ForgotPasswordLoading) return;
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!_formKey.validateAndReveal()) return;
     context.unfocus();
     widget.cubit.resetPassword(
       token: _codeController.text.trim(),

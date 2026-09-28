@@ -2,6 +2,15 @@ abstract class PersistenceKeys {
   static const String token = 'Token';
   static const String fcmToken = 'FcmToken';
 
+  // ── Remembered accounts (login screen account picker) ──────────────────────
+  /// JSON array of `RememberedAccount` — the addresses this device offers on
+  /// the login screen (`AppFeatures.rememberedAccounts`).
+  ///
+  /// **Deliberately not** in `AccountDataCleaner`'s list: it describes who has
+  /// signed in on this device before, which is exactly what must survive
+  /// sign-out. Identity only — never a password or token.
+  static const String rememberedAccounts = 'remembered_accounts';
+
   // ── Settings ───────────────────────────────────────────────────────────────
   static const String notificationsEnabled = 'notifications_enabled';
   static const String selectedFontKey      = 'selected_font_key';

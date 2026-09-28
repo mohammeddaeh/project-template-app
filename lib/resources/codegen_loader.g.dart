@@ -395,7 +395,17 @@ class CodegenLoader extends AssetLoader{
   "welcomeGreetingAnon": "أهلاً بك",
   "welcomeReady": "حسابك جاهز على هذا الجهاز",
   "yAgo": "سنة مضت",
-  "yesterday": "أمس"
+  "yesterday": "أمس",
+  "rememberAccountTitle": "حفظ بريدك على هذا الجهاز؟",
+  "rememberAccountMessage": "في المرة القادمة تنقر صورتك وتُدخل كلمة المرور فقط. كلمة المرور لا تُحفظ.",
+  "notNow": "ليس الآن",
+  "remove": "إزالة",
+  "forgetAccountTitle": "إزالة الحساب المحفوظ؟",
+  "forgetAccountMessage": "يُحذف البريد من هذا الجهاز فقط — حسابك وبياناتك لا تتأثر، وتستطيع الدخول به متى شئت.",
+  "chooseSavedAccount": "الدخول السريع",
+  "orLoginWithAnotherAccount": "أو سجّل الدخول بحساب آخر",
+  "continueLabel": "متابعة",
+  "notThisAccount": "لست صاحب هذا الحساب؟"
 };
 static const Map<String,dynamic> _en = {
   "SignUp": "Sign up",
@@ -778,7 +788,17 @@ static const Map<String,dynamic> _en = {
   "welcomeGreetingAnon": "Welcome",
   "welcomeReady": "Your account is ready on this device",
   "yAgo": "Y ago",
-  "yesterday": "Yesterday"
+  "yesterday": "Yesterday",
+  "rememberAccountTitle": "Save your email on this device?",
+  "rememberAccountMessage": "Next time you'll tap your picture and type only your password. Your password is never saved.",
+  "notNow": "Not now",
+  "remove": "Remove",
+  "forgetAccountTitle": "Remove saved account?",
+  "forgetAccountMessage": "This only removes the email from this device — your account and data are untouched, and you can sign in again any time.",
+  "chooseSavedAccount": "Quick sign-in",
+  "orLoginWithAnotherAccount": "Or sign in with another account",
+  "continueLabel": "Continue",
+  "notThisAccount": "Not this account?"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }

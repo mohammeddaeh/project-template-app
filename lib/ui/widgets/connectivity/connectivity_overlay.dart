@@ -13,12 +13,15 @@ enum _OfflinePhase { online, subtle, banner }
 
 /// Overlay شفاف يُركَّب فوق التطبيق ليعرض حالة الاتصال تلقائياً.
 ///
+/// **مركَّب مرة واحدة** بـ`_ConnectivityLayer` داخل `MaterialApp.builder`
+/// (`app.dart`) — لا تركّبه بشاشة. خارج `MaterialApp` لا `Directionality`
+/// ولا ثيم، وبقيود فضفاضة ينهار الـ`Stack` الداخلي لصفر:
+///
 /// ```dart
-/// // في app.dart داخل Stack الجذر
 /// Stack(
 ///   children: [
-///     MaterialApp.router(...),
-///     const ConnectivityOverlay(),
+///     child,
+///     const Positioned.fill(child: ConnectivityOverlay()),
 ///   ],
 /// )
 /// ```

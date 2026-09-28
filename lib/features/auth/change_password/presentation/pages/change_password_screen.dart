@@ -62,7 +62,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   void _submit() {
     if (_cubit.state is ChangePasswordLoading) return;
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!_formKey.validateAndReveal()) return;
     context.unfocus();
     _cubit.submit(
       currentPassword: _currentController.text,

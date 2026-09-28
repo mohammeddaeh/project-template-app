@@ -16,9 +16,27 @@ import 'package:app_template/ui/responsive/screen_metrics.dart';
 /// بالتصحيح، وشريطٌ مخطَّط بالإصدار — وهو أشيعُ عطلٍ يُبلَّغ عنه من الميدان
 /// ولا يظهر أبداً على جهاز المطوّر.
 ///
-/// [MediaQuery.withClampedTextScaling] يحصره بين ٠٫٩ و١٫٣: يبقى للمستخدم
-/// تكبيرٌ محسوس (+٣٠٪) ويبقى التخطيط قائماً. **ولا يُلغى التكبير بجعله ١٫٠** —
-/// ذلك يكسر تسهيلات الرؤية كاملةً لمن يحتاجها.
+/// [MediaQuery.withClampedTextScaling] يحصره بسقف ١٫٣: يبقى للمستخدم تكبيرٌ
+/// محسوس (+٣٠٪) ويبقى التخطيط قائماً. **ولا يُلغى التكبير بجعله ١٫٠** — ذلك
+/// يكسر تسهيلات الرؤية كاملةً لمن يحتاجها.
+///
+/// ## ولا أرضيةَ (`minScaleFactor`) — كانت ٠٫٩ فأسقطت منتقي التاريخ
+///
+/// كان القيد `[٠٫٩ – ١٫٣]`، فيرفع خطَّ من صغّر خطّ نظامه إلى ٠٫٩. ثم يأتي
+/// `_DatePickerHeader` بـMaterial فيحسب سقفه من المقياس **الحالي**:
+/// `min(currentScale, 1.05)` = ٠٫٩، ويطلب `clamp(maxScaleFactor: 0.9)` فوق
+/// قيدنا. فيصير الحدّان متساويين (٠٫٩ و٠٫٩)، و`_ClampedTextScaler` يؤكّد
+/// `maxScale > minScale` **بشدّة** — فينهار فتحُ التاريخ بجهازٍ خطُّه مصغَّر:
+///
+/// ```text
+/// 'package:flutter/src/painting/text_scaler.dart': Failed assertion:
+/// line 118 pos 80: 'maxScale > minScale': is not true.
+/// ```
+///
+/// والعطل **لا يظهر على جهاز المطوّر** (مقياسه ١٫٠)، ولا تكشفه مراجعة: أي
+/// ودجة تشتقّ سقفها من المقياس الحالي تصطدم بأي أرضيةٍ نضعها. ولا تملك
+/// Material أرضيةً أصلاً — فمن صغّر خطّ نظامه اختار ذلك، ورفعُه ليس قرارنا.
+/// السلوك مثبَّت بـ`test/text_scale_clamp_test.dart`.
 ///
 /// ```dart
 /// MaterialApp.router(
@@ -30,8 +48,7 @@ class ResponsiveScope extends StatelessWidget {
 
   final Widget child;
 
-  /// حدَّا تكبير الخط. راجع شرح الصنف.
-  static const double minTextScale = 0.9;
+  /// سقف تكبير الخط — بلا أرضية. راجع شرح الصنف.
   static const double maxTextScale = 1.3;
 
   /// مقاييسُ الشاشة الحالية.
@@ -59,7 +76,6 @@ class ResponsiveScope extends StatelessWidget {
     return _ScreenMetricsScope(
       metrics: metrics,
       child: MediaQuery.withClampedTextScaling(
-        minScaleFactor: minTextScale,
         maxScaleFactor: maxTextScale,
         child: child,
       ),
