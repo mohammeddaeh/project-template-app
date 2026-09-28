@@ -9,17 +9,27 @@
 /// قيماً فقط (أعلام، هوية). فكل قرار هنا قابل للتراجع بسطر واحد لاحقاً، بحكم
 /// أن كل موديول أصلاً بلا كلفة عند إطفائه — راجع `readme/41_ROADMAP.md` بند #01.
 ///
-/// **خارج نطاق هذا الإصدار عمداً** (وليس سهواً):
-///   - اسم حزمة Dart (`app_template` بـ`pubspec.yaml`) — يمسّ كل `import` بـ
-///     `lib/` كاملاً، وCLAUDE.md نفسه يصفه بـ"مرّة واحدة أو أبداً". تغييرٌ
-///     بهذا الحجم يستحق مراجعة يدوية، لا استبدالاً آلياً صامتاً.
+/// **واسم حزمة Dart يُبدَّل هنا (2026-09-28)**. كان خارج النطاق خشية استبدالٍ
+/// آليّ صامت، لكن هذا السكربت هو بالضبط «المرّة الواحدة» التي يطلبها CLAUDE.md:
+/// مشروعٌ لم يُكتب فيه سطرٌ بعد، واستبدالٌ شامل لـ`package:app_template/` بكل
+/// ملف نصّي، ثم `dart analyze` يشهد عليه ضمن الفحوص النهائية.
+///
+/// **خارج النطاق عمداً** (وليس سهواً):
 ///   - إعادة توليد لوحة الألوان الكاملة (`app_palette.dart`) من لون واحد —
 ///     اللوحة اليوم تدرّج يدوي مدروس (12+ درجة)، ولا أداة بالقالب تُنتج تدرّجاً
 ///     موثوقاً من لون واحد. يبقى تبديل الألوان خطوة يدوية موثَّقة بـ
 ///     `readme/01_SETUP.md`، متبوعةً بـ`flutter test test/color_contrast_test.dart`.
 ///
-/// تشغيل من جذر المشروع مباشرة بعد الاستنساخ:
+/// تشغيل من جذر المشروع مباشرة بعد الاستنساخ (تفاعلي):
 ///   dart run scripts/setup_project.dart
+///
+/// أو بلا أسئلة، كما يناديه `scripts/new_project.ps1`:
+///   dart run scripts/setup_project.dart --name "My App" --app-id com.company.app
+///     --package my_app --preset simple --base-url https://api.example.com --yes
+///
+/// كل وسيط غائب يُسأل عنه تفاعلياً. `--preset` يقبل `simple` · `enterprise`
+/// (المخصّص تفاعليّ فقط). `--base-url-staging` و`--base-url-prod` اختياريان.
+/// `--template-ref` يُكتب ببيان المشروع حين لا `.git` يُسأل عن نسخة القالب.
 library;
 
 import 'dart:convert';
@@ -28,22 +38,44 @@ import 'dart:io';
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 Future<void> main(List<String> args) async {
+  final opts = _parseArgs(args);
   _header('🚀  setup_project — إعداد مشروعك');
 
-  final appName = _askRequired('اسم التطبيق (يظهر تحت الأيقونة)');
-  final appId = _askAppId();
+  final appName =
+      opts['name'] ?? _askRequired('اسم التطبيق (يظهر تحت الأيقونة)');
+  final appId = _validAppIdOrNull(opts['app-id']) ?? _askAppId();
+  final packageName =
+      _validPackageOrNull(opts['package']) ??
+      _askPackageName(suggestion: _packageSuggestion(appId));
 
-  final flags = await _askFeatureFlags();
+  final flags = opts['preset'] != null
+      ? _presetOrDie(opts['preset']!)
+      : await _askFeatureFlags();
+
+  final baseUrls = <String, String>{
+    'dev':
+        opts['base-url'] ??
+        (opts.containsKey('yes')
+            ? ''
+            : _askOptional('BASE_URL لبيئة dev (Enter للتخطّي)')),
+    'staging': opts['base-url-staging'] ?? '',
+    'prod': opts['base-url-prod'] ?? '',
+  }..removeWhere((_, url) => url.isEmpty);
 
   print('\n${'─' * 60}');
   print('  سيُطبَّق:');
   print('  اسم التطبيق      : $appName');
   print('  Application ID   : $appId');
+  print('  حزمة Dart        : $packageName');
+  for (final entry in baseUrls.entries) {
+    print('  BASE_URL ${entry.key.padRight(8)}: ${entry.value}');
+  }
   for (final entry in flags.entries) {
     print('  ${entry.key.padRight(17)}: ${entry.value ? 'true' : 'false'}');
   }
   print('─' * 60);
-  if (!_askYesNo('متابعة الكتابة على القرص؟', defaultValue: true)) {
+  if (!opts.containsKey('yes') &&
+      !_askYesNo('متابعة الكتابة على القرص؟', defaultValue: true)) {
     print('\n⏹️   أُلغي — لم يتغيّر شيء.');
     exit(0);
   }
@@ -51,16 +83,31 @@ Future<void> main(List<String> args) async {
   _section('✍️   كتابة الهوية');
   _applyIdentity(appName: appName, appId: appId);
 
+  _section('📦  تبديل اسم حزمة Dart');
+  _applyPackageName(packageName);
+
   _section('🚩  كتابة الأعلام');
   _applyFeatureFlags(flags);
 
   _section('📄  كتابة بيان المشروع');
-  _writeManifest(appName: appName, appId: appId, flags: flags);
+  _writeManifest(
+    appName: appName,
+    appId: appId,
+    packageName: packageName,
+    flags: flags,
+    templateRef: opts['template-ref'],
+  );
 
   await _stream('🍃  sync_flavors — تحديث ملفات أندرويد المشتقّة', 'dart', [
     'run',
     'scripts/sync_flavors.dart',
   ]);
+
+  // بعد sync_flavors لا قبله: هو من يُنشئ ملفات البيئة من `.env.example.json`.
+  if (baseUrls.isNotEmpty) {
+    _section('🌐  كتابة BASE_URL');
+    _applyBaseUrls(baseUrls);
+  }
 
   _printGotchas(flags);
 
@@ -74,11 +121,73 @@ Future<void> main(List<String> args) async {
 
   print(
     'التالي: راجع readme/00_START_HERE.md لبدء أول feature فعلية.\n'
-    'لم يُلمَس: اسم حزمة Dart (app_template) ولوحة الألوان — كلاهما خطوة يدوية\n'
-    'موثَّقة بـreadme/01_SETUP.md، بقصد لا سهواً.\n',
+    'لم يُلمَس: لوحة الألوان — خطوة يدوية موثَّقة بـreadme/01_SETUP.md، بقصد لا سهواً.\n',
   );
 
   if (!healthy) exit(1);
+}
+
+// ── Arguments ────────────────────────────────────────────────────────────────
+
+const _valueOptions = {
+  'name',
+  'app-id',
+  'package',
+  'preset',
+  'base-url',
+  'base-url-staging',
+  'base-url-prod',
+  'template-ref',
+};
+
+/// `--key value` أو `--key=value`، و`--yes` علَمٌ بلا قيمة. وسيطٌ مجهول يُفشل
+/// بدل أن يُتجاهَل: خطأٌ إملائيّ بـ`--app-id` يعني سؤالاً تفاعلياً ينتظر داخل
+/// أداةٍ نودي منها السكربت بلا أسئلة.
+Map<String, String> _parseArgs(List<String> args) {
+  final result = <String, String>{};
+  for (var i = 0; i < args.length; i++) {
+    final arg = args[i];
+    if (!arg.startsWith('--')) _die('وسيط غير متوقَّع: $arg');
+    final body = arg.substring(2);
+    if (body == 'yes') {
+      result['yes'] = 'true';
+      continue;
+    }
+    final eq = body.indexOf('=');
+    final key = eq == -1 ? body : body.substring(0, eq);
+    if (!_valueOptions.contains(key)) _die('وسيط مجهول: --$key');
+    final String value;
+    if (eq != -1) {
+      value = body.substring(eq + 1);
+    } else {
+      if (i + 1 >= args.length) _die('الوسيط --$key بلا قيمة');
+      value = args[++i];
+    }
+    if (value.trim().isNotEmpty) result[key] = value.trim();
+  }
+  return result;
+}
+
+Map<String, bool> _presetOrDie(String preset) {
+  const aliases = {'simple': 'بسيط', 'enterprise': 'مؤسسي'};
+  final key = aliases[preset] ?? preset;
+  final flags = _presets[key];
+  if (flags == null) _die('--preset غير معروف: $preset (simple · enterprise)');
+  print('  → استُخدم نمط "$key".');
+  return Map<String, bool>.from(flags);
+}
+
+String? _validAppIdOrNull(String? value) {
+  if (value == null) return null;
+  if (!_appIdPattern.hasMatch(value)) _die('--app-id بصيغة غير صالحة: $value');
+  return value;
+}
+
+String? _validPackageOrNull(String? value) {
+  if (value == null) return null;
+  final problem = _packageProblem(value);
+  if (problem != null) _die('--package: $problem');
+  return value;
 }
 
 // ── Questions ────────────────────────────────────────────────────────────────
@@ -127,7 +236,9 @@ const _presets = <String, Map<String, bool>>{
 
 Future<Map<String, bool>> _askFeatureFlags() async {
   print('\n${'━' * 3} أي الوحدات الاختيارية تحتاجها؟ ${'━' * 3}');
-  print('كل واحدة قابلة للتفعيل أو الإطفاء لاحقاً بسطر واحد — لا قرار نهائي هنا.\n');
+  print(
+    'كل واحدة قابلة للتفعيل أو الإطفاء لاحقاً بسطر واحد — لا قرار نهائي هنا.\n',
+  );
 
   final choice = _askChoice('اختر نمطاً', ['بسيط', 'مؤسسي', 'مخصّص']);
 
@@ -181,6 +292,31 @@ void _applyIdentity({required String appName, required String appId}) {
   );
   print('  ✓ android/app/build.gradle.kts');
 
+  // MainActivity يتبع الـnamespace. الـmanifest يسمّيه `.MainActivity` نسبياً،
+  // فيُحَلّ إلى `$appId.MainActivity` — وصنفٌ بقي بحزمته القديمة يُصرَّف ويُحلَّل
+  // نظيفاً، ثم ينهار التطبيق عند أوّل إقلاع بـClassNotFoundException.
+  final oldActivity = File(
+    'android/app/src/main/kotlin/com/example/app_template/MainActivity.kt',
+  );
+  if (!oldActivity.existsSync()) {
+    _die('لم أجد ${oldActivity.path} — هل نُقل مسبقاً؟');
+  }
+  final newActivity = File(
+    'android/app/src/main/kotlin/${appId.replaceAll('.', '/')}/MainActivity.kt',
+  )..createSync(recursive: true);
+  newActivity.writeAsStringSync(
+    oldActivity.readAsStringSync().replaceFirst(
+      'package com.example.app_template',
+      'package $appId',
+    ),
+  );
+  oldActivity.deleteSync();
+  _deleteEmptyParents(
+    oldActivity.parent,
+    stopAt: 'android/app/src/main/kotlin',
+  );
+  print('  ✓ MainActivity.kt → ${newActivity.path}');
+
   // iOS — الأخصّ أولاً (RunnerTests) قبل الأعمّ، وإلا التبديل العام يطابقها
   // أولاً فتصير النتيجة "$appId.RunnerTests.RunnerTests".
   final pbxproj = File('ios/Runner.xcodeproj/project.pbxproj');
@@ -209,7 +345,11 @@ void _applyIdentity({required String appName, required String appId}) {
       .toLowerCase()
       .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
       .replaceAll(RegExp(r'^_+|_+$'), '');
-  _replaceOrDie(infoPlist, '<string>Temp New</string>', '<string>$appName</string>');
+  _replaceOrDie(
+    infoPlist,
+    '<string>Temp New</string>',
+    '<string>$appName</string>',
+  );
   _replaceOrDie(
     infoPlist,
     '<string>temp_new</string>',
@@ -226,6 +366,90 @@ void _applyIdentity({required String appName, required String appId}) {
   print('  ✓ pubspec.yaml (description)');
 }
 
+void _deleteEmptyParents(Directory dir, {required String stopAt}) {
+  var current = dir;
+  while (current.path.replaceAll(r'\', '/') != stopAt &&
+      current.existsSync() &&
+      current.listSync().isEmpty) {
+    current.deleteSync();
+    current = current.parent;
+  }
+}
+
+// ── Apply: package name ──────────────────────────────────────────────────────
+
+const _templatePackage = 'app_template';
+
+/// المجلدات التي يُستبدل فيها `package:app_template/`. `scripts/` منها:
+/// `scaffold_feature.dart` يكتب الـimport حرفياً بما يولّده، و`check_structure`
+/// يطابقه بـregex — فتركُهما يولّد شرائح لا تُصرَّف ويُعمي الفاحص.
+const _packageRoots = ['lib', 'test', 'integration_test', 'scripts', 'readme'];
+const _packageRootFiles = ['CLAUDE.md', 'README.md', 'analysis_options.yaml'];
+const _textExtensions = {'.dart', '.md', '.yaml', '.yml', '.json', '.txt'};
+
+void _applyPackageName(String packageName) {
+  if (packageName == _templatePackage) {
+    print('  → بقي "$_templatePackage" — لا تبديل.');
+    return;
+  }
+
+  _replaceOrDie(
+    File('pubspec.yaml'),
+    'name: $_templatePackage\n',
+    'name: $packageName\n',
+  );
+
+  const from = 'package:$_templatePackage/';
+  final to = 'package:$packageName/';
+  final files = <File>[
+    for (final root in _packageRoots)
+      if (Directory(root).existsSync())
+        ...Directory(root)
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where((f) => _textExtensions.any(f.path.endsWith)),
+    for (final name in _packageRootFiles)
+      if (File(name).existsSync()) File(name),
+  ];
+
+  var changed = 0;
+  for (final file in files) {
+    final content = file.readAsStringSync();
+    if (!content.contains(from)) continue;
+    file.writeAsStringSync(content.replaceAll(from, to));
+    changed++;
+  }
+
+  final readme = File('README.md');
+  if (readme.existsSync()) {
+    final content = readme.readAsStringSync();
+    if (content.startsWith('# $_templatePackage')) {
+      readme.writeAsStringSync(
+        content.replaceFirst('# $_templatePackage', '# $packageName'),
+      );
+    }
+  }
+
+  print('  ✓ pubspec.yaml (name: $packageName) + $changed ملفاً');
+}
+
+// ── Apply: base urls ─────────────────────────────────────────────────────────
+
+void _applyBaseUrls(Map<String, String> baseUrls) {
+  for (final entry in baseUrls.entries) {
+    final file = File('.env.${entry.key}.json');
+    if (!file.existsSync()) {
+      _die('لم أجد ${file.path} — sync_flavors لم يُنشئه؟');
+    }
+    final env = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    env['BASE_URL'] = entry.value;
+    file.writeAsStringSync(
+      '${const JsonEncoder.withIndent('  ').convert(env)}\n',
+    );
+    print('  ✓ ${file.path}');
+  }
+}
+
 // ── Apply: feature flags ─────────────────────────────────────────────────────
 
 void _applyFeatureFlags(Map<String, bool> flags) {
@@ -233,9 +457,7 @@ void _applyFeatureFlags(Map<String, bool> flags) {
   var content = file.readAsStringSync();
 
   for (final entry in flags.entries) {
-    final pattern = RegExp(
-      'static const ${entry.key} = (true|false);',
-    );
+    final pattern = RegExp('static const ${entry.key} = (true|false);');
     if (!pattern.hasMatch(content)) {
       _die('لم أجد علَم "${entry.key}" بـapp_features.dart — هل تغيّر اسمه؟');
     }
@@ -246,7 +468,9 @@ void _applyFeatureFlags(Map<String, bool> flags) {
   }
 
   file.writeAsStringSync(content);
-  print('  ✓ lib/core/platform/features/app_features.dart (${flags.length} علَماً)');
+  print(
+    '  ✓ lib/core/platform/features/app_features.dart (${flags.length} علَماً)',
+  );
 }
 
 // ── Apply: manifest ──────────────────────────────────────────────────────────
@@ -254,18 +478,21 @@ void _applyFeatureFlags(Map<String, bool> flags) {
 void _writeManifest({
   required String appName,
   required String appId,
+  required String packageName,
   required Map<String, bool> flags,
+  String? templateRef,
 }) {
   final manifest = {
     'appName': appName,
     'applicationId': appId,
+    'package': packageName,
     'createdAt': DateTime.now().toIso8601String(),
-    'templateVersion': _currentGitRef(),
+    'templateVersion': templateRef ?? _currentGitRef(),
     'features': flags,
   };
-  File(
-    '.template_manifest.json',
-  ).writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(manifest)}\n');
+  File('.template_manifest.json').writeAsStringSync(
+    '${const JsonEncoder.withIndent('  ').convert(manifest)}\n',
+  );
   print('  ✓ .template_manifest.json');
 }
 
@@ -273,11 +500,7 @@ void _writeManifest({
 /// `.git` (مثلاً من أرشيف zip) يحصل على `"unknown"` بدل انهيار السكربت.
 String _currentGitRef() {
   try {
-    final result = Process.runSync('git', [
-      'rev-parse',
-      '--short',
-      'HEAD',
-    ]);
+    final result = Process.runSync('git', ['rev-parse', '--short', 'HEAD']);
     if (result.exitCode == 0) return (result.stdout as String).trim();
   } catch (_) {
     // git غير متاح — لا مشكلة، الحقل وصفيّ لا حرج.
@@ -305,7 +528,9 @@ const _gotchas = <String, String>{
 };
 
 void _printGotchas(Map<String, bool> flags) {
-  final active = flags.entries.where((e) => e.value && _gotchas.containsKey(e.key));
+  final active = flags.entries.where(
+    (e) => e.value && _gotchas.containsKey(e.key),
+  );
   if (active.isEmpty) return;
   print('\n⚠️   تذكيرات لما اخترته:');
   for (final entry in active) {
@@ -322,11 +547,10 @@ Future<bool> _runHealthChecks() async {
   allPassed &= await _check('📦  flutter pub get', 'flutter', ['pub', 'get']);
   allPassed &= await _check('🔍  dart analyze lib', 'dart', ['analyze', 'lib']);
   allPassed &= await _check('🧪  flutter test', 'flutter', ['test']);
-  allPassed &= await _check(
-    '🏗   check_structure',
-    'dart',
-    ['run', 'scripts/check_structure.dart'],
-  );
+  allPassed &= await _check('🏗   check_structure', 'dart', [
+    'run',
+    'scripts/check_structure.dart',
+  ]);
 
   return allPassed;
 }
@@ -362,7 +586,102 @@ String _askAppId() {
     stdout.write('? Application ID الأساسي (مثال: com.company.app): ');
     final input = stdin.readLineSync()?.trim() ?? '';
     if (_appIdPattern.hasMatch(input)) return input;
-    print('  ⚠️   صيغة غير صالحة — أحرف صغيرة وأرقام و"." فقط، مقطعان على الأقل.');
+    print(
+      '  ⚠️   صيغة غير صالحة — أحرف صغيرة وأرقام و"." فقط، مقطعان على الأقل.',
+    );
+  }
+}
+
+String _askOptional(String prompt) {
+  stdout.write('? $prompt: ');
+  return stdin.readLineSync()?.trim() ?? '';
+}
+
+/// آخر مقطع من Application ID بصيغة حزمة Dart: `com.awqaf.zakat_app` → `zakat_app`.
+String _packageSuggestion(String appId) {
+  final last = appId.split('.').last;
+  return _packageProblem(last) == null ? last : 'my_app';
+}
+
+const _dartReserved = {
+  'abstract',
+  'as',
+  'assert',
+  'async',
+  'await',
+  'break',
+  'case',
+  'catch',
+  'class',
+  'const',
+  'continue',
+  'default',
+  'deferred',
+  'do',
+  'dynamic',
+  'else',
+  'enum',
+  'export',
+  'extends',
+  'extension',
+  'external',
+  'factory',
+  'false',
+  'final',
+  'finally',
+  'for',
+  'function',
+  'get',
+  'if',
+  'implements',
+  'import',
+  'in',
+  'interface',
+  'is',
+  'late',
+  'library',
+  'mixin',
+  'new',
+  'null',
+  'on',
+  'operator',
+  'part',
+  'required',
+  'rethrow',
+  'return',
+  'set',
+  'static',
+  'super',
+  'switch',
+  'this',
+  'throw',
+  'true',
+  'try',
+  'typedef',
+  'var',
+  'void',
+  'while',
+  'with',
+  'yield',
+};
+
+/// اسمٌ يرفضه `pub` يُكتشف هنا لا بعد استبدال ٣٤٨ ملفاً.
+String? _packageProblem(String name) {
+  if (!RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name)) {
+    return '"$name" — أحرف إنجليزية صغيرة وأرقام و"_" فقط، ويبدأ بحرف';
+  }
+  if (_dartReserved.contains(name)) return '"$name" كلمة محجوزة بـDart';
+  return null;
+}
+
+String _askPackageName({required String suggestion}) {
+  while (true) {
+    stdout.write('? اسم حزمة Dart (Enter = $suggestion): ');
+    final raw = stdin.readLineSync()?.trim() ?? '';
+    final input = raw.isEmpty ? suggestion : raw;
+    final problem = _packageProblem(input);
+    if (problem == null) return input;
+    print('  ⚠️   $problem');
   }
 }
 
@@ -396,8 +715,14 @@ String _askChoice(String prompt, List<String> options) {
 
 // ── File helpers ──────────────────────────────────────────────────────────────
 
+/// نمطٌ متعدّد الأسطر يُكتب بـ`\n`، والملف قد يكون CRLF: استنساخٌ على ويندوز
+/// بـ`core.autocrlf=true` (الافتراضي هناك) يُخرج كل ملف كذلك، فلا يطابق شيء.
 void _replaceOrDie(File file, String from, String to) {
   final content = file.readAsStringSync();
+  if (content.contains('\r\n')) {
+    from = from.replaceAll('\n', '\r\n');
+    to = to.replaceAll('\n', '\r\n');
+  }
   if (!content.contains(from)) {
     _die('لم أجد النصّ المتوقَّع بـ${file.path}:\n  "$from"');
   }
@@ -421,7 +746,7 @@ Future<void> _stream(String label, String exe, List<String> args) async {
 void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
 void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
 void _section(String msg) => print('\n▸ $msg');
-void _die(String msg) {
+Never _die(String msg) {
   print('\n❌  $msg\n');
   exit(1);
 }

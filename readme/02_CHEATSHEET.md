@@ -29,8 +29,13 @@ flutter run --flavor dev --dart-define-from-file=.env.dev.json
 
 ### إعداد
 
+```powershell
+# ★ مشروع جديد من أي مجلد — يستنسخ ويُعدّ ويُنشئ أوّل commit (الباك: بدّل -app بـ-backend)
+irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1 | iex
+```
+
 ```bash
-dart run scripts/setup_project.dart           # ★ أوّل أمر بمشروع جديد — الهوية + الوحدات + فحص صحة كامل
+dart run scripts/setup_project.dart           # بعد استنساخٍ يدوي — الهوية + حزمة Dart + BASE_URL + الوحدات + فحص صحة
 flutter pub get
 dart run scripts/sync_flavors.dart            # .env.* + productFlavors + أيقونات + launch.json
 dart run scripts/sync_flavors.dart --reset    # إزالة الـflavors (لا يحذف .env.*)

@@ -9,11 +9,12 @@
 dart run scripts/<script_name>.dart
 ```
 
-يوجد حالياً **١٤ سكربتاً**:
+يوجد حالياً **١٤ سكربت Dart** و**مُطلِق PowerShell واحد** (`new_project.ps1`):
 
 | السكربت | الغرض |
 |---|---|
-| **`setup_project.dart`** | **الإعداد التفاعلي الأول لمشروع جديد** — الهوية (اسم · Application ID) + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل |
+| **`new_project.ps1`** | **مشروعٌ جديد بأمرٍ واحد من أي مجلد** — يُنادى عبر `irm … \| iex` بلا استنساخٍ مسبق: يفحص الأدوات، ويستنسخ القالب بتاريخٍ نظيف، ثم يسلّم `setup_project.dart` كلَّ القيم ويُنشئ أوّل commit. راجع §8‑د |
+| **`setup_project.dart`** | **الإعداد الأول لمشروع جديد** — الهوية (اسم · Application ID · **اسم حزمة Dart**) + `BASE_URL` + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل. تفاعليّ، أو بوسائط بلا أسئلة |
 | **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً. ويربط سلسلة المزامنة/الصلاحية تلقائياً إن كانت مُشعَلة بـ`AppFeatures` |
 | **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الأربعة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ `10_ARCHITECTURE.md` · صفّ `00_START_HERE.md` |
 | **`audit_template.dart`** | **تدقيقٌ ذاتيّ استشاريّ للقالب** — وصل الموديولات بإقلاعها · فجوة مزامنة حرجة · مسارات بلا نقطة تنقّل ظاهرة · ملفات readme/ خارج جدول التزامن |
@@ -369,26 +370,71 @@ dart run scripts/gen_splash_assets.dart
 
 ---
 
-## 8‑د) `setup_project.dart` — الإعداد التفاعلي الأول
+## 8‑د) `new_project.ps1` + `setup_project.dart` — مشروعٌ جديد
+
+### الطريق الموصى به — أمرٌ واحد من أي مجلد (PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1 | iex
+```
+
+يسأل عن: اسم حزمة Dart (= اسم المجلد) · الاسم الظاهر · Application ID ·
+`BASE_URL` لـdev · نمط الوحدات. ثم:
+
+1. يفحص `git` و`flutter` و`dart`، ويتوقّف برسالةٍ تسمّي الناقص.
+2. `git clone --depth 1`، ثم **يحذف `.git`** — المشروع يبدأ بتاريخٍ نظيف، ونسخةُ
+   القالب تُحفظ بـ`.template_manifest.json` (`templateVersion`).
+3. يُنادي `setup_project.dart` بكل القيم كوسائط (`--yes`) — لا سؤالَ مرّتين.
+4. `git init` + أوّل commit **فقط إن نجحت الفحوص**؛ وإلا يُترك بلا commit ويقول ذلك.
+5. `-Remote <url>` يضيف `origin` ولا يدفع — الدفع قرارك.
+
+**بلا أسئلة** (لفريقٍ أو CI) — كل وسيط اختياري، والغائب يُسأل عنه:
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1))) `
+    -Package zakat_app -Name "Zakat" -AppId com.awqaf.zakat -BaseUrl https://api.example.com -Preset simple
+```
+
+الوسائط: `-Package` · `-Name` · `-AppId` · `-BaseUrl` · `-BaseUrlStaging` ·
+`-BaseUrlProd` · `-Preset simple|enterprise|custom` · `-Directory` · `-Remote` ·
+`-Source` (مستودعٌ أو مسارٌ محلّي بديل — للتجريب) · `-Branch`.
+
+> **ونظيرُه للباك بنفس المسار** بـ`project-template-backend` — بدّل اسم المستودع
+> بالرابط ولا شيء غيره. هناك يسلّم `scripts/setup-project.mjs`.
+
+> ⚠️ **الملف رفيعٌ بقصد، وبـASCII فقط.** كل تعديلٍ على الملفات يعيش بـ
+> `setup_project.dart` — تنفيذٌ واحد لا نسختان تنحرفان. وWindows PowerShell 5.1
+> يقرأ ملف `.ps1` محلّياً بلا BOM كـANSI فيُفسد أي حرف عربي. ولا `exit` فيه:
+> تحت `irm | iex` يُغلق نافذةَ من ناداه.
+
+### يدوياً — بعد استنساخٍ عادي
 
 ```bash
-dart run scripts/setup_project.dart
+dart run scripts/setup_project.dart                      # تفاعلي
+dart run scripts/setup_project.dart --name "Zakat" --app-id com.awqaf.zakat \
+  --package zakat_app --preset simple --base-url https://api.example.com --yes
 ```
 
 يُشغَّل **مرّة واحدة**، فور استنساخ مشروع جديد من هذا القالب (راجع
-[`41_ROADMAP.md`](41_ROADMAP.md) بند #01 للسياق الكامل والنقاش). تفاعليّ بالكامل:
+[`41_ROADMAP.md`](41_ROADMAP.md) بند #01 للسياق الكامل والنقاش). كل وسيطٍ غائب
+يُسأل عنه، ووسيطٌ مجهول يُفشل بدل أن يُتجاهَل:
 
-1. **الهوية**: اسم التطبيق + Application ID أساسي واحد.
+1. **الهوية**: اسم التطبيق + Application ID أساسي واحد + **اسم حزمة Dart**
+   (الافتراضي: آخر مقطع من Application ID).
 2. **الوحدات الاختيارية ذات الكلفة الخارجية فقط** — `accessControl` ·
    `dataTransfer` · `offlineSync` · `multiDevice` · `inAppUpdates` ·
    `crashReporting` · `analytics` · `remoteConfig` — عبر نمط جاهز (بسيط/مؤسسي)
    أو سؤال فردي (مخصّص). **باقي الأعلام لا يُسأل عنها عمداً** — بلا كلفة خارجية،
    فتُترك على الافتراضي وتُفعَّل لحظة الحاجة الفعلية بالكود.
 3. يكتب: `flavor_settings.json` · `android/app/build.gradle.kts`
-   (`namespace`+`applicationId`) · `ios/Runner.xcodeproj/project.pbxproj` ·
-   `ios/Runner/Info.plist` · وصف `pubspec.yaml` · أعلام `app_features.dart`.
+   (`namespace`+`applicationId`) · **`MainActivity.kt` منقولاً لحزمة
+   `applicationId`** · `ios/Runner.xcodeproj/project.pbxproj` ·
+   `ios/Runner/Info.plist` · `pubspec.yaml` (`name` + الوصف) · أعلام
+   `app_features.dart` · و`package:app_template/` → `package:<اسمك>/` بكل ملف
+   نصّي تحت `lib/` · `test/` · `scripts/` · `readme/` و`CLAUDE.md`.
 4. يشغّل `sync_flavors.dart` تلقائياً لتوليد الملفات المشتقّة (strings.xml لكل
-   flavor، launch.json، أيقونات) من الهوية الجديدة.
+   flavor، launch.json، أيقونات، **و`.env.*.json`**) من الهوية الجديدة، ثم يكتب
+   `BASE_URL` بملفات البيئة المُعطاة.
 5. يكتب `.template_manifest.json` — كل قرار وسببه، ونسخة القالب (`git rev-parse
    --short HEAD`) وقت الإنشاء.
 6. يطبع تذكيراً واحداً لكل خيار اختير `نعم` وله كلفة تجهيز خارجية (Firebase،
@@ -400,11 +446,17 @@ dart run scripts/setup_project.dart
 قرار قابل للتراجع بسطر واحد لاحقاً، بحكم أن كل موديول أصلاً بلا كلفة عند
 إطفائه.
 
-⛔ **خارج نطاقه عمداً** (وليس سهواً): اسم حزمة Dart (`app_template` بـ
-`pubspec.yaml`) — يمسّ كل `import` بـ`lib/`، وCLAUDE.md يصفه بـ"مرّة واحدة أو
-أبداً"؛ وإعادة توليد لوحة الألوان الكاملة من لون واحد — التدرّج اليوم يدويّ
-مدروس، ولا أداة تُنتج تدرّجاً موثوقاً من قيمة واحدة. كلاهما يبقى خطوة يدوية
-موثَّقة بـ[`01_SETUP.md`](01_SETUP.md).
+**وثلاثة أعطال سدّها التجريب الفعليّ (2026-09-28)** — كلّها خضراء بالتحليل:
+
+| العطل | لماذا لم يُرَ |
+|---|---|
+| على ويندوز لم يُطابق أيَّ نمطٍ متعدّد الأسطر فيتوقّف عند `build.gradle.kts` | الاستنساخ هناك يُخرج الملفات CRLF، والأنماط مكتوبة بـ`\n`. صار `_replaceOrDie` يطابق نهاية السطر بالملف |
+| بعد تبديل Application ID **ينهار التطبيق عند أوّل إقلاع** | الـmanifest يسمّي `.MainActivity` نسبياً إلى `namespace`، والصنف بقي بـ`com.example.app_template`. التحليل والاختبارات لا تُقلع التطبيق |
+| `scaffold_feature` يولّد شرائح لا تُصرَّف بعد تبديل اسم الحزمة | يكتب `package:app_template/` حرفياً — فصار `scripts/` ضمن الاستبدال |
+
+⛔ **خارج نطاقه عمداً** (وليس سهواً): إعادة توليد لوحة الألوان الكاملة من لون
+واحد — التدرّج اليوم يدويّ مدروس، ولا أداة تُنتج تدرّجاً موثوقاً من قيمة واحدة.
+يبقى خطوة يدوية موثَّقة بـ[`01_SETUP.md`](01_SETUP.md).
 
 ---
 

@@ -33,6 +33,24 @@
 
 ---
 
+### ★ مشروعٌ جديد — أمرٌ واحد يغطّي م1 وأغلب م2
+
+من أي مجلد، بـPowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1 | iex
+```
+
+يسأل عن اسم الحزمة والاسم الظاهر وApplication ID و`BASE_URL` ونمط الوحدات، ثم
+يستنسخ بتاريخٍ نظيف ويكتب الهوية **ويبدّل اسم حزمة Dart** ويفحص ويُنشئ أوّل commit.
+يبقى لك من م2: الأيقونات والألوان والخطوط. **وللباك نفس الرابط** بـ
+`project-template-backend`. التفصيل: [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د.
+
+> **عضوٌ ينضمّ لمشروعٍ قائم لا يشغّله** — يستنسخ مستودع المشروع ويبدأ من م1
+> أدناه: ملفات `.env.*.json` لا تصل مع الاستنساخ، فـ`BASE_URL` يُسلَّم له خارج git.
+
+---
+
 ### المرحلة 1 — يعمل على جهازك  ⏱ ~ساعة
 
 ```bash
@@ -85,10 +103,9 @@ cd ios && pod install                 # على macOS فقط
 > يوم ويُتبَع بـ`dart analyze lib test`، لا تعديلٌ تدريجيّ: مستودعٌ نصفُه
 > `app_template` ونصفُه اسمُك يُصرَّف ويعمل — ثم يكسر كلَّ ملفٍّ يُنسخ بينهما.
 >
-> ```bash
-> # بعد تبديل `name:` بـpubspec.yaml
-> grep -rl 'package:app_template/' lib test | xargs sed -i 's|package:app_template/|package:your_app/|g'
-> ```
+> **و`setup_project.dart` يفعله** (`--package` أو سؤالٌ تفاعلي) — بما فيه
+> `scripts/` و`readme/`، ونقلُ `MainActivity.kt` لحزمة Application ID. لا تبدّله
+> باليد إلا إن تخطّيت السكربت.
 
 **✅ تمّت حين:** التطبيق يظهر باسمك وأيقونتك على الجهاز، بألوانك.
 

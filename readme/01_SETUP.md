@@ -136,8 +136,10 @@ flutter run                 # ❌ Env.baseUrl فارغ — كل طلب يفشل 
 
 القالب يصل باسم `app_template` وهوية `com.example.app_template`.
 
-> ★ **أسرع طريق للهوية**: `dart run scripts/setup_project.dart` — يسأل عن اسم
-> التطبيق وApplication ID تفاعلياً، ويكتب كل ما يصفه §الهوية أدناه دفعة واحدة
+> ★ **أسرع طريق للهوية**: مشروعٌ جديد بأمرٍ واحد عبر `scripts/new_project.ps1`
+> (`irm … | iex` — راجع [`00_START_HERE.md`](00_START_HERE.md))، أو بعد استنساخٍ
+> عادي `dart run scripts/setup_project.dart` — يسأل عن اسم التطبيق وApplication
+> ID واسم حزمة Dart و`BASE_URL`، ويكتب كل ما يصفه §الهوية أدناه دفعة واحدة
 > (بما فيها iOS)، ثم يشغّل `sync_flavors.dart` والفحوصات النهائية تلقائياً.
 > راجع [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د. **الفقرات أدناه تشرح ما يفعله
 > يدوياً** — لمن يفضّل التحكّم اليدوي أو يريد فهم الآلية.
@@ -193,6 +195,7 @@ cd ios && pod install          # macOS فقط
 `app_template` مثبَّت بكل `import` بالمستودع وبـ`CLAUDE.md`. فإن بدّلته، بدّله
 **بأوّل يوم واستبدالاً شاملاً** — راجع المرحلة 2 بـ[`00_START_HERE.md`](00_START_HERE.md).
 مستودعٌ نصفُه باسمٍ ونصفُه بآخر يُصرَّف ويعمل، ثم يكسر كلَّ ملفٍّ يُنسخ بينهما.
+**و`setup_project.dart` يفعله شاملاً** — لا تبدّله باليد إلا إن تخطّيته.
 
 ---
 
