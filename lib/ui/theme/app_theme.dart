@@ -1,5 +1,10 @@
 ﻿import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+// Flutter 3.44+ moved CupertinoPageTransitionsBuilder out of material.dart;
+// before that, material exported it and this import is unused. Both are real
+// (local SDK vs CI's stable), so the ignore keeps one file valid on each.
+// ignore: unused_import, unnecessary_import
+import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:app_template/core/infra/config/app_fonts.dart';

@@ -7,7 +7,11 @@
 # Without questions (every parameter is optional; a missing one is asked):
 #
 #   & ([scriptblock]::Create((irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1))) `
-#       -Package zakat_app -Name "Zakat" -AppId com.awqaf.zakat -BaseUrl https://api.example.com -Preset simple
+#       -Package zakat_app -Name "Zakat" -AppId com.awqaf.zakat -BaseUrl https://api.example.com -Preset simple `
+#       -Remote awqaf/zakat_app
+#
+# -Remote (owner/name or URL) is pushed to once the checks pass. It must be an
+# EMPTY repository; a missing one is created with GitHub CLI (`gh`) when present.
 #
 # The backend twin lives at the same path in project-template-backend - swap
 # the repository name in the URL, nothing else.
@@ -64,9 +68,86 @@ $requiredRule = { param($v) if (-not $v) { 'cannot be empty' } }
 $urlRule = { param($v) if ($v -and $v -notmatch '^https?://') { 'must start with http:// or https:// (or leave empty)' } }
 $presetRule = { param($v) if ($v -notin @('simple', 'enterprise', 'custom')) { 'simple, enterprise or custom' } }
 
+# git and gh print progress ("Cloning into...", "To https://...") on stderr.
+# Windows PowerShell 5.1 renders stderr of a native command as a red
+# NativeCommandError in several hosts (VS Code, ISE) - a successful clone then
+# reads like a failure. Merged and printed as text; $LASTEXITCODE still decides.
+# No param block on purpose: a declared parameter would swallow a native flag
+# that happens to prefix-match its name.
+function Invoke-Native {
+    $exe, $rest = $args
+    $ErrorActionPreference = 'Continue'
+    & $exe @rest 2>&1 | ForEach-Object {
+        # A blank stderr line stringifies to its type name, not to ''.
+        $line = if ($_ -is [System.Management.Automation.ErrorRecord]) { $_.Exception.Message } else { "$_" }
+        Write-Host "   $line"
+    }
+}
+
 function Test-Tool([string]$tool, [string]$hint) {
     if (Get-Command $tool -ErrorAction SilentlyContinue) { Write-Ok $tool; return $true }
     Write-Fail "'$tool' not found on PATH. $hint"
+    return $false
+}
+
+# --- Push target -------------------------------------------------------------
+# Asked BEFORE the clone and the long checks, and verified then: a wrong URL
+# found after ten minutes of tests is a second run, found here it is a retype.
+# Only an EMPTY repository is accepted - pushing a fresh history onto one that
+# already has commits (a README ticked on GitHub counts) is refused anyway.
+
+function ConvertTo-RepoUrl([string]$value) {
+    if ($value -match '^[\w.-]+/[\w.-]+$') { return "https://github.com/$value.git" }
+    return $value
+}
+
+function Get-RepoSlug([string]$url) {
+    if ($url -match 'github\.com[:/]([\w.-]+/[\w.-]+?)(\.git)?/?$') { return $Matches[1] }
+    return $null
+}
+
+function Read-PushTarget([string]$given) {
+    $hasGh = [bool](Get-Command 'gh' -ErrorAction SilentlyContinue)
+    while ($true) {
+        $value = $given
+        $given = $null
+        if (-not $value) {
+            $value = (Read-Host '?  GitHub repo to push to - owner/name or URL (empty = no push)').Trim()
+        }
+        if (-not $value) { return $null }
+        $url = ConvertTo-RepoUrl $value
+
+        $env:GIT_TERMINAL_PROMPT = '0'
+        $refs = git ls-remote $url 2>$null
+        $reachable = $LASTEXITCODE -eq 0
+        Remove-Item Env:GIT_TERMINAL_PROMPT
+
+        if ($reachable -and -not $refs) { Write-Ok "$url - exists and is empty"; return @{ Url = $url; Create = $false } }
+        if ($reachable) { Write-Warn2 "$url already has commits - use a new, EMPTY repository (no README, no .gitignore)."; continue }
+
+        $slug = Get-RepoSlug $url
+        if ($hasGh -and $slug) {
+            $answer = (Read-Host "?  $slug not found (or no access). Create it with gh? private / public / no [private]").Trim().ToLower()
+            if (-not $answer) { $answer = 'private' }
+            if ($answer -in @('private', 'public')) { return @{ Url = $url; Create = $true; Slug = $slug; Visibility = $answer } }
+            continue
+        }
+        Write-Warn2 "$url not found or no access. Create it on GitHub first (empty: no README), then enter it again."
+        if (-not $hasGh) { Write-Warn2 'Or install GitHub CLI (winget install GitHub.cli; gh auth login) and this script creates it for you.' }
+    }
+}
+
+function Publish-Repo($target) {
+    Write-Step "Pushing to $($target.Url)"
+    if ($target.Create) {
+        Invoke-Native gh repo create $target.Slug "--$($target.Visibility)" --source . --remote origin --push
+    }
+    else {
+        git remote add origin $target.Url
+        Invoke-Native git push -u origin master
+    }
+    if ($LASTEXITCODE -eq 0) { Write-Ok "pushed - $($target.Url)"; return $true }
+    Write-Warn2 'push failed (see above). The commit is local; fix access, then: git push -u origin master'
     return $false
 }
 
@@ -94,6 +175,7 @@ function Invoke-NewProject {
         $BaseUrl = Read-Value 'BASE_URL for dev (empty = fill .env.dev.json later)' '' $urlRule
     }
     if (-not $Preset) { $Preset = Read-Value 'Optional modules: simple / enterprise / custom' 'simple' $presetRule }
+    $pushTarget = Read-PushTarget $Remote
 
     if (-not $Directory) { $Directory = Join-Path (Get-Location) $Package }
     $Directory = [System.IO.Path]::GetFullPath($Directory)
@@ -103,7 +185,7 @@ function Invoke-NewProject {
     }
 
     Write-Step "Cloning $Source ($Branch)"
-    git clone --depth 1 --branch $Branch $Source $Directory
+    Invoke-Native git clone --depth 1 --branch $Branch $Source $Directory
     if ($LASTEXITCODE -ne 0) { Write-Fail 'git clone failed - see the output above.'; return }
 
     $templateRef = (git -C $Directory rev-parse --short HEAD).Trim()
@@ -128,7 +210,9 @@ function Invoke-NewProject {
         if ($Preset -ne 'custom') { $setupArgs += @('--preset', $Preset) }
         $setupArgs += '--yes'
 
-        dart @setupArgs
+        # Piped only when nothing is asked (`custom` asks flag by flag): a pipe
+        # would hold back a prompt that does not end in a newline.
+        if ($Preset -ne 'custom') { Invoke-Native dart @setupArgs } else { dart @setupArgs }
         $setupOk = $LASTEXITCODE -eq 0
         Write-Step 'Initial commit'
         git init --quiet
@@ -145,10 +229,9 @@ function Invoke-NewProject {
             Write-Warn2 'setup_project failed (see above) - repository initialised, NOT committed. Fix, re-run the checks, then commit.'
         }
 
-        if ($Remote) {
-            git remote add origin $Remote
-            Write-Ok "origin = $Remote  (push when ready: git push -u origin master)"
-        }
+        $pushed = $false
+        if ($pushTarget -and $setupOk) { $pushed = Publish-Repo $pushTarget }
+        elseif ($pushTarget) { Write-Warn2 "not pushed to $($pushTarget.Url) - nothing committed yet" }
     }
     finally {
         Pop-Location
@@ -159,6 +242,7 @@ function Invoke-NewProject {
     if ($setupOk) { Write-Host "  Ready: $Directory" -ForegroundColor Green }
     else { Write-Host "  Created with failing checks: $Directory" -ForegroundColor Yellow }
     Write-Host '============================================================' -ForegroundColor DarkCyan
+    if ($pushed) { Write-Host "  GitHub: $($pushTarget.Url)" }
     Write-Host "  cd `"$Directory`""
     if (-not $BaseUrl) { Write-Host '  # put BASE_URL in .env.dev.json first' }
     Write-Host '  flutter run --flavor dev --dart-define-from-file=.env.dev.json'

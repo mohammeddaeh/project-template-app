@@ -30,7 +30,7 @@ flutter run --flavor dev --dart-define-from-file=.env.dev.json
 ### إعداد
 
 ```powershell
-# ★ مشروع جديد من أي مجلد — يستنسخ ويُعدّ ويُنشئ أوّل commit (الباك: بدّل -app بـ-backend)
+# ★ مشروع جديد من أي مجلد — يستنسخ ويُعدّ ويُنشئ أوّل commit ويرفعه لـGitHub (الباك: بدّل -app بـ-backend)
 irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1 | iex
 ```
 

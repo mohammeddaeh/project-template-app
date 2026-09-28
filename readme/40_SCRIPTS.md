@@ -13,7 +13,7 @@ dart run scripts/<script_name>.dart
 
 | السكربت | الغرض |
 |---|---|
-| **`new_project.ps1`** | **مشروعٌ جديد بأمرٍ واحد من أي مجلد** — يُنادى عبر `irm … \| iex` بلا استنساخٍ مسبق: يفحص الأدوات، ويستنسخ القالب بتاريخٍ نظيف، ثم يسلّم `setup_project.dart` كلَّ القيم ويُنشئ أوّل commit. راجع §8‑د |
+| **`new_project.ps1`** | **مشروعٌ جديد بأمرٍ واحد من أي مجلد** — يُنادى عبر `irm … \| iex` بلا استنساخٍ مسبق: يفحص الأدوات، ويستنسخ القالب بتاريخٍ نظيف، ثم يسلّم `setup_project.dart` كلَّ القيم ويُنشئ أوّل commit **ويرفعه لمستودع GitHub يُسأل عنه** (ويُنشئه بـ`gh` إن وُجد). راجع §8‑د |
 | **`setup_project.dart`** | **الإعداد الأول لمشروع جديد** — الهوية (اسم · Application ID · **اسم حزمة Dart**) + `BASE_URL` + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل. تفاعليّ، أو بوسائط بلا أسئلة |
 | **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً. ويربط سلسلة المزامنة/الصلاحية تلقائياً إن كانت مُشعَلة بـ`AppFeatures` |
 | **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الأربعة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ `10_ARCHITECTURE.md` · صفّ `00_START_HERE.md` |
@@ -379,20 +379,35 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 ```
 
 يسأل عن: اسم حزمة Dart (= اسم المجلد) · الاسم الظاهر · Application ID ·
-`BASE_URL` لـdev · نمط الوحدات. ثم:
+`BASE_URL` لـdev · نمط الوحدات · **مستودع GitHub للرفع** (`owner/name` أو رابط؛
+فارغ = بلا رفع). ثم:
 
 1. يفحص `git` و`flutter` و`dart`، ويتوقّف برسالةٍ تسمّي الناقص.
-2. `git clone --depth 1`، ثم **يحذف `.git`** — المشروع يبدأ بتاريخٍ نظيف، ونسخةُ
+2. **يتحقّق من مستودع الرفع قبل الاستنساخ** — رابطٌ خاطئ يُكتشف بإعادة كتابة، لا
+   بعد عشر دقائق من الفحوص:
+   - موجود **وفارغ** ⇐ يُقبل. **ولا يُقبل مستودعٌ فيه commits** (ولو README أنشأه
+     GitHub): تاريخٌ جديد فوقه يُرفض عند الرفع.
+   - غير موجود و`gh` مثبَّت ⇐ يعرض إنشاءه (`private` افتراضياً / `public`).
+   - غير موجود بلا `gh` ⇐ يطلب إنشاءه فارغاً على GitHub ثم إعادة إدخاله.
+3. `git clone --depth 1`، ثم **يحذف `.git`** — المشروع يبدأ بتاريخٍ نظيف، ونسخةُ
    القالب تُحفظ بـ`.template_manifest.json` (`templateVersion`).
-3. يُنادي `setup_project.dart` بكل القيم كوسائط (`--yes`) — لا سؤالَ مرّتين.
-4. `git init` + أوّل commit **فقط إن نجحت الفحوص**؛ وإلا يُترك بلا commit ويقول ذلك.
-5. `-Remote <url>` يضيف `origin` ولا يدفع — الدفع قرارك.
+4. يُنادي `setup_project.dart` بكل القيم كوسائط (`--yes`) — لا سؤالَ مرّتين.
+5. `git init` + أوّل commit **فقط إن نجحت الفحوص**؛ وإلا يُترك بلا commit ويقول ذلك.
+6. **يرفع** (`git push -u origin master`، أو `gh repo create … --push`) — وفقط بعد
+   commit ناجح. فشلُ الرفع (صلاحية) يترك الـcommit محلّياً ويطبع أمر الإعادة.
+
+> ⚠️ **ومخرَجُ `git`/`npm` على stderr يُطبع نصّاً عادياً** عبر `Invoke-Native`.
+> Windows PowerShell 5.1 يعرضه بمضيفاتٍ كـVS Code وISE **أخطاءً حمراء**
+> (`NativeCommandError`) حتى مع النجاح — `Cloning into…` وحده يبدو فشلاً. والحكم
+> لـ`$LASTEXITCODE` لا للّون. الاستثناء: نمط `custom` يُترك بلا أنبوب، لأن الأنبوب
+> يحبس سؤالاً لا ينتهي بسطر جديد.
 
 **بلا أسئلة** (لفريقٍ أو CI) — كل وسيط اختياري، والغائب يُسأل عنه:
 
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1))) `
-    -Package zakat_app -Name "Zakat" -AppId com.awqaf.zakat -BaseUrl https://api.example.com -Preset simple
+    -Package zakat_app -Name "Zakat" -AppId com.awqaf.zakat -BaseUrl https://api.example.com -Preset simple `
+    -Remote awqaf/zakat_app
 ```
 
 الوسائط: `-Package` · `-Name` · `-AppId` · `-BaseUrl` · `-BaseUrlStaging` ·

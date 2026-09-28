@@ -42,7 +42,8 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 ```
 
 يسأل عن اسم الحزمة والاسم الظاهر وApplication ID و`BASE_URL` ونمط الوحدات، ثم
-يستنسخ بتاريخٍ نظيف ويكتب الهوية **ويبدّل اسم حزمة Dart** ويفحص ويُنشئ أوّل commit.
+يستنسخ بتاريخٍ نظيف ويكتب الهوية **ويبدّل اسم حزمة Dart** ويفحص ويُنشئ أوّل commit
+**ويرفعه لمستودع GitHub يسألك عنه** — مستودعٌ فارغ، أو يُنشئه لك إن كان `gh` مثبَّتاً.
 يبقى لك من م2: الأيقونات والألوان والخطوط. **وللباك نفس الرابط** بـ
 `project-template-backend`. التفصيل: [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د.
 

@@ -123,6 +123,12 @@ jobs:
 
       - run: flutter pub get
 
+      # `.env.dev.json` is gitignored (real URLs), so a checkout never has it
+      # and `--dart-define-from-file` below fails with "file not found". The
+      # example values are enough to prove the app assembles; nothing runs it.
+      - name: Env file from example
+        run: '[ -f .env.dev.json ] || cp .env.example.json .env.dev.json'
+
       # Proves the app still assembles — `analyze` does not catch a broken
       # Gradle file, a missing asset, or a manifest that no longer merges.
       #
