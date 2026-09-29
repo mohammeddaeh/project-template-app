@@ -164,7 +164,7 @@ class AttachmentDownloadManager {
           tag: _tag,
         );
         await _files.discardPartial(record.attachmentId);
-        return _fail(record, AttachmentUnavailability.corrupt, 'no checksum');
+        return await _fail(record, AttachmentUnavailability.corrupt, 'no checksum');
       }
 
       final published = await _files.verifyAndPublish(
@@ -173,7 +173,7 @@ class AttachmentDownloadManager {
       );
 
       if (published == null) {
-        return _fail(record, AttachmentUnavailability.corrupt, 'checksum mismatch');
+        return await _fail(record, AttachmentUnavailability.corrupt, 'checksum mismatch');
       }
 
       final now = DateTime.now().millisecondsSinceEpoch;

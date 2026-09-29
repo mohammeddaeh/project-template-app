@@ -74,7 +74,7 @@ class MediaServiceImpl implements MediaService {
         quality: 75,
       );
       if (file == null) return null;
-      return File(file).readAsBytes();
+      return await File(file).readAsBytes();
     } catch (e) {
       log('videoThumbnail error: $e', name: 'MediaServiceImpl');
       return null;

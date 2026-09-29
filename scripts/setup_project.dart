@@ -544,9 +544,19 @@ Future<bool> _runHealthChecks() async {
   _header('🩺  فحوصات ما بعد الإعداد');
   var allPassed = true;
 
-  allPassed &= await _check('📦  flutter pub get', 'flutter', ['pub', 'get']);
+  // الضجيج يُخفي الفشل: `pub get` يسرد ~١٦٦ حزمةً قديمة، و`flutter test` خارج
+  // طرفيّة (كتحت new_project.ps1) يطبع سطراً لكل اختبار (~٤٠٠). فالأول يُطبع
+  // مخرَجه عند الفشل فقط، والثاني بـ`failures-only`.
+  allPassed &= await _check('📦  flutter pub get', 'flutter', [
+    'pub',
+    'get',
+  ], quietOnSuccess: true);
   allPassed &= await _check('🔍  dart analyze lib', 'dart', ['analyze', 'lib']);
-  allPassed &= await _check('🧪  flutter test', 'flutter', ['test']);
+  allPassed &= await _check('🧪  flutter test', 'flutter', [
+    'test',
+    '--reporter',
+    'failures-only',
+  ]);
   allPassed &= await _check('🏗   check_structure', 'dart', [
     'run',
     'scripts/check_structure.dart',
@@ -555,14 +565,30 @@ Future<bool> _runHealthChecks() async {
   return allPassed;
 }
 
-Future<bool> _check(String label, String exe, List<String> args) async {
+Future<bool> _check(
+  String label,
+  String exe,
+  List<String> args, {
+  bool quietOnSuccess = false,
+}) async {
   _section(label);
   final process = await Process.start(exe, args, runInShell: true);
-  await Future.wait([
-    stdout.addStream(process.stdout),
-    stderr.addStream(process.stderr),
-  ]);
-  final code = await process.exitCode;
+  final int code;
+  if (quietOnSuccess) {
+    final out = <int>[];
+    await Future.wait([
+      process.stdout.forEach(out.addAll),
+      process.stderr.forEach(out.addAll),
+    ]);
+    code = await process.exitCode;
+    if (code != 0) stdout.add(out);
+  } else {
+    await Future.wait([
+      stdout.addStream(process.stdout),
+      stderr.addStream(process.stderr),
+    ]);
+    code = await process.exitCode;
+  }
   final ok = code == 0;
   print(ok ? '  ✅  نجح' : '  ❌  فشل (exit $code)');
   return ok;
