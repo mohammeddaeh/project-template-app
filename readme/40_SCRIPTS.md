@@ -406,7 +406,12 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 > Windows PowerShell 5.1 يعرضه بمضيفاتٍ كـVS Code وISE **أخطاءً حمراء**
 > (`NativeCommandError`) حتى مع النجاح — `Cloning into…` وحده يبدو فشلاً. والحكم
 > لـ`$LASTEXITCODE` لا للّون. الاستثناء: نمط `custom` يُترك بلا أنبوب، لأن الأنبوب
-> يحبس سؤالاً لا ينتهي بسطر جديد.
+> يحبس سؤالاً لا ينتهي بسطر جديد. **وأثناء الأنبوب يُضبط `[Console]::OutputEncoding`
+> على UTF-8** ثم يُعاد: PowerShell 5.1 يفكّ المخرَج الملتقَط بصفحة OEM، فكان عربيُّ
+> `setup_project.dart` يصل رموزاً (`╪Ñ╪╣╪»…`).
+>
+> **ومن cmd لا PowerShell**: `irm` غير معروف هناك. نادِه عبر PowerShell:
+> `powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <الرابط> | iex"`.
 
 **بلا أسئلة** (لفريقٍ أو CI) — كل وسيط اختياري، والغائب يُسأل عنه:
 

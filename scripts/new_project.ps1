@@ -75,13 +75,24 @@ $presetRule = { param($v) if ($v -notin @('simple', 'enterprise', 'custom')) { '
 # No param block on purpose: a declared parameter would swallow a native flag
 # that happens to prefix-match its name.
 function Invoke-Native {
-    $exe, $rest = $args
+    # @(...) always: with one argument left, `$exe, $rest = $args` makes $rest a
+    # plain string, and splatting a string passes it character by character.
+    $exe = $args[0]
+    $rest = @($args | Select-Object -Skip 1)
     $ErrorActionPreference = 'Continue'
-    & $exe @rest 2>&1 | ForEach-Object {
-        # A blank stderr line stringifies to its type name, not to ''.
-        $line = if ($_ -is [System.Management.Automation.ErrorRecord]) { $_.Exception.Message } else { "$_" }
-        Write-Host "   $line"
+    # Captured output is decoded with [Console]::OutputEncoding - the OEM code
+    # page on Windows PowerShell 5.1 - so the UTF-8 Arabic that dart prints
+    # arrived as mojibake. UTF-8 while the command runs, restored after.
+    $previous = [Console]::OutputEncoding
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    try {
+        & $exe @rest 2>&1 | ForEach-Object {
+            # A blank stderr line stringifies to its type name, not to ''.
+            $line = if ($_ -is [System.Management.Automation.ErrorRecord]) { $_.Exception.Message } else { "$_" }
+            Write-Host "   $line"
+        }
     }
+    finally { [Console]::OutputEncoding = $previous }
 }
 
 function Test-Tool([string]$tool, [string]$hint) {
@@ -118,7 +129,9 @@ function Read-PushTarget([string]$given) {
         $url = ConvertTo-RepoUrl $value
 
         $env:GIT_TERMINAL_PROMPT = '0'
-        $refs = git ls-remote $url 2>$null
+        # Only ref lines count: a credential helper can print to stdout too, and
+        # one such line made an empty repository read as "already has commits".
+        $refs = @(git ls-remote $url 2>$null) | Where-Object { $_ -match "`t(HEAD|refs/)" }
         $reachable = $LASTEXITCODE -eq 0
         Remove-Item Env:GIT_TERMINAL_PROMPT
 
