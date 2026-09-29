@@ -389,8 +389,14 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
      GitHub): تاريخٌ جديد فوقه يُرفض عند الرفع.
    - غير موجود و`gh` مثبَّت ⇐ يعرض إنشاءه (`private` افتراضياً / `public`).
    - غير موجود بلا `gh` ⇐ يطلب إنشاءه فارغاً على GitHub ثم إعادة إدخاله.
-3. `git clone --depth 1`، ثم **يحذف `.git`** — المشروع يبدأ بتاريخٍ نظيف، ونسخةُ
-   القالب تُحفظ بـ`.template_manifest.json` (`templateVersion`).
+3. `git clone --depth 1` **إلى مجلدٍ مؤقّت بـTEMP**، ثم يَنسخ الملفات **بلا `.git`**
+   إلى مجلد المشروع — المشروع يبدأ بتاريخٍ نظيف، ونسخةُ القالب تُحفظ بـ
+   `.template_manifest.json` (`templateVersion`).
+   > ⚠️ **لا استنساخ في المكان ثم حذف `.git`** (كان كذلك حتى 2026-09-28): VS Code
+   > المفتوح على المجلد الأب يرى المستودع الجديد فيُشغّل `git fetch` فيه خلال ثوانٍ،
+   > فيُقفل `FETCH_HEAD` و`tmp_pack_*` ويفشل الحذف — **ثم يمضي السكربت** ويقع أوّل
+   > commit فوق تاريخ القالب. ومجلدٌ لم يحمل `.git` قطّ لا يُبقي واحداً. وقبل
+   > `git init` حارسٌ أخير: `.git` موجود ⇐ يتوقّف.
 4. يُنادي `setup_project.dart` بكل القيم كوسائط (`--yes`) — لا سؤالَ مرّتين.
 5. `git init` + أوّل commit **فقط إن نجحت الفحوص**؛ وإلا يُترك بلا commit ويقول ذلك.
 6. **يرفع** (`git push -u origin master`، أو `gh repo create … --push`) — وفقط بعد

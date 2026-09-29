@@ -151,6 +151,30 @@ function Publish-Repo($target) {
     return $false
 }
 
+# Cloned into TEMP, then copied without .git - never cloned in place.
+# Deleting .git after an in-place clone fails when anything holds it open:
+# VS Code, open on the parent folder, sees the new repository and runs
+# `git fetch` in it within seconds (FETCH_HEAD, tmp_pack_* locked). The old
+# code then went on with the TEMPLATE's history still there, and the "initial"
+# commit landed on top of it. A folder that never had a .git cannot keep one.
+# Returns the template's short commit, or $null on failure.
+function Copy-Template([string]$source, [string]$branch, [string]$target) {
+    $staging = Join-Path ([System.IO.Path]::GetTempPath()) ('new_project_' + [guid]::NewGuid().ToString('N').Substring(0, 8))
+    # Not piped, and --quiet: the pipe shows no progress anyway, so a long
+    # clone looked frozen. Errors still print.
+    git clone --quiet --depth 1 --branch $branch $source $staging
+    if ($LASTEXITCODE -ne 0) { Write-Fail 'git clone failed - see the output above.'; return $null }
+
+    $ref = (git -C $staging rev-parse --short HEAD).Trim()
+    New-Item -ItemType Directory -Force $target | Out-Null
+    Get-ChildItem -Force $staging | Where-Object { $_.Name -ne '.git' } |
+        Copy-Item -Destination $target -Recurse -Force
+
+    Remove-Item -Recurse -Force $staging -ErrorAction SilentlyContinue
+    if (Test-Path $staging) { Write-Warn2 "temporary clone left at $staging (locked) - safe to delete later" }
+    return $ref
+}
+
 function Invoke-NewProject {
     Write-Host ''
     Write-Host '============================================================' -ForegroundColor DarkCyan
@@ -185,12 +209,9 @@ function Invoke-NewProject {
     }
 
     Write-Step "Cloning $Source ($Branch)"
-    Invoke-Native git clone --depth 1 --branch $Branch $Source $Directory
-    if ($LASTEXITCODE -ne 0) { Write-Fail 'git clone failed - see the output above.'; return }
-
-    $templateRef = (git -C $Directory rev-parse --short HEAD).Trim()
-    Remove-Item -Recurse -Force (Join-Path $Directory '.git')
-    Write-Ok "template @ $templateRef - history dropped, the new project starts clean"
+    $templateRef = Copy-Template $Source $Branch $Directory
+    if (-not $templateRef) { return }
+    Write-Ok "template @ $templateRef - copied without its history, the new project starts clean"
 
     Push-Location $Directory
     try {
@@ -215,6 +236,9 @@ function Invoke-NewProject {
         if ($Preset -ne 'custom') { Invoke-Native dart @setupArgs } else { dart @setupArgs }
         $setupOk = $LASTEXITCODE -eq 0
         Write-Step 'Initial commit'
+        # Last line of defence: a .git here is somebody else's history, and the
+        # initial commit must not land on it.
+        if (Test-Path .git) { Write-Fail "$Directory already has a .git - refusing to commit onto it."; return }
         git init --quiet
         git symbolic-ref HEAD refs/heads/master
         # A failed setup is not committed: the first commit should be a state
