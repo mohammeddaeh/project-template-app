@@ -22,7 +22,7 @@
 
 | # | البند | الفئة | الأولوية | الحالة |
 |---|---|---|---|---|
-| 01 | سكربت الإعداد الأول (Setup Wizard) | 🛠️ أدوات | 🔴 عالية | ✅ منجَز — `scripts/setup_project.dart`. المُطلِق الخارجي **مؤجَّل بقرار** (2026-09-14) |
+| 01 | سكربت الإعداد الأول (Setup Wizard) | 🛠️ أدوات | 🔴 عالية | ✅ منجَز — `scripts/setup_project.dart` + المُطلِق `scripts/new_project.ps1` (2026-09-28)، ومُقلَعٌ على جهاز (2026-10-18) |
 | 02 | مولّد الشرائح (Feature Scaffolding) | 🛠️ أدوات | 🔴 عالية | ✅ منجَز — `scripts/scaffold_feature.dart` |
 | 03 | مولّد الموديولات (Module Scaffolding) | 🛠️ أدوات | 🟡 متوسطة | ✅ منجَز — `scripts/scaffold_module.dart` |
 | 04 | سكربت تدقيق ذاتي للقالب (Template Doctor) | 🛠️ أدوات | 🔴 عالية | ✅ منجَز — `scripts/audit_template.dart` |
@@ -142,8 +142,9 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-backend/mast
   `typecheck` → `check:messages` → `test`.
 - **جُرِّب طرفاً لطرف على ويندوز** (مصدرٌ محلّي بـ`-Source`): التطبيق — ٣٨٨
   اختباراً خضراء، و`check_structure` بلا جديد، وصفر `package:app_template/`
-  باقٍ؛ الباك — ٢٠٠ اختبار خضراء. **ولم يُجرَّب إقلاعٌ على جهاز** بعد نقل
-  `MainActivity`.
+  باقٍ؛ الباك — ٢٠٠ اختبار خضراء. **والإقلاع على جهاز جُرِّب (2026-10-18)**:
+  نسخة `m1` من القالب @ `8a4d0ed` عبر `irm … | iex` (Application ID
+  `com.company.m1`، `MainActivity.kt` منقولٌ لحزمته) أقلعت بلا عطل.
 - التجريب كشف عطلاً قديماً: `setup_project.dart` **لم يعمل قطّ على استنساخٍ
   بويندوز** — CRLF — راجع [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د.
 
