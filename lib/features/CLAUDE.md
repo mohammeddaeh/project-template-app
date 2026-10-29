@@ -23,12 +23,25 @@ lib/features/{feature}/
   │   ├── entities/         ← Pure Dart + Equatable (no fromJson)
   │   ├── params/           ← UseCaseParams subclasses
   │   ├── repositories/     ← Abstract repository interface
-  │   └── usecases/         ← Use cases (business logic)
+  │   ├── usecases/         ← Use cases (business logic)
+  │   └── services/         ← منطق Dart خالص ليس كياناً ولا usecase: محرّك · قواعد · بانٍ لنص
   └── presentation/
       ├── cubits/           ← Cubit + @freezed state
       ├── widgets/          ← Feature-specific widgets
+      ├── services/         ← مساعدٌ للواجهة ليس ودجة ولا cubit (نصّ مشاركة · طبقات قشرة)
       └── pages/            ← Screen widgets (@RoutePage)
 ```
+
+**والموديول بالشكل نفسه**: `lib/modules/<name>/` يحمل الطبقات ذاتها (`data/` ·
+`domain/` · `presentation/` حين يلزم)، وملفُّ `<name>_plugin.dart` أو `<name>_module.dart`
+وحده بجذره — هو المدخل الذي يستورده الآخرون.
+
+**و`data/datasources/` لكل مصدر**: خدمة Retrofit، **وكلّ** مصدرٍ محلّي (مخزن ·
+طابور · جسر منصّة).
+
+⛔ **ولا `@RestApi` خارج ملفٍّ اسمُه `*_api_service.dart`** — لا بملف repository
+ولا datasource. خدمةٌ مدفونةٌ بملفٍّ آخر لا يجدها من يبحث عن عقد الـwire، ولا
+`injection_module.dart` حين يسجّلها. الفاحص: `check_structure` L01.
 
 ### Layer Rules
 

@@ -257,6 +257,11 @@ dart run scripts/check_structure.dart --baseline  # يثبّت الدَّين ا
 [`06_CAPABILITIES.md`](06_CAPABILITIES.md)، ويُحدَّثان معاً. و`lib/modules/` خارج
 الفاحص كلّه كبقية القواعد.
 
+### قواعد الطبقات `L##`
+
+`L01` — `@RestApi` بملفٍّ اسمُه `*_api_service.dart` وحده، لا بملف repository أو
+datasource ([`lib/features/CLAUDE.md`](../lib/features/CLAUDE.md) §Feature Structure).
+
 ### الأساس (`.structure_baseline.txt`) — سجلُّ دَينٍ لا زرُّ تجاهل
 
 أُدخل الفاحص على قالبٍ قائم فوجد **٧٢ مخالفة كلُّها سابقة له**. إصلاحُها دفعةً

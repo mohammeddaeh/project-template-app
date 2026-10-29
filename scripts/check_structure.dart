@@ -103,6 +103,7 @@ void main(List<String> args) {
     _checkResponsiveNumbers(path, code);
 
     _checkCapabilities(path, code);
+    _checkRestApiPlacement(path, code);
 
     if (_isPage(path)) _checkPage(path, code);
     if (_isSharedWidget(path)) _checkSharedWidget(path, code, barrelExports);
@@ -379,6 +380,26 @@ void _checkCapabilities(String path, List<String?> code) {
       if (pattern.hasMatch(line)) {
         _flag(capability.rule, path, i + 1, capability.message);
       }
+    }
+  }
+}
+
+/// L01 — `@RestApi` بملفٍّ اسمُه `*_api_service.dart` وحده.
+///
+/// خدمةٌ مدفونةٌ بملف repository أو datasource لا يجدها من يبحث عن عقد الـwire
+/// (R01)، ولا من يسجّلها بـ`injection_module.dart`.
+void _checkRestApiPlacement(String path, List<String?> code) {
+  if (path.endsWith('_api_service.dart')) return;
+  for (var i = 0; i < code.length; i++) {
+    final line = code[i];
+    if (line == null) continue;
+    if (RegExp(r'^\s*@RestApi\s*\(').hasMatch(line)) {
+      _flag(
+        'L01',
+        path,
+        i + 1,
+        '@RestApi خارج *_api_service.dart — انقل الخدمة لملفّها بـdata/datasources/',
+      );
     }
   }
 }
