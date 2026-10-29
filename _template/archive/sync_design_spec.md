@@ -40,7 +40,7 @@
 >
 > ### المراجع التنفيذية — وهي المصدر، لا هذا الملف
 >
-> [`lib/modules/sync/PLAN.md`](../../lib/modules/sync/PLAN.md) الحالة والمراحل ·
+> [`lib/modules/sync/PLAN.md`](../sync/PLAN.md) الحالة والمراحل ·
 > [`ARCHITECTURE.md`](../../lib/modules/sync/ARCHITECTURE.md) التصميم وجداول v4 ·
 > [`SETUP.md`](../../lib/modules/sync/SETUP.md) التركيب و**عقد الحذف** ·
 > [`LOAD_TEST_PLAN.md`](../../lib/modules/sync/LOAD_TEST_PLAN.md) ·

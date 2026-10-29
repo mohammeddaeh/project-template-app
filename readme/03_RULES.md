@@ -392,6 +392,13 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 
 الفاحص: `dart run scripts/audit_template.dart` §٥ (استشاريّ، `--verbose` للأسطر).
 
+### R39 · كل رابطٍ بوثيقة يصل ملفاً موجوداً 🔒
+
+نقلُ ملفٍّ أو حذفُه يكسر كل رابطٍ إليه، ولا شيء آخر يفشل. ورابطٌ إلى `_template/`
+من خارجه رابطُ GitHub كامل (المجلد لا يصل المشاريع).
+
+الفاحص: `dart run scripts/check_docs.dart` — حاجبٌ بالـCI.
+
 ---
 
 ## ط) تغيير الكود
@@ -487,6 +494,7 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R34  فحصت lib/ui/widgets/ ومستهلكي الودجة قبل بناء واحدة جديدة
 [ ] R35  صفر مؤشّر إطارٍ خام — AppProgress وحده
 [ ] R38  لا تاريخ ولا اسمَ مشروع بوثيقةٍ أو تعليق — audit_template §٥
+[ ] R39  check_docs بلا رابطٍ معطوب
 [ ] R36  صفر TextField/TextFormField خام — CustomTextField وحده
 [ ] R37  صفر رقمِ مقاسٍ خام — context.screen · وجُرِّبت على هاتف ولوح
 [ ] R16  اتجاه التبعية سليم

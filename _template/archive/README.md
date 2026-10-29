@@ -16,7 +16,7 @@
 | [`integration_audit.md`](integration_audit.md) | تدقيق عقد الـwire بين الفرونت والباك — التدقيق 2026-08-11، الإصلاح 2026-08-12 | **سجلّ مغلق.** خمسة أعطال قاطعة، مُصلَحة ومثبَّتة باختبارات الطرفين. الدرس المستخلَص صار [`../03_RULES.md`](../../readme/03_RULES.md) §R01–R03 |
 | [`template_enhancements.md`](template_enhancements.md) | خارطة تطوير بعمودَي حالة (القالب / مشروع «قرطاس») — 130 KB | يقارن بمشروع **لا يملكه الفريق**، فمعظمه غير قابل للتصرّف. الأحكام الصالحة عامّةً نُقلت إلى [`../03_RULES.md`](../../readme/03_RULES.md) §R27–R30 |
 | [`realtime_design.md`](realtime_design.md) | تصميم مقترَح لـ`modules/realtime/` | **الموديول غير موجود** — لا `lib/modules/realtime/` أصلاً. مواصفة لم تُبنَ، لا وصف لكود. ولا تخلطه بـ`modules/multi_device/` المبنيّ |
-| [`sync_design_spec.md`](sync_design_spec.md) | المواصفة الهندسية لموديول المزامنة — 2098 سطراً، عشرون قسماً | **تصميمٌ سابق للتنفيذ**: يصف ما يجب أن يكون لا ما هو كائن، ويتجاوز الكود القائم بمسافة (Manifest · الخلفية · طابور التنزيل). الحالة الحقيقية بـ[`../../lib/modules/sync/PLAN.md`](../../lib/modules/sync/PLAN.md)، والتصميم المنفَّذ بـ[`ARCHITECTURE.md`](../../lib/modules/sync/ARCHITECTURE.md) |
+| [`sync_design_spec.md`](sync_design_spec.md) | المواصفة الهندسية لموديول المزامنة — 2098 سطراً، عشرون قسماً | **تصميمٌ سابق للتنفيذ**: يصف ما يجب أن يكون لا ما هو كائن، ويتجاوز الكود القائم بمسافة (Manifest · الخلفية · طابور التنزيل). الحالة الحقيقية بـ[`../../lib/modules/sync/PLAN.md`](../sync/PLAN.md)، والتصميم المنفَّذ بـ[`ARCHITECTURE.md`](../../lib/modules/sync/ARCHITECTURE.md) |
 | [`sync_system_guide.md`](sync_system_guide.md) | جولة تعريفية بالإنجليزية على الموديول | استوعبها [`../../lib/modules/sync/SETUP.md`](../../lib/modules/sync/SETUP.md) بنسخة مُحدَّثة تقول ما هو مبنيّ فعلاً |
 | [`template_backport.md`](template_backport.md) | خطّة نقل ما تعلَّمه مشروع «الأوقاف» إلى القالب — سبع موجات، جدول تتبّع بـ٥١ بنداً | **سجلّ مغلق (2026-09-09).** كل بند ✅ إلا S01 (منقول قاعدةً لا كوداً بقصد — تفصيلٌ خاصٌّ بكيانات الأوقاف). مُقاسٌ لا مُقدَّر: الاختبارات ١٩٦→٢٨٨، صفر رابطٍ مكسور، صفر مخالفة `check_structure` جديدة |
 
@@ -54,7 +54,7 @@
    `getAll<SyncFeatureContractBase>()` يجد صفراً. تشغيل `AppFeatures.offlineSync`
    يترك التطبيق يعمل بالكامل على الشبكة — **بلا انهيار ولا تحذير ولا اختبار أحمر**.
    وهذا بالضبط العطل الذي كان `feature_contract_registration_test.dart` يحرسه، وقد
-   حُذف معه. الحالة: [`../../lib/modules/sync/PLAN.md`](../../lib/modules/sync/PLAN.md) §ب١٣.
+   حُذف معه. الحالة: [`../../lib/modules/sync/PLAN.md`](../sync/PLAN.md) §ب١٣.
 
 3. **لا مغلَّف صفحة مُختبَر** بـ`test/wire_contract_test.dart` —
    `{items, page, limit, total, total_pages}` لم يعد يُحلَّل من استجابة حقيقية.

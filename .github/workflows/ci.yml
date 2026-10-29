@@ -68,6 +68,19 @@ jobs:
       - name: Test
         run: flutter test
 
+      # Neither of these is seen by `analyze` or `test`: a widget built against
+      # the design system's rules, and a doc link that leads nowhere.
+      - name: Structure check
+        run: dart run scripts/check_structure.dart
+
+      - name: Docs links
+        run: dart run scripts/check_docs.dart
+
+      # Fails only on the one finding with no false positive (sync flag on, zero
+      # contracts); everything else it prints is for a human to read.
+      - name: Template audit
+        run: dart run scripts/audit_template.dart
+
       # ⬜ NOT ADDED HERE, BY DESIGN: a step that hits your backend's live
       # `GET /openapi.json` and checks it against your own field inventory —
       # see readme/40_SCRIPTS.md §8‑ب ("نمطٌ اختياريّ — فاحصُ عقدٍ يسأل الخادمَ

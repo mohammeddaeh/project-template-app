@@ -127,8 +127,10 @@ Beyond the 10 heuristics, apply the Laws of UX to diagnose deeper issues rooted 
 
 For Standard and Deep critiques, consult these reference files for detailed guidelines, common violations, and implementation patterns:
 
-- [`../ux-designer/references/01-core-principles.md`](../ux-designer/references/01-core-principles.md) — Nielsen's 10 heuristics in depth
-- [`../ux-designer/references/02-laws-of-ux.md`](../ux-designer/references/02-laws-of-ux.md) — Laws of UX with violation patterns
+- `references/01-core-principles.md` of the `ux-designer` skill — Nielsen's 10 heuristics in depth
+- `references/02-laws-of-ux.md` of the `ux-designer` skill — Laws of UX with violation patterns
+
+`ux-designer` is a personal skill, not part of the template: when it is not installed, critique from the principles in this file alone.
 
 (The upstream copies of these two files were not vendored: `ux-designer` already ships the same material, and two versions of one canon drift.)
 
