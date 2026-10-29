@@ -106,8 +106,8 @@ jobs:
       # `dart run scripts/gen_permission_keys.dart --verify --from ../perms.json`.
       # See readme/31_MODULE_PERMISSIONS.md §"توصيات مستقبلية" #2.
 
-      # A gate: the whole tree is formatted, and gen_code.dart formats the two
-      # generated files whose generator does not. Format before pushing:
+      # A gate: the whole tree is formatted, and gen_code.dart formats the
+      # generated lib/resources/ its generators leave unformatted. Format before pushing:
       # `dart format lib test scripts`.
       - name: Format check
         run: dart format --output=none --set-exit-if-changed lib test scripts

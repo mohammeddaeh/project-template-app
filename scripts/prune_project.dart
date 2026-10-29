@@ -4,7 +4,7 @@
 /// | الصنف | يُكتشف حين | مع `--apply` |
 /// |---|---|---|
 /// | مفتاح ترجمة | لا `LocaleKeys.<اسمه>` ولا نصُّه حرفياً بـ`lib/` | **يُحذف** من كل `assets/translations/*.json` |
-/// | أصل (صورة · SVG · Lottie) | لا مسارُه ولا اسمُ getter بـ`assets.gen.dart` بـ`lib/` | **يُحذف** الملف |
+/// | أصل (صورة · SVG · Lottie) | لا مسارُه ولا اسمُ getter بـ`assets.gen.dart` بـ`lib/` ولا مسارُه بـ`scripts/` وملفات YAML الجذر وموارد أندرويد/iOS | **يُحذف** الملف |
 /// | موديول | علَمه بـ`AppFeatures` مطفأ | يُعرض وحسب — الحذف بخطوات `SETUP.md` كل موديول |
 /// | ملف Dart | لا يستورده أحد ولا هو مدخل (`main.dart` · مولَّد · `part`) | يُعرض وحسب |
 /// | حزمة | بـ`dependencies` ولا `import` لها بـ`lib/` `test/` `scripts/` | يُعرض وحسب — بعضُها إضافاتُ منصّةٍ بلا import |
@@ -43,7 +43,9 @@ void main(List<String> args) {
 
   final keys = _unusedKeys(source, keep);
   _section('مفاتيح ترجمة بلا مستعمل', keys);
-  final assets = _unusedAssets(source, keep);
+  // الأصل يُستعمل خارج `lib/` أيضاً: سكربتٌ يولّد منه (شاشة الإقلاع) أو ملفُّ
+  // إعدادٍ يسمّيه (`flutter_native_splash.yaml` · أيقونات flavors) أو موردٌ أصليّ.
+  final assets = _unusedAssets('$source${_configSource()}', keep);
   _section('أصولٌ بلا مستعمل', assets);
   _section(
     'موديولاتٌ علَمها مطفأ (راجع SETUP.md كلٍّ منها قبل حذفه)',
@@ -116,6 +118,26 @@ String _dartSource(List<String> roots, {required bool skipGenerated}) {
       if (skipGenerated && _generated(path)) continue;
       if (path == _assetsGen) continue;
       buffer.writeln(f.readAsStringSync());
+    }
+  }
+  return buffer.toString();
+}
+
+/// كل ما يسمّي أصلاً خارج `lib/`: سكربتات · YAML الجذر · موارد أندرويد وiOS النصّية.
+String _configSource() {
+  final buffer = StringBuffer(_dartSource(['scripts'], skipGenerated: true));
+  for (final f in Directory('.').listSync().whereType<File>()) {
+    if (f.path.endsWith('.yaml') && !f.path.endsWith('pubspec.yaml')) {
+      buffer.writeln(f.readAsStringSync());
+    }
+  }
+  for (final root in ['android/app/src/main/res', 'ios/Runner']) {
+    final dir = Directory(root);
+    if (!dir.existsSync()) continue;
+    for (final f in dir.listSync(recursive: true).whereType<File>()) {
+      if (f.path.endsWith('.xml') || f.path.endsWith('.plist')) {
+        buffer.writeln(f.readAsStringSync());
+      }
     }
   }
   return buffer.toString();

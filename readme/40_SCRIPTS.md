@@ -49,7 +49,7 @@ dart run scripts/gen_code.dart
 3. `easy_localization:generate` → `codegen_loader.g.dart` (القارئ وقت التشغيل)
 4. `gen_assets.dart` → `assets.gen.dart` (+ مسارات `pubspec.yaml` الناقصة)
 5. `gen_permission_keys.dart` → `permission_keys.g.dart` — يُتخطّى بصمت إن لم يوجد `permissions.lock.json`
-6. `dart format` على `locale_keys.g.dart` و`codegen_loader.g.dart` — مولّدُهما لا يُنسّقهما، وفحصُ التنسيق بالـCI حاجب
+6. `dart format` على `lib/resources/` — easy_localization و`gen_assets.dart` لا يُنسّقان ما يولّدانه، وفحصُ التنسيق بالـCI حاجب
 
 > **ملاحظة:** التطبيق يقرأ `assetLoader: const CodegenLoader()` — فتنفيذ الخطوة 2
 > بلا 3 يجعل المفاتيح الجديدة **تظهر نصّاً خاماً** بالواجهة.
@@ -750,7 +750,7 @@ dart run scripts/prune_project.dart --apply    # يحذف المفاتيح وا�
 | الصنف | يُكتشف حين | مع `--apply` |
 |---|---|---|
 | مفتاح ترجمة | لا `LocaleKeys.<اسمه>` ولا نصُّه حرفياً بـ`lib/` | يُحذف من كل `assets/translations/*.json` |
-| أصل | لا مسارُه ولا getterه بـ`assets.gen.dart` بـ`lib/` | يُحذف الملف |
+| أصل | لا مسارُه ولا getterه بـ`lib/`، ولا مسارُه بـ`scripts/` ولا YAML الجذر (`flutter_native_splash.yaml` …) ولا موارد أندرويد/iOS | يُحذف الملف |
 | موديول | علَمه بـ`AppFeatures` مطفأ | يُعرض — الحذف بخطوات `SETUP.md` كل موديول |
 | ملف Dart | لا يستورده أحد ولا هو مدخل | يُعرض — قد يكون سطحاً ينتظر بقصد (جرد `10_ARCHITECTURE.md`) |
 | حزمة | لا `import` لها | يُعرض — إضافاتُ المنصّة وأدوات التوليد بلا import |

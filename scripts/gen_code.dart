@@ -83,12 +83,12 @@ Future<void> main(List<String> args) async {
     ]);
   }
 
-  // 6. dart format على ملفَّي easy_localization — لا يُنسّقهما مولّدُهما، وفحصُ
-  //    التنسيق بالـCI حاجب: ملفٌّ مولَّد بلا تنسيق يُحمِّر كل PR بعد أول توليد.
-  await _stream('🧹  dart format (easy_localization)', 'dart', [
+  // 6. dart format على `lib/resources/` — easy_localization و`gen_assets.dart`
+  //    لا يُنسّقان ما يولّدانه، وفحصُ التنسيق بالـCI حاجب: ملفٌّ مولَّد بلا تنسيق
+  //    يُحمِّر كل PR بعد أول توليد.
+  await _stream('🧹  dart format (lib/resources)', 'dart', [
     'format',
-    'lib/resources/locale_keys.g.dart',
-    'lib/resources/codegen_loader.g.dart',
+    'lib/resources',
   ]);
 
   _footer('✅  gen_code done');
