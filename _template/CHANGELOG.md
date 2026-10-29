@@ -28,3 +28,7 @@
 - **skills القالب** تصل المشاريع (`.claude/skills/`) · `apply-feedback`.
 - **حلقة الملاحظات**: `docs/TEMPLATE_FEEDBACK.md` بالمشروع · `template_drift.dart` ·
   `template_update.dart` · `TEMPLATE_VERSION`.
+- **أدوات النقل والتنظيف**: `port_inventory.dart` · `device_shot.dart` · skill
+  `port-to-template` · `prune_project.dart` (وحُذف به 62 مفتاح ترجمة مهجوراً).
+- **`L01`**: `@RestApi` بملفّ `*_api_service.dart` وحده · `domain/services/` و`presentation/services/`.
+- **الأخطاء غير الملتقَطة** تمرّ بـ`LogService` (فتصل `crash_reporting`).
