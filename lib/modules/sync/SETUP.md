@@ -1,7 +1,7 @@
 # Sync Module — Quick Setup Guide
 
 > **الحالة الحقيقية والمراحل:** [`PLAN.md`](PLAN.md) · **التصميم:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
-> **الوصف القديم:** [`readme/sync.md`](../../../readme/90_archive/sync_design_spec.md) — يصف التصميم المقصود لا الكود القائم
+> **الوصف القديم:** [`readme/sync.md`](../../../_template/archive/sync_design_spec.md) — يصف التصميم المقصود لا الكود القائم
 
 ---
 

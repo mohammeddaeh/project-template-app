@@ -64,7 +64,7 @@
 
 **الآن:** حُذفا من `LoginEntity` و`CurrentUserRepository` و`PersistenceKeys`، مع توثيق الاتجاه الصحيح عند إضافة RBAC: **السيرفر يصدر الادّعاءات أولاً**.
 
-**وقد أُضيف RBAC بهذا الترتيب فعلاً** — `core/authz/` بالباك أولاً (`requirePermission` + `/authz/me` + `/authz/catalog`)، ثم `modules/access_control/` هنا. والدرس نفسه مبنيّ في الموديول الجديد كحاجز لا كتعليق: بناء التطوير يطلب `?include_declared=true` فيحمل قائمة كل مفتاح يعلنه الخادم، وأي `Can(permission: …)` بمفتاح خارجها يُصدر `LogService.error` + `assert`. راجع [`31_MODULE_PERMISSIONS.md`](../31_MODULE_PERMISSIONS.md).
+**وقد أُضيف RBAC بهذا الترتيب فعلاً** — `core/authz/` بالباك أولاً (`requirePermission` + `/authz/me` + `/authz/catalog`)، ثم `modules/access_control/` هنا. والدرس نفسه مبنيّ في الموديول الجديد كحاجز لا كتعليق: بناء التطوير يطلب `?include_declared=true` فيحمل قائمة كل مفتاح يعلنه الخادم، وأي `Can(permission: …)` بمفتاح خارجها يُصدر `LogService.error` + `assert`. راجع [`31_MODULE_PERMISSIONS.md`](../../readme/31_MODULE_PERMISSIONS.md).
 
 **عقد الـwire الجديد:** `test/fixtures/wire/authz_me.json` · `authz_catalog.json` · `authz_user_access.json` — يقابلها `src/core/authz/__tests__/wire-contract.test.ts`. خطأ المفتاح هنا أخطر منه في أي payload آخر: مجموعة صلاحيات تُحلَّل إلى فارغة لا تُميَّز عن حساب لا يملك شيئاً حقاً.
 
@@ -245,7 +245,7 @@ RateLimitStore ← MemoryRateLimitStore    (افتراضي — Map بالعمل�
 
 > **BOM الـCSV** ليس مسألة عميل، لكنه من العائلة ذاتها: بدون `﻿` يفتح كل تصدير عربي بـExcel كـ`Ø§Ù„Ø¹Ù†ÙˆØ§Ù†`، **ولا شيء بالسيرفر يبلّغ** — الاستجابة UTF-8 صحيحة تماماً. يفرضه اختبار وحدة بالباك.
 
-التفاصيل: [`32_MODULE_DATA_TRANSFER.md`](../32_MODULE_DATA_TRANSFER.md) · `backend_template/docs/rest_api.md` §data-transfer.
+التفاصيل: [`32_MODULE_DATA_TRANSFER.md`](../../readme/32_MODULE_DATA_TRANSFER.md) · `backend_template/docs/rest_api.md` §data-transfer.
 
 ---
 

@@ -180,7 +180,9 @@ function Copy-Template([string]$source, [string]$branch, [string]$target) {
 
     $ref = (git -C $staging rev-parse --short HEAD).Trim()
     New-Item -ItemType Directory -Force $target | Out-Null
-    Get-ChildItem -Force $staging | Where-Object { $_.Name -ne '.git' } |
+    # _template/ maintains the template itself (roadmap, archive, project
+    # feedback) - a project built on it never reads it, see _template/README.md.
+    Get-ChildItem -Force $staging | Where-Object { $_.Name -notin '.git', '_template' } |
         Copy-Item -Destination $target -Recurse -Force
 
     Remove-Item -Recurse -Force $staging -ErrorAction SilentlyContinue

@@ -7,7 +7,7 @@ import 'package:auto_route/auto_route.dart';
 /// (`initial && path فارغ/جذر`)، وعزلُه هنا يجعله قابلاً للاختبار المباشر بلا
 /// تركيب `App` كاملةً بكل تبعيّاتها.
 ///
-/// راجع `readme/23_STARTUP_SPLASH.md` و`readme/41_ROADMAP.md` بند #09.
+/// راجع `readme/23_STARTUP_SPLASH.md` و`_template/roadmap.md` بند #09.
 ///
 /// ## الفرق عن السلوك السابق
 ///

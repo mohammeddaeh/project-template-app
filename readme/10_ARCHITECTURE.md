@@ -37,7 +37,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 |------|----------------------|
 | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | `modules/access_control/` + `core/authz/` — الصلاحيات |
 | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | `modules/data_transfer/` — الاستيراد والتصدير |
-| [`sync_design_spec.md`](90_archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
+| [`sync_design_spec.md`](../_template/archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
 | [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync — إعداد سريع (اقرأه أولاً) |
 | [`../lib/modules/multi_device/README.md`](../lib/modules/multi_device/README.md) | الأجهزة والجلسات النشطة |
 | `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates · session_guard · notification_center |
@@ -47,10 +47,10 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | File | When to read / update |
 |------|----------------------|
 | [`40_SCRIPTS.md`](40_SCRIPTS.md) | السكربتات، البناء والإصدار، التوليد، حلّ المشاكل |
-| [`90_archive/template_enhancements.md`](90_archive/template_enhancements.md) | خارطة تطوير القالب — جدول الحالة + تفاصيل كل بند |
-| [`90_archive/integration_audit.md`](90_archive/integration_audit.md) | **سجلّ تاريخي** — تدقيق عقد الـwire (2026-08-11) وإصلاحه (2026-08-12) |
-| [`90_archive/template_enhancements.md`](90_archive/template_enhancements.md) | **قراءة لحظية** — انحراف القالب عن قرطاس بالاتجاهين (2026-08-17) + أولويات النقل. لا يُصان: يُعاد التدقيق ويُعاد كتابته |
-| [`90_archive/realtime_design.md`](90_archive/realtime_design.md) | **تصميم لم يُبنَ** — مزامنة الجلسات اللحظية بين الأجهزة. لا كود له بالقالب |
+| [`_template/archive/template_enhancements.md`](../_template/archive/template_enhancements.md) | خارطة تطوير القالب — جدول الحالة + تفاصيل كل بند |
+| [`_template/archive/integration_audit.md`](../_template/archive/integration_audit.md) | **سجلّ تاريخي** — تدقيق عقد الـwire (2026-08-11) وإصلاحه (2026-08-12) |
+| [`_template/archive/template_enhancements.md`](../_template/archive/template_enhancements.md) | **قراءة لحظية** — انحراف القالب عن قرطاس بالاتجاهين (2026-08-17) + أولويات النقل. لا يُصان: يُعاد التدقيق ويُعاد كتابته |
+| [`_template/archive/realtime_design.md`](../_template/archive/realtime_design.md) | **تصميم لم يُبنَ** — مزامنة الجلسات اللحظية بين الأجهزة. لا كود له بالقالب |
 
 ---
 
@@ -175,7 +175,7 @@ core/
 > — لأن `test/sync/deletion_contract_test.dart` يشهد على أن حذفَ المزامنة حذفُ
 > مجلَّد. حتى الوسيطُ النوعيُّ `SyncRefreshTask` لا يُكتب بملفّ المدخل.
 
-> `realtime/` **لم يعد موجوداً بـ`lib/modules/`** — كان مجلداً يحوي وثيقة تصميم بلا سطر Dart واحد، فيُقرأ من شجرة المجلدات موديولاً قائماً. نُقلت الوثيقة إلى [`90_archive/realtime_design.md`](90_archive/realtime_design.md) وحُذف المجلد (2026-08-17). **مجلد فارغ باسم ميزة هو ادّعاء بوجودها.**
+> `realtime/` **لم يعد موجوداً بـ`lib/modules/`** — كان مجلداً يحوي وثيقة تصميم بلا سطر Dart واحد، فيُقرأ من شجرة المجلدات موديولاً قائماً. نُقلت الوثيقة إلى [`_template/archive/realtime_design.md`](../_template/archive/realtime_design.md) وحُذف المجلد (2026-08-17). **مجلد فارغ باسم ميزة هو ادّعاء بوجودها.**
 
 ---
 
@@ -188,7 +188,7 @@ core/
 
 | ما هو | الحالة |
 |---|---|
-| `ui/state/mutation_result.dart` | **لا يستورده شيء بالقالب** — البند #19 كان `✅` بجدول [`90_archive/template_enhancements.md`](90_archive/template_enhancements.md) بمعنى «الملف وصل». النمط يُغلق حين يستهلكه أول cubit طفرة هنا |
+| `ui/state/mutation_result.dart` | **لا يستورده شيء بالقالب** — البند #19 كان `✅` بجدول [`_template/archive/template_enhancements.md`](../_template/archive/template_enhancements.md) بمعنى «الملف وصل». النمط يُغلق حين يستهلكه أول cubit طفرة هنا |
 | `ui/state/sync/widgets/` (`SyncUiHost` · `PendingChangesChip`) | يتراجعان لبعضهما ولا يركّبهما شيء — `sync` مطفأ أصلاً |
 | `core/foundation/extensions/num_extensions.dart` · `platform/extensions/{string,datetime}_extensions.dart` | ثلاثة ملفات **لا يستوردها أي ملف** |
 | `core/foundation/value_objects/` | جزيرة مغلقة: الثلاثة يصدّرها الـbarrel، والـbarrel لا يستورده أحد |

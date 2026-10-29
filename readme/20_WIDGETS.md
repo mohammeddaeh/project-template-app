@@ -32,7 +32,7 @@ Some UI infrastructure lives in `lib/ui/`:
 
 | Path | Content |
 |------|---------|
-| `ui/theme/` | Colors, palette, theme, `ThemeExtensions`, `AppRadius`/`AppMotion`/`AppElevation` (design tokens — راجع [`41_ROADMAP.md`](41_ROADMAP.md) بند #16) |
+| `ui/theme/` | Colors, palette, theme, `ThemeExtensions`, `AppRadius`/`AppMotion`/`AppElevation` (design tokens — راجع [`_template/roadmap.md`](../_template/roadmap.md) بند #16) |
 | `ui/extensions/` | BuildContext helpers — padding, screen size, dialog, bottom sheet |
 | `ui/error/` | `FailureUiMapper`, `UiAction` |
 | `ui/feedback/` | `AppFeedbackService` (abstract), adapters (MotionToast/SnackBar/Toast), `context.feedback.*` |

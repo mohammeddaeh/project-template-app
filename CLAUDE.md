@@ -122,27 +122,38 @@ modules     → Features      ❌ NEVER
 | `readme/40_SCRIPTS.md` | إضافة/تعديل سكربت |
 | `readme/00_START_HERE.md` · `01_SETUP.md` | تغيير هيكل المشروع · خطوات الإعداد · onboarding |
 | `readme/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
-| **`readme/41_ROADMAP.md`** | **إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود** — حلّ محلّ `90_archive/template_enhancements.md` المؤرشَف (2026-09-13) لهذا الغرض |
-| `readme/90_archive/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
 | `readme/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
 | `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
 | `readme/21_WIDGETS_USAGE.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود |
 | `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
 | **`readme/23_STARTUP_SPLASH.md`** | **أي سطر بـ`main()` · `ModulesBootstrap.start`/`ready` · `StartupResolver` · `deepLinkBuilder` بـ`app.dart` · أيُّ مورد أندرويد بـ`res/drawable/splash_*` أو `values*/styles.xml` · علَم `android` بـ`flutter_native_splash.yaml`** |
 | **`readme/17_SERVED_CONTRACT.md`** | **إضافة/حذف ثابت بـ`ApiUrls` · صيرورةُ نقطةٍ مخدومة · كشفُ عقدٍ يخالف المُعلَن · إعادةُ أي شريحة محذوفة** |
-| `readme/90_archive/sync_design_spec.md` | ⛔ **لا يُصان** — أرشيف. حالةُ الموديول بـ`lib/modules/sync/PLAN.md` و`SETUP.md` |
-| `readme/90_archive/**` | ⛔ **لا يُصان** — سجلّات مؤرَّخة. الانحراف يُعلَّق عليه بلافتة، لا يُمحى |
 | `lib/modules/sync/PLAN.md` | **إنهاء أي مرحلة P0–P9** — الحالة والتاريخ ومعيار القبول. ويُحدَّث معه سجلّ النقل بـ`Qirtas/qirtas_app/lib/modules/sync/PORT_STATUS.md` |
 | `lib/modules/sync/ARCHITECTURE.md` | تغيير مخطَّط v4 · دورة حياة حزمة أو ملف · ترتيب الدورة · شروط `SyncGate` |
 | `lib/modules/sync/SETUP.md` | تغيير خطوات التركيب · **أو أي منفذ جديد يمسّ عقد الحذف** |
 | `lib/modules/sync/LOAD_TEST_PLAN.md` | تغيير سيناريو تجريب أو محور قياس أو عتبة |
 | `lib/modules/sync/RULES.md` | **أي رقم يخرج من P8** — لا يُملأ من تقدير |
-| `readme/90_archive/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
 | **`loadtest/README.md`** | **إضافة/تعديل أي سيناريو k6 بـ`loadtest/k6/`** — سطرٌ بجدول «السيناريوهات الموجودة» لكل ملف جديد، بنفس الـcommit |
 
 > **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** الأربعة الأخيرة كانت خارجه حتى
 > 2026-08-17، واثنان منها انحرفا فعلاً. الفهرس بـ[`readme/README.md`](readme/README.md)
 > يحمل عمود «الحالة الحقيقية للكود» لكل ملف — أضف الصفّ هناك وهنا معاً.
+
+### صيانة القالب نفسه — `_template/`
+
+> **`_template/` لا يُنسخ إلى أي مشروع** (`new_project.ps1` يستثنيه). فيه ما يخصّ
+> القالبَ كمنتج: خطّته وأرشيفه وما تعلّمناه من المشاريع. ومشروعٌ مبنيّ على القالب
+> يرى روابطه إليه معلّقة — وهذا مقصود: مرجعُها مستودعُ القالب.
+
+| الملف | متى يُحدَّث |
+|---|---|
+| `_template/README.md` | فهرس المجلد — يُحدَّث عند إضافة/حذف/نقل أي ملف فيه، بنفس التغيير |
+| **`_template/roadmap.md`** | **إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود** — حلّ محلّ `_template/archive/template_enhancements.md` المؤرشَف (2026-09-13) لهذا الغرض |
+| `_template/archive/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
+| `_template/archive/sync_design_spec.md` | ⛔ **لا يُصان** — أرشيف. حالةُ الموديول بـ`lib/modules/sync/PLAN.md` و`SETUP.md` |
+| `_template/archive/**` | ⛔ **لا يُصان** — سجلّات مؤرَّخة. الانحراف يُعلَّق عليه بلافتة، لا يُمحى |
+| `_template/archive/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
+| **`_template/feedback/<مشروع>.md`** | **تطبيق بندٍ من ملاحظات مشروعٍ على القالب** — حالة البند (✅ بالتاريخ والـcommit، أو ✖️ بالسبب)، وملفُّ المشروع الجديد يُضاف لجدول [`_template/feedback/README.md`](_template/feedback/README.md) |
 
 ## 🧟 قاعدة صارمة — تحقّق أن السلسلة موصولة **قبل** أن تبني عليها
 
@@ -159,12 +170,12 @@ modules     → Features      ❌ NEVER
 | القاعدة | التفصيل |
 |---|---|
 | كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `10_ARCHITECTURE.md` |
-| `✅` بجدول `90_archive/template_enhancements.md` تعني **«له مستهلك هنا»** | لا «الملف وصل». البند #19 كان `✅` بلا مستورِد واحد — صُحِّح إلى `◐` (2026-08-17) |
+| `✅` بجدول `_template/archive/template_enhancements.md` تعني **«له مستهلك هنا»** | لا «الملف وصل». البند #19 كان `✅` بلا مستورِد واحد — صُحِّح إلى `◐` (2026-08-17) |
 | ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد، أو يُحذف. `modules/in_app_updates/` كان المثال الحيّ لهذا حتى 2026-09-09 — وصله علَمه وسطرُ `ModulesBootstrap` وحارسُه (`AppUpdateGate`)، فراجع الجرد الحالّ بـ[`readme/10_ARCHITECTURE.md`](readme/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك» لما هو معلَّق اليوم فعلاً |
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 
-**مفاتيح JSON عقدٌ مع `backend_template`.** خطؤها لا يراه `dart analyze` (مفتاح غائب = `null` = `dynamic` سليم)، ولا `tsc`، ويبتلعه `HandleBodyResponse` فيصل المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK`. **هذا وقع فعلاً ومنع الدخول كلياً** — راجع [`readme/90_archive/integration_audit.md`](readme/90_archive/integration_audit.md).
+**مفاتيح JSON عقدٌ مع `backend_template`.** خطؤها لا يراه `dart analyze` (مفتاح غائب = `null` = `dynamic` سليم)، ولا `tsc`، ويبتلعه `HandleBodyResponse` فيصل المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK`. **هذا وقع فعلاً ومنع الدخول كلياً** — راجع [`_template/archive/integration_audit.md`](_template/archive/integration_audit.md).
 
 **عند تغيير أي مفتاح**: عدّل `test/fixtures/wire/*.json` هنا و`backend_template/src/features/*/__tests__/wire-contract.test.ts` هناك — **بنفس الـcommit**.
 

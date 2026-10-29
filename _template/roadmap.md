@@ -1,6 +1,6 @@
 # خارطة تحسين القالب — الجيل التالي
 
-> **الفرق بين هذا الملف و[`90_archive/template_enhancements.md`](90_archive/template_enhancements.md)**:
+> **الفرق بين هذا الملف و[`_template/archive/template_enhancements.md`](archive/template_enhancements.md)**:
 > ذلك أرشيفٌ يقارن القالب بمشروعٍ لا يملكه الفريق (قرطاس) — لقطةٌ لا تُصان. هذا
 > ملفٌ **حيّ** يخصّ القالب وحده: كل بند هنا قرار الفريق نفسه، بلا مقارنةٍ بأحد.
 >
@@ -146,7 +146,7 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-backend/mast
   نسخة `m1` من القالب @ `8a4d0ed` عبر `irm … | iex` (Application ID
   `com.company.m1`، `MainActivity.kt` منقولٌ لحزمته) أقلعت بلا عطل.
 - التجريب كشف عطلاً قديماً: `setup_project.dart` **لم يعمل قطّ على استنساخٍ
-  بويندوز** — CRLF — راجع [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د.
+  بويندوز** — CRLF — راجع [`40_SCRIPTS.md`](../readme/40_SCRIPTS.md) §8‑د.
 
 **وأُضيف الرفع (2026-09-28، بعد أوّل استعمالٍ حقيقي — `Masjidak_App_flutter`)**:
 المُطلِق كان يضيف `origin` ولا يدفع، فبقي المشروع محلّياً. صار يسأل عن مستودع
@@ -212,7 +212,7 @@ analyze` نظيف، **٢٨٨ اختباراً ناجحاً**، صفر مخالف
 
 **ما هو:** ينشئ هيكل موديول اختياري جديد تحت `lib/modules/` مع الأركان
 الثلاثة التي يفرضها CLAUDE.md معاً دائماً: علَم بـ`AppFeatures` · سطر تسجيل
-بـ`ModulesBootstrap` · صفّ بجدول [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md).
+بـ`ModulesBootstrap` · صفّ بجدول [`10_ARCHITECTURE.md`](../readme/10_ARCHITECTURE.md).
 
 **لماذا الآن:** الجرد الحاليّ يُثبت أن نسيان أحد الأركان الثلاثة وقع فعلاً
 تاريخياً (قبل أن يُغلق `modules/in_app_updates/` بثلاثته) — التوليد الآلي
@@ -281,11 +281,11 @@ analyze` نظيف، **٢٨٨ اختباراً ناجحاً**، صفر مخالف
 ✅ **مُعاد تحديد نطاقه ثم أُنجز (2026-09-14)** — **الفرضية الأصلية كانت خاطئة**:
 هذا البند افترض أن `scripts/check_wire_contract.dart` موجودٌ بالقالب ويحتاج
 فقط سطراً بالـCI. **لا وجود له فعلياً** — موثَّقٌ صراحةً بـ
-[`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑ب بأنه **نمطٌ لا سكربت، بقصد**: أيّ فاحصٍ
+[`40_SCRIPTS.md`](../readme/40_SCRIPTS.md) §8‑ب بأنه **نمطٌ لا سكربت، بقصد**: أيّ فاحصٍ
 كهذا يقرأ جردَ حقول مشروعٍ محدَّد (`GET /openapi.json` مقابل عقدك أنت)، فلا
 يمكن أن يكون كوداً جاهزاً بقالبٍ لا يعرف حقول أي مشروع مستقبلي — نسخُه جاهزاً
 يعني «سطحاً لا سلسلة» يمنعه R28 نفسُه. المصدر الذي استُشهد به أصلاً
-([`90_archive/template_backport.md`](90_archive/template_backport.md) R05)
+([`_template/archive/template_backport.md`](archive/template_backport.md) R05)
 يقول هذا حرفياً: **"نُقل نمطاً لا نسخاً"** — تناقضتُ معه سهواً عند كتابة هذا
 البند أول مرة.
 
@@ -434,7 +434,7 @@ analyze` نظيف، **٢٨٨ اختباراً ناجحاً**، صفر مخالف
 محاوره الثمانية بدقّة ولم يفوّض توسيعاً استباقياً، فأُزيلت الإضافات وبقي
 الوسيط الوحيد لكل محور غير مطلوب. الودجة القديمة استُبدلت بالكامل — لا مستهلك
 آخر لها كان موجوداً بـ`lib/` عدا نفسها وتوثيقها. التفصيل الكامل والجدول
-بـ[`readme/21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §28.
+بـ[`readme/21_WIDGETS_USAGE.md`](../readme/21_WIDGETS_USAGE.md) §28.
 
 ---
 
@@ -614,7 +614,7 @@ scripts/gen_code.dart` بعد أي ترجمة» بـ`CLAUDE.md` — لكن لا 
 
 ## 12 — فحص «شاشة تطلب صلاحية لا تملكها» 🔵 (بُحث 2026-09-15 — مؤجَّل بقصد)
 
-**ما هو:** موصوفٌ فعلاً بـ[`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md)
+**ما هو:** موصوفٌ فعلاً بـ[`31_MODULE_PERMISSIONS.md`](../readme/31_MODULE_PERMISSIONS.md)
 §«توصيات مستقبلية» رقم ٣ — ربط كل `Can(permission: ...)` بمفتاحه للتأكد أنه
 مُعلَن فعلاً بالباك.
 
@@ -640,9 +640,9 @@ scripts/gen_code.dart` بعد أي ترجمة» بـ`CLAUDE.md` — لكن لا 
 الملف لكل بندٍ سابق.
 
 **البديل المُنفَّذ بدلاً من الفاحص الآلي:** قائمة مراجعة يدويّة مُضافة إلى
-[`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) مباشرةً بعد «العثرة ٦»
+[`31_MODULE_PERMISSIONS.md`](../readme/31_MODULE_PERMISSIONS.md) مباشرةً بعد «العثرة ٦»
 (القسم الذي وصف الحادثة الحقيقية بقرطاس)، وسطرٌ تذكيريّ بـ«بطاقة الإنهاء» في
-[`04_FIRST_FEATURE.md`](04_FIRST_FEATURE.md) يُشير إليها عند إغلاق أي شريحة
+[`04_FIRST_FEATURE.md`](../readme/04_FIRST_FEATURE.md) يُشير إليها عند إغلاق أي شريحة
 جديدة. هذا لا يُكتشف آلياً، لكنه يضع السؤال أمام أول من يبني شاشة محروسة —
 وهي اللحظة التي وقعت فيها العثرة الحقيقية أصلاً.
 
@@ -871,7 +871,7 @@ patterns" توثّق بالضبط ما وُصف هنا كـ"Generic UI") مطا�
 - `AppMotion.debounce` (300ms) — تأخير بحث/فلترة حيّة.
 
 وودجةٌ جديدة [`pressable_scale.dart`](../lib/ui/widgets/wrappers/pressable_scale.dart)
-(راجع [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §30) تراقب الضغط بـ
+(راجع [`21_WIDGETS_USAGE.md`](../readme/21_WIDGETS_USAGE.md) §30) تراقب الضغط بـ
 `Listener` لا `GestureDetector` — لا تدخل ساحة الإيماءة، فلا تتنازع مع
 `InkWell`/`GestureDetector` الخاص بالابن.
 

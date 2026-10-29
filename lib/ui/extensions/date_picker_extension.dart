@@ -196,7 +196,7 @@ extension DatePickerContextExtension on BuildContext {
 
   /// نفس شكل [_showCalendarDatePickerSheet] — التقويمُ هجريٌّ وحده، والقيمةُ
   /// المُعادة ميلاديّةٌ دائماً (`HijriDateTime.toDateTime()`) كي لا يفرّق
-  /// المستدعي بين نمطي الاختيار. راجع `readme/41_ROADMAP.md` بند #08.
+  /// المستدعي بين نمطي الاختيار. راجع `_template/roadmap.md` بند #08.
   Future<DateTime?> _showHijriDatePickerSheet({
     DateTime? initDate,
     DateTime? minDate,
