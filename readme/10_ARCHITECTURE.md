@@ -49,8 +49,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 |------|----------------------|
 | [`40_SCRIPTS.md`](40_SCRIPTS.md) | السكربتات، البناء والإصدار، التوليد، حلّ المشاكل |
 | [`_template/archive/template_enhancements.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/template_enhancements.md) | خارطة تطوير القالب — جدول الحالة + تفاصيل كل بند |
-| [`_template/archive/integration_audit.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/integration_audit.md) | **سجلّ تاريخي** — تدقيق عقد الـwire (2026-08-11) وإصلاحه (2026-08-12) |
-| [`_template/archive/template_enhancements.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/template_enhancements.md) | **قراءة لحظية** — انحراف القالب عن قرطاس بالاتجاهين (2026-08-17) + أولويات النقل. لا يُصان: يُعاد التدقيق ويُعاد كتابته |
+| [`_template/archive/integration_audit.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/integration_audit.md) | **سجلّ تاريخي** — تدقيق عقد الـwire وإصلاحه |
 | [`_template/archive/realtime_design.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/realtime_design.md) | **تصميم لم يُبنَ** — مزامنة الجلسات اللحظية بين الأجهزة. لا كود له بالقالب |
 
 ---
@@ -150,20 +149,16 @@ core/
 | `session_guard/` | `sessionGuard` | ⬜ OFF | `SessionGuardPlugin.initialize(di)` بـ`ModulesBootstrap` + `SessionGuardGate` بالقشرة (الأعلى بين المعلِنَين — راجع `main_shell_page.dart`) | crypto (بصمة الرقم — لا تبعية خارجية أخرى) |
 | `notification_center/` | `notificationCenter` | ⬜ OFF | `NotificationCenterPlugin.initialize(di)` بـ`ModulesBootstrap` — يستهلك بثّ `push_notifications` (`pushNotifications` يجب أن يكون مُشعلاً أيضاً)، ولا يستدعي FCM بذاته | لا تبعية خارجية إضافية |
 
-> **العَلَم هو العمود المهم.** الجدول السابق لم يحمله، فكان يقرأ الجميعَ كموصولين —
-> و`sync/` كان موسوماً `✅` مع «called in `main.dart`»، وهو **مطفأ** ولا يُستدعى من
-> `main.dart` بل من `ModulesBootstrap` تحت شرط. و`data_transfer/` — الموديول الوحيد
-> المشتعل افتراضياً — **كان غائباً عن الجدول تماماً** (صُحِّح 2026-08-17).
+> **العَلَم هو العمود المهم.** جدولٌ بلا علَم يقرأ الجميعَ موصولين، بينما معظمها
+> **مطفأ** ويُستدعى من `ModulesBootstrap` تحت شرط.
 >
 > **و`in_app_updates/` هو النموذج الصحيح لموديول لا يمرّ بـ`ModulesBootstrap`**:
 > يحتاج `BuildContext` فلا مكان له بالإقلاع، **فحمل عَلَمه وحارسه داخل دالته**
 > (`if (!AppFeatures.inAppUpdates) return;`). الشكل الخاطئ — كود كامل بلا علم وبلا
-> حارس — لا يُطفأ لأنه لا يُشعَل، ووقع فعلاً بمشروع قرطاس المبنيّ على هذا القالب.
+> حارس — لا يُطفأ لأنه لا يُشعَل.
 
-> ✅ **و`in_app_updates/` صار يُولد بثلاثته (2026-09-09)** — وكان مثالَ R29 الحيّ:
-> كودٌ كامل وثلاثُ تبعيّاتٍ تُشحن، **بلا سطرٍ بـ`ModulesBootstrap`**. وموضعُ
-> النقص كان بنيوياً لا سهواً: الحوارُ يحتاج `BuildContext` فلا مكان له بالإقلاع.
-> فانقسم الموديول نصفين — `initialize(di)` يسجّل **اللقطة المحلّية ومهمّةَ
+> **و`in_app_updates/` يُولد بثلاثته رغم أن حواره يحتاج `BuildContext`** —
+> فانقسم نصفين: `initialize(di)` يسجّل **اللقطة المحلّية ومهمّةَ
 > تحديثها بدورة المزامنة** ولا يطلب الشبكة، و`AppUpdateGate` بالقشرة يقرأ اللقطة
 > عند التركيب ويستمع لتبدّلها. فيصل قرارٌ جديد **فور انتهاء الدورة** بلا أن
 > تسأل شاشةٌ شيئاً.
@@ -176,7 +171,7 @@ core/
 > — لأن `test/sync/deletion_contract_test.dart` يشهد على أن حذفَ المزامنة حذفُ
 > مجلَّد. حتى الوسيطُ النوعيُّ `SyncRefreshTask` لا يُكتب بملفّ المدخل.
 
-> `realtime/` **لم يعد موجوداً بـ`lib/modules/`** — كان مجلداً يحوي وثيقة تصميم بلا سطر Dart واحد، فيُقرأ من شجرة المجلدات موديولاً قائماً. نُقلت الوثيقة إلى [`_template/archive/realtime_design.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/realtime_design.md) وحُذف المجلد (2026-08-17). **مجلد فارغ باسم ميزة هو ادّعاء بوجودها.**
+> **لا `realtime/` بـ`lib/modules/`** — تصميمه بلا سطر Dart واحد، فوثيقته في [`_template/archive/realtime_design.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/realtime_design.md). **مجلد فارغ باسم ميزة هو ادّعاء بوجودها.**
 
 ---
 
@@ -205,8 +200,8 @@ core/
 | `modules/sync/domain/sync_media_catalog.dart` + `engine/media_prefetch_manager.dart` | **تنزيلُ الصور والملفّات** — الطورُ السادس موصولٌ بذيل الدورة وخارج القفل، ومسجَّلٌ بالـDI. وبلا جردِ شريحةٍ يسقط الطورُ بفحصٍ واحد (`allOf`) |
 | `modules/sync/domain/sync_job_explainer.dart` | **ماذا سيصل الخادمَ من هذا الصفّ وما الذي يحجز الباقي** — تنفّذه الشريحة، ويقرؤه من يعرض الطابور. مُصدَّرٌ وبلا منفّذ |
 | `modules/sync/domain/sync_refresh_task.dart` + `sync_hydration.dart` | عقدان مسجَّلان ومُصدَّران، والمحرّك ينادي الأوّل بذيل الدورة — **وبلا منفّذٍ بالقالب**. النمطان بـ`lib/modules/sync/SETUP.md` §3e و§3f |
-| `<feature>/data/sync/` (المنفذ الرابع بعقد الحذف — انظر §wire الحذف بالأسفل) | ⚠️ **صفر عقود منفَّذة اليوم.** المثال الوحيد (`features/notes/data/sync/`) حُذف مع تنظيف `notes/` بتاريخ 2026-09-08 — تنظيفٌ عامٌّ لا علاقة له بـsync. `getAll<SyncFeatureContractBase>()` يعيد صفراً فعلياً بكامل `lib/`، فتفعيل `AppFeatures.offlineSync` اليوم يترك التطبيق يعمل بالكامل على الشبكة **بصمت** — بلا انهيار ولا تحذير. الحالة المُحدَّثة والمرحلة المسنَدة بـ[`lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) ب١٣/ب١٤ |
-| `modules/access_control/presentation/pages/user_access_screen.dart` + مسار `/users/:userId/access` | **مبنيّةٌ بالكامل ولا نقطةَ دخولٍ إليها بالقالب** (2026-09-13). تحتاج `userId` محدداً، و«من هم المستخدمون وكيف تُعرض قائمتهم» قرارٌ يخصّ كل مشروع — بناء شاشة مستخدمين هنا يعيد القالب إلى «مثال CRUD» الذي حُذف عمداً بتنظيف 2026-09-08. المشروع يضيف زرّاً من شاشة مستخدميه الخاصة: `context.router.push(UserAccessRoute(userId: id))`، محميّاً بـ`Can(permission: PermKeys.userAccessView)`. **وشاشة الأدوار المقابلة (`RolesRoute`) عامّة فعلاً ووُصلت** بـ`AccessControlSection` بشاشة الإعدادات — الفرق أن الأدوار لا تفترض شيئاً عن نموذج المستخدمين بينما هذه الشاشة تفترض وجود واحد |
+| `<feature>/data/sync/` (المنفذ الرابع بعقد الحذف — انظر §wire الحذف بالأسفل) | ⚠️ **صفر عقود منفَّذة اليوم.** لا feature بالقالب تكتب محوّلاً، و`getAll<SyncFeatureContractBase>()` يعيد صفراً فعلياً بكامل `lib/`، فتفعيل `AppFeatures.offlineSync` اليوم يترك التطبيق يعمل بالكامل على الشبكة **بصمت** — بلا انهيار ولا تحذير. الحالة المُحدَّثة والمرحلة المسنَدة بـ[`lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) ب١٣/ب١٤ |
+| `modules/access_control/presentation/pages/user_access_screen.dart` + مسار `/users/:userId/access` | **مبنيّةٌ بالكامل ولا نقطةَ دخولٍ إليها بالقالب**. تحتاج `userId` محدداً، و«من هم المستخدمون وكيف تُعرض قائمتهم» قرارٌ يخصّ كل مشروع — بناء شاشة مستخدمين هنا يُدخل بالقالب «مثال CRUD» لا مكان له فيه. المشروع يضيف زرّاً من شاشة مستخدميه الخاصة: `context.router.push(UserAccessRoute(userId: id))`، محميّاً بـ`Can(permission: PermKeys.userAccessView)`. **وشاشة الأدوار المقابلة (`RolesRoute`) عامّة فعلاً ووُصلت** بـ`AccessControlSection` بشاشة الإعدادات — الفرق أن الأدوار لا تفترض شيئاً عن نموذج المستخدمين بينما هذه الشاشة تفترض وجود واحد |
 | `platform/location/device_location_service*.dart` | خدمةُ موقعٍ خلف عقد — **مشروطةٌ بـ`AppFeatures.location`** (مطفأة افتراضاً)، فبلا العلَم لا يُسجَّل شيء. وحزمةُ `geolocator` تبقى بالتبعيات: تُحذف من `pubspec.yaml` إن كان المشروع لا يحتاج موقعاً |
 | `platform/files/private_file_ingest_service.dart` | عقدُ إدخال ملفٍّ إلى التخزين الخاصّ — بلا منفّذٍ ولا مستدعٍ |
 | `foundation/utils/natural_order.dart` | ترتيبٌ طبيعيٌّ لمعرّفاتٍ مرقّمة («٩١/٢» قبل «٩١/١٠») |
@@ -218,13 +213,6 @@ core/
 | `resources/fonts.dart` (`AppFontFamilies`) | مولَّد بـ`sync_fonts.dart` ولا يقرأه شيء — مصدر الحقيقة المستعمَل `core/infra/config/app_fonts.dart` |
 | `modules/sync/sync_plugin.dart` | **مدخل ثانٍ ميت** — `ModulesBootstrap` يستدعي `SyncSDK.initialize` من `sdk/sync_sdk.dart` |
 | barrels `modules/{analytics,crash_reporting,in_app_updates,push_notifications,remote_config}/<name>.dart` | ملفات `export` لا يستوردها أحد — `ModulesBootstrap` يستورد `*_module.dart` مباشرةً |
-
-**حُذف بدل أن يُدرَج** (2026-08-17): `resources/translations/locale_keys.g.dart`
-(نسخة قديمة بـ٥٨ مفتاحاً بجوار الحيّة بـ٦٠٤) · `modules/multi_device/domain/failures/`
-(ملف re-export بلا مستورِد) — إضافةً إلى ما حُذف بنفس الجولة (`session_reader` ·
-`base_cancel_token` · `dio_cancel_token_wrapper` · `prefetch_stage_exception` ·
-`updated_at_filter` · `network_stability_probe` · `feature_permission_map` ·
-`app_text_styles` · `default_svg_img`).
 
 > **أي شيء تُنهي وصله: احذف صفّه من الجرد بنفس التغيير.** جردٌ يذكر موصولاً يُدرّب
 > القارئ على تجاهل الجرد كلّه.
@@ -306,4 +294,3 @@ dart analyze lib
 
 ---
 
-*Last updated: 2026-07-23 — أُزيلت إشارات لمجلد `new/` غير الموجود (GraphQL backup، reference patterns) وقاعدة Cursor المحذوفة؛ أُضيف `multi_device/` لجدول Optional Modules؛ صُحِّح سطر `feature_generator.dart` غير الموجود.*

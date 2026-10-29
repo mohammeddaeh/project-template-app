@@ -58,9 +58,9 @@ k6 run --env BASE_URL=http://localhost:3000/api/v1 loadtest/k6/account_cycle.js
 
 ## السيناريوهات الموجودة
 
-| الملف | يغطي | أُضيف |
-|---|---|---|
-| `k6/account_cycle.js` | `/account/login` · `/account/register` · `/account/me` · `/account/logout` · `/auth/refresh` | 2026-09-16 |
+| الملف | يغطي |
+|---|---|
+| `k6/account_cycle.js` | `/account/login` · `/account/register` · `/account/me` · `/account/logout` · `/auth/refresh` |
 
 ---
 

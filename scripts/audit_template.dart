@@ -221,7 +221,8 @@ const _projectNames = ['قرطاس', 'Qirtas', 'مسجدك', 'Masjidak', 'الأ
 const _shippedRoots = ['lib', 'readme', 'scripts', 'docs', 'loadtest', '.claude', '.github'];
 const _shippedRootFiles = ['CLAUDE.md', 'README.md'];
 
-final _isoDate = RegExp(r'\b20\d\d-\d\d-\d\d\b');
+/// طابعٌ زمنيّ كامل (`2026-06-21T08:00:00Z`) بمثال JSON بيانٌ لا تاريخ — يُستثنى.
+final _isoDate = RegExp(r'\b20\d\d-\d\d-\d\d\b(?!T\d)');
 
 void _checkShippedHistory({required bool verbose}) {
   final names = _projectNames.toSet()..removeAll(_ownNames());

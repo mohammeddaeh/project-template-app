@@ -19,8 +19,7 @@ splash النظام  ← الشعارُ كاملاً على #0D3A2F   (طوال 
 أوّلُ إطارٍ من فلاتر = الوجهةُ نفسُها   (login · shell)
 ```
 
-**ولا شاشةَ سبلاش بفلاتر.** حُذفت `SplashScreen` و`SplashCubit` و`SplashState`
-والمسارُ `SplashRoute` (2026-08-30).
+**ولا شاشةَ سبلاش بفلاتر** — لا `SplashScreen` ولا `SplashCubit` ولا `SplashRoute`.
 
 ### ما كان يقع قبلها
 
@@ -166,7 +165,7 @@ runApp( App(startAt: …) )                             ← أوّلُ إطار 
 | الخط والثيم | يُمرَّران وسيطَين لـ`App` |
 | `StartupResolver.resolve` | **يحدّد الوجهة** — وبدونه لا نعرف ماذا نرسم |
 
-### وطباعةُ التوكن بالإقلاع — `STARTUP-TOKEN` (2026-08-30)
+### وطباعةُ التوكن بالإقلاع — `STARTUP-TOKEN`
 
 `StartupResolver._printTokenInDebug` يطبع التوكن المخزَّن كاملاً عقب
 `loadCachedToken`، **بنسخة التطوير وحدها** (`kDebugMode`). الغرضُ واحد: نسخُ
@@ -207,7 +206,7 @@ routerConfig: _router.config(
 )
 ```
 
-[`resolveDeepLink`](../lib/routes/deep_link_resolver.dart) (2026-09-14) دالّةٌ
+[`resolveDeepLink`](../lib/routes/deep_link_resolver.dart) دالّةٌ
 نقيّةٌ مستخرَجةٌ عمداً — قابلةٌ للاختبار المباشر
 ([`test/deep_link_resolver_test.dart`](../test/deep_link_resolver_test.dart))
 بلا تركيب `App` كاملةً. قرارُها:

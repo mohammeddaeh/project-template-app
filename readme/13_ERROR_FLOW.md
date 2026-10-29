@@ -112,7 +112,7 @@ options.headers['Accept-language'] = _localeProvider.languageCode;
 403 → ForbiddenFailure    → ShowError         (نعرفك تماماً، والجواب لا)
 ```
 
-دمجُهما يُخرج المستخدم من التطبيق بسبب صلاحية واحدة ناقصة، **وسط مهمّة**. وقع فعلاً بمشروع قرطاس: معالج `AuthEventBus` كان ينقل لشاشة الدخول عند أي حدث، فأول 403 سجّل الخروج. الحارس الآن `switch` شامل بـ`app.dart` — حدثٌ جديد يصير **خطأ ترجمة** لا خروجاً صامتاً.
+دمجُهما يُخرج المستخدم من التطبيق بسبب صلاحية واحدة ناقصة، **وسط مهمّة** — معالجٌ ينقل لشاشة الدخول عند أي حدث يجعل أول 403 خروجاً. الحارس `switch` شامل بـ`app.dart` — حدثٌ جديد يصير **خطأ ترجمة** لا خروجاً صامتاً.
 
 ### وكل خروج قسري **يقول سببه**
 
@@ -125,7 +125,7 @@ options.headers['Accept-language'] = _localeProvider.languageCode;
 
 كان الأولان ينقلان بلا كلمة واحدة. مستخدمٌ وسط مهمّة يُلقى على شاشة الدخول بلا تفسير **يقرأها انهياراً وفقداناً لعمله** — والمفتاحان كانا موجودَين بلا مستدعٍ. والثاني تحديداً هو الطريقة الوحيدة ليلاحظ أحدٌ دخولاً لم يقم به.
 
-### و«لم يصل» ليست «رُفض» — 2026-08-17
+### و«لم يصل» ليست «رُفض»
 
 `TokenRefreshInterceptor` كان يلتقط كل فشلٍ لنداء التجديد في `catch` واحدة
 ويعاملها سواءً: امسح التوكن، امسح المستخدم المخزَّن، أطلق `sessionExpired`،
@@ -164,8 +164,8 @@ options.headers['Accept-language'] = _localeProvider.languageCode;
 | **الـrepositories لا تكتب try/catch** | `handle()` هو الحدّ. استثناء يُلتقط يدوياً يفوّت `FailureMapperRegistry` فيصل الشاشةَ `UnknownFailure` بدل نوع معروف |
 | **الباك لا يبني جسم خطأ يدوياً** | `res.status(x).json(...)` داخل controller يتخطّى الترجمة والتسجيل ومغلّف `data` معاً |
 | **رسالة الخطأ ليست عقداً** — العقد `data.message_key` | النصّ يتغيّر بأي إعادة صياغة، والفرع المبني عليه ينكسر باللغة التي لم يجرّبها أحد |
-| **لا widget يقرأ `failure.diagnosticMessage`** | ذاك الحقل **للتشخيص فقط** (تحذيرٌ صريح على تعريفه بـ`failure.dart`). وقع فعلاً بـ`SyncUiHost._handleSyncManagerState` (2026-09-15): سناك بار يعرض `diagnosticMessage` مباشرةً — نصٌّ إنجليزيٌّ غير مترجَم، متجاوزاً `FailureUiMapper` كليّاً. أُصلح بتمرير الفشل عبر `FailureUiMapper.toAction` كأي مكانٍ آخر |
-| **حقل `message` بـ`UnknownFailure`/`CacheFailure` ليس مكان `e.toString()`** | `FailureUiMapper` يعرض ذاك الحقل **حرفياً** حين لا يكون فارغاً — فتمريرُ نصّ استثناءٍ خام إليه يسرّبه للمستخدم حتى وهو يمرّ بالمسار «الصحيح». وقع فعلاً بـ`SyncManagerCubit.triggerSync` (2026-09-15): `UnknownFailure(message: e.toString())`. النصّ التشخيصي مكانه `LogService.error` وحده؛ الحقل يُترك فارغاً ليسقط لمفتاح الترجمة العام |
+| **لا widget يقرأ `failure.diagnosticMessage`** | ذاك الحقل **للتشخيص فقط** (تحذيرٌ صريح على تعريفه بـ`failure.dart`). قراءتُه بواجهة تعرض نصّاً إنجليزياً غير مترجَم متجاوزةً `FailureUiMapper` كليّاً. الفشل يمرّ بـ`FailureUiMapper.toAction` دائماً |
+| **حقل `message` بـ`UnknownFailure`/`CacheFailure` ليس مكان `e.toString()`** | `FailureUiMapper` يعرض ذاك الحقل **حرفياً** حين لا يكون فارغاً — فتمريرُ نصّ استثناءٍ خام إليه يسرّبه للمستخدم حتى وهو يمرّ بالمسار «الصحيح». فلا `UnknownFailure(message: e.toString())`. النصّ التشخيصي مكانه `LogService.error` وحده؛ الحقل يُترك فارغاً ليسقط لمفتاح الترجمة العام |
 
 ---
 

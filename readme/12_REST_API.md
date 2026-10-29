@@ -176,7 +176,7 @@ class GetProducts extends BaseUseCase<Either<Failure, List<Product>>, ProductsPa
 
 ### Cancellation (REST) — لا توجد طبقة إلغاء بالقالب، بقصد
 
-`BaseUseCase` كان يحمل `BaseCancelToken` و`resetCancelToken()` و`cancel()`، وهذا الملف كان يوثّقها. **حُذفت (2026-08-17) لأنها لم تعمل قط**: `resetCancelToken` بلا مستدعٍ واحد بـ`lib/`، فالتوكن `null` دائماً وكل `cancel()` لا شيء — بينما `core/CLAUDE.md` يصفها «إلزامية» لحماية الـcubits من `Bad state: Cannot emit new states after calling close`.
+`BaseUseCase` لا يحمل توكن إلغاء ولا `cancel()`. إلغاءٌ عند إغلاق الـcubit لا يحميه من `Bad state: Cannot emit new states after calling close` أصلاً — الردّ قد يصل بين تحليل الاستجابة والإغلاق.
 
 - **الحارس الحقيقي** لذلك الانهيار هو `SafeCubit` — غير مشروط، ومثبَّت بـ`test/safe_cubit_test.dart`. راجع `core/foundation/domain/safe_cubit.dart`.
 - **من احتاج إلغاءً فعلياً** (لتحرير المقبس، وهي حاجة مختلفة) يمرّر `CancelToken` الخاص بـDio من موضع الاستدعاء:
@@ -266,4 +266,3 @@ import 'package:app_template/core/failure/failure.dart';
 - [`11_CORE.md`](11_CORE.md)
 - [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md)
 
-*Last updated: 2026-06-17 — F1-F4 مكتملة: `ParseFailure`+`ValidationFailure`+`PermissionFailure`+`StorageFailure`؛ `FailureUiMapper` يعالج جميعها؛ `FormatException`/`TypeError` → `ParseFailure` تلقائياً.*

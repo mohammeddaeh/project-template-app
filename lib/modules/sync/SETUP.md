@@ -37,7 +37,7 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 | **حلّ التعارض** — خمس سياسات، الاختيار لكل كيان | ✅ | `SyncConflictResolver` · `SyncConflictStrategy` |
 | **ترحيل نسخ الحمولة** | ✅ | `SyncContractMigrator` · `contract_version` |
 | **المرفقات** — تنزيل مستأنَف · تحقق SHA-256 · رفع · تخزين خاص · إخلاء | ◐ **جزئي** | راجع [§Step 7](#step-7--attachments-optional) |
-| **مثال مرجعي** — عقد · مُنفِّذا دفع وسحب · ديكور · هدف رفع | ✖️ **حُذف 2026-09-08** | بتاريخ git فقط: `git show b0351f1^:lib/Features/notes/data/sync/<ملف>` |
+| **مثال مرجعي** — عقد · مُنفِّذا دفع وسحب · ديكور · هدف رفع | ✖️ **غير موجود بالقالب** | بتاريخ git فقط: `git show b0351f1^:lib/Features/notes/data/sync/<ملف>` |
 
 ## ⛔ ما **لا** يوفّره — وليس نقصاً مؤقتاً
 
@@ -96,8 +96,7 @@ await SyncSDK.initialize(
 
 ## Step 3 — Add your first entity
 
-> **المثال المرجعي حُذف مع تنظيف القالب (2026-09-08)** — لا feature تطبيقية
-> بالمستودع اليوم. ملفاته الستة (~٨٢٠ سطراً بالتعليقات، مقابل
+> **لا مثال مرجعي بالقالب** — لا feature تطبيقية بالمستودع. ملفاته الستة (~٨٢٠ سطراً بالتعليقات، مقابل
 > `backend_template/src/features/notes/`، وكلها تستورد `sync_plugin.dart` وحده)
 > باقيةٌ بتاريخ git: `git ls-tree --name-only b0351f1^:lib/Features/notes/data/sync`
 > ثم `git show b0351f1^:lib/Features/notes/data/sync/<ملف>`. والشيفرة أدناه تشرح
@@ -152,7 +151,7 @@ class MosquesFeatureContract extends SyncFeatureContractBase {
 > يرى تسجيلاً مسمّى. الحارس يقصر الطريق قبل أن يصل `getAll` أصلاً.
 >
 > والحارس على هذا كلّه:
-> ⬜ **ولا اختبارَ يحرس التسجيل** — حُذف مع الشريحة المرجعية (2026-09-08).
+> ⬜ **ولا اختبارَ يحرس التسجيل بالقالب.**
 > وأولُ محوّلٍ تكتبه يستحقّ اختباراً يقرأ `injection.config.dart` ويؤكّد أن كلَّ
 > صنفٍ مسجَّلٌ **تحت نوعه المجرَّد**: `getAll<T>()` يُفهرس عليه، و`as:` منسيّةٌ
 > لا يراها شيءٌ قبل وقت التشغيل.
@@ -855,7 +854,7 @@ flutter test
 - [x] السطح العام بملف واحد: `sync_plugin.dart` — مفروضٌ بـ`deletion_contract_test.dart`
 - [x] مسار الدفع · مسار السحب · القراءة التفاعلية (`watch`) · القراءة النوعية (`readTyped`)
 - [x] خمس سياسات تعارض قابلة للاختيار لكل كيان · ترحيل نسخ الحمولة
-- [x] مثالٌ مرجعيّ كامل يُنسخ منه: `features/notes/data/sync/` — حُذف 2026-09-08، باقٍ بتاريخ git (`b0351f1^`)
+- [x] مثالٌ مرجعيّ كامل يُنسخ منه: `features/notes/data/sync/` — بتاريخ git وحده (`b0351f1^`)
 - [x] المرفقات: تنزيلٌ مستأنَف · تحقّق · رفع · تخزين خاص — **جزئي، راجع Step 7**
 
 **نصف العميل — ما يكتبه مشروعك (لكل كيان):**

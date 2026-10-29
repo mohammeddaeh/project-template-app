@@ -17,7 +17,7 @@
 | DI (`injectable` + `get_it`) · تنقّل (`auto_route`) · حالة (`bloc`) | |
 | 287 اختباراً تحرس البنية التحتية وعقد الـwire | |
 
-**ما لا يصلك**: شريحة CRUD مرجعية، ولا شاشات demo. حُذفت بقصد (2026-09-08) —
+**ما لا يصلك**: شريحة CRUD مرجعية، ولا شاشات demo — بقصد:
 [التفصيل](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/README.md).
 
 ---
@@ -172,7 +172,7 @@ dart run scripts/build_apk.dart --flavor staging --mode release --bump minor
 
 **قبل أي بناء إنتاجي، تحقّق:**
 
-- [x] ~~`AppFeatures.debugSkipLogin == false`~~ — **مقفولٌ آلياً بـ`kDebugMode` (2026-08-30)**: بدّل `_skipLoginRequested` كما تشاء، فـrelease يُطفئه حتماً
+- [x] ~~`AppFeatures.debugSkipLogin == false`~~ — **مقفولٌ آلياً بـ`kDebugMode`**: بدّل `_skipLoginRequested` كما تشاء، فـrelease يُطفئه حتماً
 - [ ] `AppFeatures.verboseNetworkLog == false`
 - [ ] `.env.prod.json` يحمل الرابط الحقيقي لا قيمة المثال
 - [ ] `dart run scripts/sync_platform_permissions.dart` شُغّل بعد آخر تغيير بالأعلام

@@ -234,7 +234,7 @@ import 'package:app_template/core/platform/storage/offline_snapshot.dart';
 // OfflineSnapshot<T> · OfflineListSnapshot<T> — «آخر نسخة معروفة» عند انقطاع
 // الشبكة. تُعرض بشرط `failure.leftUnanswered` وحده (لا شبكة · مهلة · خادم لا
 // يُبلَغ) — لا فوق رفضٍ صريح 401/403.
-// **مستهلكوها**: مهامي (الخلاصة) · حسابي (البطاقة) — و«المرفوضات» حُذفت 2026-08-28
+// **مستهلكوها**: شاشات المشروع — لا مستهلك بالقالب نفسه
 
 import 'package:app_template/ui/extensions/byte_size_extension.dart';
 // bytes.asFileSize → «٢٫٤ ميغابايت» · "2.4 MB"
@@ -404,7 +404,7 @@ res.fold((failure) {
 
 | العلَم | ما يُشعله |
 |---|---|
-| `debugSkipLogin` | تخطّي الدخول → `MainShellRoute` **بلا توكن** (كلُّ طلبٍ بعده ٤٠١). **و`false` بالإنتاج حتماً** — مقفولٌ بـ`kDebugMode && _skipLoginRequested` (2026-08-30)، فالنسيان لا يشحن. ولدخولٍ بتوكنٍ حقيقي: شاشةُ الدخول نفسُها، فـKeycloak مخدوم. و`DEV_TOKEN` **حُذف (2026-08-30)** — [`01_SETUP.md`](01_SETUP.md) |
+| `debugSkipLogin` | تخطّي الدخول → `MainShellRoute` **بلا توكن** (كلُّ طلبٍ بعده ٤٠١). **و`false` بالإنتاج حتماً** — مقفولٌ بـ`kDebugMode && _skipLoginRequested`، فالنسيان لا يشحن. ولدخولٍ بتوكنٍ حقيقي: شاشةُ الدخول نفسُها، فـKeycloak مخدوم. ولا `DEV_TOKEN` — [`01_SETUP.md`](01_SETUP.md) |
 | `verboseNetworkLog` | سجلّ كامل لكل طلب. **اتركه `false`** — يدفن الأخطاء الحقيقية |
 | `biometrics` · `clipboard` · `shareSheet` · `fileOperations` · `appLifecycle` | خدمات `core/platform/` — تُسجَّل تلقائياً |
 | `certificatePinning` | تثبيت الشهادة على Dio |

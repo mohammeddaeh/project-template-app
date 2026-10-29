@@ -268,7 +268,7 @@ ImportReady ──اختر ملفاً + validate──▶ ImportReviewing ──
 
 ## الشاشة التفاعلية
 
-⬜ **ولا شاشةَ عرضٍ حيّة بالقالب اليوم** — حُذفت `features/test/` (2026-09-08) ومعها المعرض الذي كان يفتح `DataTransferSheet.show` مباشرة. الإثبات العملي لادّعاء «صفر Dart لكل feature» هو تفعيل `AppFeatures.dataTransfer` واستدعاء السطر بأي شاشة — قائمة الموارد تصل حينها من `GET /api/v1/data-transfer/resources` بلا سطر مكتوب هنا.
+⬜ **ولا شاشةَ عرضٍ حيّة بالقالب** تفتح `DataTransferSheet.show`. الإثبات العملي لادّعاء «صفر Dart لكل feature» هو تفعيل `AppFeatures.dataTransfer` واستدعاء السطر بأي شاشة — قائمة الموارد تصل حينها من `GET /api/v1/data-transfer/resources` بلا سطر مكتوب هنا.
 
 ---
 

@@ -489,4 +489,3 @@ return ApiResponse(status: 'success', message: ..., data: dataJson != null ? Mod
 
 ---
 
-*آخر تحديث: 2026-07-23 — أُزيلت إشارات لـ GraphQL الاحتياطي (`new/`) وقواعد Cursor (`.cursor/rules/`) — كلاهما غير موجود بالمشروع.*

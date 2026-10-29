@@ -932,8 +932,7 @@ ReconnectCountdownChip(onRetry: _retry)   // chip مع عدّ تنازلي
 
 > `ConnectivityOverlay` **لا يُركَّب بشاشة، ولا يأخذ `child`**. هو مركَّب مرة
 > واحدة بـ`_ConnectivityLayer` داخل `MaterialApp.builder` بـ`app.dart`، تحت
-> `Positioned.fill`، فيغطي كل مسار وورقة. قبل 2026-09-28 كان مكتوباً وموصولاً
-> بـ`ConnectivityCubit` وغير مركَّب بأي مكان، والسطر هنا كان يصف وسيطاً غير موجود.
+> `Positioned.fill`، فيغطي كل مسار وورقة.
 
 ---
 
@@ -1221,7 +1220,7 @@ await GuideOverlay.show(
 
 ## §33 · `validateAndReveal` — التمرير لأول حقل ناقص
 
-> امتداد على `GlobalKey<FormState>` بـ`ui/widgets/inputs/form_reveal.dart`، مُصدَّر بـ`widgets.dart`. نُقل من قرطاس (2026-09-28، بند #54).
+> امتداد على `GlobalKey<FormState>` بـ`ui/widgets/inputs/form_reveal.dart`، مُصدَّر بـ`widgets.dart`.
 
 ```dart
 // بدل: if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -1247,13 +1246,3 @@ if (!_formKey.validateAndReveal()) return;
 
 المستهلكون: شاشات `features/auth/` الست (الدخول · التسجيل · التحقق · نسيان/إعادة/تغيير كلمة المرور).
 
----
-
-*Phase 4 — ExpandableSection · AppListTile · StatCard · StepProgressIndicator · 2026-06-30*
-*Phase 5 — AppButton · AppLabel · FeedbackStyle · 2026-06-30*
-*Phase 6 — AppProgress · GlyphCenter · 2026-09-10*
-*Phase 7 — HijriDateText · 2026-09-14*
-*Phase 8 — ErrorBoundary · 2026-09-14*
-*Phase 9 — HijriDateText → AppDateText (هجري + ميلادي + تخطيط قابل للتشكيل بالكامل) · 2026-09-15*
-*Phase 10 — PressableScale · StatusFeedbackIndicator · GuideOverlay · 2026-09-17*
-*Phase 11 — validateAndReveal (من قرطاس) · 2026-09-28*
