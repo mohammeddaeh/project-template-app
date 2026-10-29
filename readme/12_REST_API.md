@@ -97,6 +97,52 @@ abstract class ProductsApiService {
 }
 ```
 
+### Step B′: خادمٌ يردّ نصّاً لا JSON نظيفاً — `Future<String>`
+
+خادمٌ يسبق الـJSON بضجيج (تحذير PHP · لافتة HTML)، أو يردّ نصّاً خاماً، يُقرأ
+**نصّاً** ثم يُحلَّل بيدك. والطريقة الوحيدة التي تعمل:
+
+```dart
+@GET(ApiUrls.items)
+@DioResponseType(ResponseType.plain)
+Future<String> items();          // ← String بالضبط، لا HttpResponse<dynamic>
+```
+
+⛔ **`@DioResponseType(ResponseType.plain)` مع `Future<HttpResponse<dynamic>>` يُتجاهل
+بصمت**: `_setStreamType` المولَّد يعيد `responseType` إلى `json` لكل نوعٍ غير
+`String` بالضبط، فيفكّ Dio الجسد بنفسه ويرمي `FormatException` على أول حرفٍ من
+الضجيج — ويصل المستخدمَ «حدث خطأ» والخادمُ سجّل `200 OK`. وحالةُ الردّ عند الخطأ
+تُقرأ من `DioException.response`.
+
+**والاختبار يمرّ بالكود المولَّد نفسه**، لا بنسخةٍ وهمية من الخدمة — فالنسخة
+الوهمية تتجاوز `_setStreamType` وهو موضع العطل:
+
+```dart
+class _Recorder implements HttpClientAdapter {
+  _Recorder(this.body);
+  final String body;
+  final seen = <RequestOptions>[];
+  @override
+  Future<ResponseBody> fetch(RequestOptions o, Stream<Uint8List>? _, Future<void>? __) async {
+    seen.add(o);
+    return ResponseBody.fromString(body, 200,
+        headers: {Headers.contentTypeHeader: [Headers.jsonContentType]});
+  }
+  @override
+  void close({bool force = false}) {}
+}
+
+test('items is read as plain text', () async {
+  final adapter = _Recorder('<br />{"ok":true}');
+  final dio = Dio(BaseOptions(baseUrl: 'https://example.test'))..httpClientAdapter = adapter;
+  final body = await ItemsApiService(dio).items();
+  expect(adapter.seen.single.responseType, ResponseType.plain);
+  expect(body, '<br />{"ok":true}');
+});
+```
+
+> ويحتاج هذا `retrofit: 4.9.1` بالضبط — السببُ مكتوبٌ بجانب الـoverride بـ`pubspec.yaml`.
+
 ### Step C: Register in injection_module.dart (إلزامي لكل ApiService)
 
 ```dart

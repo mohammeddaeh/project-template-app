@@ -100,7 +100,11 @@ dependencies:
 
 dependency_overrides:
   intl: ^0.19.0
-  retrofit: 4.9.0
+  # ⚠️ **إلزاميّ بالضبط — 4.9.1 وحدها.** `retrofit_generator 10.2` يولّد
+  # `ErrorLogger.logError(e, s, options, response)` بأربعة وسائط موضعية لكل خدمة
+  # تُعيد `Future<String>` (راجع `readme/12_REST_API.md` §«النص الخام»): 4.9.0
+  # توقيعها بثلاثة، و4.9.2+ بوسيطٍ مسمّى — فكلاهما لا يُصرَّف.
+  retrofit: 4.9.1
   # ⚠️ **إلزاميّ — وليس تفضيلاً.**
   #
   # `workmanager 0.9.2` يعلن `platform_interface: ^0.9.3`، والقوسُ يسمح بـ0.9.4.

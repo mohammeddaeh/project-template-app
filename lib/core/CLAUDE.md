@@ -76,7 +76,7 @@ dependencies:
   retrofit: ^4.2.0
 dependency_overrides:
   intl: ^0.19.0
-  retrofit: 4.9.0     # ← إلزامي: 4.9.2+ يكسر الـ generator
+  retrofit: 4.9.1     # ← إلزامي بالضبط: 4.9.0 و4.9.2+ لا تطابقان logError المولَّد (السبب بـpubspec.yaml)
 dev_dependencies:
   retrofit_generator: ^10.2.0
   build_runner: ^2.4.13

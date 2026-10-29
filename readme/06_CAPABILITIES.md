@@ -103,6 +103,7 @@
 |---|---|---|---|
 | مسار endpoint | `ApiUrls` — [`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) | نصّ مسارٍ بالخدمة | 👁 |
 | قراءة ردّ الخادم | `HandleBodyResponse` · `BaseRepository` — [`12_REST_API.md`](12_REST_API.md) | `response.data['data']` بالمستودع | 👁 |
+| ردٌّ نصّيّ أو JSON بضجيج | خدمة Retrofit تُعيد `Future<String>` بـ`ResponseType.plain` — [`12_REST_API.md`](12_REST_API.md) §Step B′ | `HttpResponse<dynamic>` مع `ResponseType.plain` (يُتجاهل بصمت) | 👁 |
 | إخفاء ما لا يملكه المستخدم | `Can(permission: PermKeys.x)` — [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | مفتاحاً نصّياً خامّاً | 🔒 R24 |
 | استيراد · تصدير | `DataTransferSheet.show(context, resource:)` — [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | شاشة رفع ملف لكل feature | 👁 |
 | عمل دون اتصال | `modules/sync/` — [`lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) **قبل أي شيء** | طابوراً محلّياً ثانياً | 👁 |
