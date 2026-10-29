@@ -21,7 +21,7 @@
 | **ما يحدث بين «السيرفر رفض» و«المستخدم قرأ»** — العقد عبر النصفين | [`13_ERROR_FLOW.md`](13_ERROR_FLOW.md) |
 | `PaginationCubit` و`PaginationBuilderWdg` | [`14_PAGINATION.md`](14_PAGINATION.md) |
 | **أين** يوضع أي widget (feature أم `ui/widgets/`) | [`20_WIDGETS.md`](20_WIDGETS.md) |
-| **كيف** يُستعمل كل widget بالمكتبة | [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) |
+| **كيف** يُستعمل كل widget بالمكتبة | [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) — فهرسٌ برقم كل قسم، والشرح بملف فئته تحت [`widgets/`](widgets/) |
 | **مقاسُ شاشة · لوح · كيبورد · تكبير خط** | [`22_RESPONSIVE.md`](22_RESPONSIVE.md) — `context.screen`، ولا نسبةَ من ارتفاع الشاشة |
 | **إقلاع التطبيق · شاشة البدء · شعارُها** | [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) — شاشةٌ واحدة لا شاشتان · ⛔ **و`android: false` بقرار** |
 | **ما يخدمه الباك فعلاً** | [`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) — جردُ النقاط وحالاتُها الأربع · ودَينُ الباك بلغة المستخدم |

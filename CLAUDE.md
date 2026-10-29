@@ -124,7 +124,7 @@ modules     → Features      ❌ NEVER
 | `readme/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
 | `readme/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
 | `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
-| `readme/21_WIDGETS_USAGE.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود |
+| `readme/21_WIDGETS_USAGE.md` + `readme/widgets/*.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود — القسم بملف فئته تحت `widgets/`، وصفُّه بجدول الفهرس |
 | `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
 | **`readme/23_STARTUP_SPLASH.md`** | **أي سطر بـ`main()` · `ModulesBootstrap.start`/`ready` · `StartupResolver` · `deepLinkBuilder` بـ`app.dart` · أيُّ مورد أندرويد بـ`res/drawable/splash_*` أو `values*/styles.xml` · علَم `android` بـ`flutter_native_splash.yaml`** |
 | **`readme/17_SERVED_CONTRACT.md`** | **إضافة/حذف ثابت بـ`ApiUrls` · صيرورةُ نقطةٍ مخدومة · كشفُ عقدٍ يخالف المُعلَن · إعادةُ أي شريحة محذوفة** |

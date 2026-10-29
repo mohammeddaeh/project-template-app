@@ -1,0 +1,201 @@
+# التخطيط والمسافات
+
+> جزءٌ من دليل الودجات — الفهرس الكامل والاستيراد بـ[`../21_WIDGETS_USAGE.md`](../21_WIDGETS_USAGE.md).
+
+> **Import الوحيد:** `package:app_template/ui/widgets/widgets.dart` — والاستثناءات بـ§DIRECT-IMPORTS بالفهرس.
+
+
+---
+
+## §9 · AppNavBar — شريط العنوان
+
+> بديل `AppBar` موحَّد. يستنتج زر الرجوع تلقائياً.
+
+**Parameters**
+
+| الاسم | النوع | الافتراضي | الوصف |
+|-------|-------|-----------|-------|
+| `titleKey` | `String?` | — | مفتاح ترجمة |
+| `titleText` | `String?` | — | نص مترجَم مسبقاً |
+| `titleWidget` | `Widget?` | — | widget مخصصة (أولوية على الاثنين) |
+| `showBackButton` | `bool?` | `null` | `null` = auto من `Navigator.canPop` |
+| `onBack` | `VoidCallback?` | — | تجاوز سلوك الرجوع الافتراضي |
+| `actions` | `List<Widget>?` | — | أزرار اليمين |
+| `bottom` | `PreferredSizeWidget?` | — | TabBar أو شريط إضافي |
+
+**Usage**
+
+```dart
+// ── شاشة عادية ──
+Scaffold(appBar: AppNavBar(titleKey: LocaleKeys.orderDetails))
+
+// ── شاشة جذر ──
+Scaffold(
+  appBar: AppNavBar.root(
+    titleKey: LocaleKeys.home,
+    actions: [
+      IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: _open),
+    ],
+  ),
+)
+
+// ── مع TabBar ──
+Scaffold(
+  appBar: AppNavBar(
+    titleKey: LocaleKeys.reports,
+    bottom: TabBar(controller: _tabCtrl, tabs: [...]),
+  ),
+)
+```
+
+
+---
+
+## §10 · AppCard — بطاقة
+
+```dart
+AppCard(
+  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  padding: const EdgeInsets.all(16),
+  elevation: 2,
+  onTap: () => context.router.push(OrderDetailsRoute(id: order.id)),
+  child: OrderRowWidget(order: order),
+)
+```
+
+
+---
+
+## §11 · AppListTile — عنصر قائمة
+
+> بديل `ListTile` يستخدم قيم الثيم الصحيحة.
+
+**Parameters**
+
+| الاسم | النوع | الافتراضي | الوصف |
+|-------|-------|-----------|-------|
+| `titleKey` / `titleText` | `String?` | مطلوب أحدهما | — |
+| `subtitleKey` / `subtitleText` | `String?` | — | سطر ثانٍ |
+| `leadingIcon` | `IconData?` | — | أيقونة يسار |
+| `leading` | `Widget?` | — | يستبدل `leadingIcon` |
+| `trailing` | `Widget?` | — | widget اليمين |
+| `onTap` | `VoidCallback?` | — | يُضيف سهم تلقائياً إن لم يكن `trailing` |
+| `showDivider` | `bool` | `false` | فاصل أسفل |
+| `dense` | `bool` | `false` | يقلل المسافة الرأسية |
+| `titleColor` | `Color?` | — | لون العنوان |
+
+**Usage**
+
+```dart
+// ── قائمة إعدادات ──
+AppListTile(
+  titleKey: LocaleKeys.language,
+  leadingIcon: Icons.language_rounded,
+  trailing: Text(currentLang, style: context.textTheme.bodySmall),
+  onTap: _openLanguageSheet,
+  showDivider: true,
+)
+
+// ── زر حذف ──
+AppListTile(
+  titleKey: LocaleKeys.logout,
+  leadingIcon: Icons.logout_rounded,
+  titleColor: context.colors.error,
+  onTap: () => context.read<AuthCubit>().logout(),
+)
+```
+
+
+---
+
+## §12 · ExpandableSection — قسم قابل للطي
+
+**Parameters**
+
+| الاسم | النوع | الافتراضي | الوصف |
+|-------|-------|-----------|-------|
+| `titleKey` / `titleText` | `String?` | مطلوب أحدهما | — |
+| `child` | `Widget` | مطلوب | المحتوى |
+| `subtitleKey` / `subtitleText` | `String?` | — | سطر ثانٍ في الرأس |
+| `leading` | `Widget?` | — | أيقونة يسار الرأس |
+| `initiallyExpanded` | `bool` | `false` | الحالة الأولية |
+| `isExpanded` | `bool?` | `null` | `null` = uncontrolled mode |
+| `onToggle` | `VoidCallback?` | — | callback عند التغيير |
+| `showDivider` | `bool` | `true` | فاصل أسفل القسم |
+
+**Usage**
+
+```dart
+// ── Uncontrolled ──
+ExpandableSection(
+  titleKey: LocaleKeys.orderItems,
+  child: ItemsListWidget(items: order.items),
+)
+
+// ── Controlled ──
+ExpandableSection(
+  titleKey: LocaleKeys.faq,
+  isExpanded: _isOpen,
+  onToggle: () => setState(() => _isOpen = !_isOpen),
+  leading: const Icon(Icons.help_outline_rounded),
+  child: const FaqContent(),
+)
+```
+
+
+---
+
+## §23 · DividerWidget / DashedDivider / SectionTitle
+
+```dart
+// ── فاصل صلب ──
+const DividerWidget()
+DividerWidget(color: context.colors.borderSubtle, thickness: 1)
+
+// ── فاصل منقط ──
+const DashedDivider()
+DashedDivider(color: context.colors.dividerSubtle, dashWidth: 6, dashSpace: 3)
+
+// ── عنوان قسم ──
+SectionTitle(titleKey: LocaleKeys.contactInfo)
+SectionTitle(titleText: 'معلومات التوصيل', action: TextButton(...))
+```
+
+
+---
+
+## §24 · Spacing — مسافات
+
+> **Import مباشر مطلوب:**
+> ```dart
+> import 'package:app_template/ui/extensions/app_padding_extension.dart';
+> ```
+
+```dart
+4.widthBox              // SizedBox(width: 4)
+16.heightBox            // SizedBox(height: 16)
+16.allPadding           // EdgeInsets.all(16)
+16.horizontalPadding    // EdgeInsets.symmetric(horizontal: 16)
+16.verticalPadding      // EdgeInsets.symmetric(vertical: 16)
+```
+
+
+---
+
+## §27 · GlyphCenter — توسيط بصري للأرقام واللاتيني
+
+> إلزاميّ حول أي رقم/نصّ لاتيني داخل صندوقٍ مقاسُه ثابت (دائرة شارة، مربّع، صفّ بـ`height`). `Center`/`Alignment.center`/`CircleAvatar` تُوسِّط صندوق سطر الخطّ العربي عمودي الثقل، فيبدو الرقم مرتفعاً بلا `GlyphCenter`.
+
+**Usage**
+
+```dart
+Container(
+  width: 28,
+  height: 28,
+  alignment: Alignment.center,
+  decoration: const BoxDecoration(shape: BoxShape.circle),
+  child: GlyphCenter(child: Text('$n', style: context.textTheme.labelSmall)),
+)
+```
+
+⚠️ **حدّها**: داخل صندوق يلتصق بالنصّ (`Column` بلا ارتفاع ثابت) لا موضع تُزاح إليه — الإزاحة تدفع الحبر خارج حدوده هناك. التفصيل الكامل والسبب البصري: [`lib/CLAUDE.md`](../../lib/CLAUDE.md) §«توسيط الأرقام».
