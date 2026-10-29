@@ -221,7 +221,7 @@ void main() {
     });
 
     test('the pair addresses one owner — name and id, not id alone', () async {
-      // `entity_id` alone is ambiguous across features: note-1 and mosque-1 can
+      // `entity_id` alone is ambiguous across features: note-1 and order-1 can
       // share an id. The server keys attachments on the pair, which is why the
       // schema requires both.
       final record = _record(

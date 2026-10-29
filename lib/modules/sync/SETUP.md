@@ -100,7 +100,7 @@ await SyncSDK.initialize(
 > `backend_template/src/features/notes/`، وكلها تستورد `sync_plugin.dart` وحده)
 > باقيةٌ بتاريخ git: `git ls-tree --name-only b0351f1^:lib/Features/notes/data/sync`
 > ثم `git show b0351f1^:lib/Features/notes/data/sync/<ملف>`. والشيفرة أدناه تشرح
-> على كيان `mosques` **لا وجود له**.
+> على كيان `orders` **لا وجود له**.
 >
 > **وموضعها ليس اختياراً**: مُحوِّلات المزامنة تسكن `<feature>/data/sync/`
 > وحدها — `deletion_contract_test.dart` يرفض غيره، ليبقى حذف الموديول نمطاً
@@ -118,12 +118,12 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 // lib/features/<name>/data/sync/<name>_feature_contract.dart
 
 @LazySingleton(as: SyncFeatureContractBase)   // ← `as:` إلزامي · وبلا @Named
-class MosquesFeatureContract extends SyncFeatureContractBase {
-  const MosquesFeatureContract();
+class OrdersFeatureContract extends SyncFeatureContractBase {
+  const OrdersFeatureContract();
 
-  @override String get entityName => 'mosques';
-  @override Type get repositoryContractType => MosquesRepository;
-  @override Object resolveRepository(GetIt di) => di<MosquesRepository>();
+  @override String get entityName => 'orders';
+  @override Type get repositoryContractType => OrdersRepository;
+  @override Object resolveRepository(GetIt di) => di<OrdersRepository>();
 
   // Override for entity-specific conflict strategy:
   @override
@@ -163,13 +163,13 @@ class MosquesFeatureContract extends SyncFeatureContractBase {
 ```dart
 // lib/features/<name>/data/sync/<name>_sync_executor.dart
 
-@SyncExecutorFor('mosques')
+@SyncExecutorFor('orders')
 @LazySingleton(as: SyncExecutor)
-class MosquesSyncExecutor implements SyncExecutor {
-  const MosquesSyncExecutor(this._syncApi);
-  final MosquesSyncApiService _syncApi;
+class OrdersSyncExecutor implements SyncExecutor {
+  const OrdersSyncExecutor(this._syncApi);
+  final OrdersSyncApiService _syncApi;
 
-  @override String get entityName => 'mosques';
+  @override String get entityName => 'orders';
   @override Set<int> get supportedContractVersions => {1};
 
   @override
@@ -205,18 +205,18 @@ class MosquesSyncExecutor implements SyncExecutor {
 // lib/features/<name>/data/sync/<name>_sync_pull_executor.dart
 
 @LazySingleton(as: SyncPullExecutor)
-class MosquesSyncPullExecutor implements SyncPullExecutor {
-  const MosquesSyncPullExecutor(this._dataSource);
-  final MosquesRemoteDataSource _dataSource;
+class OrdersSyncPullExecutor implements SyncPullExecutor {
+  const OrdersSyncPullExecutor(this._dataSource);
+  final OrdersRemoteDataSource _dataSource;
 
-  @override String get entityName => 'mosques';
+  @override String get entityName => 'orders';
 
   @override
   Future<Either<Failure, SyncPullPage>> pull({
     required SyncCursor cursor,
     required bool includeDeleted,
     required int limit,
-  }) async { /* GET /mosques/delta — راجع Step 6 */ }
+  }) async { /* GET /orders/delta — راجع Step 6 */ }
 }
 ```
 
@@ -227,17 +227,17 @@ class MosquesSyncPullExecutor implements SyncPullExecutor {
 ### 3c. Wire write path via SyncWriteGateway
 
 ```dart
-// In MosquesRepositoryImpl.createMosque():
+// In OrdersRepositoryImpl.createOrder():
 await _syncWriteGateway.write(SyncWriteCommand(
-  entityName: 'mosques',
-  localId: mosque.id,
-  serverId: mosque.serverId,
-  dataJson: jsonEncode(mosque.toJson()),
+  entityName: 'orders',
+  localId: order.id,
+  serverId: order.serverId,
+  dataJson: jsonEncode(order.toJson()),
   updatedAt: DateTime.now().millisecondsSinceEpoch,
   version: 1,
   isDeleted: false,
   jobType: SyncJobType.create,
-  jobPayloadJson: jsonEncode(mosque.toJson()),
+  jobPayloadJson: jsonEncode(order.toJson()),
   contractVersion: 1,
   enqueue: true,                        // false = cache-only, no push
 ));
@@ -249,27 +249,27 @@ await _syncWriteGateway.write(SyncWriteCommand(
 > عند غيابه فيمنع الإقلاع. **سجِّل decorator.**
 
 ```dart
-// lib/features/mosques/data/sync/mosques_sync_repository_decorator.dart
+// lib/features/orders/data/sync/orders_sync_repository_decorator.dart
 
 @LazySingleton(as: SyncRepositoryDecorator)
-class MosquesSyncRepositoryDecorator implements SyncRepositoryDecorator {
-  const MosquesSyncRepositoryDecorator();
+class OrdersSyncRepositoryDecorator implements SyncRepositoryDecorator {
+  const OrdersSyncRepositoryDecorator();
 
   @override
   Future<void> decorate(GetIt getIt) async {
     // يُحلّ **قبل** الإلغاء: النسخة الداخلية هي ما كان مربوطاً فعلاً — التنفيذ
     // العادي اليوم، أو ما ركّبه ديكورٌ آخر قبل هذا. وتسمية `…RepositoryImpl`
     // صراحةً تُسقط تلك الطبقة بصمت: كل شيء يُصرَّف وسلوكٌ واحد يختفي.
-    final inner = getIt<MosquesRepository>();
-    await getIt.unregister<MosquesRepository>();
+    final inner = getIt<OrdersRepository>();
+    await getIt.unregister<OrdersRepository>();
 
-    getIt.registerLazySingleton<MosquesRepository>(
-      () => SyncAwareMosquesRepository(
+    getIt.registerLazySingleton<OrdersRepository>(
+      () => SyncAwareOrdersRepository(
         inner,
         getIt<SyncEntityStore>(),
         getIt<SyncWriteGateway>(),
         getIt<Uuid>(),
-        const MosquesFeatureContract(),
+        const OrdersFeatureContract(),
       ),
     );
   }
@@ -306,7 +306,7 @@ return inner.getSomething(...);   // ← الشبكة
 ```dart
 if (matches.isNotEmpty) return Right(matches);
 // سُحب الكيانُ مرّةً على الأقل ⇒ الفراغُ صادقٌ وكامل.
-if (await _hydration.isHydrated('mosques')) return const Right([]);
+if (await _hydration.isHydrated('orders')) return const Right([]);
 return inner.getSomething(...);
 ```
 
@@ -533,7 +533,7 @@ MultiBlocProvider(
 
 ```dart
 AppBar(
-  title: const Text('Mosques'),
+  title: const Text('Orders'),
   actions: const [PendingChangesChip()],
 )
 ```
@@ -651,11 +651,11 @@ never queued for push.
 import 'package:app_template/modules/sync/sync_plugin.dart';
 
 @LazySingleton(as: AttachmentUploadTarget)
-class MosquesAttachmentUploadTarget implements AttachmentUploadTarget {
-  const MosquesAttachmentUploadTarget(this._dio);
+class OrdersAttachmentUploadTarget implements AttachmentUploadTarget {
+  const OrdersAttachmentUploadTarget(this._dio);
   final Dio _dio;
 
-  @override String get entityName => 'mosques';
+  @override String get entityName => 'orders';
 
   @override
   Future<String> upload({
@@ -734,7 +734,7 @@ switch (access) {
 وبالواجهة، `AttachmentsSection` و`AttachmentView` يغلّفان هذا كلّه:
 
 ```dart
-AttachmentsSection(entityName: 'mosques', entityLocalId: mosque.id)
+AttachmentsSection(entityName: 'orders', entityLocalId: order.id)
 ```
 
 ### 7e. عقد السيرفر للمرفقات

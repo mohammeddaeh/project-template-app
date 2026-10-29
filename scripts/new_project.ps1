@@ -7,8 +7,8 @@
 # Without questions (every parameter is optional; a missing one is asked):
 #
 #   & ([scriptblock]::Create((irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1))) `
-#       -Package zakat_app -Name "Zakat" -AppId com.awqaf.zakat -BaseUrl https://api.example.com -Preset simple `
-#       -Remote awqaf/zakat_app
+#       -Package inventory_app -Name "Inventory" -AppId com.example.inventory -BaseUrl https://api.example.com -Preset simple `
+#       -Remote my-org/inventory_app
 #
 # -Remote (owner/name or URL) is pushed to once the checks pass. It must be an
 # EMPTY repository; a missing one is created with GitHub CLI (`gh`) when present.
@@ -58,11 +58,11 @@ function Read-Value([string]$prompt, [string]$default, [scriptblock]$validate) {
 
 $packageRule = {
     param($v)
-    if ($v -cnotmatch '^[a-z][a-z0-9_]*$') { 'lowercase letters, digits and _ only, starting with a letter (e.g. zakat_app)' }
+    if ($v -cnotmatch '^[a-z][a-z0-9_]*$') { 'lowercase letters, digits and _ only, starting with a letter (e.g. inventory_app)' }
 }
 $appIdRule = {
     param($v)
-    if ($v -cnotmatch '^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$') { 'reverse-domain, lowercase, two segments at least (e.g. com.awqaf.zakat)' }
+    if ($v -cnotmatch '^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$') { 'reverse-domain, lowercase, two segments at least (e.g. com.example.inventory)' }
 }
 $requiredRule = { param($v) if (-not $v) { 'cannot be empty' } }
 $urlRule = { param($v) if ($v -and $v -notmatch '^https?://') { 'must start with http:// or https:// (or leave empty)' } }
@@ -202,7 +202,7 @@ function Invoke-NewProject {
     if (-not (Test-Tool 'dart' 'It ships with Flutter - add flutter\bin to PATH.')) { return }
 
     Write-Step 'Project details'
-    if (-not $Package) { $Package = Read-Value 'Dart package / folder name (e.g. zakat_app)' '' $packageRule }
+    if (-not $Package) { $Package = Read-Value 'Dart package / folder name (e.g. inventory_app)' '' $packageRule }
     elseif (& $packageRule $Package) { Write-Fail "-Package: $(& $packageRule $Package)"; return }
 
     if (-not $Name) { $Name = Read-Value 'App display name' '' $requiredRule }

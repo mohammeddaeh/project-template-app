@@ -3,8 +3,7 @@
 /// `ApiUrls` مقصورٌ على ما يخدمه الباك فعلاً، والموديول مطفأ
 /// (`AppFeatures.offlineSync == false`).
 ///
-/// ⚠️ **طابِق كل مسارٍ هنا بباك مشروعك قبل التفعيل.** مسارات السحب بعلامة المياه
-/// (`records` · `parcels`) مثالُ مجالٍ بعينه، لا عقدٌ يخدمه `backend_template`.
+/// ⚠️ **طابِق كل مسارٍ هنا بباك مشروعك قبل التفعيل.**
 ///
 /// وتبقى هنا لأن المحرّك مبنيٌّ فوقها ويُشحن مطفأً (R28): سطحُ قالبٍ ينتظر
 /// باكاً، لا سلسلةٌ انقطعت بالخطأ.
@@ -27,27 +26,16 @@ abstract class SyncUrls {
 
   // ── السحبُ بعلامة المياه — `heads` ثم `bundle` ─────────────────────────────
   //
-  // **ثلاثُ طبقاتٍ تنزل بالتدريج**، بدل ثلاث دلتات مستقلّة:
+  // **نمطٌ لا مسارات**: كلُّ مشروعٍ يسمّي كياناته، فالمسارات تُكتب بشريحته.
+  // ثلاثُ طبقاتٍ تنزل بالتدريج، بدل ثلاث دلتات مستقلّة:
   //
   // ```
-  // ١ · GET /records/heads                  ← معرّف + ختم لكل محضر (صغير)
-  // ٢ · GET /records/{id}/parcels/heads     ← لمحضرٍ تغيّر ختمُه وحده
-  // ٣ · GET /parcels/{id}/bundle            ← لمقسمٍ تغيّر ختمُه وحده
+  // ١ · GET /<parents>/heads               ← معرّف + ختم لكل سجلّ رئيسي (صغير)
+  // ٢ · GET /<parents>/{id}/<items>/heads  ← لسجلٍّ تغيّر ختمُه وحده
+  // ٣ · GET /<items>/{id}/bundle           ← لعنصرٍ تغيّر ختمُه وحده
   // ```
   //
   // والحذف يُستنتج بالغياب، وهو آمنٌ لأن كل قائمةٍ **كاملةٌ بحكم بنيتها**.
   // ⛔ **ولذلك لا تُقطَّع هذه المسارات أبداً**: ترقيمُ صفحاتٍ يُضاف يوماً لأن
   //    القائمة طالت **يمحو من الأجهزة كلَّ ما لم تحمله الصفحة الأولى**.
-
-  static const String recordHeads = '/records/heads';
-
-  static String recordParcelHeads(String recordLocalId) =>
-      '/records/$recordLocalId/parcels/heads';
-  static const String recordParcelHeadsPath =
-      '/records/{recordLocalId}/parcels/heads';
-
-  /// المقسم وسجلاتُه وميتاداتا مرفقاته بردٍّ واحد.
-  static String parcelBundle(String parcelLocalId) =>
-      '/parcels/$parcelLocalId/bundle';
-  static const String parcelBundlePath = '/parcels/{parcelLocalId}/bundle';
 }

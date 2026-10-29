@@ -622,7 +622,7 @@ String _askOptional(String prompt) {
   return stdin.readLineSync()?.trim() ?? '';
 }
 
-/// آخر مقطع من Application ID بصيغة حزمة Dart: `com.awqaf.zakat_app` → `zakat_app`.
+/// آخر مقطع من Application ID بصيغة حزمة Dart: `com.example.inventory_app` → `inventory_app`.
 String _packageSuggestion(String appId) {
   final last = appId.split('.').last;
   return _packageProblem(last) == null ? last : 'my_app';

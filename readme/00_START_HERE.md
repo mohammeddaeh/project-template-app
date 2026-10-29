@@ -15,7 +15,7 @@
 | شبكة: Dio + Retrofit + سلسلة interceptors + مسار خطأ موحَّد | مزامنة دون اتصال · صلاحيات · استيراد/تصدير · أجهزة متعدّدة |
 | ثيم فاتح/داكن · عربي/إنجليزي · خطوط قابلة للتبديل | تحليلات · تقارير انهيار · إشعارات · تحديثات · إعدادات بعيدة |
 | DI (`injectable` + `get_it`) · تنقّل (`auto_route`) · حالة (`bloc`) | |
-| 287 اختباراً تحرس البنية التحتية وعقد الـwire | |
+| اختباراتٌ تحرس البنية التحتية وعقد الـwire — `flutter test` | |
 
 **ما لا يصلك**: شريحة CRUD مرجعية، ولا شاشات demo — بقصد:
 [التفصيل](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/README.md).

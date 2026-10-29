@@ -417,8 +417,8 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1))) `
-    -Package zakat_app -Name "Zakat" -AppId com.awqaf.zakat -BaseUrl https://api.example.com -Preset simple `
-    -Remote awqaf/zakat_app
+    -Package inventory_app -Name "Inventory" -AppId com.example.inventory -BaseUrl https://api.example.com -Preset simple `
+    -Remote my-org/inventory_app
 ```
 
 الوسائط: `-Package` · `-Name` · `-AppId` · `-BaseUrl` · `-BaseUrlStaging` ·
@@ -437,8 +437,8 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 
 ```bash
 dart run scripts/setup_project.dart                      # تفاعلي
-dart run scripts/setup_project.dart --name "Zakat" --app-id com.awqaf.zakat \
-  --package zakat_app --preset simple --base-url https://api.example.com --yes
+dart run scripts/setup_project.dart --name "Inventory" --app-id com.example.inventory \
+  --package inventory_app --preset simple --base-url https://api.example.com --yes
 ```
 
 يُشغَّل **مرّة واحدة**، فور استنساخ مشروع جديد من هذا القالب (راجع
@@ -568,7 +568,7 @@ dart run scripts/audit_template.dart
    `_template/archive/`) يجب أن يُذكر بجدول «Mandatory Documentation Sync» بـ`CLAUDE.md`.
 5. **تاريخٌ بالملفات التي تصل المشاريع** (R38) — تاريخ `YYYY-MM-DD` (لا طابعٌ زمنيّ
    كامل `…T08:00:00Z` بمثال JSON) أو اسمُ مشروعٍ
-   معروف (`_projectNames`) بـ`readme/` و`lib/` و`scripts/` و`CLAUDE.md`؛ بالكود
+   معروف (من `_template/project_names.txt` — بمستودع القالب وحده، فمشروعٌ مبنيّ يُفحص تاريخُه فقط) بـ`readme/` و`lib/` و`scripts/` و`CLAUDE.md`؛ بالكود
    التعليقاتُ وحدها، و`test/` خارجه (التواريخ هناك بيانات). اسمُ المشروع الحاليّ
    من `.template_manifest.json` يُستثنى. `--verbose` يطبع الأسطر.
 

@@ -6,8 +6,8 @@
 /// الخاص، ولقطاتٍ نصّيةً **يعرف مفاتيحها بالاسم** (`_accountKeys`). وذلك يعمل
 /// ما دام المفتاح ثابتاً يُكتب مرّةً بـ`PersistenceKeys`.
 ///
-/// ولا يعمل لمخزنٍ مفاتيحُه **مولَّدة**: `UnitDraftStore` يكتب مفتاحاً لكل
-/// مقسمٍ يُفتح (`unit_wip_<id>`)، ولا قائمةَ ثابتة تصفها. فبلا هذا العقد يبقى
+/// ولا يعمل لمخزنٍ مفاتيحُه **مولَّدة**: مخزنُ مسوّداتٍ يكتب مفتاحاً لكل
+/// عنصرٍ يُفتح (`draft_<id>`)، ولا قائمةَ ثابتة تصفها. فبلا هذا العقد يبقى
 /// **شغلٌ ميدانيّ نصفُ مكتوب لحسابٍ سابق** على جهازٍ سلّمه صاحبُه لغيره —
 /// يُستأنف باستمارة من يليه.
 ///
@@ -32,12 +32,12 @@
 /// حقنَ أحدٌ الصنفَ نفسه — لأنه يحتاج طرائقَ ليست بالعقد — انهار وقتَ التشغيل:
 ///
 /// ```
-/// StateError: GetIt: Object/factory with type UnitDraftStore is not registered
+/// StateError: GetIt: Object/factory with type DraftStore is not registered
 /// ```
 ///
-/// **ووقع فعلاً**: `UnitFormCubit` يحقن `UnitDraftStore` (يحتاج `save`/`read`
-/// /`clear`، ولا شيء منها هنا)، فكانت شاشةُ الاستمارة تنهار **بكل فتحة**. ولم
-/// يره شيء قبل التشغيل: `injectable` يولّد `gh<UnitDraftStore>()` راضياً،
+/// **ومثاله**: `DraftFormCubit` يحقن `DraftStore` (يحتاج `save`/`read`
+/// /`clear`، ولا شيء منها هنا)، فتنهار شاشةُ الاستمارة **بكل فتحة**. ولا
+/// يراه شيء قبل التشغيل: `injectable` يولّد `gh<DraftStore>()` راضياً،
 /// و`dart analyze` نظيف، ولا فاحصَ يقرأ الـDI (R28).
 ///
 /// فالنمطُ الصحيح حينئذٍ **تسجيلان بنسخةٍ واحدة** — نفسُ ما يفعله
@@ -45,11 +45,11 @@
 ///
 /// ```dart
 /// @lazySingleton                                     // الصنفُ بذاته
-/// class UnitDraftStore implements AccountScopedStore { … }
+/// class DraftStore implements AccountScopedStore { … }
 ///
 /// // injection_module.dart — الواجهةُ تُربط بالنسخة نفسها
 /// @lazySingleton
-/// AccountScopedStore accountScopedUnitDraftStore(UnitDraftStore s) => s;
+/// AccountScopedStore accountScopedDraftStore(DraftStore s) => s;
 /// ```
 ///
 /// وتسجيلان مستقلّان يُنتجان **مخزنين**: يمحو المنظّفُ أحدَهما وتكتب الشاشةُ

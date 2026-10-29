@@ -20,8 +20,6 @@ dart analyze lib                              # ★ يجب أن يكون نظي�
 dart run scripts/check_structure.dart         # ★ بنية الواجهة — يفشل بمخالفة جديدة
 dart run scripts/audit_template.dart          # تدقيق استشاري — موديولات · مسارات يتيمة · توثيق · تاريخ (--verbose)
 dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الثلاثة معاً
-dart run scripts/check_wire_contract.dart     # ★ عقد المقاسم مقابل openapi الحيّ (R01)
-dart run scripts/check_wire_contract.dart --file spec.json   # مواصفة محفوظة، بلا شبكة
 flutter run --flavor dev --dart-define-from-file=.env.dev.json
 ```
 

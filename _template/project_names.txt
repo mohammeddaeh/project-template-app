@@ -1,0 +1,9 @@
+# Names that must never appear in files a project receives — one per line.
+# Read by scripts/audit_template.dart §5. Lives here so the script itself ships none.
+قرطاس
+Qirtas
+مسجدك
+Masjidak
+الأوقاف
+أوقاف
+awqaf

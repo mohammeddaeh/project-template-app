@@ -236,8 +236,8 @@ lib/
 
 readme/          توثيق القالب  ← أنت هنا
 docs/            توثيق مشروعك (فارغ بقصد)
-scripts/         عشرة سكربتات
-test/            287 اختباراً
+scripts/         سكربتات التوليد والفحص — راجع 40_SCRIPTS.md
+test/            الاختبارات — flutter test
 ```
 
 الحدود بين الطبقات وقواعدها: [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) ·

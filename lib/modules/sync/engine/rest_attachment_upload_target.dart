@@ -12,9 +12,7 @@ import 'attachment_upload_manager.dart';
 ///
 /// ## لماذا صنفٌ مشترك، ولماذا **الآن** لا قبل ذلك
 ///
-/// قاعدة القالب أن يُنتظر المستهلك الثاني قبل التعميم (F21/R34). وقد وصل:
-/// `entries` كانت وحدها، ثم صارت `parcels` تحتاج نفس الطريق بحرفه. والفرق
-/// بينهما **سطرٌ واحد** — `entityName` — بينما الباقي أربعون سطراً من عقد
+/// كل شريحةٍ ترفع مرفقاتها بنفس الطريق بحرفه، والفرق بينها **سطرٌ واحد** — `entityName` — بينما الباقي أربعون سطراً من عقد
 /// الوايَر: المسار، ورأس التعادل، وفحصُ المغلّف، وفحصُ `data.id`.
 ///
 /// ونسختان من ذلك ليستا تكراراً تجميلياً بل **خطرُ R01 بعينه**: يُغيَّر مفتاحٌ
@@ -32,12 +30,12 @@ import 'attachment_upload_manager.dart';
 /// الملف للسبب نفسه.
 ///
 /// ```dart
-/// @Named('parcelsAttachmentUploadTarget')
+/// @Named('ordersAttachmentUploadTarget')
 /// @LazySingleton(as: AttachmentUploadTarget)
-/// class ParcelsAttachmentUploadTarget extends RestAttachmentUploadTarget {
-///   ParcelsAttachmentUploadTarget(super.dio);
+/// class OrdersAttachmentUploadTarget extends RestAttachmentUploadTarget {
+///   OrdersAttachmentUploadTarget(super.dio);
 ///   @override
-///   String get entityName => 'parcels';
+///   String get entityName => 'orders';
 /// }
 /// ```
 abstract class RestAttachmentUploadTarget implements AttachmentUploadTarget {

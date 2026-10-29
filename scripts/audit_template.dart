@@ -211,10 +211,20 @@ void _checkDocSyncTable() {
 
 // ── 5. History in shipped files ──────────────────────────────────────────────
 
-/// المشاريع المعروفة على القالب — اسمُ أيٍّ منها بملفٍّ يصل مشروعاً جديداً
-/// قصةٌ لا قاعدة. اسمُ المشروع الحاليّ نفسه (`appName`/`package` بـ
-/// `.template_manifest.json`) يُستثنى، فالفحص يصلح داخل مشروعٍ مبنيّ أيضاً.
-const _projectNames = ['قرطاس', 'Qirtas', 'مسجدك', 'Masjidak', 'الأوقاف'];
+/// أسماءُ المشاريع والجهات المبنيّة على القالب — اسمُ أيٍّ منها بملفٍّ يصل
+/// مشروعاً جديداً قصةٌ لا قاعدة. **تُقرأ من `_template/project_names.txt`** (سطرٌ
+/// لكل اسم) لا من هنا، فالسكربت نفسه لا يحمل اسماً إلى أي مشروع. ومشروعٌ مبنيّ
+/// لا يملك الملف، فيُفحص التاريخ وحده. واسمُ المشروع الحاليّ (`appName`/`package`
+/// بـ`.template_manifest.json`) يُستثنى دائماً.
+Set<String> _projectNames() {
+  final file = File('_template/project_names.txt');
+  if (!file.existsSync()) return {};
+  return file
+      .readAsLinesSync()
+      .map((line) => line.trim())
+      .where((line) => line.isNotEmpty && !line.startsWith('#'))
+      .toSet();
+}
 
 /// ما يُنسخ للمشروع ويقرؤه الناس. `test/` خارجه عمداً: التواريخ هناك بيانات.
 const _shippedRoots = ['lib', 'readme', 'scripts', 'docs', 'loadtest', '.claude', '.github'];
@@ -224,7 +234,7 @@ const _shippedRootFiles = ['CLAUDE.md', 'README.md'];
 final _isoDate = RegExp(r'\b20\d\d-\d\d-\d\d\b(?!T\d)');
 
 void _checkShippedHistory({required bool verbose}) {
-  final names = _projectNames.toSet()..removeAll(_ownNames());
+  final names = _projectNames()..removeAll(_ownNames());
   final namePattern = RegExp(names.map(RegExp.escape).join('|'), caseSensitive: false);
 
   final hits = <String, List<String>>{};
