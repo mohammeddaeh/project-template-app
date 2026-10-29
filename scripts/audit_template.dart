@@ -2,7 +2,8 @@
 /// تدقيقٌ ذاتيّ للقالب — يُشغِّل آلياً ما جرى يدوياً بمحادثة تدقيق كاملة
 /// (2026-09-13/14): وصل كل موديول اختياري بإقلاعه · الفجوة الحرجة إن فُعِّل
 /// علَم المزامنة بلا عقود منفَّذة · مسارات مسجَّلة بلا نقطة تنقّل إليها ·
-/// ملفات `readme/` خارج جدول التزامن الإلزامي بـ`CLAUDE.md`.
+/// ملفات `readme/` خارج جدول التزامن الإلزامي بـ`CLAUDE.md` · تاريخٌ وأسماءُ
+/// مشاريع بالملفات التي تصل المشاريع (R38).
 ///
 /// **تشخيصيٌّ استشاريّ، لا فاحص CI حاجب** (خلافاً لـ`check_structure.dart`):
 /// كل نتيجة هنا **مرشَّحة للمراجعة البشرية**، لا حكماً قاطعاً — مسارٌ بلا
@@ -35,6 +36,9 @@ Future<void> main(List<String> args) async {
 
   _section('٤) ملفات readme/ خارج جدول التزامن بـCLAUDE.md');
   _checkDocSyncTable();
+
+  _section('٥) تاريخٌ بالملفات التي تصل المشاريع');
+  _checkShippedHistory(verbose: args.contains('--verbose'));
 
   _footer(
     criticalFound
@@ -204,6 +208,87 @@ void _checkDocSyncTable() {
   }
   print('  $missing من ${readmeFiles.length} ملفاً بجذر readme/ غير مذكور بالجدول');
   print('  (ملفات _template/archive/ مُستثناة عمداً — تغطّيها القاعدة العامة "لا يُصان")');
+}
+
+// ── 5. History in shipped files ──────────────────────────────────────────────
+
+/// المشاريع المعروفة على القالب — اسمُ أيٍّ منها بملفٍّ يصل مشروعاً جديداً
+/// قصةٌ لا قاعدة. اسمُ المشروع الحاليّ نفسه (`appName`/`package` بـ
+/// `.template_manifest.json`) يُستثنى، فالفحص يصلح داخل مشروعٍ مبنيّ أيضاً.
+const _projectNames = ['قرطاس', 'Qirtas', 'مسجدك', 'Masjidak', 'الأوقاف'];
+
+/// ما يُنسخ للمشروع ويقرؤه الناس. `test/` خارجه عمداً: التواريخ هناك بيانات.
+const _shippedRoots = ['lib', 'readme', 'scripts', 'docs', 'loadtest', '.claude', '.github'];
+const _shippedRootFiles = ['CLAUDE.md', 'README.md'];
+
+final _isoDate = RegExp(r'\b20\d\d-\d\d-\d\d\b');
+
+void _checkShippedHistory({required bool verbose}) {
+  final names = _projectNames.toSet()..removeAll(_ownNames());
+  final namePattern = RegExp(names.map(RegExp.escape).join('|'));
+
+  final hits = <String, List<String>>{};
+  for (final file in _shippedFiles()) {
+    final path = file.path.replaceAll(r'\', '/');
+    final isDart = path.endsWith('.dart');
+    final lines = file.readAsLinesSync();
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      // بالكود: التعليقات وحدها — تاريخٌ بنصٍّ حرفيّ قد يكون بياناتٍ مقصودة.
+      if (isDart && !line.trimLeft().startsWith('//')) continue;
+      if (_isoDate.hasMatch(line) || (names.isNotEmpty && namePattern.hasMatch(line))) {
+        hits.putIfAbsent(path, () => []).add('${i + 1}: ${line.trim()}');
+      }
+    }
+  }
+
+  final sorted = hits.entries.toList()
+    ..sort((a, b) => b.value.length.compareTo(a.value.length));
+  for (final entry in sorted) {
+    print('  ◌  ${entry.value.length.toString().padLeft(3)}  ${entry.key}');
+    if (verbose) {
+      for (final hit in entry.value) {
+        print('        ${hit.length > 140 ? '${hit.substring(0, 140)}…' : hit}');
+      }
+    }
+  }
+  final total = hits.values.fold<int>(0, (sum, list) => sum + list.length);
+  print('  $total سطراً بـ${hits.length} ملفاً فيه تاريخٌ أو اسمُ مشروع'
+      '${verbose ? '' : ' (--verbose للأسطر)'}');
+  print('  (الوثيقة تصف الحاضر — التاريخ بـgit و_template/. راجع CLAUDE.md)');
+}
+
+Iterable<File> _shippedFiles() sync* {
+  for (final name in _shippedRootFiles) {
+    final file = File(name);
+    if (file.existsSync()) yield file;
+  }
+  for (final root in _shippedRoots) {
+    final dir = Directory(root);
+    if (!dir.existsSync()) continue;
+    for (final entity in dir.listSync(recursive: true)) {
+      if (entity is! File) continue;
+      final path = entity.path;
+      if (!(path.endsWith('.md') || path.endsWith('.dart') || path.endsWith('.ps1') ||
+          path.endsWith('.yml') || path.endsWith('.js'))) {
+        continue;
+      }
+      if (path.endsWith('.g.dart') || path.endsWith('.freezed.dart') || path.endsWith('.gr.dart')) {
+        continue;
+      }
+      yield entity;
+    }
+  }
+}
+
+Set<String> _ownNames() {
+  final manifest = File('.template_manifest.json');
+  if (!manifest.existsSync()) return {};
+  final content = manifest.readAsStringSync();
+  return RegExp(r'"(?:appName|package)"\s*:\s*"([^"]+)"')
+      .allMatches(content)
+      .map((m) => m.group(1)!)
+      .toSet();
 }
 
 /// نمط auto_route الافتراضي عند غياب `@RoutePage(name: ...)` صريح: يُسقط

@@ -156,6 +156,13 @@ modules     → Features      ❌ NEVER
 | `_template/archive/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
 | **`_template/feedback/<مشروع>.md`** | **تطبيق بندٍ من ملاحظات مشروعٍ على القالب** — حالة البند (✅ بالتاريخ والـcommit، أو ✖️ بالسبب)، وملفُّ المشروع الجديد يُضاف لجدول [`_template/feedback/README.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/feedback/README.md) |
 
+## 🕰️ قاعدة صارمة — الوثيقة تصف الحاضر
+
+ما يُنسخ إلى المشروع (`readme/` · `lib/**/*.md` · هذا الملف · تعليقات الكود) يقول
+**ما هو موجود ولماذا**: لا تاريخ، ولا اسمَ مشروعٍ ظهر فيه العطل، ولا «كان كذلك
+حتى…». السببُ سطرٌ واحد؛ القصةُ لرسالة الـcommit أو `_template/`. الفاحص:
+`audit_template.dart` §٥ — [`readme/03_RULES.md`](readme/03_RULES.md) R38.
+
 ## 🧟 قاعدة صارمة — تحقّق أن السلسلة موصولة **قبل** أن تبني عليها
 
 **لا تفترض أن صنفاً مبنيّاً وموثَّقاً يعمل.** افتح مستدعيه أولاً: مَن يُسجّله بالـDI؟

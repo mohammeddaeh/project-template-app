@@ -18,7 +18,7 @@
 dart run scripts/gen_code.dart                 # ★ بعد أي DI/router/API/freezed/ترجمة
 dart analyze lib                              # ★ يجب أن يكون نظيفاً قبل أي تسليم
 dart run scripts/check_structure.dart         # ★ بنية الواجهة — يفشل بمخالفة جديدة
-dart run scripts/audit_template.dart          # تدقيق استشاري — موديولات · مسارات يتيمة · توثيق
+dart run scripts/audit_template.dart          # تدقيق استشاري — موديولات · مسارات يتيمة · توثيق · تاريخ (--verbose)
 dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الثلاثة معاً
 dart run scripts/check_wire_contract.dart     # ★ عقد المقاسم مقابل openapi الحيّ (R01)
 dart run scripts/check_wire_contract.dart --file spec.json   # مواصفة محفوظة، بلا شبكة

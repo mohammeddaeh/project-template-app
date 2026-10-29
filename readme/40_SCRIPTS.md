@@ -17,7 +17,7 @@ dart run scripts/<script_name>.dart
 | **`setup_project.dart`** | **الإعداد الأول لمشروع جديد** — الهوية (اسم · Application ID · **اسم حزمة Dart**) + `BASE_URL` + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل. تفاعليّ، أو بوسائط بلا أسئلة |
 | **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً. ويربط سلسلة المزامنة/الصلاحية تلقائياً إن كانت مُشعَلة بـ`AppFeatures` |
 | **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الأربعة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ `10_ARCHITECTURE.md` · صفّ `00_START_HERE.md` |
-| **`audit_template.dart`** | **تدقيقٌ ذاتيّ استشاريّ للقالب** — وصل الموديولات بإقلاعها · فجوة مزامنة حرجة · مسارات بلا نقطة تنقّل ظاهرة · ملفات readme/ خارج جدول التزامن |
+| **`audit_template.dart`** | **تدقيقٌ ذاتيّ استشاريّ للقالب** — وصل الموديولات بإقلاعها · فجوة مزامنة حرجة · مسارات بلا نقطة تنقّل ظاهرة · ملفات readme/ خارج جدول التزامن · تاريخٌ بالملفات التي تصل المشاريع |
 | `gen_code.dart` | توليد الكود (build_runner + مفاتيح الترجمة) |
 | `build_apk.dart` | تصدير APK مع إدارة الإصدار تلقائياً |
 | `sync_flavors.dart` | إعداد/إزالة flavors (ملفات `.env` + Android productFlavors + أسماء + أيقونات + launch.json) |
@@ -558,7 +558,7 @@ dart run scripts/audit_template.dart
 يُشغِّل آلياً ما جرى يدوياً بمحادثة تدقيق كاملة (2026-09-13/14) — راجع
 [`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) بند #04.
 
-**أربعة فحوص:**
+**خمسة فحوص:**
 1. **وصل الموديولات بإقلاعها** — لكل مجلَّد بـ`lib/modules/`، هل ملفّ
    `*_plugin.dart`/`*_module.dart` مستورَدٌ فعلاً بـ`modules_bootstrap.dart`؟
 2. **الفجوة الحرجة** — `AppFeatures.offlineSync == true` مع صفر تنفيذ لـ
@@ -570,6 +570,10 @@ dart run scripts/audit_template.dart
    بـ`router.dart`.
 4. **ملفات `readme/` خارج جدول التزامن** — كل ملفٍّ بجذر `readme/` (لا
    `_template/archive/`) يجب أن يُذكر بجدول «Mandatory Documentation Sync» بـ`CLAUDE.md`.
+5. **تاريخٌ بالملفات التي تصل المشاريع** (R38) — تاريخ `YYYY-MM-DD` أو اسمُ مشروعٍ
+   معروف (`_projectNames`) بـ`readme/` و`lib/` و`scripts/` و`CLAUDE.md`؛ بالكود
+   التعليقاتُ وحدها، و`test/` خارجه (التواريخ هناك بيانات). اسمُ المشروع الحاليّ
+   من `.template_manifest.json` يُستثنى. `--verbose` يطبع الأسطر.
 
 ⚠️ **الفحصان ٣ و٤ فحصٌ نصّيّ لا تحليلاً دلالياً** — عرضةٌ لزيفٍ إيجابي: مسارٌ
 يُركَّب كودجة مباشرة بدل `context.router.push` لن يظهر له استخدام رغم كونه
