@@ -62,7 +62,7 @@ modules/data_transfer/
 
 `GET /export` و`GET /template` يردّان **بايتات ملف**. وكل نداء آخر يمرّ على `BaseRepository.handle()` → `HandleBodyResponse` الذي يحلّل الجسم كـJSON. توجيهه إلى CSV يُنتج `FormatException`، يُلتقط، ويُحوَّل إلى `Failure`، فيرى المستخدم «حدث خطأ» — **على `200 OK` وملف سليم مرفق**، بلا شيء في اللوج ولا في المحلّل يقول غير ذلك.
 
-وهذا ليس افتراضياً: إنه بالضبط شكل عطل `data.user` / `data.account` الذي أبقى الدخول مكسوراً أسابيع بـCI أخضر عند الطرفين ([`_template/archive/integration_audit.md`](../_template/archive/integration_audit.md)).
+وهذا ليس افتراضياً: إنه بالضبط شكل عطل `data.user` / `data.account` الذي أبقى الدخول مكسوراً أسابيع بـCI أخضر عند الطرفين ([`_template/archive/integration_audit.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/integration_audit.md)).
 
 لذلك المسار الثنائي **صنف مستقل باسم صريح** — `TransferFileDownloader` — لا علماً على الـrepository: لا سبيل للوصول إليه بالخطأ، ولا للوصول لمسار الـJSON بالخطأ.
 

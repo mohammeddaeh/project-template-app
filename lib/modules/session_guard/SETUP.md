@@ -1,7 +1,7 @@
 # Session Guard Module — دليل التفعيل
 
 قفلٌ محليّ للجلسة (رقمٌ محلّي و/أو بصمة إصبع) بعد خمولٍ أو عودةٍ من الخلفية —
-**دون تسجيل خروجٍ كامل**. راجع [`_template/roadmap.md`](../../../_template/roadmap.md)
+**دون تسجيل خروجٍ كامل**. راجع [`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md)
 بند #07 للسياق الكامل ولماذا صُمِّم هكذا.
 
 ## الخطوة ١ — تفعيل الموديول

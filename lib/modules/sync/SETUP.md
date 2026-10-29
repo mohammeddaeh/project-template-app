@@ -1,7 +1,7 @@
 # Sync Module — Quick Setup Guide
 
 > **الحالة الحقيقية والمراحل:** [`PLAN.md`](PLAN.md) · **التصميم:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
-> **الوصف القديم:** [`readme/sync.md`](../../../_template/archive/sync_design_spec.md) — يصف التصميم المقصود لا الكود القائم
+> **الوصف القديم:** [`readme/sync.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) — يصف التصميم المقصود لا الكود القائم
 
 ---
 
@@ -37,7 +37,7 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 | **حلّ التعارض** — خمس سياسات، الاختيار لكل كيان | ✅ | `SyncConflictResolver` · `SyncConflictStrategy` |
 | **ترحيل نسخ الحمولة** | ✅ | `SyncContractMigrator` · `contract_version` |
 | **المرفقات** — تنزيل مستأنَف · تحقق SHA-256 · رفع · تخزين خاص · إخلاء | ◐ **جزئي** | راجع [§Step 7](#step-7--attachments-optional) |
-| **مثال مرجعي حيّ** — عقد · مُنفِّذا دفع وسحب · ديكور · هدف رفع | ✅ | `lib/features/notes/data/sync/` |
+| **مثال مرجعي** — عقد · مُنفِّذا دفع وسحب · ديكور · هدف رفع | ✖️ **حُذف 2026-09-08** | بتاريخ git فقط: `git show b0351f1^:lib/Features/notes/data/sync/<ملف>` |
 
 ## ⛔ ما **لا** يوفّره — وليس نقصاً مؤقتاً
 
@@ -96,11 +96,12 @@ await SyncSDK.initialize(
 
 ## Step 3 — Add your first entity
 
-> **مثالٌ حيّ يُنسخ منه:** [`lib/features/notes/data/sync/`](../../features/notes/data/sync/)
-> — ستة ملفات منفَّذة فعلاً (~٨٢٠ سطراً بالتعليقات) مقابل
-> `backend_template/src/features/notes/`، وكلها تستورد `sync_plugin.dart`
-> وحده. الشيفرة أدناه تشرح على كيان `mosques` **لا وجود له**؛ اقرأ `notes`
-> أولاً، فهي الوحيدة التي تُصرَّف وتُختبر.
+> **المثال المرجعي حُذف مع تنظيف القالب (2026-09-08)** — لا feature تطبيقية
+> بالمستودع اليوم. ملفاته الستة (~٨٢٠ سطراً بالتعليقات، مقابل
+> `backend_template/src/features/notes/`، وكلها تستورد `sync_plugin.dart` وحده)
+> باقيةٌ بتاريخ git: `git ls-tree --name-only b0351f1^:lib/Features/notes/data/sync`
+> ثم `git show b0351f1^:lib/Features/notes/data/sync/<ملف>`. والشيفرة أدناه تشرح
+> على كيان `mosques` **لا وجود له**.
 >
 > **وموضعها ليس اختياراً**: مُحوِّلات المزامنة تسكن `<feature>/data/sync/`
 > وحدها — `deletion_contract_test.dart` يرفض غيره، ليبقى حذف الموديول نمطاً
@@ -857,7 +858,7 @@ flutter test
 - [x] السطح العام بملف واحد: `sync_plugin.dart` — مفروضٌ بـ`deletion_contract_test.dart`
 - [x] مسار الدفع · مسار السحب · القراءة التفاعلية (`watch`) · القراءة النوعية (`readTyped`)
 - [x] خمس سياسات تعارض قابلة للاختيار لكل كيان · ترحيل نسخ الحمولة
-- [x] مثالٌ مرجعيّ كامل يُنسخ منه: [`features/notes/data/sync/`](../../features/notes/data/sync/)
+- [x] مثالٌ مرجعيّ كامل يُنسخ منه: `features/notes/data/sync/` — حُذف 2026-09-08، باقٍ بتاريخ git (`b0351f1^`)
 - [x] المرفقات: تنزيلٌ مستأنَف · تحقّق · رفع · تخزين خاص — **جزئي، راجع Step 7**
 
 **نصف العميل — ما يكتبه مشروعك (لكل كيان):**

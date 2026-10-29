@@ -18,7 +18,7 @@
 | 287 اختباراً تحرس البنية التحتية وعقد الـwire | |
 
 **ما لا يصلك**: شريحة CRUD مرجعية، ولا شاشات demo. حُذفت بقصد (2026-09-08) —
-[التفصيل](../_template/archive/README.md).
+[التفصيل](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/README.md).
 
 ---
 

@@ -135,15 +135,16 @@ modules     → Features      ❌ NEVER
 | `lib/modules/sync/RULES.md` | **أي رقم يخرج من P8** — لا يُملأ من تقدير |
 | **`loadtest/README.md`** | **إضافة/تعديل أي سيناريو k6 بـ`loadtest/k6/`** — سطرٌ بجدول «السيناريوهات الموجودة» لكل ملف جديد، بنفس الـcommit |
 
-> **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** الأربعة الأخيرة كانت خارجه حتى
-> 2026-08-17، واثنان منها انحرفا فعلاً. الفهرس بـ[`readme/README.md`](readme/README.md)
+> **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** أربعةُ ملفاتٍ كانت خارجه حتى
+> 2026-08-17 (منها `21_WIDGETS_USAGE.md` و`realtime_design.md`)، واثنان منها انحرفا فعلاً. الفهرس بـ[`readme/README.md`](readme/README.md)
 > يحمل عمود «الحالة الحقيقية للكود» لكل ملف — أضف الصفّ هناك وهنا معاً.
 
 ### صيانة القالب نفسه — `_template/`
 
 > **`_template/` لا يُنسخ إلى أي مشروع** (`new_project.ps1` يستثنيه). فيه ما يخصّ
-> القالبَ كمنتج: خطّته وأرشيفه وما تعلّمناه من المشاريع. ومشروعٌ مبنيّ على القالب
-> يرى روابطه إليه معلّقة — وهذا مقصود: مرجعُها مستودعُ القالب.
+> القالبَ كمنتج: خطّته وأرشيفه وما تعلّمناه من المشاريع. ولذلك **كلُّ رابط Markdown
+> إليه من خارجه رابطُ GitHub كامل** (`github.com/mohammeddaeh/project-template-app/blob/master/_template/…`)
+> لا مسارٌ نسبيّ، فيعمل من أي مشروع. والإشارةُ النصّية بتعليقات الكود (`_template/roadmap.md` بند #08) تبقى نصّاً.
 
 | الملف | متى يُحدَّث |
 |---|---|
@@ -153,7 +154,7 @@ modules     → Features      ❌ NEVER
 | `_template/archive/sync_design_spec.md` | ⛔ **لا يُصان** — أرشيف. حالةُ الموديول بـ`lib/modules/sync/PLAN.md` و`SETUP.md` |
 | `_template/archive/**` | ⛔ **لا يُصان** — سجلّات مؤرَّخة. الانحراف يُعلَّق عليه بلافتة، لا يُمحى |
 | `_template/archive/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
-| **`_template/feedback/<مشروع>.md`** | **تطبيق بندٍ من ملاحظات مشروعٍ على القالب** — حالة البند (✅ بالتاريخ والـcommit، أو ✖️ بالسبب)، وملفُّ المشروع الجديد يُضاف لجدول [`_template/feedback/README.md`](_template/feedback/README.md) |
+| **`_template/feedback/<مشروع>.md`** | **تطبيق بندٍ من ملاحظات مشروعٍ على القالب** — حالة البند (✅ بالتاريخ والـcommit، أو ✖️ بالسبب)، وملفُّ المشروع الجديد يُضاف لجدول [`_template/feedback/README.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/feedback/README.md) |
 
 ## 🧟 قاعدة صارمة — تحقّق أن السلسلة موصولة **قبل** أن تبني عليها
 
@@ -175,7 +176,7 @@ modules     → Features      ❌ NEVER
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 
-**مفاتيح JSON عقدٌ مع `backend_template`.** خطؤها لا يراه `dart analyze` (مفتاح غائب = `null` = `dynamic` سليم)، ولا `tsc`، ويبتلعه `HandleBodyResponse` فيصل المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK`. **هذا وقع فعلاً ومنع الدخول كلياً** — راجع [`_template/archive/integration_audit.md`](_template/archive/integration_audit.md).
+**مفاتيح JSON عقدٌ مع `backend_template`.** خطؤها لا يراه `dart analyze` (مفتاح غائب = `null` = `dynamic` سليم)، ولا `tsc`، ويبتلعه `HandleBodyResponse` فيصل المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK`. **هذا وقع فعلاً ومنع الدخول كلياً** — راجع [`_template/archive/integration_audit.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/integration_audit.md).
 
 **عند تغيير أي مفتاح**: عدّل `test/fixtures/wire/*.json` هنا و`backend_template/src/features/*/__tests__/wire-contract.test.ts` هناك — **بنفس الـcommit**.
 

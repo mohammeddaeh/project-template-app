@@ -1,7 +1,7 @@
 # 04 — أول feature
 
 > درس عملي كامل: من `ApiUrls` إلى شاشة تعمل، **16 خطوة مرقّمة**، لكلٍّ مكانها.
-> يعوّض شريحة `notes/` المرجعية المحذوفة — [لماذا حُذفت](../_template/archive/template_enhancements.md).
+> يعوّض شريحة `notes/` المرجعية المحذوفة — [لماذا حُذفت](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/template_enhancements.md).
 > **يُحدَّث** عند تغيير بنية الشريحة أو ترتيب التوليد.
 
 **المثال**: `orders` — قائمة مُصفَّحة + إنشاء + تعديل + حذف، مقابل `/api/v1/orders`.
@@ -438,4 +438,4 @@ dart analyze lib          # ← No issues found
 | شاشة تفاصيل تُرجع نتيجة | `lib/features/CLAUDE.md` §«شاشة التفاصيل تُرجع نوعاً» |
 | حماية الشريحة بصلاحية | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) |
 | استيراد/تصدير لها | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) — **صفر Dart** |
-| عملها دون اتصال | [`30_MODULE_SYNC.md`](../_template/archive/sync_design_spec.md) |
+| عملها دون اتصال | [`30_MODULE_SYNC.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) |

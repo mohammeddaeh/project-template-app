@@ -2,7 +2,7 @@
 
 طبقةٌ فوق `modules/push_notifications/` الموجود: تجميع كل إشعار وصل والتطبيقُ
 بالمقدّمة داخل شاشة واحدة، بحالة مقروء/غير مقروء. راجع
-[`_template/roadmap.md`](../../../_template/roadmap.md) بند #11 للسياق الكامل.
+[`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) بند #11 للسياق الكامل.
 
 ## الخطوة ١ — تفعيل `push_notifications` أولاً
 

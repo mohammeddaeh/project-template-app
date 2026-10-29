@@ -34,8 +34,8 @@
 ## صيانة القالب — `_template/`
 
 > خطّة القالب وأرشيفه وما تعلّمناه من المشاريع **في مستودع القالب وحده**:
-> [`../_template/README.md`](../_template/README.md). `new_project.ps1` لا ينسخه إلى
-> المشاريع، فروابطه من مشروعٍ مبنيّ معلّقةٌ بقصد — افتحها من مستودع القالب.
+> [`_template/README.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/README.md). `new_project.ps1` لا ينسخه إلى
+> المشاريع، فكلُّ رابطٍ إليه رابطُ GitHub كامل يعمل من أي مشروع.
 
 ---
 

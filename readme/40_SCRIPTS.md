@@ -339,7 +339,7 @@ dart run scripts/pull_figma.dart --all             # كل الإطارات ال�
 
 > **و`.github/workflows/ci.yml` يحمل تذكيراً بهذا النمط** (2026-09-14) —
 > تعليقٌ بعد خطوة `Test` يشرح لماذا لا سكربت جاهزاً هنا ويوجّه لإضافة خطوة
-> مستقلة عند كتابة الفاحص الفعلي. راجع [`_template/roadmap.md`](../_template/roadmap.md) بند #05
+> مستقلة عند كتابة الفاحص الفعلي. راجع [`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) بند #05
 > لسبب اقتصار التنفيذ على تعليقٍ توجيهي لا كودٍ فعلي.
 
 ---
@@ -390,7 +390,7 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
    - غير موجود و`gh` مثبَّت ⇐ يعرض إنشاءه (`private` افتراضياً / `public`).
    - غير موجود بلا `gh` ⇐ يطلب إنشاءه فارغاً على GitHub ثم إعادة إدخاله.
 3. `git clone --depth 1` **إلى مجلدٍ مؤقّت بـTEMP**، ثم يَنسخ الملفات **بلا `.git`
-   ولا `_template/`** (صيانةُ القالب نفسه — راجع [`../_template/README.md`](../_template/README.md))
+   ولا `_template/`** (صيانةُ القالب نفسه — راجع [`../_template/README.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/README.md))
    إلى مجلد المشروع — المشروع يبدأ بتاريخٍ نظيف، ونسخةُ القالب تُحفظ بـ
    `.template_manifest.json` (`templateVersion`).
    > ⚠️ **لا استنساخ في المكان ثم حذف `.git`** (كان كذلك حتى 2026-09-28): VS Code
@@ -443,7 +443,7 @@ dart run scripts/setup_project.dart --name "Zakat" --app-id com.awqaf.zakat \
 ```
 
 يُشغَّل **مرّة واحدة**، فور استنساخ مشروع جديد من هذا القالب (راجع
-[`_template/roadmap.md`](../_template/roadmap.md) بند #01 للسياق الكامل والنقاش). كل وسيطٍ غائب
+[`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) بند #01 للسياق الكامل والنقاش). كل وسيطٍ غائب
 يُسأل عنه، ووسيطٌ مجهول يُفشل بدل أن يُتجاهَل:
 
 1. **الهوية**: اسم التطبيق + Application ID أساسي واحد + **اسم حزمة Dart**
@@ -556,7 +556,7 @@ dart run scripts/audit_template.dart
 
 **تشخيصيٌّ استشاريّ، لا فاحص CI حاجب** (خلافاً لـ`check_structure.dart`):
 يُشغِّل آلياً ما جرى يدوياً بمحادثة تدقيق كاملة (2026-09-13/14) — راجع
-[`_template/roadmap.md`](../_template/roadmap.md) بند #04.
+[`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) بند #04.
 
 **أربعة فحوص:**
 1. **وصل الموديولات بإقلاعها** — لكل مجلَّد بـ`lib/modules/`، هل ملفّ

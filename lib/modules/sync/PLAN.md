@@ -18,7 +18,7 @@
 > فقط، والاختبار الحقيقي ينتظر P6 كما هو مخطَّط له أصلاً.
 > **آخر تحديث:** 2026-09-15 · **النطاق:** `lib/modules/sync/` + نصفه بـ`backend_template` + النسخة المطابقة بـ`Qirtas/qirtas_app`
 > **التصميم التفصيلي:** [`ARCHITECTURE.md`](ARCHITECTURE.md) — الطبقات · جداول v4 · دورتا حياة الحزمة والملف
-> **الوصف القديم:** [`../../../_template/archive/sync_design_spec.md`](../../../_template/archive/sync_design_spec.md) — يصف التصميم المقصود، لا الكود القائم
+> **الوصف القديم:** [`../../../_template/archive/sync_design_spec.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) — يصف التصميم المقصود، لا الكود القائم
 
 ---
 
