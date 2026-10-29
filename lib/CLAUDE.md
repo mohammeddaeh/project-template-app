@@ -7,6 +7,10 @@
 > بـ[`readme/03_RULES.md`](../readme/03_RULES.md)، مرقّمةً `R##` للاستشهاد بمراجعة
 > الكود. والمرجع السريع للأوامر والمسارات: [`readme/02_CHEATSHEET.md`](../readme/02_CHEATSHEET.md).
 >
+> **وقبل أن تكتب أي أداة أو تنسيقاً أو غلافاً**: [`readme/06_CAPABILITIES.md`](../readme/06_CAPABILITIES.md)
+> — القالب يملك التاريخ والأرقام والصور والسجلّ وخدمات المنصّة، و`check_structure`
+> يُفشل النداء الخامّ خارج غلافه (`C01…C16`).
+>
 > **وللقرار البصري** (متى Card، أين focal point، كيف hierarchy — لا الصحّة
 > بل الجودة) راجع skill `.claude/skills/flutter-ui-design/SKILL.md`.
 

@@ -10,6 +10,7 @@ import 'package:app_template/features/settings/presentation/cubits/settings_cubi
 import 'package:app_template/features/settings/presentation/cubits/settings_state.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/ui/locale/locale_switcher.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,9 +29,7 @@ class SettingsScreen extends StatelessWidget {
         listener: (context, _) {
           // مسح الـ image cache عند انتهاء العملية
           PaintingBinding.instance.imageCache.clear();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(LocaleKeys.cacheClearedSuccessfully.tr())),
-          );
+          context.feedback.success(LocaleKeys.cacheClearedSuccessfully.tr());
         },
         child: Scaffold(
           appBar: AppBar(title: Text(LocaleKeys.settings.tr())),

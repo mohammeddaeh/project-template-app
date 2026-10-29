@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:app_template/core/di/injection.dart';
+import 'package:app_template/core/platform/clipboard/clipboard_service.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -83,7 +84,7 @@ class _KeyValueRowState extends State<KeyValueRow> {
 
   Future<void> _handleCopy() async {
     if (widget.value == null || _copied) return;
-    await Clipboard.setData(ClipboardData(text: widget.value!));
+    await getIt<ClipboardService>().copy(widget.value!);
     if (!mounted) return;
     setState(() => _copied = true);
     await Future.delayed(const Duration(seconds: 2));

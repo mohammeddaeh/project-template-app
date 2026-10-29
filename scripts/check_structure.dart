@@ -102,6 +102,8 @@ void main(List<String> args) {
     _checkHardcodedArabic(path, code);
     _checkResponsiveNumbers(path, code);
 
+    _checkCapabilities(path, code);
+
     if (_isPage(path)) _checkPage(path, code);
     if (_isSharedWidget(path)) _checkSharedWidget(path, code, barrelExports);
   }
@@ -227,6 +229,151 @@ void _checkOneTextField(String path, List<String?> code) {
         i + 1,
         'حقل إدخال خام — استعمل CustomTextField (21_WIDGETS_USAGE §5)',
       );
+    }
+  }
+}
+
+/// C01–C16 — قدرةٌ بالقالب لا تُكتب ثانيةً: النداءُ الخامّ للحزمة يسكن غلافَه وحده.
+///
+/// الكتالوج البشريّ بـ`readme/06_CAPABILITIES.md`، وهذا جدولُه الآليّ — **يُحدَّثان
+/// معاً**. والسبب ليس الشكل: من لا يعرف أن الغلاف موجود يكتب ثانيًا بجانبه، فيفقد
+/// ما يحمله الأول (تسجيلُ الخطأ · الترجمة · العلَم الذي يُطفئ الخدمة · الاختبار).
+const _capabilities = <_Capability>[
+  _Capability(
+    'C01',
+    r'\bDateFormat\s*\(',
+    [
+      'lib/ui/widgets/dates/',
+      'lib/core/platform/extensions/',
+      'lib/core/foundation/utils/',
+    ],
+    'تنسيق تاريخٍ خام — AppDateText أو امتدادات DateTime (06_CAPABILITIES §التاريخ)',
+  ),
+  _Capability(
+    'C02',
+    r'\bNumberFormat\b',
+    [
+      'lib/core/foundation/extensions/',
+      'lib/ui/extensions/byte_size_extension.dart',
+    ],
+    'تنسيق رقمٍ خام — امتدادات int/num (06_CAPABILITIES §الأرقام)',
+  ),
+  _Capability(
+    'C03',
+    r'\bHijriCalendar\b',
+    [
+      'lib/core/foundation/utils/hijri_date_extension.dart',
+      'lib/ui/widgets/dates/',
+      'lib/ui/extensions/date_picker_extension.dart',
+    ],
+    'تقويمٌ هجريّ خام — HijriDateX أو AppDateText (06_CAPABILITIES §التاريخ)',
+  ),
+  _Capability(
+    'C04',
+    r'(?<![\w.])(print|debugPrint)\s*\(',
+    // main.dart: معالجُ الخطأ غير الملتقَط يطبع قبل أي خدمة — راجع 06_CAPABILITIES §السجلّ.
+    ['lib/core/platform/logging/', 'lib/main.dart'],
+    'طباعةٌ خامّ — LogService.debug/info/error (06_CAPABILITIES §السجلّ)',
+  ),
+  _Capability(
+    'C05',
+    r'\bImage\.network\s*\(',
+    ['lib/ui/widgets/images/'],
+    'صورة شبكة خامّ — CachedImageWidget أو NetworkImageWidget (R14)',
+  ),
+  _Capability(
+    'C06',
+    r'\b(SharedPreferences\.getInstance|FlutterSecureStorage\s*\()',
+    ['lib/core/platform/storage/', 'lib/core/di/'],
+    'تخزينٌ خامّ — StorageService أو SecureStorageService (R22 · R23)',
+  ),
+  _Capability(
+    'C07',
+    r'\blaunchUrl(String)?\s*\(',
+    ['lib/core/platform/launcher/'],
+    'فتح رابطٍ خامّ — UrlLauncherService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C08',
+    r'\bSharePlus\.instance\b',
+    ['lib/core/platform/share/'],
+    'مشاركةٌ خامّ — ShareService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C09',
+    r'\b(ScaffoldMessenger\.of|showSnackBar\s*\()',
+    // sync_ui_host: يحتاج زرّ «إعادة» بالسناك بار، ومحوّلُ feedback الافتراضي قد يُسقطه.
+    ['lib/ui/feedback/', 'lib/ui/state/sync/widgets/sync_ui_host.dart'],
+    'سناك بار خامّ — context.feedback.success/error/info (06_CAPABILITIES §الواجهة)',
+  ),
+  _Capability(
+    'C10',
+    r'\bGeolocator\.',
+    ['lib/core/platform/location/'],
+    'موقعٌ خامّ — DeviceLocationService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C11',
+    r'\bHapticFeedback\.',
+    ['lib/core/platform/haptics/'],
+    'اهتزازٌ خامّ — HapticService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C12',
+    r'\bClipboard\.(setData|getData|hasStrings)\b',
+    ['lib/core/platform/clipboard/'],
+    'حافظةٌ خامّ — ClipboardService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C13',
+    r'\bImagePicker\s*\(',
+    ['lib/core/platform/media/'],
+    'كاميرا/معرضٌ خامّ — MediaService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C14',
+    r'\bFilePicker\.',
+    ['lib/core/platform/files/'],
+    'اختيار ملفٍّ خامّ — FileService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C15',
+    r'\bLocalAuthentication\s*\(',
+    ['lib/core/platform/biometrics/'],
+    'بصمةٌ خامّ — BiometricsService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C16',
+    r'\bFlutterLocalNotificationsPlugin\s*\(',
+    ['lib/core/platform/notifications/'],
+    'إشعارٌ محلّيّ خامّ — LocalNotificationsService (06_CAPABILITIES §المنصّة)',
+  ),
+];
+
+class _Capability {
+  const _Capability(this.rule, this.pattern, this.allowed, this.message);
+  final String rule;
+  final String pattern;
+
+  /// مسارات (بادئة) يُسمح فيها بالنداء الخامّ — الغلاف نفسه.
+  final List<String> allowed;
+  final String message;
+}
+
+final _capabilityPatterns = {
+  for (final c in _capabilities) c.rule: RegExp(c.pattern),
+};
+
+void _checkCapabilities(String path, List<String?> code) {
+  for (final capability in _capabilities) {
+    if (capability.allowed.any(path.startsWith)) continue;
+    final pattern = _capabilityPatterns[capability.rule]!;
+    for (var i = 0; i < code.length; i++) {
+      final line = code[i];
+      if (line == null) continue;
+      if (pattern.hasMatch(line)) {
+        _flag(capability.rule, path, i + 1, capability.message);
+      }
     }
   }
 }
