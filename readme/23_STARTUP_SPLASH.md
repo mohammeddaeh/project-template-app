@@ -147,6 +147,10 @@ await StartupResolver(...).resolve()                  ← ينتظر ModulesBoot
 runApp( App(startAt: …) )                             ← أوّلُ إطار = الوجهة
 ```
 
+وكلُّه داخل `runZonedGuarded(_bootstrap, _onError)`: خطأٌ لا يلتقطه أحد يصل
+`_onError`، فيمرّ بـ`LogService.error` (فيراه `crash_reporting` حين يُشعَل) ثم
+يُطبع بـ`debugPrint`.
+
 ### القاعدة
 
 > **لا إطارَ مؤقّتاً يُستبدل.** ما يلزم لتحديد الوجهة يُنتظر هنا؛ وما لا يلزمها

@@ -65,8 +65,9 @@
 |---|---|---|---|
 | سطر تشخيص | `LogService.debug/info/warning/error(…, tag:)` — [`core/platform/logging/log_service.dart`](../lib/core/platform/logging/log_service.dart). يصل `crash_reporting` حين يُشعَل | `print` / `debugPrint` | C04 |
 
-> **استثناءٌ واحد:** `_onError` بـ`main.dart` يطبع بـ`debugPrint`، لأنه معالجُ الخطأ
-> غير الملتقَط بالمنطقة كلّها.
+> **استثناءٌ واحد:** `_onError` بـ`main.dart` — معالجُ الخطأ غير الملتقَط — يمرّ
+> بـ`LogService.error` **ثم** يطبع بـ`debugPrint`: المفوَّض الافتراضي يكتب عبر
+> `dart:developer`، ولا تعرضه كل طرفيّة.
 
 ## المنصّة — خدمات خلف علَم
 

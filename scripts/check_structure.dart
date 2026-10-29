@@ -271,7 +271,7 @@ const _capabilities = <_Capability>[
   _Capability(
     'C04',
     r'(?<![\w.])(print|debugPrint)\s*\(',
-    // main.dart: معالجُ الخطأ غير الملتقَط يطبع قبل أي خدمة — راجع 06_CAPABILITIES §السجلّ.
+    // main.dart: معالجُ الخطأ غير الملتقَط يمرّ بـLogService ثم يطبع، فالطرفيّة تراه دائماً.
     ['lib/core/platform/logging/', 'lib/main.dart'],
     'طباعةٌ خامّ — LogService.debug/info/error (06_CAPABILITIES §السجلّ)',
   ),

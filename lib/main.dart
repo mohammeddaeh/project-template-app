@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:app_template/features/startup/startup_resolver.dart';
 import 'package:app_template/features/auth/shared/current_user_repository.dart';
 import 'package:app_template/features/auth/shared/remembered_accounts_repository.dart';
@@ -17,6 +17,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/core/infra/config/env.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/core/platform/observability/app_bloc_observer.dart';
 import 'package:app_template/core/platform/storage/persistence_keys.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
@@ -126,6 +127,16 @@ Future<void> _bootstrap() async {
   );
 }
 
+/// The last catch for anything thrown inside the zone. [LogService] first, so
+/// a crash-reporting delegate, once installed, receives it; `debugPrint` too,
+/// because the default delegate writes through `dart:developer`, which not
+/// every console shows.
 void _onError(Object error, StackTrace stack) {
+  LogService.error(
+    'Uncaught error',
+    tag: 'ZONE',
+    error: error,
+    stackTrace: stack,
+  );
   debugPrint('Uncaught error: $error\n$stack');
 }
