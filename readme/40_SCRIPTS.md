@@ -31,6 +31,8 @@ dart run scripts/<script_name>.dart
 | **`template_drift.dart`** | **ما غيّره المشروع بملفات القالب ولم يُسجَّل** — يقارن بنسخة القالب حين بدأ المشروع. راجع §8‑ط |
 | **`template_update.dart`** | **يجلب نسخةً أحدث من القالب** — يحدّث ما لم يلمسه المشروع، ويضع التعارض جانباً. راجع §8‑ط |
 | **`prune_project.dart`** | **تنظيف ما لا يستعمله أحد** — مفاتيح ترجمة · أصول (تُحذف بـ`--apply`) · موديولات مطفأة · ملفات بلا مستورِد · حزم بلا import (تُعرض). راجع §8‑ي |
+| **`port_inventory.dart`** | **جردُ تطبيقٍ قديم قبل نقله** — المنصّة · الشاشات · الـendpoints · الخطوط · SVG · إشارات القدرات ⇐ ما يقابلها بالقالب. راجع §8‑ك |
+| **`device_shot.dart`** | **لقطةٌ من جهاز أندرويد** بجانب لقطة التطبيق القديم، ونصوص الشاشة، والعرض المنطقيّ. راجع §8‑ك |
 | **`pull_figma.dart`** | **يسحب تصاميم الفيغما** عبر REST إلى `.figma/` — صورةٌ وخلاصةٌ مقروءة وشجرةٌ مُقلَّمة لكل إطار |
 | **`gen_splash_assets.dart`** | **موردا شاشة الإقلاع لأندرويد** من الـSVG — و`android: false` بـ`flutter_native_splash` بقرار |
 
@@ -758,6 +760,29 @@ dart run scripts/prune_project.dart --apply    # يحذف المفاتيح وا�
 **`.prune_keep`** بجذر المشروع يحمي ما لا يراه الفحص — سطرٌ لكل مفتاح أو مسار أو حزمة
 (يقبل `*`). **والمثال الأهمّ مفتاحٌ يرسله الخادم** (`messageKey`): لا يظهر بالكود
 أبداً، فيبدو مهجوراً وليس كذلك. وبعد `--apply`: `gen_code.dart` ثم `analyze` و`test`.
+
+---
+
+## 8‑ك) `port_inventory.dart` + `device_shot.dart` — نقلُ تطبيقٍ قائم
+
+يُستعملان مع skill `port-to-template` (`.claude/skills/port-to-template/SKILL.md`)، الذي
+يكتب `docs/PORT_PLAN.md` بعد الجرد.
+
+```bash
+dart run scripts/port_inventory.dart ../old_app      # ⇐ docs/port/inventory.md
+dart run scripts/device_shot.dart home --ref docs/port/reference/home.png
+```
+
+**`port_inventory`** يجرد ولا يجتهد: المنصّة (Capacitor · React · Flutter · أندرويد · iOS) ·
+الشاشات · الـendpoints · ملفات الترجمة · الخطوط **بوزنها من الملف** · SVG بـ`<style>` ·
+وإشاراتٍ (مكتبة تاريخ · تخزين · إشعارات · موقع · مشاركة …) مربوطةً بقسمها بـ
+`06_CAPABILITIES.md`. ويتجاوز ناتج البناء (حزمٌ مضغوطة · نسخة الويب داخل أندرويد/iOS ·
+`build-*`) فلا يعدّ الشيء مرّتين.
+
+**`device_shot`** يلتقط الشاشة (`adb screencap`) ونصوصها (`uiautomator dump`) إلى
+`docs/port/shots/`، ومع `--ref` صفحة HTML باللقطتين متجاورتين. ويطبع **العرض المنطقيّ**:
+هاتفان بعرضين مختلفين يجعلان فرق الحجم وحده بلا معنى. ⚠️ اللقطة تحمل ما على الشاشة —
+افتح التطبيق على الشاشة المطلوبة قبل التشغيل، وتفريغُ الشاشة يُحذف من الجهاز بعد قراءته.
 
 ---
 

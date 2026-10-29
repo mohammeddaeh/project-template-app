@@ -15,6 +15,7 @@
 | **core/** أو **DI** | `lib/core/CLAUDE.md` |
 | **imports / UI rules / localization** | `lib/CLAUDE.md` |
 | **أي شيء في lib/** | `lib/CLAUDE.md` أولاً دائماً |
+| **نقل تطبيقٍ قائم إلى القالب** | skill `port-to-template` — الجرد (`port_inventory.dart`) ثم المطابقة بـ`06_CAPABILITIES.md` **قبل أي سطر**، ثم `docs/PORT_PLAN.md` |
 | **صفحة من الفيغما** (سحبٌ أو لصق) | [`readme/05_FIGMA_TO_PAGE.md`](readme/05_FIGMA_TO_PAGE.md) — إلزامي قبل أي سطر |
 | **مقاسُ شاشة · لوح · كيبورد · تكبير خط** | [`readme/22_RESPONSIVE.md`](readme/22_RESPONSIVE.md) — `context.screen`، ولا نسبةَ من ارتفاع الشاشة |
 | **إقلاع التطبيق · شاشة البدء · شعارُها** | [`readme/23_STARTUP_SPLASH.md`](readme/23_STARTUP_SPLASH.md) — ⛔ **و`android: false` بـ`flutter_native_splash.yaml` بقرار**: موردا أندرويد متجهان باليد، وإعادةُ التوليد تمحوهما |
