@@ -147,7 +147,18 @@ void _collectFontFiles(Directory dir, Map<String, List<_FontFile>> families) {
 
       final isItalic = suffix.contains('italic');
       final cleanSuffix = suffix.replaceAll('italic', '').trim();
-      final weight = _weightMap[cleanSuffix] ?? 400;
+      // الوزن **من الملف** (`OS/2 usWeightClass`) لا من اسمه: Flutter يختار
+      // الوجه بالوزن المكتوب داخله، ويُسمِّك اصطناعياً حين يزيد الطلب 200 فأكثر.
+      // ملفٌّ اسمُه «Regular» ووزنُه الداخلي 400 مسجَّلٌ بـ600 يرسم كل w600
+      // مسمَّكاً وكل w400 بالوجه الخطأ — ولا شيء يفشل. الاسمُ احتياطٌ وحده.
+      final byName = _weightMap[cleanSuffix] ?? 400;
+      final byFile = fontFileWeight(File(entity.path));
+      final weight = byFile ?? byName;
+      if (byFile != null && byFile != byName) {
+        print(
+          '  ⚠️  $name: الاسم يقول $byName والملف يقول $byFile — يُسجَّل $byFile',
+        );
+      }
 
       // المسار النسبي من جذر المشروع
       final assetPath = _relativePath(entity.path);
@@ -159,6 +170,30 @@ void _collectFontFiles(Directory dir, Map<String, List<_FontFile>> families) {
       _collectFontFiles(entity, families);
     }
   }
+}
+
+/// `usWeightClass` من جدول `OS/2` بملف TTF/OTF — أو `null` إن غاب الجدول.
+///
+/// عامّةٌ لأن `test/font_weights_test.dart` يقرأ بها كذلك.
+int? fontFileWeight(File file) {
+  final bytes = file.readAsBytesSync();
+  if (bytes.length < 12) return null;
+  int u16(int o) => (bytes[o] << 8) | bytes[o + 1];
+  int u32(int o) =>
+      (bytes[o] << 24) |
+      (bytes[o + 1] << 16) |
+      (bytes[o + 2] << 8) |
+      bytes[o + 3];
+  final tables = u16(4);
+  for (var i = 0; i < tables; i++) {
+    final record = 12 + 16 * i;
+    if (record + 16 > bytes.length) return null;
+    final tag = String.fromCharCodes(bytes.sublist(record, record + 4));
+    if (tag != 'OS/2') continue;
+    final offset = u32(record + 8);
+    return offset + 6 <= bytes.length ? u16(offset + 4) : null;
+  }
+  return null;
 }
 
 String _relativePath(String fullPath) {
