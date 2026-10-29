@@ -487,6 +487,11 @@ void _writeManifest({
     'package': packageName,
     'createdAt': DateTime.now().toIso8601String(),
     'templateVersion': templateRef ?? _currentGitRef(),
+    // رقم الإصدار المقروء (`TEMPLATE_VERSION`) بجانب الـcommit الدقيق: الأول
+    // للبشر وسجلّ التغييرات، والثاني لـtemplate_drift/template_update.
+    'templateRelease': File('TEMPLATE_VERSION').existsSync()
+        ? File('TEMPLATE_VERSION').readAsStringSync().trim()
+        : 'unknown',
     'features': flags,
   };
   File('.template_manifest.json').writeAsStringSync(

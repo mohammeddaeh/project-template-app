@@ -28,6 +28,8 @@ dart run scripts/<script_name>.dart
 | `sync_platform_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
 | **`check_structure.dart`** | **فاحصٌ آليّ لقواعد بنية الواجهة** (`F04` · `F10` · `F13` · `F19`…`F23` · `F35` · `F36` · `F37`) — يفشل بمخالفة **جديدة** ويتسامح مع الدَّين المسجَّل |
 | **`check_docs.dart`** | **روابط التوثيق المعطوبة** — كل رابط Markdown نسبيّ يصل ملفاً موجوداً، ورابطُ GitHub إلى `_template/` حين يوجد المجلد. حاجبٌ بالـCI. راجع §8‑ح |
+| **`template_drift.dart`** | **ما غيّره المشروع بملفات القالب ولم يُسجَّل** — يقارن بنسخة القالب حين بدأ المشروع. راجع §8‑ط |
+| **`template_update.dart`** | **يجلب نسخةً أحدث من القالب** — يحدّث ما لم يلمسه المشروع، ويضع التعارض جانباً. راجع §8‑ط |
 | **`pull_figma.dart`** | **يسحب تصاميم الفيغما** عبر REST إلى `.figma/` — صورةٌ وخلاصةٌ مقروءة وشجرةٌ مُقلَّمة لكل إطار |
 | **`gen_splash_assets.dart`** | **موردا شاشة الإقلاع لأندرويد** من الـSVG — و`android: false` بـ`flutter_native_splash` بقرار |
 
@@ -672,6 +674,68 @@ dart run scripts/check_docs.dart
 
 **لماذا حاجب:** رابطٌ معطوب لا يراه `dart analyze` ولا الاختبارات، ويبقى حتى يضغطه
 من يتعلّم القالب. ونقلُ ملفٍّ أو حذفُه هو ما يكسر الروابط عادةً — فيُشغَّل بعد كل نقل.
+
+---
+
+## 8‑ط) `template_drift.dart` + `template_update.dart` — القالب والمشروع بعد الإنشاء
+
+كلاهما يُشغَّل **داخل المشروع**، ويقرأ `templateVersion` (commit القالب الذي بدأ منه)
+من `.template_manifest.json`. والقالب يُقرأ من مستنسخٍ محلّي (`--template ../app_template`)
+أو يُستنسخ مؤقّتاً من GitHub. **وما يملكه القالب** قائمةُ `templateOwned` بـ
+`scripts/src/template_repo.dart`: `lib/core/` · `lib/ui/` · `lib/modules/` · `scripts/` ·
+`readme/` · `.claude/skills/` · ملفات `CLAUDE.md` · `analysis_options.yaml` · CI ·
+`loadtest/`. وما سواها ملكُ المشروع (`lib/features/` · `lib/main.dart` · `pubspec.yaml` · `assets/` …).
+
+**`projectEdited`** — ملفاتٌ يملكها القالب **ويُنتظر** أن يعدّلها كل مشروع (`api_urls.dart` ·
+`injection_module.dart` · `app_fonts.dart` · `app_palette.dart` · `app_colors.dart` ·
+`modules_bootstrap.dart`): تعديلُها ليس ملاحظة، وتحديثُها يُراجَع دائماً.
+
+### `template_drift.dart` — ما يعود إلى القالب
+
+```bash
+dart run scripts/template_drift.dart [--template DIR] [--write] [--strict] [--base COMMIT]
+```
+
+| يعرض | المعنى |
+|---|---|
+| معدَّل | ملفٌّ من القالب غيّره المشروع — وعددُ الأسطر `+أ −ح` |
+| مضاف | ملفٌّ جديد بـ`lib/core/` · `lib/ui/` · `lib/modules/` · `scripts/` — قدرةٌ عامّة على الأرجح |
+| محذوف | ملفٌّ من القالب أزاله المشروع |
+| متوقَّع | `projectEdited` — يُعرض ولا يُعدّ |
+
+✓ **مسجَّل** حين يُذكر مسارُه بـ`docs/TEMPLATE_FEEDBACK.md`، و◌ غير مسجَّل. `--write`
+يضيف مسوّدةً لكل ◌ إلى ذلك الملف؛ `--strict` يخرج بـ`1` إن بقي ◌ (لـCI المشروع).
+واسمُ الحزمة الذي بدّله `setup_project.dart` ونهاياتُ الأسطر لا تُعدّ تغييراً.
+
+### `template_update.dart` — ما يأتي من القالب
+
+```bash
+dart run scripts/template_update.dart [--template DIR] [--to REF] [--apply]
+```
+
+ثلاث نسخٍ لكل ملفٍّ مملوك: القالب حين بدأ المشروع · القالب عند `--to` (افتراضاً
+`origin/master`) · المشروع.
+
+| الحالة | مع `--apply` |
+|---|---|
+| القالب غيّره والمشروع لم يلمسه | يُحدَّث · يُضاف · يُحذف |
+| المشروع غيّره والقالب لم يغيّره | لا شيء |
+| **كلاهما غيّره** · أو `projectEdited` | **تعارض**: نسخة القالب بـ`.template_update/<المسار>`، والملف لا يُلمس — ادمجه يدوياً ثم احذف المجلد |
+| المشروع حذفه | لا شيء |
+
+**بلا `--apply` يعرض ولا يكتب.** ومع `--apply` يرفض شجرة git غير نظيفة — فالتحديث
+commitٌ واحد يُراجَع — ويكتب الـcommit الجديد بالبيان. ثم `gen_code.dart` و`analyze`
+و`flutter test`.
+
+### الحلقة كاملة
+
+```
+المشروع: تحسينٌ بملف القالب ⇐ بندٌ بـdocs/TEMPLATE_FEEDBACK.md (template_drift يذكّر)
+   ⇓ نهاية مرحلة
+القالب: _template/feedback/<المشروع>.md ⇐ skill apply-feedback ⇐ commit لكل بند ⇐ إصدار
+   ⇓
+المشروع (وكل مشروع): template_update.dart --apply
+```
 
 ---
 

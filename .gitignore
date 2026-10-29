@@ -61,3 +61,6 @@ flutter_launcher_icons-*.yaml
 # The whole folder is ignored: a token committed once stays in history forever,
 # even after it is deleted in a later commit.
 .figma/
+
+# template_update.dart — template copies of conflicting files, merged by hand then deleted
+.template_update/

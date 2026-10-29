@@ -20,6 +20,8 @@
 dart run scripts/gen_code.dart                 # ★ بعد أي DI/router/API/freezed/ترجمة
 dart analyze lib                              # ★ يجب أن يكون نظيفاً قبل أي تسليم
 dart run scripts/check_structure.dart         # ★ بنية الواجهة — يفشل بمخالفة جديدة
+dart run scripts/template_drift.dart          # بمشروعٍ مبنيّ: ما غيّره بملفات القالب ولم يُسجَّل
+dart run scripts/template_update.dart         # بمشروعٍ مبنيّ: نسخةٌ أحدث من القالب (--apply يكتب)
 dart run scripts/check_docs.dart              # روابط .md المعطوبة — حاجب بالـCI
 dart run scripts/audit_template.dart          # تدقيق استشاري — موديولات · مسارات يتيمة · توثيق · تاريخ (--verbose)
 dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الثلاثة معاً
