@@ -15,9 +15,8 @@
 /// The rule is enforced rather than requested:
 /// `test/sync/deletion_contract_test.dart` fails on any `import` of
 /// `modules/sync/` from outside the module that does not end at this file. That
-/// matters most for the thing it prevents silently — the module is planned to
-/// roughly double in size (P4.5 / P3.5 in `PLAN.md`), and a deep import written
-/// today becomes a migration the day an internal file is renamed.
+/// matters most for the thing it prevents silently — the module is large and
+/// still growing (`STATUS.md` §ج), and a deep import written today becomes a migration the day an internal file is renamed.
 ///
 /// The module's **own tests** are exempt: they exist to exercise the internals,
 /// and routing them through a public surface would only prove that the surface

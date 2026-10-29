@@ -142,7 +142,7 @@ abstract class InjectableModule {
   ///
   /// This is a *second* persistence backend next to [StorageService]'s Hive box,
   /// used by the sync module alone. That duplication is recorded as ب١٢ in
-  /// `lib/modules/sync/PLAN.md` and is deliberately not addressed here.
+  /// `lib/modules/sync/STATUS.md` and is deliberately not addressed here.
   @preResolve
   @lazySingleton
   Future<SharedPreferences> get sharedPreferences =>

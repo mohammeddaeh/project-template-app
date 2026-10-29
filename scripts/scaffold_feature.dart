@@ -1062,9 +1062,8 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 /// ⚠️ **والقراءة (getList) عبورٌ مباشر للشبكة عمداً، لا توليداً ناقصاً.**
 /// قراءةٌ محلّية-أولاً حقيقية (`SyncEntityStore.readTyped`) تحتاج مؤشّر
 /// ترقيمٍ يخصّ شاشتك، ولا مثال حيٍّ بالقالب اليوم يُقتدى به بثقة (المثال
-/// المرجعي `notes/` حُذف — راجع `PLAN.md` ب١٣). توليدُ ٢٢٧ سطراً بلا تحقّقٍ
-/// حقيقيّ أخطر من عدم توليدها إطلاقاً — وهو الدرس نفسه الذي وثَّقه `PLAN.md`
-/// عن توثيقٍ ادّعى اكتمالاً لم يُختبَر قطّ. أكمل هذا الجزء بنفسك حين تحدّد
+/// المرجعي `notes/` حُذف — راجع `lib/modules/sync/STATUS.md` ب١٣). توليدُ ٢٢٧ سطراً بلا
+/// تحقّقٍ حقيقيّ أخطر من عدم توليدها إطلاقاً، كتوثيقٍ يدّعي اكتمالاً لم يُختبَر. أكمل هذا الجزء بنفسك حين تحدّد
 /// شكل الترقيم الحقيقي لشاشتك (`SyncTypedPage`/`SyncPageCursor`).
 class SyncAware__Feature__Repository implements __Feature__Repository {
   const SyncAware__Feature__Repository(

@@ -529,7 +529,7 @@ total_pages}` (نفس شكل `test/wire_contract_test.dart`). طابِقه مع 
 
 | العلَم | ما يُضاف |
 |---|---|
-| `offlineSync == true` | أربعة ملفات `data/sync/`: عقد الفيتشر (`SyncFeatureContract<Entity>` بـ`toJson/fromJson/localIdOf`) · منفّذ دفعٍ (يعيد استعمال `HandleBodyResponse` نفسه، فمعالجة الخطأ — بما فيها 409 ⇐ `ConflictFailure` — موحَّدة لا مكرَّرة) · ديكور تسجيل (§3d) · `SyncAware<Feature>Repository`. **الكتابة توليدٌ آمنٌ كامل** (تُصفّ بلا اتصال فعلاً)، **والقراءة عبورٌ شبكي عمداً** (`TODO` صريح داخل الملف) — توليد قراءةٍ محلّية-أولاً بلا مثالٍ حيٍّ يُقتدى به (حُذف `notes/`) كان سيعني ٢٢٧ سطراً غير مُتحقَّقة، وهو بالضبط الخطأ الذي يحذّر منه `PLAN.md` (توثيقٌ يدّعي اكتمالاً لم يُختبَر) |
+| `offlineSync == true` | أربعة ملفات `data/sync/`: عقد الفيتشر (`SyncFeatureContract<Entity>` بـ`toJson/fromJson/localIdOf`) · منفّذ دفعٍ (يعيد استعمال `HandleBodyResponse` نفسه، فمعالجة الخطأ — بما فيها 409 ⇐ `ConflictFailure` — موحَّدة لا مكرَّرة) · ديكور تسجيل (§3d) · `SyncAware<Feature>Repository`. **الكتابة توليدٌ آمنٌ كامل** (تُصفّ بلا اتصال فعلاً)، **والقراءة عبورٌ شبكي عمداً** (`TODO` صريح داخل الملف) — توليد قراءةٍ محلّية-أولاً بلا مثالٍ حيٍّ يُقتدى به (حُذف `notes/`) كان سيعني ٢٢٧ سطراً غير مُتحقَّقة، وهو بالضبط الخطأ الذي يحذّر منه [`lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) (توثيقٌ يدّعي اكتمالاً لم يُختبَر) |
 | `accessControl == true` | زرّ الإضافة بالقائمة يُغلَّف بـ`Can(permission: PermKeys.<feature>Create, ...)`. **يكسر البناء عمداً** حتى يُعلن الباك المفتاح فعلياً ويُعاد `gen_permission_keys.dart` — لا تخمين صامت لاسم مفتاحٍ قد يخالف ما يفرضه الباك فعلاً |
 
 ⚠️ **فشل `dart analyze` بعد التوليد مع `accessControl == true` متوقَّعٌ ومقصود**

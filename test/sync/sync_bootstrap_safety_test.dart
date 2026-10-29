@@ -16,7 +16,7 @@ import 'package:app_template/modules/sync/validation/sync_contract_migrator.dart
 import 'package:app_template/modules/sync/validation/sync_contract_validation_exception.dart';
 import 'package:app_template/modules/sync/validation/sync_contract_validator.dart';
 
-/// Guards the P0 rule from `lib/modules/sync/PLAN.md`:
+/// Guards this rule of the sync module (`lib/modules/sync/STATUS.md` §أ):
 ///
 /// > **علم الموديول يُشعله أو يُعطّله — ولا يُسقط التطبيق أبداً.**
 ///

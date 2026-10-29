@@ -1,6 +1,6 @@
 # Sync Module — Quick Setup Guide
 
-> **الحالة الحقيقية والمراحل:** [`PLAN.md`](PLAN.md) · **التصميم:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
+> **الحالة الحقيقية:** [`STATUS.md`](STATUS.md) · **التصميم:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
 > **الوصف القديم:** [`readme/sync.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) — يصف التصميم المقصود لا الكود القائم
 
 ---
@@ -246,10 +246,8 @@ await _syncWriteGateway.write(SyncWriteCommand(
 
 ### 3d. Register repository decorator (**إلزامي** — للقراءات offline-first)
 
-> صُحِّح 2026-08-17: كان مكتوباً «(optional)» بينما
-> `SyncContractValidator._validateDecoratorAvailability` يرمي عند غيابه فيمنع
-> الإقلاع. الوثيقة كانت تصف اختياراً لا يملكه المطوّر.
-> إلغاء الإلزام مُدرَج في P0 بـ[`PLAN.md`](PLAN.md) — وحتى تُنفَّذ، **سجِّل decorator**.
+> **ليس اختيارياً:** `SyncContractValidator._validateDecoratorAvailability` يرمي
+> عند غيابه فيمنع الإقلاع. **سجِّل decorator.**
 
 ```dart
 // lib/features/mosques/data/sync/mosques_sync_repository_decorator.dart
@@ -563,8 +561,7 @@ AppBar(
 
 ## Step 6 — Backend contract (required)
 
-> **مُنفَّذ فعلاً على `notes`** بـ`backend_template` منذ 2026-08-17 (المرحلة P1 من
-> [`PLAN.md`](PLAN.md)). اقرأ `src/features/notes/` و`docs/12_REST_API.md` §notes —
+> **مُنفَّذ فعلاً على `notes`** بـ`backend_template`. اقرأ `src/features/notes/` و`docs/12_REST_API.md` §notes —
 > فالعقد أدناه صار كوداً يعمل واختبارات تحرسه، لا وصفاً.
 
 Your API endpoints MUST support:
@@ -878,4 +875,4 @@ flutter test
 
 ---
 
-*خطوات التركيب هنا. القرارات المعمارية في [`ARCHITECTURE.md`](ARCHITECTURE.md)، والحالة والمراحل في [`PLAN.md`](PLAN.md).*
+*خطوات التركيب هنا. القرارات المعمارية في [`ARCHITECTURE.md`](ARCHITECTURE.md)، والحالة في [`STATUS.md`](STATUS.md).*

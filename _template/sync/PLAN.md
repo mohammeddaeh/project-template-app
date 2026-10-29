@@ -1,5 +1,10 @@
 # خطة إصلاح وإكمال موديول المزامنة — للتنفيذ على مراحل
 
+> 📦 **سجلُّ بناء الموديول بمستودع القالب — لا يُنسخ للمشاريع.** حالةُ الموديول اليوم
+> (ما يعمل · المفتوح · غير الموفَّر · عقد الحذف) بـ
+> [`lib/modules/sync/STATUS.md`](../../lib/modules/sync/STATUS.md)، وهو ما يُصان أولاً.
+> هذا الملف يُحدَّث عند إنهاء مرحلة P0–P9، **ومعه `STATUS.md` بنفس التغيير**.
+
 > **الحالة:** P0 ✅ · P1 ✅ · P0.6 ✅ · P2 ✅ (بنية تحتية فقط — مثالها الحيّ حُذف مع `features/notes/`، انظر ب١٣) · P3 ✅ · P4 ✅ · **P4.5 ✅ المرفقات** · **P4.6 ✅ Cache Manager** — يبقى **P3.5** (Bundle + Manifest + حصّة) من الطبقة الثالثة · والتحقق الميداني مؤجَّل لـP6.7
 >
 > ⚠️ **2026-09-15 — قورن هذا الملف بتطبيقٍ حقيقيّ (`waqf-gitlab`) طبّق الموديول
@@ -17,8 +22,8 @@
 > بـ`dart analyze` ومطابقةً لنمط `getDueJobs`/`markJobRetry` المُثبَت بجانبه
 > فقط، والاختبار الحقيقي ينتظر P6 كما هو مخطَّط له أصلاً.
 > **آخر تحديث:** 2026-09-15 · **النطاق:** `lib/modules/sync/` + نصفه بـ`backend_template` + النسخة المطابقة بـ`Qirtas/qirtas_app`
-> **التصميم التفصيلي:** [`ARCHITECTURE.md`](ARCHITECTURE.md) — الطبقات · جداول v4 · دورتا حياة الحزمة والملف
-> **الوصف القديم:** [`../../../_template/archive/sync_design_spec.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) — يصف التصميم المقصود، لا الكود القائم
+> **التصميم التفصيلي:** [`ARCHITECTURE.md`](../../lib/modules/sync/ARCHITECTURE.md) — الطبقات · جداول v4 · دورتا حياة الحزمة والملف
+> **الوصف القديم:** [`../../../_template/archive/sync_design_spec.md`](../archive/sync_design_spec.md) — يصف التصميم المقصود، لا الكود القائم
 
 ---
 
@@ -66,7 +71,7 @@
 | ب١٣ | **صفر عقود منفَّذة اليوم — أُعيد فتحه** | أُغلق سابقاً بـP2 عبر `features/notes/data/sync/`، ثم حُذفت `features/notes/` بالكامل بتنظيف 2026-09-08 (تنظيف عام لا علاقة له بـsync) ومعها المثال الوحيد. `getAll<SyncFeatureContractBase>()` يعيد اليوم **صفراً فعلياً** بكامل `lib/` | غير مسنَد — أول مثال يبنيه المشروع |
 | ب١٤ | **العلَم بلا عقودٍ = شبكةٌ كاملة بصمت** | تفعيل `AppFeatures.offlineSync` مع ب١٣ مفتوحاً يترك التطبيق يعمل بالكامل على الشبكة — بلا انهيار ولا تحذير ولا رسالة للمستخدم. المُشغِّل الوحيد اليوم لهذا التحذير كان `CLAUDE.md` بجذر المستودع؛ هذا السطر يجعله جزءاً من مرجع حالة الموديول نفسه | P6 — تحذير إقلاع صريح عند عدد عقود = صفر والعلَم مُفعَّل |
 | ب١٥ | **فخّ الرفع الصامت — مفتاحٌ بلا عقدٍ يخصّه** | `sync_bootstrap.dart:216-227`: `AttachmentUploadManager` يُسجَّل **فقط** إن وُجد `AttachmentUploadTarget` واحدٌ على الأقل (`if (targets.isNotEmpty)`)، و`sync_engine.dart:690` يتحقّق `isRegistered` قبل `_processFileUploads` ويعود بصمتٍ تامّ إن لم يكن مسجَّلاً. **سلوكٌ صحيحٌ للقالب اليوم** (صفر Targets فعلاً)، لكنه فخٌّ حقيقيٌّ وقع في مشروعٍ مطبَّق حقيقي: فيتشرٌ أُضيف له `AttachmentRecord` كاملاً ونُسي كتابة/تسجيل `XxxAttachmentUploadTarget` الخاصّة به — فطورُ الرفع توقّف بصمتٍ تامّ، بلا سطرٍ أحمر واحد، منذ اليوم الأول. اكتُشف بمراجعة السلسلة يدوياً لا باختبار | لم يُصلَح — الاكتشاف نفسُه هو الإصلاح المتاح اليوم (توعية)، والحلّ الآلي (تحذيرٌ عند إقلاعٍ فيه مرفقاتٌ معلَنة بصفر Targets) ينتمي لنفس تحذير ب١٤ — P6 |
-| ~~ب١٦~~ | ~~`triggerManualSync` تُسقط سبب الرفض~~ **أُصلح 2026-09-15** | كانت تُعيد `Future<void>` عبر `_canSyncNow()` (غلافٌ يُختزل إلى `bool`)، بينما توثيق `checkIfStale` المجاور يزعم صراحةً أنها **تُعيد** السبب خلافاً له — تناقضٌ بين الكود وتوثيقه المباشر. والمظهر بالواجهة: `SyncManagerCubit.triggerSync()` كان يُصدر `SyncSuccess` بعد كل استدعاء **بصرف النظر عن الرفض** — رفضٌ يُقرأ نجاحاً، تماماً كعطل قرطاس الموازي (ب١٧ هناك) | `SyncController.triggerManualSync` تُعيد الآن `Future<SyncBlockReason?>` (تسأل `_gate.check()` مباشرة)؛ `SyncManagerCubit` تُصدر حالة [`SyncBlocked`](../../ui/state/sync/sync_manager_state.dart) جديدة بدل `SyncSuccess` الزائفة؛ و`SyncBackgroundWorker` يسجّل السبب باسمه (تحقّق الملاحظة 📌 التي تركها مَن بنى الموديول) |
+| ~~ب١٦~~ | ~~`triggerManualSync` تُسقط سبب الرفض~~ **أُصلح 2026-09-15** | كانت تُعيد `Future<void>` عبر `_canSyncNow()` (غلافٌ يُختزل إلى `bool`)، بينما توثيق `checkIfStale` المجاور يزعم صراحةً أنها **تُعيد** السبب خلافاً له — تناقضٌ بين الكود وتوثيقه المباشر. والمظهر بالواجهة: `SyncManagerCubit.triggerSync()` كان يُصدر `SyncSuccess` بعد كل استدعاء **بصرف النظر عن الرفض** — رفضٌ يُقرأ نجاحاً، تماماً كعطل قرطاس الموازي (ب١٧ هناك) | `SyncController.triggerManualSync` تُعيد الآن `Future<SyncBlockReason?>` (تسأل `_gate.check()` مباشرة)؛ `SyncManagerCubit` تُصدر حالة [`SyncBlocked`](../../lib/ui/state/sync/sync_manager_state.dart) جديدة بدل `SyncSuccess` الزائفة؛ و`SyncBackgroundWorker` يسجّل السبب باسمه (تحقّق الملاحظة 📌 التي تركها مَن بنى الموديول) |
 | ~~ب١٧~~ | ~~لا سبيل لإحياء صفٍّ استنفد محاولاته~~ **أُصلح 2026-09-15** | `getDueJobs` يستبعد `retry_count >= max_retries` **للأبد** (بقصد — الصفّ يبقى للتشخيص)، ولم توجد أي طريقةٍ لإعادته من داخل التطبيق. إخفاقٌ عابر (صيانة خادم، أسبوعٌ بلا تغطية) = فقدان عمل ميداني نهائي — نفس عطل قرطاس ب١٨ حرفياً | `SyncQueueRepository.reviveJob({jobId})` جديدة: تُصفّر `retry_count`/`next_retry_at`/`last_error` لصفٍّ مُستنفَد فقط (`WHERE ... AND retry_count >= max_retries`) وتُعيد الكيان إلى `SyncStatus.pending`؛ تُعيد `false` بلا أثر إن لم يطابق الصفّ الشرط |
 | ~~ب١٨~~ | ~~المُطلِقات التلقائية تسقط صامتة عند فشل الدورة~~ **أُصلح 2026-09-15** | `_scheduleSoon` (استقرار الطابور) · `checkIfStale` (لفتة المستخدم) · المؤقّت الدوري — ثلاثتها ينادون `_runCycleNow()` **بلا try/catch** وبلا مَن ينتظرها. استثناءٌ داخل `SyncEngine.runPendingJobs()` بأيٍّ منها يسقط كخطأ Future غير ملتقَط: لا `SyncFailedState`، لا سطر سجلّ، والشارة تبقى قديمة بصمتٍ تام. المسار اليدوي (`triggerManualSync`) وحده كان محميّاً — عبر try/catch بـ`SyncManagerCubit.triggerSync` نفسِها. وفي نفس الاكتشاف: ذاك الـcatch كان يبني `UnknownFailure(message: e.toString())` — نصّ استثناءٍ خام يصل المستخدم حرفياً عبر `FailureUiMapper` (يعرض `message` غير الفارغ كما هو)، و`SyncUiHost` كانت تقرأ `failure.diagnosticMessage` مباشرةً متجاوزةً `FailureUiMapper` كليّاً — راجع الصفّين الجديدين بجدول §٥ `readme/13_ERROR_FLOW.md` | `SyncController._runCycleGuarded()` تلفّ الثلاثة، تسجّل بـ`LogService.error` وتبثّ بـ`errorStream` (`Stream<Failure>`) جديد؛ `SyncManagerCubit` يشترك ويُصدر `SyncFailedState`. المسار اليدوي بقي كما كان (بلا اشتراك بالستريم — يتجنّب سباقاً بين `SyncFailedState` عبر الستريم و`SyncSuccess` اليدوية). `UnknownFailure(message: ...)` صارت `UnknownFailure()` بلا نصّ خام؛ و`SyncUiHost` تمرّ الآن بـ`FailureUiMapper.toAction` |
 
@@ -109,7 +114,7 @@
 | `ui/state/sync/` | الـcubits والودجات — طبقة عرض تعتمد Flutter فلا تسكن الموديول |
 | `<feature>/data/sync/` | عقد الفيتشر ومُنفِّذاها وديكورها — **قاعدة موضع لا إذن استيراد** (أُضيفت بـP2) |
 
-**وخطوات الحذف الكاملة تُصان بـ[`SETUP.md`](SETUP.md) §Removing this module.**
+**وخطوات الحذف الكاملة تُصان بـ[`SETUP.md`](../../lib/modules/sync/SETUP.md) §Removing this module.**
 
 **والحارس:** اختبارٌ يمسح `lib/` كلّه على كل استيرادٍ لـ`modules/sync/` من خارج
 المنافذ ويفشل على أي واحد. العدد اليوم صفر؛ الاختبار يبقيه صفراً بعد المضاعفة.
@@ -402,7 +407,7 @@
 
 | # | العمل |
 |---|---|
-| 3.5.1 | جداول v4: `bundles` · `bundle_items` · `manifest_snapshots` — التفاصيل بـ[`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| 3.5.1 | جداول v4: `bundles` · `bundle_items` · `manifest_snapshots` — التفاصيل بـ[`ARCHITECTURE.md`](../../lib/modules/sync/ARCHITECTURE.md) |
 | 3.5.2 | `GET /bundles/:id/manifest` بـ`ETag` — كيانات (id, version) + ملفات (id, size, checksum, algo) + **`totals`** |
 | 3.5.3 | **`totals` تُقرأ قبل أول بايت** لفحص الحصّة: المطلوب + احتياطي مقابل المتاح ⇒ رفضٌ مُعلَّل أو تنزيل انتقائي |
 | 3.5.4 | مطابقة الـmanifest: غير موجود ⇒ نزِّل · checksum مطابق ⇒ **لا شيء** · مختلف ⇒ استبدال ذرّي · غائبٌ عن الـmanifest ⇒ أرشفة **لا حذف** إن كان `origin=device` غير مرفوع |
@@ -516,7 +521,7 @@
 > وbصمة؛ وثالثُ تنفيذٍ لها هو حيث تبدأ الفروق تصير عرضية لا مقصودة، وغالباً في
 > الجزء الذي يهمّ: حصر المِلكية.
 >
-> **وأربع قواعد تفصّلها [`docs/12_REST_API.md`](../../../../backend_template/docs/rest_api.md)**،
+> **وأربع قواعد تفصّلها [`docs/12_REST_API.md`](../../../backend_template/docs/rest_api.md)**،
 > أهمها أن **الخادم يحسب الـchecksum بنفسه ويتجاهل ادّعاء العميل** — تخزينُه
 > بدلاً من ذلك يجعل سلسلة التحقق دائرية: الجهاز يتحقق من تنزيله لاحقاً مقابل
 > بصمةٍ أرسلها هو.
@@ -586,7 +591,7 @@
 |---|---|
 | 5.1 | `SyncWriteCommand.fromEntity(entity, contract, jobType)` — يشتقّ ١٣ حقلاً بدل كتابتها يدوياً |
 | 5.2 | `SyncAwareRepository<T>` عامّ بدل repository موازٍ يُكتب كاملاً لكل كيان |
-| 5.3 | مولّد `automation/` **أو حذف الوعد** — [`automation/sync_codegen_notes.md`](automation/sync_codegen_notes.md) يَعِد بمولّد غير موجود، واسم المجلد يوحي بوجوده |
+| 5.3 | مولّد `automation/` **أو حذف الوعد** — [`automation/sync_codegen_notes.md`](../../lib/modules/sync/automation/sync_codegen_notes.md) يَعِد بمولّد غير موجود، واسم المجلد يوحي بوجوده |
 | 5.4 | `SETUP.md` على `notes` الحقيقية بدل `mosques` الوهمية |
 
 **المعيار:** إضافة كيان ثانٍ بالسطور المستهدفة أو أقل — يُعدّ ويُسجَّل.
@@ -623,12 +628,12 @@
 
 ## P8 — التجريب ببيانات كبيرة
 
-[`LOAD_TEST_PLAN.md`](LOAD_TEST_PLAN.md). **لا تُبدأ قبل P4.5** — قياس نظامٍ بلا ملفات
+[`LOAD_TEST_PLAN.md`](../../lib/modules/sync/LOAD_TEST_PLAN.md). **لا تُبدأ قبل P4.5** — قياس نظامٍ بلا ملفات
 يقيس الجزء الخفيف ويترك الثقيل.
 
 ## P9 — القواعد الصارمة
 
-[`RULES.md`](RULES.md). يُملأ من أرقام P8 لا قبلها.
+[`RULES.md`](../../lib/modules/sync/RULES.md). يُملأ من أرقام P8 لا قبلها.
 
 ---
 

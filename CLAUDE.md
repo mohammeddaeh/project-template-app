@@ -57,7 +57,7 @@
 | `modules/data_transfer/` | **استيراد/تصدير عام — صفر Dart لكل feature.** الشاشتان تُبنيان من `GET /data-transfer/resources`، فـfeature تُعلن قابليتها بالباك تظهر بنسخة مبنية قبل وجودها. سطر الدخول: `DataTransferSheet.show(context, resource: 'notes')` — **و`'notes'` هنا اسمُ مورد بالباك لا feature بالمستودع**. علَم: `AppFeatures.dataTransfer`. ⚠️ `/export` يردّ **بايتات لا مغلّفاً** — راجع `readme/32_MODULE_DATA_TRANSFER.md` |
 | `modules/access_control/` | **صلاحيات عامة — صفر Dart لكل صلاحية.** المفتاح يُعلَن في السطر الذي يحميه بالباك (`requirePermission('notes.update')`)، ويُلمّ تلقائياً، فتظهر بطاقته في شاشة الأدوار المبنيّة من `GET /authz/catalog`. سطر الدخول: `Can(permission: PermKeys.notesDelete, child: …)` — **والمفتاح لا يُكتب نصّاً خاماً أبداً**: `PermKeys` مولَّد من `permissions.lock.json`، فمفتاحٌ يحذفه الباك يكسر البناء بدل أن يُخفي زرّاً للأبد بصمت. علَم: `AppFeatures.accessControl` + `AUTHZ_ENABLED` بالباك. ⚠️ **بوابة العميل ليست حدّ الأمان** — راجع `readme/31_MODULE_PERMISSIONS.md` |
 | `modules/multi_device/` | الأجهزة والجلسات النشطة. علَم: `AppFeatures.multiDevice` |
-| `modules/sync/` | محرّك المزامنة دون اتصال. علَم: `AppFeatures.offlineSync`. يدفع ويسحب — ⚠️ **وبلا محوّل feature واحد بعد تنظيف 2026-09-08**: `getAll<SyncFeatureContractBase>()` يجد صفراً، فتشغيلُ العلَم يترك التطبيق يعمل بالكامل على الشبكة **بلا انهيار ولا تحذير**. **المرفقات مبنيّة** (تخزين خاص · `Range` · checksum · Cache Manager). ⚠️ بلا Manifest ولا حصّة ولا خلفية. اقرأ [`lib/modules/sync/PLAN.md`](lib/modules/sync/PLAN.md) قبل البناء عليه |
+| `modules/sync/` | محرّك المزامنة دون اتصال. علَم: `AppFeatures.offlineSync`. يدفع ويسحب، **والمرفقات مبنيّة** (تخزين خاص · `Range` · checksum · Cache Manager)، والخلفية على أندرويد وحده. ⚠️ **وبلا محوّل feature واحد**: `getAll<SyncFeatureContractBase>()` يجد صفراً، فتشغيلُ العلَم يترك التطبيق يعمل بالكامل على الشبكة **بلا انهيار ولا تحذير**. ⚠️ بلا Manifest ولا حصّة. اقرأ [`lib/modules/sync/STATUS.md`](lib/modules/sync/STATUS.md) قبل البناء عليه |
 
 ---
 
@@ -128,11 +128,11 @@ modules     → Features      ❌ NEVER
 | `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
 | **`readme/23_STARTUP_SPLASH.md`** | **أي سطر بـ`main()` · `ModulesBootstrap.start`/`ready` · `StartupResolver` · `deepLinkBuilder` بـ`app.dart` · أيُّ مورد أندرويد بـ`res/drawable/splash_*` أو `values*/styles.xml` · علَم `android` بـ`flutter_native_splash.yaml`** |
 | **`readme/17_SERVED_CONTRACT.md`** | **إضافة/حذف ثابت بـ`ApiUrls` · صيرورةُ نقطةٍ مخدومة · كشفُ عقدٍ يخالف المُعلَن · إعادةُ أي شريحة محذوفة** |
-| `lib/modules/sync/PLAN.md` | **إنهاء أي مرحلة P0–P9** — الحالة والتاريخ ومعيار القبول. ويُحدَّث معه سجلّ النقل بـ`Qirtas/qirtas_app/lib/modules/sync/PORT_STATUS.md` |
+| `lib/modules/sync/STATUS.md` | **أي تغيير بما يعمل أو المفتوح أو غير الموفَّر بالموديول** — يُصان قبل `ARCHITECTURE.md`، فهو ما يُقرأ قبل البناء عليه |
 | `lib/modules/sync/ARCHITECTURE.md` | تغيير مخطَّط v4 · دورة حياة حزمة أو ملف · ترتيب الدورة · شروط `SyncGate` |
 | `lib/modules/sync/SETUP.md` | تغيير خطوات التركيب · **أو أي منفذ جديد يمسّ عقد الحذف** |
 | `lib/modules/sync/LOAD_TEST_PLAN.md` | تغيير سيناريو تجريب أو محور قياس أو عتبة |
-| `lib/modules/sync/RULES.md` | **أي رقم يخرج من P8** — لا يُملأ من تقدير |
+| `lib/modules/sync/RULES.md` | **أي رقم يخرج من تجريب `LOAD_TEST_PLAN.md`** — لا يُملأ من تقدير |
 | **`loadtest/README.md`** | **إضافة/تعديل أي سيناريو k6 بـ`loadtest/k6/`** — سطرٌ بجدول «السيناريوهات الموجودة» لكل ملف جديد، بنفس الـcommit |
 
 > **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** أربعةُ ملفاتٍ كانت خارجه حتى
@@ -151,9 +151,10 @@ modules     → Features      ❌ NEVER
 | `_template/README.md` | فهرس المجلد — يُحدَّث عند إضافة/حذف/نقل أي ملف فيه، بنفس التغيير |
 | **`_template/roadmap.md`** | **إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود** — حلّ محلّ `_template/archive/template_enhancements.md` المؤرشَف (2026-09-13) لهذا الغرض |
 | `_template/archive/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
-| `_template/archive/sync_design_spec.md` | ⛔ **لا يُصان** — أرشيف. حالةُ الموديول بـ`lib/modules/sync/PLAN.md` و`SETUP.md` |
+| `_template/archive/sync_design_spec.md` | ⛔ **لا يُصان** — أرشيف. حالةُ الموديول بـ`lib/modules/sync/STATUS.md` |
 | `_template/archive/**` | ⛔ **لا يُصان** — سجلّات مؤرَّخة. الانحراف يُعلَّق عليه بلافتة، لا يُمحى |
 | `_template/archive/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
+| `_template/sync/PLAN.md` | **إنهاء أي مرحلة P0–P9** — المرحلة والتاريخ ومعيار القبول، **ومعه `lib/modules/sync/STATUS.md`**. ويُحدَّث معه سجلّ النقل بـ`Qirtas/qirtas_app/lib/modules/sync/PORT_STATUS.md` |
 | **`_template/feedback/<مشروع>.md`** | **تطبيق بندٍ من ملاحظات مشروعٍ على القالب** — حالة البند (✅ بالتاريخ والـcommit، أو ✖️ بالسبب)، وملفُّ المشروع الجديد يُضاف لجدول [`_template/feedback/README.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/feedback/README.md) |
 
 ## 🕰️ قاعدة صارمة — الوثيقة تصف الحاضر

@@ -7,8 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 /// ## Why this is a test and not a note in a README
 ///
 /// The supported way out of the sync module is to derive from the template and
-/// delete the folder — and the module is planned to roughly double in size when
-/// attachments land (P4.5 in `lib/modules/sync/PLAN.md`). A convention like
+/// delete the folder — and the module is large and still growing
+/// (`lib/modules/sync/STATUS.md` §ج). A convention like
 /// "only import it through the ports" holds for exactly as long as everyone
 /// remembers it; the first forgotten import turns a six-step removal into a
 /// hunt through the whole tree, and nobody notices until the day someone tries.
@@ -182,8 +182,8 @@ void main() {
   test('consumers reach the sync module only through sync_plugin.dart', () {
     // A deep import compiles, passes `dart analyze`, and reads exactly like a
     // legitimate one. Nothing distinguishes it until the day an internal file is
-    // renamed and a consumer breaks — and for a module planned to roughly
-    // double in size (P4.5 / P3.5 in `PLAN.md`), that day is coming.
+    // renamed and a consumer breaks — and for a module still growing
+    // (`STATUS.md` §ج), that day is coming.
     //
     // This is the second half of the deletion contract. The first test keeps the
     // *set of files* that may know the module small; this one keeps the *set of

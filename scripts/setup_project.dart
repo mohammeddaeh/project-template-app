@@ -516,7 +516,7 @@ const _gotchas = <String, String>{
   'dataTransfer':
       'يحتاج نصف الباك (backend_template/src/core/data-transfer/) — بدونه كل نداء 404',
   'offlineSync':
-      'صفر عقود منفَّذة اليوم بالقالب — راجع lib/modules/sync/PLAN.md ب١٣/ب١٤ قبل الاعتماد عليه',
+      'صفر عقود منفَّذة اليوم بالقالب — راجع lib/modules/sync/STATUS.md ب١٣/ب١٤ قبل الاعتماد عليه',
   'crashReporting':
       'لن يعمل بلا google-services.json (Android) و GoogleService-Info.plist (iOS)',
   'analytics':

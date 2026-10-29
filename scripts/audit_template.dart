@@ -124,7 +124,7 @@ bool _checkSyncContracts() {
   if (offlineSyncEnabled && implementationCount == 0) {
     print(
       '  ❌  حرج: العلَم مفعَّلٌ وصفرُ عقودٍ منفَّذة — التطبيق يعمل بالكامل على\n'
-      '      الشبكة بصمت. راجع lib/modules/sync/PLAN.md ب١٣/ب١٤ قبل الشحن.',
+      '      الشبكة بصمت. راجع lib/modules/sync/STATUS.md ب١٣/ب١٤ قبل الشحن.',
     );
     return true;
   }
