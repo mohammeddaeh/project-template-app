@@ -111,9 +111,9 @@ class _AppState extends State<App> {
   /// **Only a dead session sends anyone to sign in.**
   ///
   /// Switched exhaustively rather than acting on arrival, because this bus now
-  /// carries an event that must NOT navigate. Qirtas hit exactly that: its
-  /// handler navigated for any event, so the first 403 over one missing
-  /// permission signed the user out in the middle of a task. A refusal is not
+  /// carries an event that must NOT navigate. A handler that navigates for any
+  /// event turns the first 403 over one missing permission into a sign-out in
+  /// the middle of a task. A refusal is not
   /// an authentication failure.
   ///
   /// The exhaustive form is the guard: a future event added to the bus becomes
@@ -266,8 +266,7 @@ class _AppState extends State<App> {
 /// [ConnectivityOverlay] and its three widgets were written, documented, and
 /// wired to a registered [ConnectivityCubit] — and then mounted nowhere. So the
 /// app's answer to "the network stopped" was whatever each individual screen
-/// happened to do about it. Found first in Qirtas (built on this template),
-/// where the gap had shipped; mounted here the same way.
+/// happened to do about it. It is mounted once, here.
 ///
 /// It sits inside `MaterialApp.builder` so it covers every route including
 /// dialogs and sheets, and under `Positioned.fill` because the overlay's own

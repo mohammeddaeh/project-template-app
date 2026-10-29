@@ -182,7 +182,7 @@ class DataTransferRepositoryImpl extends BaseRepository
     return Right(json['data']);
   }
 
-  /// `2026-08-12` — dates the downloaded file so repeated exports do not
+  /// `YYYY-MM-DD` — dates the downloaded file so repeated exports do not
   /// overwrite one another in the temp directory.
   String _stamp() => DateTime.now().toIso8601String().substring(0, 10);
 }

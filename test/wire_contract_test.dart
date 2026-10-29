@@ -17,7 +17,7 @@ import 'package:app_template/modules/multi_device/data/models/device_session_mod
 
 /// **The check that would have caught the defect this file exists because of.**
 ///
-/// On 2026-08-11 an audit found the client reading `data.user` from
+/// An audit once found the client reading `data.user` from
 /// `POST /account/login` against a server that has always sent `data.account`,
 /// and reading `data.user` from `GET /account/me` against a server that puts
 /// the account at the root of `data`. Sign-in therefore failed on every
@@ -479,7 +479,7 @@ void main() {
       // an empty set, and an empty ability set is indistinguishable — in the
       // app and in the code — from an account genuinely allowed nothing. That
       // is the exact shape of the defect that got the previous permissions
-      // implementation deleted on 2026-08-11: a gate that is always shut reads
+      // implementation deleted: a gate that is always shut reads
       // like a gate that works.
       expect(json.containsKey('permissions'), isTrue);
       expect(abilitySetFromJson(json).permissions, {

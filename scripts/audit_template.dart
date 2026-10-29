@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
-/// تدقيقٌ ذاتيّ للقالب — يُشغِّل آلياً ما جرى يدوياً بمحادثة تدقيق كاملة
-/// (2026-09-13/14): وصل كل موديول اختياري بإقلاعه · الفجوة الحرجة إن فُعِّل
+/// تدقيقٌ ذاتيّ للقالب — يُشغِّل آلياً ما يجري يدوياً بتدقيقٍ كامل: وصل كل موديول اختياري بإقلاعه · الفجوة الحرجة إن فُعِّل
 /// علَم المزامنة بلا عقود منفَّذة · مسارات مسجَّلة بلا نقطة تنقّل إليها ·
 /// ملفات `readme/` خارج جدول التزامن الإلزامي بـ`CLAUDE.md` · تاريخٌ وأسماءُ
 /// مشاريع بالملفات التي تصل المشاريع (R38).
@@ -226,7 +225,7 @@ final _isoDate = RegExp(r'\b20\d\d-\d\d-\d\d\b(?!T\d)');
 
 void _checkShippedHistory({required bool verbose}) {
   final names = _projectNames.toSet()..removeAll(_ownNames());
-  final namePattern = RegExp(names.map(RegExp.escape).join('|'));
+  final namePattern = RegExp(names.map(RegExp.escape).join('|'), caseSensitive: false);
 
   final hits = <String, List<String>>{};
   for (final file in _shippedFiles()) {

@@ -98,8 +98,7 @@ class DioFailureMapper implements FailureMapper {
       //
       // Only the sync shape may map to the silent failure. This used to map
       // **every** 409 to it, which silenced every business refusal in the app —
-      // and no endpoint emits the sync shape yet. Fixed 2026-08-17, ported
-      // from `qirtas_app` where it shipped and was found in use.
+      // and no endpoint emits the sync shape yet.
       //
       // ## The shape is nested, and looking only at the root missed it
       //

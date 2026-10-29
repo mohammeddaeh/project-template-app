@@ -123,8 +123,8 @@ class NetworkLogInterceptor extends Interceptor {
     //
     // `cause` is printed IN the message, not only handed to `error:`. That side
     // channel is `dev.log`'s, and whether it reaches the terminal depends on the
-    // console doing the reading — it did not, on 2026-08-10, when a device could
-    // not reach the dev server and the whole log read `type: connectionError`
+    // console doing the reading — and when it does not, a device that cannot
+    // reach the dev server and the whole log read `type: connectionError`
     // with no further word.
     //
     // And the word is the diagnosis. `type` says only "the socket never

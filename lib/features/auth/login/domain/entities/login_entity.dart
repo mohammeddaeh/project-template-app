@@ -3,7 +3,7 @@ import 'package:app_template/features/auth/shared/entities/auth_user.dart';
 
 /// What a successful sign-in yields.
 ///
-/// ## `permissionKeys` and `isSuperAdmin` were removed (2026-08-11)
+/// ## No `permissionKeys` and no `isSuperAdmin`
 ///
 /// Both were read off the login response, defaulted to `const []` and `false`,
 /// and **no endpoint has ever sent either**. `backend_template` states plainly

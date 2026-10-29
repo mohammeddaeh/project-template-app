@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 /// ⚠️ النموذج داخل `SingleChildScrollView` لا `ListView`: الثاني لا يبني
 /// الحقل البعيد أصلاً، فلا يُتحقَّق منه ولا يُعثر عليه.
 ///
-/// المستهلكون: شاشات `features/auth/` الست. نُقل من قرطاس 2026-09-28 (#54).
+/// المستهلكون: شاشات `features/auth/` الست.
 extension FormReveal on GlobalKey<FormState> {
   /// تتحقق، وتُرجع `true` حين لا نقص. عند النقص تُظهر أول حقل ناقص.
   bool validateAndReveal({double alignment = 0.1}) {

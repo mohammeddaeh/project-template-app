@@ -27,8 +27,7 @@ import 'package:injectable/injectable.dart';
 /// [ensureLoaded] runs in `main()` before `runApp` and the getter is
 /// synchronous afterwards.
 ///
-/// Ported from Qirtas, where it was pinned by the same tests after shipping
-/// (`test/remembered_accounts_test.dart`).
+/// Pinned by `test/remembered_accounts_test.dart`.
 @singleton
 class RememberedAccountsRepository {
   RememberedAccountsRepository(this._storage);

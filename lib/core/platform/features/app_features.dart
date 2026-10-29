@@ -28,8 +28,8 @@ abstract final class AppFeatures {
   /// **فالمفتاح اليدوي بقي، والقفل أُضيف حوله**: بدّل [_skipLoginRequested]
   /// لجلستك، و`kReleaseMode` يُطفئه حتماً عند البناء — والمصرِّف يحذف الفرع.
   ///
-  /// ⛔ **وكان `true` بالقالب** حتى 2026-09-08، أي أن كل مشروعٍ يُفرَّع منه كان
-  /// يبدأ بجلسةٍ متخطّاة حتى ينتبه أحد.
+  /// ⛔ **ولا يُشحن `true` بالقالب**: كل مشروعٍ يُفرَّع منه كان سيبدأ بجلسةٍ
+  /// متخطّاة حتى ينتبه أحد.
   static const _skipLoginRequested = false;
   static const debugSkipLogin = kDebugMode && _skipLoginRequested;
 
@@ -174,8 +174,6 @@ abstract final class AppFeatures {
   /// **When false**: no prompt, no row, nothing read or written. The login
   /// screen is exactly the plain form. Off by default because it is a product
   /// decision: welcome on a personal phone, unwanted on a kiosk.
-  ///
-  /// Ported from Qirtas (built on this template), 2026-09-28.
   static const rememberedAccounts = false;
 
   /// Enable the local session lock (PIN and/or biometrics) after idle/background.

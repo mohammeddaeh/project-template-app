@@ -5,13 +5,13 @@ import 'package:app_template/features/auth/shared/models/auth_user_model.dart';
 ///
 /// ## The key is `account`, not `user`
 ///
-/// This model read `json['user']` until 2026-08-11, against a server that has
-/// always sent `account` (`loginResponseSchema` in
-/// `backend_template/src/features/account/dtos/account.dto.ts`). The cast of a
-/// missing key to `Map<String, dynamic>` threw, `HandleBodyResponse` caught it
-/// like any other exception, and the result was **a successful sign-in that
-/// showed a generic error**: the server issued a real session, wrote a real
-/// row, logged `200 OK`, and the screen said something went wrong.
+/// The server sends `account` (`loginResponseSchema` in
+/// `backend_template/src/features/account/dtos/account.dto.ts`). Reading
+/// `json['user']` instead casts a missing key to `Map<String, dynamic>`, which
+/// throws; `HandleBodyResponse` catches it like any other exception, and the
+/// result is **a successful sign-in that shows a generic error**: the server
+/// issued a real session, wrote a real row, logged `200 OK`, and the screen
+/// says something went wrong.
 ///
 /// That failure mode is why `test/wire_contract_test.dart` now parses the
 /// literal OpenAPI example rather than a fixture written from memory — the two

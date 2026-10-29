@@ -12,7 +12,7 @@ import 'package:equatable/equatable.dart';
 /// `hasPermission()` on the client while **no endpoint ever sent the field** —
 /// so the method returned `false` for every key on every call, and a gate that
 /// is always shut reads in code exactly like a gate that works. It was deleted
-/// on 2026-08-11 rather than repaired. This class exists only because the
+/// rather than repaired. This class exists only because the
 /// server now issues the claims.
 class AbilitySet extends Equatable {
   const AbilitySet({

@@ -15,7 +15,7 @@
 # exactly what an empty, permanently-failing test file had done here until it
 # was removed. Red must mean red.
 #
-# Two suites were added 2026-08-12, both because `analyze` cannot see the
+# Two suites exist because `analyze` cannot see the
 # failure they catch:
 #
 #   wire_contract_test.dart   — parses fixtures written to the SERVER's shape
@@ -93,8 +93,8 @@ jobs:
       # `dart run scripts/gen_permission_keys.dart --verify --from ../perms.json`.
       # See readme/31_MODULE_PERMISSIONS.md §"توصيات مستقبلية" #2.
 
-      # Advisory, not a gate — and measured, not guessed: as of 2026-08-10 this
-      # reports 137 of 327 files as unformatted, because the repo predates the
+      # Advisory, not a gate — and measured, not guessed: it reports a large
+      # share of files as unformatted, because the repo predates the
       # current `dart format`. Blocking on that would make every PR red on
       # arrival, and a build that is always red is a build nobody reads.
       #

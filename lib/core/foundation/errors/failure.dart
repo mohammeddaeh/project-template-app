@@ -281,8 +281,8 @@ final class BusinessFailure extends Failure {
   /// the same shape of gap the whole enhancements table exists to prevent: a
   /// `✅` meaning "the server can send it" read as "the client acts on it".
   ///
-  /// Added 2026-08-17, ported from `qirtas_app`, where the gap surfaced as two
-  /// distinct 409s — one overridable, one not — rendering identically.
+  /// Without it, two distinct 409s — one overridable, one not — render
+  /// identically.
   final String? messageKey;
 
   @override

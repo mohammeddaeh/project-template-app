@@ -7,7 +7,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/state/connectivity/connectivity_cubit.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
-/// **نقطةُ الاتصال** — كلُّ ما يقوله التطبيق عن الشبكة بعد 2026-08-26.
+/// **نقطةُ الاتصال** — كلُّ ما يقوله التطبيق عن الشبكة.
 ///
 /// ```dart
 /// Row(children: [Text(name), const SizedBox(width: 6), const ConnectivityDot()])

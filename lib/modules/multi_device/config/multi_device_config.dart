@@ -1,6 +1,6 @@
 /// Configuration for the Multi-Device Session Module.
 ///
-/// ## What was removed here, and why (2026-08-11)
+/// ## What is deliberately absent, and why
 ///
 /// **`maxDevices = 3`** — a cap with no defined behaviour for the fourth
 /// device. Both possible meanings were worse than no cap:

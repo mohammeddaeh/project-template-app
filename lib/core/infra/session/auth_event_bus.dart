@@ -48,9 +48,8 @@ enum AuthEvent {
   /// but the first would leave the app stale after the session's second change.
   ///
   /// ⚠️ Anything listening to this bus must **switch on the event**, not act on
-  /// its arrival. Qirtas — the first application to add this — had a handler
-  /// that navigated to sign-in for any event at all, so the first 403 over one
-  /// missing permission signed the user out mid-task. See `app.dart`.
+  /// its arrival. A handler that navigates to sign-in for any event at all turns
+  /// the first 403 over one missing permission into a sign-out mid-task. See `app.dart`.
   permissionsStale,
 }
 

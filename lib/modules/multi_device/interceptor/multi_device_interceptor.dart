@@ -5,7 +5,7 @@ import 'package:app_template/modules/multi_device/services/device_id_service.dar
 /// Attaches this device's stable id to outgoing requests when the module is
 /// active, as `X-Device-ID`.
 ///
-/// ## What was removed (2026-08-11)
+/// ## What is deliberately absent
 ///
 /// **The `device_id` / `device_name` / `platform` / `app_version` body fields.**
 /// The server's login schema has no such fields, so zod stripped all four

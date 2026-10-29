@@ -17,10 +17,9 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 /// - [clear] is called by `LogoutRepositoryImpl`, and by
 ///   `TokenRefreshGatewayImpl.onRefreshFailed`.
 ///
-/// ## Permissions were removed (2026-08-11)
+/// ## No permissions here
 ///
-/// This class carried `permissionKeys`, `isSuperAdmin` and `hasPermission()`.
-/// No endpoint has ever sent those fields, so `hasPermission()` returned
+/// No `permissionKeys`, `isSuperAdmin` or `hasPermission()`. No endpoint has ever sent those fields, so `hasPermission()` returned
 /// `false` for every key on every call — a gate that is always shut reads in
 /// code exactly like a gate that works. `backend_template` states that
 /// authorization is deliberately out of scope; the client now says the same

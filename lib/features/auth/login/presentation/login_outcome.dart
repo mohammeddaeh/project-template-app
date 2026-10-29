@@ -16,7 +16,7 @@ import 'package:flutter/widgets.dart';
 /// forever: where each account status lands, and when the save prompt appears.
 /// A second copy would drift on the first change, and the drift would be
 /// invisible — both screens would still sign people in, just to different
-/// places. (Found in Qirtas, which had the table in one screen only.)
+/// places.
 Future<void> handleLoginSuccess(
   BuildContext context,
   LoginEntity entity, {

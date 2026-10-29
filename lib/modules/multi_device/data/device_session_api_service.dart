@@ -7,14 +7,12 @@ part 'device_session_api_service.g.dart';
 
 /// Session endpoints, as the server actually serves them.
 ///
-/// ## Retargeted 2026-08-11
+/// ## Why these paths
 ///
-/// This service used to point at `/auth/devices`,
-/// `/auth/devices/{id}` and `/auth/devices/all-except-current` — paths that
-/// **have never existed on the backend**. Enabling `AppFeatures.multiDevice`
-/// would have produced a 404 on every call: a finished-looking screen wired to
-/// nothing. It now targets the endpoints built and tested in
-/// `qirtas_backend/src/features/auth/`.
+/// The endpoints built and tested in `backend_template/src/features/auth/`
+/// (`/auth/sessions`) — not `/auth/devices`, which has never existed on the
+/// backend and would answer 404 on every call: a finished-looking screen wired
+/// to nothing.
 ///
 /// `logout` is deliberately absent. It lives in `Features/auth/logout/` and is
 /// reachable from every screen through `LogoutSection`; a second definition

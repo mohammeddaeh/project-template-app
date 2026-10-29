@@ -126,10 +126,10 @@ void main() {
     // Guards the guard: the pattern above must be tight enough to reject the
     // placement it exists to prevent, or it is a hole shaped like a rule.
     //
-    // ⚠️ And the case it rejects is lowercase `features/` — the pattern read
-    // `lib/Features/` until 2026-09-09, which matched **nothing** after the
-    // folder was renamed. A dead pattern does not fail: it silently allows the
-    // placement it was written to forbid, and this self-check is what caught it.
+    // ⚠️ And the case it rejects is lowercase `features/` — a pattern reading
+    // `lib/Features/` matches **nothing** once the folder is lowercase. A dead
+    // pattern does not fail: it silently allows the placement it was written to
+    // forbid, and this self-check is what catches it.
     expect(
       featureSyncAdapter.hasMatch('lib/features/notes/data/sync/x.dart'),
       isTrue,

@@ -54,10 +54,10 @@ class AppRouter extends RootStackRouter {
 
     // ── Signed in ──────────────────────────────────────────────────────────
     // `MainShellRoute` is where every authenticated path lands: splash with a
-    // restored token, and login on success. It was NOT registered here until
-    // 2026-08-11 while `login_screen.dart` already navigated to it — a
+    // restored token, and login on success. Missing it here while
+    // `login_screen.dart` navigates to it still compiles — a
     // `@RoutePage()` widget gets a generated `PageRouteInfo` class whether or
-    // not it appears in this list, so the call compiled cleanly and threw at
+    // not it appears in this list, so the call compiles cleanly and throws at
     // runtime. `dart analyze` cannot see this; `test/router_contract_test.dart`
     // can, and does.
     AutoRoute(page: MainShellRoute.page, path: '/app'),

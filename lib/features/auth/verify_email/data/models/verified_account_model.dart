@@ -5,7 +5,7 @@ import 'package:app_template/features/auth/shared/models/auth_user_model.dart';
 ///
 /// ## Why the server sends this rather than an empty 200
 ///
-/// Proving an address advances the lifecycle — in Qirtas from
+/// Proving an address advances the lifecycle — for example from
 /// `pending_verification` to `pending_approval`. That transition is a server
 /// rule. If the response were empty, this client would have to either hard-code
 /// "verification means pending_approval next" (a rule it does not own and will

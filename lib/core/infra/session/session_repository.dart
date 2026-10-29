@@ -63,7 +63,7 @@ class SessionRepository implements AuthNetworkGateway {
   /// navigates once — and nothing else called the re-arm, so the first expiry
   /// of a launch routed to sign-in and every later one was swallowed: token
   /// cleared, app left on a shell with no identity. Pinned by
-  /// `test/auth_event_rearm_test.dart` (found in Qirtas, 2026-09).
+  /// `test/auth_event_rearm_test.dart`.
   Future<void> saveToken(String token) async {
     _cachedToken = token;
     await _secureStorage.write(PersistenceKeys.token, token);
