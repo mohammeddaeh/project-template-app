@@ -231,7 +231,7 @@ dart run scripts/check_structure.dart --baseline  # يثبّت الدَّين ا
 `dart analyze` ولا `flutter test`: صفحةٌ بألف سطر تُصرَّف، و`Color(0xFF…)` يُرسم،
 ونصٌّ عربيٌّ مكتوبٌ بالكود يظهر — والعطل يصل المستخدم وحده.
 
-### قواعد القدرات `C01…C16`
+### قواعد القدرات `C01…C17`
 
 جدول `_capabilities` بأعلى الفحوص: لكل قدرةٍ بالقالب نمطُ ندائها الخامّ (`DateFormat(` ·
 `print(` · `Image.network(` · `SharePlus.instance` …) والمسارات المسموح لها به —

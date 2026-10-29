@@ -17,7 +17,7 @@ core/
 
 ### Layer Contents
 
-**foundation/** — `Failure` sealed types, `BaseUseCase`, `SafeCubit`, `Params`, `NoParams`, `ApiResponse<T>`, `PaginationQuery`, `PaginationDataEntity`, `AuthNetworkGateway`, `TokenRefreshGateway`, `LocaleProvider`, `validators`, `num_extensions`, `value_objects`
+**foundation/** — `Failure` sealed types, `BaseUseCase`, `SafeCubit`, `Params`, `NoParams`, `ApiResponse<T>`, `PaginationQuery`, `PaginationDataEntity`, `AuthNetworkGateway`, `TokenRefreshGateway`, `LocaleProvider`, `validators`, `num_extensions`, `value_objects`, `formatting/` (أشكال التاريخ والوقت والأرقام + كتالوجها `app_formats.dart`), `UmmAlQura`/`HijriDateX`, `CalendarNames`, `toArabicIndicDigits`
 
 **platform/** — `LogService`, `PersistenceKeys`, `MediaService`, `AppBlocObserver`, `AppLocale`, `AppSettings`, `ConnectivityService`, `NetworkStateMonitor`, `AppFeatures`, `StorageService`, `SecureStorageService`, `EncryptionService`, `BiometricsService`, `PermissionsService`, `ClipboardService`, `ShareService`, `FileService`, `AppLifecycleService`
 

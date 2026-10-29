@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:app_template/core/foundation/formatting/app_formats.dart';
+import 'package:app_template/core/foundation/utils/arabic_digits.dart';
+import 'package:app_template/core/foundation/utils/calendar_names.dart';
 import 'package:app_template/core/foundation/utils/hijri_date_extension.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/ui/extensions/extensions.dart';
@@ -51,7 +54,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 ///
 /// ## عطبٌ محتمل لا يُسقط الشاشة
 ///
-/// تحويل الهجريّ محميٌّ بـtry/catch: تاريخٌ خارج مدى حزمة `hijri` (أو أيّ عطبٍ
+/// تحويل الهجريّ محميٌّ بـtry/catch: تاريخٌ خارج مدى جدول أم القرى (أو أيّ عطبٍ
 /// آخر بالتحويل) يُسجَّل بـ`LogService` ويُعرَض `—` بدل أن يُسقط الشاشة كاملةً
 /// عبر `ErrorBoundary` العام.
 class AppDateText extends StatelessWidget {
@@ -65,7 +68,26 @@ class AppDateText extends StatelessWidget {
     this.partSeparator = '/',
     this.calendarSeparator = '  •  ',
     this.style,
-  });
+  }) : format = null;
+
+  /// شكلٌ مسمّى من كتالوج المشروع (`AppDateFormats.listDate`…) — **الطريقة التي
+  /// تختار بها الشاشةُ شكلَ تاريخها**: الشاشة تسمّي، والكتالوج يقرّر. يحكم كل
+  /// شيء، فلا [calendar] ولا [layout] ولا [monthFormat] ولا الفواصل؛ و[language]
+  /// يختار اللغة وحده.
+  const AppDateText.format(
+    this.date, {
+    required AppDateFormat this.format,
+    super.key,
+    this.language = AppDateLanguage.auto,
+    this.style,
+  }) : calendar = AppDateCalendar.hijri,
+       layout = AppDateLayout.stacked,
+       monthFormat = AppDateMonthFormat.nameFull,
+       partSeparator = '/',
+       calendarSeparator = '  •  ';
+
+  /// راجع [AppDateText.format].
+  final AppDateFormat? format;
 
   /// التاريخ **الميلاديّ** دوماً — كأيّ `DateTime` بالتطبيق. التحويل الهجريّ
   /// يقع هنا داخلياً، فلا يحمل المستدعي أيّ نسخةٍ هجرية بنفسه.
@@ -105,6 +127,22 @@ class AppDateText extends StatelessWidget {
     final languageCode = resolvedArabic ? 'ar' : 'en';
     final effectiveStyle = style ?? context.textTheme.bodyMedium;
 
+    if (format case final f?) {
+      String text;
+      try {
+        text = f.apply(date, language: languageCode);
+      } catch (e, st) {
+        LogService.error(
+          'AppDateText format failed',
+          tag: 'APP_DATE_TEXT',
+          error: e,
+          stackTrace: st,
+        );
+        text = '—';
+      }
+      return Text(text, style: effectiveStyle);
+    }
+
     final hijriText = calendar == AppDateCalendar.gregorian
         ? null
         : _buildHijri(languageCode, resolvedArabic);
@@ -141,13 +179,17 @@ class AppDateText extends StatelessWidget {
 
   String _buildHijri(String languageCode, bool arabicResolved) {
     try {
-      final hijri = date.toHijri(language: languageCode);
+      final hijri = date.toHijri();
+      final name = (languageCode == 'ar'
+          ? CalendarNames.hijriMonthsAr
+          : CalendarNames.hijriMonthsEn)[hijri.month - 1];
       return _formatParts(
-        day: hijri.hDay,
-        month: hijri.hMonth,
-        year: hijri.hYear,
-        monthNameFull: hijri.longMonthName,
-        monthNameShort: hijri.shortMonthName,
+        day: hijri.day,
+        month: hijri.month,
+        year: hijri.year,
+        monthNameFull: name,
+        // لا صيغةَ مختصرة متداولة لأسماء الأشهر الهجرية.
+        monthNameShort: name,
         arabicResolved: arabicResolved,
       );
     } catch (e, st) {
@@ -192,22 +234,8 @@ class AppDateText extends StatelessWidget {
       body = '$day $monthName $year';
     }
 
-    return arabicResolved ? _toEasternDigits(body) : body;
+    return arabicResolved ? toArabicIndicDigits(body) : body;
   }
-
-  /// الأرقام الشرقية العشرة (`٠`‎–‎`٩`) — مدى `U+0660`..`U+0669` المتتالي،
-  /// لا حروفٌ عربية حرفية بالكود (F13 يفحص نصّاً ظاهراً يحتاج مفتاح ترجمة؛
-  /// هذه رموز أرقام لا جملة).
-  static final List<String> _easternDigits = List.generate(
-    10,
-    (i) => String.fromCharCode(0x0660 + i),
-  );
-  static final _digitPattern = RegExp('[0-9]');
-
-  String _toEasternDigits(String input) => input.replaceAllMapped(
-    _digitPattern,
-    (m) => _easternDigits[int.parse(m[0]!)],
-  );
 }
 
 /// أيّ تقويمٍ يُعرض.

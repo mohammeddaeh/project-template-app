@@ -9,7 +9,7 @@
 
 | إذا كنت تبني… | اقرأ |
 |---|---|
-| ★ **أيّ أداة · تنسيق · غلاف حزمة · ودجة حالة** (تاريخ · رقم · صورة · مشاركة · سجلّ…) | [`readme/06_CAPABILITIES.md`](readme/06_CAPABILITIES.md) — **قبل أي سطر**: ما فيه مبنيٌّ ومختبَر، وكتابتُه ثانيةً يُفشلها `check_structure` (`C01…C16`). ناقصٌ؟ وسّعه بمكانه |
+| ★ **أيّ أداة · تنسيق · غلاف حزمة · ودجة حالة** (تاريخ · رقم · صورة · مشاركة · سجلّ…) | [`readme/06_CAPABILITIES.md`](readme/06_CAPABILITIES.md) — **قبل أي سطر**: ما فيه مبنيٌّ ومختبَر، وكتابتُه ثانيةً يُفشلها `check_structure` (`C01…C17`). ناقصٌ؟ وسّعه بمكانه |
 | **Feature** (CRUD/Form/Nav/Widget) | `lib/features/CLAUDE.md` |
 | **REST endpoint** جديد | `lib/core/CLAUDE.md` → §API |
 | **core/** أو **DI** | `lib/core/CLAUDE.md` |

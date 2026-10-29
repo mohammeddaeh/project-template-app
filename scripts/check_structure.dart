@@ -233,7 +233,7 @@ void _checkOneTextField(String path, List<String?> code) {
   }
 }
 
-/// C01–C16 — قدرةٌ بالقالب لا تُكتب ثانيةً: النداءُ الخامّ للحزمة يسكن غلافَه وحده.
+/// C01–C17 — قدرةٌ بالقالب لا تُكتب ثانيةً: النداءُ الخامّ للحزمة يسكن غلافَه وحده.
 ///
 /// الكتالوج البشريّ بـ`readme/06_CAPABILITIES.md`، وهذا جدولُه الآليّ — **يُحدَّثان
 /// معاً**. والسبب ليس الشكل: من لا يعرف أن الغلاف موجود يكتب ثانيًا بجانبه، فيفقد
@@ -246,27 +246,25 @@ const _capabilities = <_Capability>[
       'lib/ui/widgets/dates/',
       'lib/core/platform/extensions/',
       'lib/core/foundation/utils/',
+      'lib/core/foundation/formatting/',
     ],
-    'تنسيق تاريخٍ خام — AppDateText أو امتدادات DateTime (06_CAPABILITIES §التاريخ)',
+    'تنسيق تاريخٍ خام — AppDateText.format(date, format: AppDateFormats.x) (06_CAPABILITIES §التاريخ)',
   ),
   _Capability(
     'C02',
     r'\bNumberFormat\b',
     [
       'lib/core/foundation/extensions/',
+      'lib/core/foundation/formatting/',
       'lib/ui/extensions/byte_size_extension.dart',
     ],
-    'تنسيق رقمٍ خام — امتدادات int/num (06_CAPABILITIES §الأرقام)',
+    'تنسيق رقمٍ خام — AppNumberFormats.x.apply(...) (06_CAPABILITIES §الأرقام)',
   ),
   _Capability(
     'C03',
-    r'\bHijriCalendar\b',
-    [
-      'lib/core/foundation/utils/hijri_date_extension.dart',
-      'lib/ui/widgets/dates/',
-      'lib/ui/extensions/date_picker_extension.dart',
-    ],
-    'تقويمٌ هجريّ خام — HijriDateX أو AppDateText (06_CAPABILITIES §التاريخ)',
+    r'\b(UmmAlQura\.|HijriCalendar\b)',
+    ['lib/core/foundation/utils/'],
+    'تقويمٌ هجريّ خام — date.toHijri() (HijriDateX) أو AppDateText (06_CAPABILITIES §التاريخ)',
   ),
   _Capability(
     'C04',
@@ -347,6 +345,13 @@ const _capabilities = <_Capability>[
     r'\bFlutterLocalNotificationsPlugin\s*\(',
     ['lib/core/platform/notifications/'],
     'إشعارٌ محلّيّ خامّ — LocalNotificationsService (06_CAPABILITIES §المنصّة)',
+  ),
+  _Capability(
+    'C17',
+    r'\b(AppDateFormat|AppTimeFormat|AppNumberFormat|AppDistanceFormat|AppDurationFormat)\s*\(|\bCalendarNames\.|\btoArabicIndicDigits\s*\(',
+    // الشاشة تسمّي شكلاً من الكتالوج ولا تبنيه — فتغييرُ شكلٍ سطرٌ واحد بـapp_formats.dart.
+    ['lib/core/foundation/', 'lib/ui/widgets/dates/'],
+    'شكلٌ يُبنى خارج الكتالوج — أضفه لـAppDateFormats/AppTimeFormats/AppNumberFormats وسمِّه (06_CAPABILITIES §التاريخ)',
   ),
 ];
 

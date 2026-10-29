@@ -79,7 +79,10 @@ core/
 │   ├── contracts/    api_response, pagination_query, pagination_data_entity,
 │   │                 auth_network_gateway, locale_provider, token_refresh_gateway
 │   ├── extensions/   num_extensions
-│   ├── utils/        validators
+│   ├── formatting/   AppDateFormat · AppTimeFormat · AppNumberFormat (الأوصاف) +
+│   │                 app_formats.dart (كتالوج الأشكال بأسمائها — يملكه المشروع)
+│   ├── utils/        validators · umm_al_qura (+ جدوله المولَّد) · hijri_date_extension ·
+│   │                 calendar_names · arabic_digits · natural_order
 │   └── value_objects/ Email, PhoneNumber, DateRange → Either<ValidationFailure, T>
 │
 ├── platform/     ← Flutter/OS wrappers (depends on foundation only)

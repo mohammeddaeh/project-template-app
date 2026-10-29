@@ -9,7 +9,7 @@
 >
 > **وقبل أن تكتب أي أداة أو تنسيقاً أو غلافاً**: [`readme/06_CAPABILITIES.md`](../readme/06_CAPABILITIES.md)
 > — القالب يملك التاريخ والأرقام والصور والسجلّ وخدمات المنصّة، و`check_structure`
-> يُفشل النداء الخامّ خارج غلافه (`C01…C16`).
+> يُفشل النداء الخامّ خارج غلافه (`C01…C17`).
 >
 > **وللقرار البصري** (متى Card، أين focal point، كيف hierarchy — لا الصحّة
 > بل الجودة) راجع skill `.claude/skills/flutter-ui-design/SKILL.md`.

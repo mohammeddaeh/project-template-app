@@ -38,21 +38,6 @@ extension IntEx on int {
       return toString();
     }
   }
-
-  String get formatFileSize {
-    const int kb = 1024;
-    const int mb = 1024 * 1024;
-
-    if (this >= mb) {
-      double sizeInMb = this / mb;
-      return '${sizeInMb.toStringAsFixed(1)} MB';
-    } else if (this >= kb) {
-      double sizeInKb = this / kb;
-      return '${sizeInKb.toStringAsFixed(1)} KB';
-    } else {
-      return '$this bytes';
-    }
-  }
 }
 
 extension DoubleEx on double {

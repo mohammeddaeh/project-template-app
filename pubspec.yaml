@@ -95,7 +95,6 @@ dependencies:
   in_app_update: ^4.2.5
   device_info_plus: ^12.4.0
   lottie: ^3.3.3
-  hijri: ^3.0.1
   syncfusion_flutter_core: ^31.2.18
 
 

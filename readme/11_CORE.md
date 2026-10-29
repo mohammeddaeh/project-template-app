@@ -86,7 +86,8 @@ presentation──►  foundation + infra  (للأخطاء عبر Failure فقط
 | `foundation/domain/` | `BaseUseCase`, `SafeCubit`, `Params`, `NoParams` |
 | `foundation/contracts/` | `ApiResponse<T>`, `PaginationQuery`, `PaginationDataEntity` — عقود مشتركة |
 | `foundation/extensions/` | `string_extensions`, `num_extensions`, `datetime_extensions` |
-| `foundation/utils/` | `Validators` — قواعد نقية بدون UI |
+| `foundation/formatting/` | `AppDateFormat` · `AppTimeFormat` · `AppNumberFormat` · `AppDistanceFormat` · `AppDurationFormat` — أوصاف الأشكال، و`app_formats.dart` كتالوجها بالأسماء |
+| `foundation/utils/` | `Validators` · `UmmAlQura` + `HijriDateX` · `CalendarNames` · `toArabicIndicDigits` · `NaturalOrder` — قواعد نقية بدون UI |
 | `foundation/value_objects/` | `Email`, `PhoneNumber`, `DateRange` — factory-only construction → `Either<ValidationFailure, T>` |
 
 ### 3.2 `platform/` — Wrappers
@@ -152,8 +153,17 @@ lib/core/
 │   │   ├── locale_provider.dart     ← interface: languageCode
 │   ├── extensions/
 │   │   └── num_extensions.dart      ← (string/datetime في platform/extensions/)
+│   ├── formatting/
+│   │   ├── app_date_format.dart     ← تقويم · أسماء الأشهر · اسم اليوم · العصر · سياسة الأرقام
+│   │   ├── app_time_format.dart     ← 12/24 · الحشو · ص/م · سياسة الأرقام
+│   │   ├── app_number_format.dart   ← عدّ · مسافة · عدّ تنازلي
+│   │   └── app_formats.dart         ← الكتالوج: AppDateFormats · AppTimeFormats · AppNumberFormats
 │   ├── utils/
-│   │   └── validators.dart
+│   │   ├── validators.dart
+│   │   ├── umm_al_qura.dart         ← محرّك أم القرى (umm_al_qura_data.dart مولَّد، MIT)
+│   │   ├── hijri_date_extension.dart ← date.toHijri({adjustment}) · tryToHijri · toHijriString
+│   │   ├── calendar_names.dart      ← جداول أسماء الأيام والأشهر — الوحيدة
+│   │   └── arabic_digits.dart       ← toArabicIndicDigits — المحوّل الوحيد
 │   └── value_objects/
 │       ├── email.dart               ← Email.validate(input) → Either<ValidationFailure, Email>
 │       ├── phone_number.dart        ← PhoneNumber.parse('+966...') → Either<...>

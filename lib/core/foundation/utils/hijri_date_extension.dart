@@ -1,23 +1,34 @@
-import 'package:hijri/hijri_calendar.dart';
+import 'package:app_template/core/foundation/utils/calendar_names.dart';
+import 'package:app_template/core/foundation/utils/umm_al_qura.dart';
 
-/// تحويل ميلاديّ ← هجريّ — حزمة `hijri` وحدها، بلا حالة تطبيق ولا `BuildContext`.
+/// Gregorian → Hijri for the whole app, on the **official Umm al-Qura**
+/// table ([UmmAlQura]). Pure Dart, no global state: the language is an
+/// argument, never a static set before each call.
 ///
-/// ⚠️ **`HijriCalendar.language` ثابتٌ عامٌّ (`static`) لا نسخيّ** — الحزمة
-/// تقرأه وقت `HijriCalendar.fromDate()` نفسِه لتحديد أسماء الأشهر، فيجب
-/// ضبطه **قبل** كل استدعاء لا مرّةً عند الإقلاع، وإلا بقيت النتيجة بلغة آخر
-/// نداءٍ من أي مكانٍ بالتطبيق. لهذا كل دالّةٍ هنا تأخذ [language] صراحةً
-/// وتضبطه بنفسها — لا قراءة `context.locale` مباشرةً هنا (`foundation/` لا
-/// تعرف Flutter أصلاً)؛ تلك مسؤولية الطبقة التي تستدعيها (`AppDateText`).
+/// The calendar day of the [DateTime] is converted as it stands (its
+/// `year`/`month`/`day`); the Hijri date changes at midnight, not sunset.
+/// [toHijri] throws [RangeError] outside 1 Aug 1924 … 16 Nov 2077
+/// ([UmmAlQura.inRange]); [tryToHijri] returns `null` there.
 extension HijriDateX on DateTime {
-  /// [language] — `'ar'` أو `'en'` (القيمتان اللتان تدعمهما الحزمة افتراضياً).
-  HijriCalendar toHijri({String language = 'ar'}) {
-    HijriCalendar.language = language;
-    return HijriCalendar.fromDate(this);
+  /// [adjustment] is the user's ± days — moon sighting differs by country.
+  HijriDate toHijri({int adjustment = 0}) {
+    final h = UmmAlQura.fromGregorian(year, month, day);
+    return adjustment == 0 ? h : UmmAlQura.adjust(h, adjustment);
   }
 
-  /// مثال: `١٥ رجب ١٤٤٦` (`ar`) أو `15 Rajab 1446` (`en`).
+  /// [toHijri], or `null` outside the table's range.
+  HijriDate? tryToHijri({int adjustment = 0}) =>
+      UmmAlQura.inRange(year, month, day)
+      ? toHijri(adjustment: adjustment)
+      : null;
+
+  /// `27 رمضان 1441` / `27 Ramadan 1441` — Latin digits; the caller decides
+  /// on Arabic-Indic (`AppDateText` does, by language).
   String toHijriString({String language = 'ar'}) {
-    final hijri = toHijri(language: language);
-    return '${hijri.hDay} ${hijri.longMonthName} ${hijri.hYear}';
+    final h = toHijri();
+    final months = language == 'ar'
+        ? CalendarNames.hijriMonthsAr
+        : CalendarNames.hijriMonthsEn;
+    return '${h.day} ${months[h.month - 1]} ${h.year}';
   }
 }

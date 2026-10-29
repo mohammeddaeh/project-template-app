@@ -15,8 +15,14 @@
 
 | الحاجة | استعمل | لا تكتب | الحارس |
 |---|---|---|---|
-| عرض تاريخ (هجري · ميلادي · الاثنان · مكدّس/سطر) | `AppDateText` — [`ui/widgets/dates/app_date_text.dart`](../lib/ui/widgets/dates/app_date_text.dart) · [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §28 | `DateFormat(...)` بشاشة | C01 |
-| تاريخ هجري كنصّ أو كائن | `date.toHijri()` · `date.toHijriString()` — `HijriDateX` بـ[`core/foundation/utils/hijri_date_extension.dart`](../lib/core/foundation/utils/hijri_date_extension.dart) | `HijriCalendar.fromDate` | C03 |
+| ★ **عرض تاريخ بشكلٍ مسمّى** | `AppDateText.format(date, format: AppDateFormats.x)` — الكتالوج بـ[`core/foundation/formatting/app_formats.dart`](../lib/core/foundation/formatting/app_formats.dart) · [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §28 | `DateFormat(...)` بشاشة · `AppDateFormat(...)` بشاشة | C01 · C17 |
+| شكلٌ جديد (اسم اليوم · العصر · تهجئة الشهر · أرقام هندية أو لاتينية) | سطرٌ بـ`AppDateFormats` من أجزاء `AppDateFormat` — [`core/foundation/formatting/app_date_format.dart`](../lib/core/foundation/formatting/app_date_format.dart) | دالّة تنسيقٍ بالشريحة | C17 |
+| تاريخ بلا واجهة (إشعار · مشاركة) | `AppDateFormats.x.apply(date, language: 'ar')` | `'${d.day}/${d.month}'` | 👁 |
+| عرض تاريخ بوسطاء مباشرة (هجري · ميلادي · الاثنان · مكدّس/سطر) | `AppDateText(date, calendar: …)` — [`ui/widgets/dates/app_date_text.dart`](../lib/ui/widgets/dates/app_date_text.dart) | `DateFormat(...)` بشاشة | C01 |
+| تاريخ هجري كنصّ أو كائن (تقويم أم القرى) | `date.toHijri({adjustment})` · `date.tryToHijri()` · `date.toHijriString()` — `HijriDateX` بـ[`core/foundation/utils/hijri_date_extension.dart`](../lib/core/foundation/utils/hijri_date_extension.dart) | `UmmAlQura.` · حزمة هجرية ثانية | C03 |
+| أسماء الأيام والأشهر | `CalendarNames` — [`core/foundation/utils/calendar_names.dart`](../lib/core/foundation/utils/calendar_names.dart) — وعبر الكتالوج لا مباشرةً من شاشة | قائمة أشهرٍ بالشريحة | C17 |
+| أرقام هندية (`١٢٣`) | `ArabicDigits.indic` على الشكل؛ والمحوّل الوحيد `toArabicIndicDigits` — [`core/foundation/utils/arabic_digits.dart`](../lib/core/foundation/utils/arabic_digits.dart) | `0x0660 + …` بالشريحة | C17 |
+| وقت بشكلٍ مسمّى (12/24 · ص/م) | `AppTimeFormats.x.apply(h, m, language:, h24:)` | `'${t.hour}:${t.minute}'` | C17 |
 | «منذ ٥ دقائق» | `date.timeAgo()` — [`core/platform/extensions/datetime_extensions.dart`](../lib/core/platform/extensions/datetime_extensions.dart) | حساب الفرق يدوياً | 👁 |
 | `2026/01/05` · وقتٌ مختصر | `date.getFormattedDate` · `date.getFormattedTime` — الملف نفسه | `padLeft` على اليوم والشهر | 👁 |
 | اختيار تاريخ (Material · تقويم · ورقة · ورقة هجرية) | `context.showDatePicker(mode: DatePickerDisplayMode.x)` — [`ui/extensions/date_picker_extension.dart`](../lib/ui/extensions/date_picker_extension.dart) | `showDatePicker` الإطار مباشرةً | 👁 |
@@ -27,10 +33,11 @@
 
 | الحاجة | استعمل | لا تكتب | الحارس |
 |---|---|---|---|
-| ثوانٍ ⇐ `05:12` أو `1:05:12` | `seconds.getTimeFromIntSeconds` — [`core/foundation/extensions/num_extensions.dart`](../lib/core/foundation/extensions/num_extensions.dart) | `Duration` و`padLeft` يدوياً | 👁 |
+| عدّ بفواصل · مسافة م/كم · عدّ تنازلي | `AppNumberFormats.count` · `.distance` · `.countdown` — `.apply(...)` — [`core/foundation/formatting/app_number_format.dart`](../lib/core/foundation/formatting/app_number_format.dart) | `toStringAsFixed` بالشاشة | C17 |
+| ثوانٍ ⇐ `05:12` أو `1:05:12` (بلا ساعات حين الصفر) | `seconds.getTimeFromIntSeconds` — [`core/foundation/extensions/num_extensions.dart`](../lib/core/foundation/extensions/num_extensions.dart) | `Duration` و`padLeft` يدوياً | 👁 |
 | شارة عدّ `+99` | `count.getPlus()` — الملف نفسه | شرط `> 99` بكل شارة | 👁 |
 | حجم ملف مترجَم («٢ ميغابايت») | `bytes.asFileSize` — [`ui/extensions/byte_size_extension.dart`](../lib/ui/extensions/byte_size_extension.dart) | قسمة على 1024 | 👁 |
-| أي تنسيق رقمٍ آخر | وسّع امتدادات `int`/`num` أعلاه | `NumberFormat` بشاشة | C02 |
+| أي تنسيق رقمٍ آخر | شكلٌ جديد بـ`AppNumberFormats` | `NumberFormat` بشاشة | C02 |
 | ترتيب معرّفات مرقّمة (`٩١/٢` قبل `٩١/١٠`) | `NaturalOrder.compare` — [`core/foundation/utils/natural_order.dart`](../lib/core/foundation/utils/natural_order.dart) | `compareTo` على النصّ | 👁 |
 
 ## النصوص والتحقق
