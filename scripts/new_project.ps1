@@ -34,6 +34,8 @@ param(
     [string]$BaseUrlProd,
     [ValidateSet('', 'simple', 'enterprise', 'custom')]
     [string]$Preset,
+    [ValidateSet('', 'none', 'required', 'optional')]
+    [string]$Auth,
     [string]$Directory,
     [string]$Remote,
     [string]$Source = 'https://github.com/mohammeddaeh/project-template-app.git',
@@ -66,6 +68,7 @@ $appIdRule = {
 }
 $requiredRule = { param($v) if (-not $v) { 'cannot be empty' } }
 $urlRule = { param($v) if ($v -and $v -notmatch '^https?://') { 'must start with http:// or https:// (or leave empty)' } }
+$authRule = { param($v) if ($v -notin @('none', 'required', 'optional')) { 'none, required or optional' } }
 $presetRule = { param($v) if ($v -notin @('simple', 'enterprise', 'custom')) { 'simple, enterprise or custom' } }
 
 # git and gh print progress ("Cloning into...", "To https://...") on stderr.
@@ -214,6 +217,7 @@ function Invoke-NewProject {
         $BaseUrl = Read-Value 'BASE_URL for dev (empty = fill .env.dev.json later)' '' $urlRule
     }
     if (-not $Preset) { $Preset = Read-Value 'Optional modules: simple / enterprise / custom' 'simple' $presetRule }
+    if (-not $Auth) { $Auth = Read-Value 'Sign-in: none / required / optional' 'none' $authRule }
     $pushTarget = Read-PushTarget $Remote
 
     if (-not $Directory) { $Directory = Join-Path (Get-Location) $Package }
@@ -243,6 +247,7 @@ function Invoke-NewProject {
         if ($BaseUrlProd) { $setupArgs += @('--base-url-prod', $BaseUrlProd) }
         # `custom` asks flag by flag inside the Dart script, so no --preset;
         # the answers above were already confirmed, so --yes skips the recap.
+        $setupArgs += @('--auth', $Auth)
         if ($Preset -ne 'custom') { $setupArgs += @('--preset', $Preset) }
         $setupArgs += '--yes'
 

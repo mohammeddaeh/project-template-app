@@ -13,6 +13,7 @@ import 'package:app_template/features/settings/presentation/cubits/font_preferen
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/foundation/contracts/locale_provider.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
+import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/infra/session/auth_event_bus.dart';
 import 'package:app_template/core/infra/session/locale_provider_impl.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
@@ -130,6 +131,7 @@ class _AppState extends State<App> {
   /// والمطابقةُ **شاملة** بقصد: وجهةٌ جديدة تصير خطأَ ترجمةٍ هنا، لا سقوطاً
   /// صامتاً إلى الدخول.
   PageRouteInfo get _startRoute => switch (widget.startAt) {
+    StartupDestination.welcome => const WelcomeRoute(),
     StartupDestination.login => const LoginRoute(),
     StartupDestination.shell => const MainShellRoute(),
   };
@@ -157,7 +159,17 @@ class _AppState extends State<App> {
         return;
     }
 
-    _router.replaceAll([const LoginRoute()]);
+    // Where a dead session lands depends on whether signing in is required:
+    // `optional` keeps the user in the app as a guest, and `none` never holds
+    // a session to lose.
+    switch (AppFeatures.authMode) {
+      case AuthMode.none:
+        return;
+      case AuthMode.required:
+        _router.replaceAll([const LoginRoute()]);
+      case AuthMode.optional:
+        _router.replaceAll([const MainShellRoute()]);
+    }
     _announce(reasonKey);
   }
 

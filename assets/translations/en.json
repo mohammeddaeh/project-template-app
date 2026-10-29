@@ -327,5 +327,10 @@
   "chooseSavedAccount": "Quick sign-in",
   "orLoginWithAnotherAccount": "Or sign in with another account",
   "continueLabel": "Continue",
-  "notThisAccount": "Not this account?"
+  "notThisAccount": "Not this account?",
+  "welcomeTitle": "Welcome",
+  "welcomeBody": "Everything you need, in one place. Get started.",
+  "welcomeStart": "Get started",
+  "guestTitle": "You are browsing as a guest",
+  "guestBody": "Sign in to see your account and keep your work."
 }

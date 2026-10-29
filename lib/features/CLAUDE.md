@@ -56,6 +56,10 @@ lib/features/{feature}/
 
 ### Auth — مبنيّة، وهي **المثال الحيّ** الذي تُنسخ منه أي feature
 
+> **وأين تظهر يقرّره `AppFeatures.authMode`** — `none` (افتراضاً: لا دخول ولا تبويب
+> حساب) · `required` · `optional` (زائرٌ، و`AccountTab` يدعو للدخول). الشرائح كلّها
+> تبقى بالكود بالأوضاع الثلاثة. راجع `readme/23_STARTUP_SPLASH.md` §٤‑ب.
+
 ```
 features/auth/
 ├── shared/           ← AuthUser · AuthUserModel · CurrentUserRepository · SessionSyncService

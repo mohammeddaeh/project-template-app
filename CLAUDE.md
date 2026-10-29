@@ -44,10 +44,10 @@
 
 | المسار | ما تفعله |
 |---|---|
-| `features/auth/` | **دورة الحساب كاملة** — login · register · logout · me · verify_email · forgot_password · change_password · profile. مقابل `/api/v1/account` و`/api/v1/auth` بالباك |
+| `features/auth/` | **دورة الحساب كاملة** — login · register · logout · me · verify_email · forgot_password · change_password · profile. مقابل `/api/v1/account` و`/api/v1/auth` بالباك. **وأين تُعرض يقرّره `AppFeatures.authMode`** (`none` افتراضاً · `required` · `optional`) — يُختار عند الإنشاء بـ`setup_project.dart --auth` |
 | `features/home/` | التنقل الرئيسي — و`home_screen.dart` **placeholder مقصود** يُستبدل جسدُه كاملاً. وفيه `WelcomeAnnouncer` بالقشرة: يستقبل الداخلَ حديثاً بتحيّةٍ باسمه، ويقرأ علَم `WelcomeGreeting` مرّةً واحدة (`take` تمحو). ⛔ **ولا رافعَ للراية بالقالب** — `raise()` تُنادى ممّن يعرف «متى صار الحساب جاهزاً» |
 | `features/settings/` | Theme + Language + Notifications + Version + Cache |
-| `features/startup/` | **قرارُ أوّل شاشة — بلا شاشةٍ له.** يُنادى من `main()` قبل `runApp`: يسأل `DataOriginGuard` هل أصلُ ما على الجهاز هو `Env.baseUrl`، ثم يستعيد التوكن **واللقطة المخزَّنة للمستخدم**. ⛔ **ولا `SplashScreen`**: أوّلُ إطارٍ يرسمه فلاتر هو الوجهةُ نفسُها، فلا يرى المستخدم شعارَين — راجع [`readme/23_STARTUP_SPLASH.md`](readme/23_STARTUP_SPLASH.md) |
+| `features/startup/` | **قرارُ أوّل شاشة.** يُنادى من `main()` قبل `runApp`: يسأل `DataOriginGuard` هل أصلُ ما على الجهاز هو `Env.baseUrl`، ثم يستعيد الجلسة (حين لا يكون `authMode` هو `none`)، والقرارُ نفسُه دالّةٌ نقيّة `decideStartup`. **أوّلُ تشغيلٍ على الجهاز ⇐ `WelcomeScreen`** مرّةً واحدة (`PersistenceKeys.welcomeSeen`)، ثم الرئيسية — أو الدخول بوضع `required` بلا جلسة. ⛔ **ولا `SplashScreen`**: أوّلُ إطارٍ يرسمه فلاتر هو الوجهةُ نفسُها، فلا يرى المستخدم شعارَين — راجع [`readme/23_STARTUP_SPLASH.md`](readme/23_STARTUP_SPLASH.md) |
 
 ### Modules الاختيارية البارزة
 

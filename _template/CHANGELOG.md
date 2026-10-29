@@ -11,6 +11,16 @@
 
 ## غير مُصدَر
 
+- **أوضاع الدخول** `AppFeatures.authMode` (`none` افتراضاً · `required` · `optional`)،
+  تُختار بـ`setup_project.dart --auth` و`new_project.ps1 -Auth`. والقالب **يبدأ بلا
+  دخول**: ترحيبٌ ثم الرئيسية. ⚠️ **يغيّر سلوك مشروعٍ قائم** يأخذ التحديث: يرجع إلى
+  `required` بسطرٍ واحد بـ`app_features.dart` ليبقى كما كان.
+- **`WelcomeScreen`** مرّةً واحدة على الجهاز (`PersistenceKeys.welcomeSeen`)، على
+  `AppColors.bgBrand` الجديد (= `splash_background`).
+- **`AccountTab`** لوضع `optional`: دعوةٌ للدخول للزائر، والملف الشخصي لمن دخل.
+- **الهوية بملفٍّ يُستبدل**: `assets/images/brand/app_logo.svg` و`.png` بدل شعار
+  الجهة السابق؛ `gen_splash_assets.dart` يقرأ ألوان الشعار كما هي.
+
 ## 1.0.0 — 2026-10-29
 
 أول إصدارٍ مرقّم. ما فيه مقارنةً بالقالب قبله:

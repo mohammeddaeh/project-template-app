@@ -29,6 +29,8 @@
 /// كل وسيط غائب يُسأل عنه تفاعلياً. `--preset` يقبل `simple` · `enterprise`
 /// (المخصّص تفاعليّ فقط). `--base-url-staging` و`--base-url-prod` اختياريان.
 /// `--template-ref` يُكتب ببيان المشروع حين لا `.git` يُسأل عن نسخة القالب.
+/// `--auth none|required|optional` يكتب `AppFeatures.authMode` (افتراضاً `none`
+/// مع `--yes`، وإلا يُسأل).
 library;
 
 import 'dart:convert';
@@ -51,6 +53,15 @@ Future<void> main(List<String> args) async {
       ? _presetOrDie(opts['preset']!)
       : await _askFeatureFlags();
 
+  final authMode = _authModeOrDie(
+    opts['auth'] ??
+        (opts.containsKey('yes')
+            ? 'none'
+            : _askChoice('تسجيل الدخول', [
+                for (final e in _authModes.entries) '${e.key} — ${e.value}',
+              ]).split(' ').first),
+  );
+
   final baseUrls = <String, String>{
     'dev':
         opts['base-url'] ??
@@ -69,6 +80,7 @@ Future<void> main(List<String> args) async {
   for (final entry in baseUrls.entries) {
     print('  BASE_URL ${entry.key.padRight(8)}: ${entry.value}');
   }
+  print('  ${'authMode'.padRight(17)}: $authMode');
   for (final entry in flags.entries) {
     print('  ${entry.key.padRight(17)}: ${entry.value ? 'true' : 'false'}');
   }
@@ -87,6 +99,7 @@ Future<void> main(List<String> args) async {
 
   _section('🚩  كتابة الأعلام');
   _applyFeatureFlags(flags);
+  _applyAuthMode(authMode);
 
   _section('📄  كتابة بيان المشروع');
   _writeManifest(
@@ -94,6 +107,7 @@ Future<void> main(List<String> args) async {
     appId: appId,
     packageName: packageName,
     flags: flags,
+    authMode: authMode,
     templateRef: opts['template-ref'],
   );
 
@@ -137,6 +151,7 @@ const _valueOptions = {
   'base-url-staging',
   'base-url-prod',
   'template-ref',
+  'auth',
 };
 
 /// `--key value` أو `--key=value`، و`--yes` علَمٌ بلا قيمة. وسيطٌ مجهول يُفشل
@@ -472,6 +487,34 @@ void _applyFeatureFlags(Map<String, bool> flags) {
   );
 }
 
+// ── Apply: auth mode ─────────────────────────────────────────────────────────
+
+/// الأوضاع ووصفُها حين يُسأل — المعنى الكامل على `AppFeatures.authMode`.
+const _authModes = <String, String>{
+  'none': 'بلا دخول — ترحيبٌ ثم الرئيسية، ولا تبويب حساب',
+  'required': 'الدخول إلزاميّ — بلا جلسة ⇐ شاشة الدخول',
+  'optional': 'زائرٌ افتراضاً — والدخول من تبويب الحساب',
+};
+
+String _authModeOrDie(String value) {
+  // `_askChoice` يُعيد المفتاح نفسه؛ والوسيط يُكتب بالمفتاح كذلك.
+  if (_authModes.containsKey(value)) return value;
+  _die('--auth غير معروف: $value (${_authModes.keys.join(' · ')})');
+}
+
+void _applyAuthMode(String mode) {
+  final file = File('lib/core/platform/features/app_features.dart');
+  final content = file.readAsStringSync();
+  final pattern = RegExp(r'static const authMode = AuthMode\.\w+;');
+  if (!pattern.hasMatch(content)) {
+    _die('لم أجد authMode بـapp_features.dart — هل تغيّر اسمه؟');
+  }
+  file.writeAsStringSync(
+    content.replaceFirst(pattern, 'static const authMode = AuthMode.$mode;'),
+  );
+  print('  ✓ AppFeatures.authMode = AuthMode.$mode');
+}
+
 // ── Apply: manifest ──────────────────────────────────────────────────────────
 
 void _writeManifest({
@@ -479,6 +522,7 @@ void _writeManifest({
   required String appId,
   required String packageName,
   required Map<String, bool> flags,
+  required String authMode,
   String? templateRef,
 }) {
   final manifest = {
@@ -492,6 +536,7 @@ void _writeManifest({
     'templateRelease': File('TEMPLATE_VERSION').existsSync()
         ? File('TEMPLATE_VERSION').readAsStringSync().trim()
         : 'unknown',
+    'authMode': authMode,
     'features': flags,
   };
   File('.template_manifest.json').writeAsStringSync(

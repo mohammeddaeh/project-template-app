@@ -476,7 +476,7 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 ```bash
 dart run scripts/setup_project.dart                      # تفاعلي
 dart run scripts/setup_project.dart --name "Inventory" --app-id com.example.inventory \
-  --package inventory_app --preset simple --base-url https://api.example.com --yes
+  --package inventory_app --preset simple --auth none --base-url https://api.example.com --yes
 ```
 
 يُشغَّل **مرّة واحدة**، فور استنساخ مشروع جديد من هذا القالب (راجع
@@ -485,6 +485,10 @@ dart run scripts/setup_project.dart --name "Inventory" --app-id com.example.inve
 
 1. **الهوية**: اسم التطبيق + Application ID أساسي واحد + **اسم حزمة Dart**
    (الافتراضي: آخر مقطع من Application ID).
+1‑ب. **وضع الدخول** (`--auth`): `none` بلا دخول (الافتراضي مع `--yes`) · `required`
+   الدخول إلزاميّ · `optional` زائرٌ والدخول من تبويب الحساب ⇐ `AppFeatures.authMode`
+   و`authMode` بالبيان. وبـ`new_project.ps1` الوسيط `-Auth`. المعنى كاملاً بـ
+   [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) §٤‑ب.
 2. **الوحدات الاختيارية ذات الكلفة الخارجية فقط** — `accessControl` ·
    `dataTransfer` · `offlineSync` · `multiDevice` · `inAppUpdates` ·
    `crashReporting` · `analytics` · `remoteConfig` — عبر نمط جاهز (بسيط/مؤسسي)

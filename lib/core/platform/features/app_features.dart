@@ -1,5 +1,17 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:app_template/core/platform/permissions/app_permission.dart';
+
+/// كيف يتعامل التطبيق مع الدخول — راجع [AppFeatures.authMode].
+enum AuthMode {
+  /// لا دخول أبداً: ترحيبٌ أوّل مرّة ثم الرئيسية، ولا تبويب حساب.
+  none,
+
+  /// الدخول إلزاميّ: بلا جلسة ⇐ شاشة الدخول.
+  required,
+
+  /// زائرٌ افتراضاً، والدخول من تبويب الحساب؛ جلسةٌ محفوظة تُستعاد.
+  optional,
+}
 
 /// Central feature activation file.
 ///
@@ -32,6 +44,21 @@ abstract final class AppFeatures {
   /// متخطّاة حتى ينتبه أحد.
   static const _skipLoginRequested = false;
   static const debugSkipLogin = kDebugMode && _skipLoginRequested;
+
+  // ── Authentication ─────────────────────────────────────────────────────────
+
+  /// **كيف يتعامل التطبيق مع الدخول** — يُختار مرّةً عند الإنشاء
+  /// (`setup_project.dart --auth none|required|optional`)، ويقرؤه
+  /// `StartupResolver` والقشرة ومعالجُ انتهاء الجلسة بـ`app.dart`:
+  ///
+  /// | الوضع | الإقلاع | تبويب الحساب | انتهاء الجلسة |
+  /// |---|---|---|---|
+  /// | `none` | ترحيبٌ أوّل مرّة ثم الرئيسية | لا يُعرض | لا جلسة أصلاً |
+  /// | `required` | ترحيبٌ أوّل مرّة · بلا جلسة ⇐ الدخول | الملف الشخصي | ⇐ شاشة الدخول |
+  /// | `optional` | ترحيبٌ أوّل مرّة ثم الرئيسية زائراً | زائرٌ: «تسجيل الدخول» · داخلٌ: الملف | ⇐ الرئيسية زائراً |
+  ///
+  /// شاشاتُ الحساب كلُّها تبقى بالكود في الأوضاع الثلاثة — الوضعُ يقرّر أين تُعرض.
+  static const authMode = AuthMode.none;
 
   /// طباعة الرؤوس والأجسام لكل طلب ناجح أيضاً (debug فقط).
   ///

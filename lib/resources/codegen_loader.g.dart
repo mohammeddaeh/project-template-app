@@ -361,6 +361,11 @@ class CodegenLoader extends AssetLoader {
     "orLoginWithAnotherAccount": "أو سجّل الدخول بحساب آخر",
     "continueLabel": "متابعة",
     "notThisAccount": "لست صاحب هذا الحساب؟",
+    "welcomeTitle": "أهلاً بك",
+    "welcomeBody": "كل ما تحتاجه في مكانٍ واحد. ابدأ الآن.",
+    "welcomeStart": "ابدأ",
+    "guestTitle": "أنت تتصفّح كزائر",
+    "guestBody": "سجّل الدخول لترى حسابك وتحفظ ما تعمله.",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -723,6 +728,11 @@ class CodegenLoader extends AssetLoader {
     "orLoginWithAnotherAccount": "Or sign in with another account",
     "continueLabel": "Continue",
     "notThisAccount": "Not this account?",
+    "welcomeTitle": "Welcome",
+    "welcomeBody": "Everything you need, in one place. Get started.",
+    "welcomeStart": "Get started",
+    "guestTitle": "You are browsing as a guest",
+    "guestBody": "Sign in to see your account and keep your work.",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

@@ -16,7 +16,7 @@
 splash النظام  ← الشعارُ كاملاً على #0D3A2F   (طوال ما تحته)
    ↓                 main() : تهيئة + StartupResolver.resolve()
    ↓
-أوّلُ إطارٍ من فلاتر = الوجهةُ نفسُها   (login · shell)
+أوّلُ إطارٍ من فلاتر = الوجهةُ نفسُها   (welcome · login · shell)
 ```
 
 **ولا شاشةَ سبلاش بفلاتر** — لا `SplashScreen` ولا `SplashCubit` ولا `SplashRoute`.
@@ -191,6 +191,28 @@ runApp( App(startAt: …) )                             ← أوّلُ إطار 
 
 ---
 
+## ٤‑ب · الوجهة — ترحيبٌ مرّةً واحدة، ثم ما يقرّره وضعُ الدخول
+
+`StartupResolver.resolve` يجمع حقيقتين ثم يسلّمهما لدالّةٍ نقيّة `decideStartup`
+(مختبَرة بـ`test/startup_decision_test.dart`):
+
+| | `none` (افتراضاً) | `required` | `optional` |
+|---|---|---|---|
+| أوّلُ تشغيلٍ على الجهاز | الترحيب | الترحيب | الترحيب |
+| بلا جلسة | الرئيسية | الدخول | الرئيسية زائراً |
+| بجلسةٍ صالحة | — | الرئيسية | الرئيسية |
+| انتهاء الجلسة (`AuthEventBus`) | لا جلسة أصلاً | ⇐ الدخول | ⇐ الرئيسية زائراً |
+| تبويب الحساب | لا يُعرض | الملف الشخصي | `AccountTab`: دعوةٌ للدخول ⇄ الملف |
+
+**`WelcomeScreen`** (`features/startup/presentation/pages/`) تُعرض حين لم يُعلَّم
+`PersistenceKeys.welcomeSeen`، على `bgBrand` — اللونِ نفسِه تحت شعار الإقلاع،
+فلا قفزة لون. «ابدأ» يعلّم المفتاح ويسأل `decideStartup` بـ`welcomeSeen: true`
+أين يذهب. والمفتاح لا يُمسح بالخروج؛ يمسحه `DataOriginGuard` وحده حين يتبدّل الخادم.
+
+**والوضع يُختار مرّةً عند الإنشاء**: `setup_project.dart --auth none|required|optional`
+يكتب `AppFeatures.authMode` ويحفظه بالبيان. وبوضع `none` لا يُقرأ توكنٌ أصلاً،
+وشاشاتُ الحساب تبقى بالكود — تبديلُ الوضع لاحقاً سطرٌ واحد.
+
 ## ٥ · كيف تصل الوجهةُ إلى الموجّه
 
 `StartupResolver.resolve()` يُعيد [`StartupDestination`](../lib/features/startup/startup_destination.dart)،
@@ -271,3 +293,5 @@ Universal Links) خارج نطاق هذا التغيير** — المبنيّ ه
 - [ ] `NormalTheme.windowBackground` = `@color/splash_background` بالأربعة
 - [ ] `ModulesBootstrap.start` بلا `await` بـ`main()`، و`ready` مُنتظَرٌ داخل `resolve()`
 - [ ] **لا شاشةَ سبلاشٍ بفلاتر** — أوّلُ إطارٍ هو الوجهة
+- [ ] كلُّ وجهةٍ بـ`StartupDestination` لها فرعٌ بـ`_startRoute` (`app.dart`) وحالةٌ بـ`test/startup_decision_test.dart`
+- [ ] `WelcomeScreen` على `bgBrand` = `splash_background`

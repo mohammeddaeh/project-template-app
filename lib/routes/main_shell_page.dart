@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart';
 import 'package:app_template/features/home/presentation/pages/home_screen.dart';
 import 'package:app_template/features/home/presentation/widgets/welcome_announcer.dart';
+import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/features/auth/profile/presentation/pages/profile_screen.dart';
+import 'package:app_template/features/auth/profile/presentation/widgets/account_tab.dart';
 import 'package:app_template/features/settings/presentation/pages/settings_screen.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/in_app_updates/presentation/app_update_gate.dart';
@@ -47,12 +49,19 @@ class MainShellPage extends StatelessWidget {
                   labelKey: LocaleKeys.tabHome,
                   screenBuilder: () => const HomeScreen(),
                 ),
-                NavItem(
-                  icon: Icons.person_outline_rounded,
-                  activeIcon: Icons.person_rounded,
-                  labelKey: LocaleKeys.tabProfile,
-                  screenBuilder: () => const ProfileScreen(),
-                ),
+                // The account tab follows `AppFeatures.authMode`: none without
+                // accounts, the profile when signing in is required, and a
+                // guest prompt that turns into the profile when it is optional.
+                if (AppFeatures.authMode != AuthMode.none)
+                  NavItem(
+                    icon: Icons.person_outline_rounded,
+                    activeIcon: Icons.person_rounded,
+                    labelKey: LocaleKeys.tabProfile,
+                    screenBuilder: () =>
+                        AppFeatures.authMode == AuthMode.optional
+                        ? const AccountTab()
+                        : const ProfileScreen(),
+                  ),
                 NavItem(
                   icon: Icons.settings_outlined,
                   activeIcon: Icons.settings_rounded,

@@ -335,4 +335,9 @@ abstract class LocaleKeys {
   static const orLoginWithAnotherAccount = 'orLoginWithAnotherAccount';
   static const continueLabel = 'continueLabel';
   static const notThisAccount = 'notThisAccount';
+  static const welcomeTitle = 'welcomeTitle';
+  static const welcomeBody = 'welcomeBody';
+  static const welcomeStart = 'welcomeStart';
+  static const guestTitle = 'guestTitle';
+  static const guestBody = 'guestBody';
 }

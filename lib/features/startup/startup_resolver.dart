@@ -1,6 +1,8 @@
 import 'package:app_template/core/infra/session/data_origin_guard.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
+import 'package:app_template/core/platform/storage/persistence_keys.dart';
+import 'package:app_template/core/platform/storage/storage_service.dart';
 import 'package:app_template/features/auth/shared/current_user_repository.dart';
 import 'package:app_template/features/startup/startup_destination.dart';
 import 'package:app_template/modules/modules_bootstrap.dart';
@@ -24,11 +26,13 @@ class StartupResolver {
     this._sessionRepository,
     this._currentUserRepository,
     this._originGuard,
+    this._storage,
   );
 
   final SessionRepository _sessionRepository;
   final CurrentUserRepository _currentUserRepository;
   final DataOriginGuard _originGuard;
+  final StorageService _storage;
 
   Future<StartupDestination> resolve() async {
     // **ما كان `main()` ينتظره قبل `runApp` ثم نُقل، عاد إلى هنا.**
@@ -53,8 +57,22 @@ class StartupResolver {
     // توكناً غائباً فيمضي إلى شاشة الدخول من نفسه.
     await _originGuard.ensureCurrentOrigin();
 
+    // بوضع `none` لا جلسةَ تُقرأ أصلاً — ولا توكنَ يُكتب، فلا شيء يُستعاد.
+    final signedIn =
+        AppFeatures.authMode != AuthMode.none && await _restoreSession();
+    final welcomeSeen =
+        await _storage.readBool(PersistenceKeys.welcomeSeen) ?? false;
+    return decideStartup(
+      mode: AppFeatures.authMode,
+      welcomeSeen: welcomeSeen,
+      signedIn: signedIn,
+    );
+  }
+
+  /// يستعيد الجلسة المخزَّنة، ويُعيد هل بقيت جلسةٌ صالحة.
+  Future<bool> _restoreSession() async {
     final token = await _sessionRepository.loadCachedToken();
-    if (token == null || token.isEmpty) return StartupDestination.login;
+    if (token == null || token.isEmpty) return false;
 
     // تُستعاد **قبل** أول إطار لا بعده.
     //
@@ -79,9 +97,25 @@ class StartupResolver {
     if (_currentUserRepository.currentUser == null) {
       _sessionRepository.clearSession();
       _currentUserRepository.clear();
-      return StartupDestination.login;
+      return false;
     }
 
-    return StartupDestination.shell;
+    return true;
   }
+}
+
+/// **القرار وحده**، بلا تخزينٍ ولا شبكة — فيُختبر بمعزل، وتناديه شاشة الترحيب
+/// لتعرف ما بعدها.
+///
+/// - أوّلُ تشغيلٍ على الجهاز ⇐ الترحيب، بكل الأوضاع.
+/// - `required` بلا جلسة ⇐ الدخول.
+/// - وإلا ⇐ الرئيسية (داخلاً، أو زائراً بـ`optional`، أو بلا حسابٍ بـ`none`).
+StartupDestination decideStartup({
+  required AuthMode mode,
+  required bool welcomeSeen,
+  required bool signedIn,
+}) {
+  if (!welcomeSeen) return StartupDestination.welcome;
+  if (mode == AuthMode.required && !signedIn) return StartupDestination.login;
+  return StartupDestination.shell;
 }

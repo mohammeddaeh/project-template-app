@@ -4,6 +4,10 @@ abstract final class AppPalette {
   AppPalette._();
 
   // Primary
+  /// سطح العلامة — الشاشات المطليّة بالهوية (الترحيب) و`splash_background`
+  /// بأندرويد و`color` بـ`flutter_native_splash.yaml`: **ثلاثةٌ بلونٍ واحد**.
+  static const Color brandSurface = Color(0xFF0D3A2F);
+
   static const Color primaryLighter = Color(0xFF809391);
   static const Color primaryLight = Color(0xFF405C5A);
   static const Color primaryMain = Color(0xFF002623);

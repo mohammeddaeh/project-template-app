@@ -100,6 +100,7 @@ Future<void> _bootstrap() async {
     getIt<SessionRepository>(),
     getIt<CurrentUserRepository>(),
     getIt<DataOriginGuard>(),
+    getIt<StorageService>(),
   ).resolve();
 
   // **بعد** `resolve` لا قبله: [DataOriginGuard] قد يمسح الجهاز حين يتبدّل

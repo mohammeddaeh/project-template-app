@@ -1,5 +1,8 @@
 abstract class PersistenceKeys {
   static const String token = 'Token';
+
+  /// شاشة الترحيب عُرضت مرّةً على هذا الجهاز — لا تُمسح بالخروج.
+  static const String welcomeSeen = 'welcome_seen';
   static const String fcmToken = 'FcmToken';
 
   // ── Remembered accounts (login screen account picker) ──────────────────────

@@ -39,6 +39,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.textOnAccent,
     required this.bgDisabled,
     required this.textDisabled,
+    required this.bgBrand,
     required this.onBrand,
     required this.onBrandAccent,
     required this.borderSubtle,
@@ -121,10 +122,12 @@ class AppColors extends ThemeExtension<AppColors> {
   /// ترويسة ملوّنة). و`primary` **لا ينوب عنه**: ذاك ينقلب مع الوضع، وسطحُ
   /// العلامة لا ينقلب — فيصير النصُّ فوقه غيرَ مقروء بأحد الوضعين.
   ///
-  /// > ⬜ **وبقيّةُ عائلة سطح العلامة** (`bgBrand` · `bgBrandDeep`) لم تُضَف بعد:
-  /// > لا مستهلكَ لها بالقالب اليوم، و`✅` تعني «له مستهلك هنا» لا «الملف وصل»
-  /// > (R27). تُضاف يوم تُبنى أوّلُ شاشةٍ مطليّة بالهوية.
   final Color onBrand;
+
+  /// **سطح العلامة** نفسُه — لا ينقلب مع الوضع، ويطابق `splash_background`
+  /// بأندرويد و`color` بـ`flutter_native_splash.yaml`، فلا وميضَ بين الإقلاع
+  /// وأوّل شاشةٍ مطليّة بالهوية (الترحيب).
+  final Color bgBrand;
 
   /// اللمسةُ المميِّزة فوق سطح العلامة — تقدُّمٌ, أو قيمةٌ تُبرَز.
   final Color onBrandAccent;
@@ -190,6 +193,7 @@ class AppColors extends ThemeExtension<AppColors> {
       textOnAccent: AppPalette.white,
       bgDisabled: AppPalette.gray300,
       textDisabled: AppPalette.gray700, // 6.59:1 over bgDisabled
+      bgBrand: AppPalette.brandSurface,
       onBrand: AppPalette.white,
       onBrandAccent: AppPalette.secondaryMain,
       borderSubtle: AppPalette.gray200,
@@ -256,6 +260,7 @@ class AppColors extends ThemeExtension<AppColors> {
       textOnAccent: AppPalette.gray900,
       bgDisabled: AppPalette.gray700,
       textDisabled: AppPalette.gray300, // 6.59:1 over bgDisabled
+      bgBrand: AppPalette.brandSurface,
       onBrand: AppPalette.white,
       onBrandAccent: AppPalette.secondaryMain,
       borderSubtle: AppPalette.gray700,
@@ -321,6 +326,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? textOnAccent,
     Color? bgDisabled,
     Color? textDisabled,
+    Color? bgBrand,
     Color? onBrand,
     Color? onBrandAccent,
     Color? borderSubtle,
@@ -384,6 +390,7 @@ class AppColors extends ThemeExtension<AppColors> {
       textOnAccent: textOnAccent ?? this.textOnAccent,
       bgDisabled: bgDisabled ?? this.bgDisabled,
       textDisabled: textDisabled ?? this.textDisabled,
+      bgBrand: bgBrand ?? this.bgBrand,
       onBrand: onBrand ?? this.onBrand,
       onBrandAccent: onBrandAccent ?? this.onBrandAccent,
       borderSubtle: borderSubtle ?? this.borderSubtle,
@@ -474,6 +481,7 @@ class AppColors extends ThemeExtension<AppColors> {
       textOnAccent: Color.lerp(textOnAccent, other.textOnAccent, t)!,
       bgDisabled: Color.lerp(bgDisabled, other.bgDisabled, t)!,
       textDisabled: Color.lerp(textDisabled, other.textDisabled, t)!,
+      bgBrand: Color.lerp(bgBrand, other.bgBrand, t)!,
       onBrand: Color.lerp(onBrand, other.onBrand, t)!,
       onBrandAccent: Color.lerp(onBrandAccent, other.onBrandAccent, t)!,
       borderSubtle: Color.lerp(borderSubtle, other.borderSubtle, t)!,

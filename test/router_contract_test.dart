@@ -30,6 +30,7 @@ void main() {
   /// Every destination reachable from a `context.router` call in `lib/`.
   const navigatedTo = <String>[
     // Entry + auth
+    'WelcomeRoute',
     'LoginRoute',
     'RegisterRoute',
     'ForgotPasswordRoute',

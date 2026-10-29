@@ -29,7 +29,10 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    // ── Splash ─────────────────────────────────────────────────────────────
+    // ── Startup ────────────────────────────────────────────────────────────
+    // The one-time welcome. `StartupResolver` sends a first launch here, and
+    // its button goes on to wherever the launch would have gone without it.
+    AutoRoute(page: WelcomeRoute.page, path: '/welcome'),
 
     // ── Auth ───────────────────────────────────────────────────────────────
     // `LoginRoute` is what the whole app falls back to: `app.dart` listens to
