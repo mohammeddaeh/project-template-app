@@ -45,6 +45,7 @@
 | `StatusFeedbackIndicator` | تفاعل | §31 |
 | `GuideOverlay` | onboarding | §32 |
 | `validateAndReveal` | نماذج | §33 |
+| `SvgImageWidget` / `.icon` | صور | §34 |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 
@@ -1260,3 +1261,26 @@ if (!_formKey.validateAndReveal()) return;
 
 المستهلكون: شاشات `features/auth/` الست (الدخول · التسجيل · التحقق · نسيان/إعادة/تغيير كلمة المرور).
 
+---
+
+## §34 · `SvgImageWidget` — صورة SVG وأيقونتها المربّعة
+
+```dart
+// صورة SVG بمقاسها — الرسم يُحفظ بنسبته
+SvgImageWidget(assetPath: Assets.images.vectors.logoSvg, height: 40)
+
+// أيقونة مربّعة بضلعٍ واحد — بصفّ أو زرّ
+SvgImageWidget.icon(Assets.images.vectors.logoSvg, size: 18)
+```
+
+**`.icon` لأي أيقونة داخل صفّ.** `SvgPicture(width: 18, height: 18)` لا يرسم
+مربّعاً: يأخذ الارتفاع ويحفظ نسبة الرسم، فرسمٌ عريض (`viewBox` 41×23) يخرج بعرض
+~32 ويدفع ما بجانبه. و`.icon` صندوقٌ ثابت (`SizedBox.square`) والرسم داخله
+بـ`BoxFit.contain`.
+
+**والاختبار يقيس المرسوم** (`tester.getSize`) لا الوسطاء — وسطاءٌ صحيحة مع رسمٍ
+أعرض مرّت خضراء: `test/svg_image_widget_test.dart`.
+
+⚠️ **و`flutter_svg` لا يطبّق `<style>`**: SVG يلوّن بأصناف CSS يُرسم أسود. أصلحه
+مرّةً بـ`dart run scripts/svg_inline_styles.dart <الملف>` — و`test/svg_no_style_test.dart`
+يُفشل أي SVG بـ`assets/` بقي فيه `<style>`.

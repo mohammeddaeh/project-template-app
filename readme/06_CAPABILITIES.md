@@ -59,6 +59,7 @@
 | مؤشّر تحميل أو تقدّم | `AppProgress.circular/linear` — [`ui/widgets/indicators/app_progress.dart`](../lib/ui/widgets/indicators/app_progress.dart) | `CircularProgressIndicator` | F35 |
 | حقل إدخال | `CustomTextField` — [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §5 | `TextField` / `TextFormField` | F36 |
 | التمرير لأول حقل ناقص | `formKey.validateAndReveal()` — [`ui/widgets/inputs/form_reveal.dart`](../lib/ui/widgets/inputs/form_reveal.dart) | `Scrollable.ensureVisible` يدوياً | 👁 |
+| أيقونة SVG بصفّ أو زرّ | `SvgImageWidget.icon(path, size:)` — مربّعٌ ثابت والرسم داخله — [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §34 | `SvgPicture.asset(width:, height:)` | 👁 |
 | صورة شبكة · صورة شخص · SVG · أصل | `CachedImageWidget` · `NetworkImageWidget` · `AvatarWidget` · `SvgImageWidget` · `AppAssetImage` — [`ui/widgets/images/`](../lib/ui/widgets/images/) | `Image.network(...)` | C05 |
 | حوار · تأكيد · ورقة سفلية | `context.showCustomDialog` · `showConfirmDialog` · `showLoadingDialog` · `context.showAppBottomSheet` — [`ui/extensions/`](../lib/ui/extensions/) | `showDialog` / `showModalBottomSheet` الإطار | 👁 |
 | قائمة مرقّمة بصفحات | `PaginationCubit` + `PaginationBuilderWdg` / `PaginatedListView` — [`14_PAGINATION.md`](14_PAGINATION.md) | `ScrollController` يحسب نهاية القائمة | 👁 |

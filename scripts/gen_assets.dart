@@ -77,6 +77,7 @@ void main(List<String> args) {
   }
 
   _syncPubspec(topFolders, dryRun: checkOnly);
+  _warnStyledSvgs(dir);
 
   if (!checkOnly) {
     print('\n📋  Usage:');
@@ -425,3 +426,16 @@ void _die(String msg) {
 }
 
 void _warn(String msg) => print('⚠️  $msg');
+
+/// `flutter_svg` لا يطبّق `<style>`: SVG يلوّن بالأصناف يُرسم أسود بلا خطأ.
+/// تنبيهٌ هنا، والحارس الحاجب `test/svg_no_style_test.dart`.
+void _warnStyledSvgs(Directory root) {
+  for (final file in root.listSync(recursive: true).whereType<File>()) {
+    if (!file.path.endsWith('.svg')) continue;
+    if (!file.readAsStringSync().contains('<style')) continue;
+    _warn(
+      '${file.path.replaceAll(r'\', '/')} فيه <style> — يُرسم أسود. '
+      'dart run scripts/svg_inline_styles.dart <الملف>',
+    );
+  }
+}

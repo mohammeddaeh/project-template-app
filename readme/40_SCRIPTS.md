@@ -22,6 +22,7 @@ dart run scripts/<script_name>.dart
 | `build_apk.dart` | تصدير APK مع إدارة الإصدار تلقائياً |
 | `sync_flavors.dart` | إعداد/إزالة flavors (ملفات `.env` + Android productFlavors + أسماء + أيقونات + launch.json) |
 | `gen_assets.dart` | مسح `assets/` وتوليد `lib/resources/assets.gen.dart` |
+| `svg_inline_styles.dart` | يُنزل قواعد `<style>` بملف SVG إلى سمات مباشرة — `flutter_svg` لا يطبّقها فيرسم أسود. راجع §4 |
 | `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
 | `gen_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
 | `sync_platform_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
@@ -179,6 +180,16 @@ assets/vectors/logo.svg         →  Assets.vectors.logoSvg
 - عند تعارض الامتدادات لنفس الاسم → `camelCase(stem) + لاحقة الامتداد` (مثال: `logo.svg` + `logo.png` → `logoSvg` / `logoPng`)
 
 يحدّث تلقائياً `lib/resources/assets.dart` (barrel) و`pubspec.yaml` — **يضيف** أي مسار مفقود تحت `flutter: assets:` **ويحذف** أي مسارٍ زائل (مجلَّدٌ فرغ من الملفات أو حُذف كلّياً منذ آخر تشغيل) داخل الكتلة المُدارة وحدها، دون لمس المسارات الثابتة `fonts/`/`translations/`/`app_icons/` — ويحذف ملفات قديمة (`vectors.dart`, `icons.dart`, `images.dart`) إذا وُجدت.
+
+**و`<style>` بأي SVG يُنبَّه عليه** — `flutter_svg` لا يطبّق قواعده، فيُرسم الشكل
+أسود بلا خطأ. الإصلاح مرّةً لكل ملف:
+
+```bash
+dart run scripts/svg_inline_styles.dart assets/images/logo.svg
+```
+
+ينقل خصائص كل صنفٍ سماتٍ على عناصره ويحذف `<style>` و`class`، والهندسةُ لا تُلمس.
+والحارس الحاجب `test/svg_no_style_test.dart`.
 
 > **لماذا يحذف لا يضيف فقط**: مجلّدٌ حُذف يبقى سطره بـ`pubspec.yaml` فيُشحَن بكل بناء بلا تحذير. فالفحص يقارن الكتلة المُدارة بما مسحه فعلاً، لا بما أُضيف تاريخياً.
 

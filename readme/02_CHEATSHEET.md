@@ -43,6 +43,7 @@ dart run scripts/sync_flavors.dart --reset    # إزالة الـflavors (لا �
 dart run scripts/sync_fonts.dart              # تفاعلي — يسجّل الخطوط ويولّد app_fonts.dart
 dart run scripts/gen_assets.dart              # يمسح assets/ ويولّد assets.gen.dart
 dart run scripts/gen_assets.dart --check      # فحص pubspec فقط
+dart run scripts/svg_inline_styles.dart <svg>  # SVG يُرسم أسود؟ يُنزل <style> إلى سمات
 dart run scripts/sync_platform_permissions.dart        # AppFeatures → AndroidManifest + Info.plist
 dart run scripts/gen_permission_keys.dart    # permissions.lock.json → permission_keys.g.dart
 ```
