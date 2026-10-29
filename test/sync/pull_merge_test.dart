@@ -11,7 +11,8 @@ import 'package:app_template/modules/sync/automation/sync_feature_contract.dart'
 import 'package:app_template/modules/sync/config/sync_mode.dart';
 import 'package:app_template/modules/sync/config/sync_settings.dart';
 import 'package:app_template/modules/sync/config/sync_settings_store.dart';
-import 'package:app_template/modules/sync/data/sync_cursor_store.dart';import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
+import 'package:app_template/modules/sync/data/sync_cursor_store.dart';
+import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
 import 'package:app_template/modules/sync/data/sync_database.dart';
 import 'package:app_template/modules/sync/data/sync_operations_log.dart';
 import 'package:app_template/modules/sync/domain/sync_entity_record.dart';
@@ -99,28 +100,26 @@ void main() {
   /// The server's copy of `n1` — newer, and different in every field a test
   /// could confuse with the local one.
   Map<String, dynamic> serverRow({bool deleted = false}) => {
-        'id': 'n1',
-        'title': 'FROM SERVER',
-        'version': 9,
-        'updated_at': '2026-01-01T00:00:00.000Z',
-        'is_deleted': deleted,
-      };
+    'id': 'n1',
+    'title': 'FROM SERVER',
+    'version': 9,
+    'updated_at': '2026-01-01T00:00:00.000Z',
+    'is_deleted': deleted,
+  };
 
   SyncEntityRecord localRow(SyncStatus status) => SyncEntityRecord(
-        localId: 'n1',
-        entityName: 'notes',
-        serverId: 'n1',
-        dataJson: jsonEncode({'id': 'n1', 'title': 'MINE', 'version': 1}),
-        updatedAt: 1,
-        version: 1,
-        syncStatus: status,
-        isDeleted: false,
-      );
+    localId: 'n1',
+    entityName: 'notes',
+    serverId: 'n1',
+    dataJson: jsonEncode({'id': 'n1', 'title': 'MINE', 'version': 1}),
+    updatedAt: 1,
+    version: 1,
+    syncStatus: status,
+    isDeleted: false,
+  );
 
   Future<void> pullOnce({List<Map<String, dynamic>>? records}) async {
-    final engine = buildEngine(
-      _FixedPullExecutor(records ?? [serverRow()]),
-    );
+    final engine = buildEngine(_FixedPullExecutor(records ?? [serverRow()]));
     await engine.runPendingJobs();
   }
 
@@ -145,7 +144,11 @@ void main() {
         'MINE',
         reason: '${status.name} was overwritten by the server copy — S10-1.',
       );
-      expect(after.syncStatus, status, reason: 'The state itself must survive.');
+      expect(
+        after.syncStatus,
+        status,
+        reason: 'The state itself must survive.',
+      );
       expect(after.version, 1);
       expect(entities.upsertedIds, isEmpty);
     });
@@ -209,7 +212,10 @@ void main() {
     final engine = buildEngine(
       _PagingPullExecutor([
         // page 1 — carries the protected row, plus one that must land
-        [serverRow(), {..._row('n2'), 'title': 'PAGE1'}],
+        [
+          serverRow(),
+          {..._row('n2'), 'title': 'PAGE1'},
+        ],
         // page 2 — the tail
         [_row('n3')],
       ]),
@@ -234,14 +240,19 @@ void main() {
     // thing on the device and moves it to the top of a list it does not belong
     // at the top of. The pull executor already refuses to guess a server time;
     // this is the same rule one level down.
-    await pullOnce(records: [
-      {...serverRow(), 'updated_at': 'not-a-date'},
-      _row('n2'),
-    ]);
+    await pullOnce(
+      records: [
+        {...serverRow(), 'updated_at': 'not-a-date'},
+        _row('n2'),
+      ],
+    );
 
     expect(entities.rows.containsKey('n1'), isFalse);
-    expect(entities.rows.containsKey('n2'), isTrue,
-        reason: 'one bad record must not drop the page');
+    expect(
+      entities.rows.containsKey('n2'),
+      isTrue,
+      reason: 'one bad record must not drop the page',
+    );
   });
 
   test('a record with a missing updated_at is dropped too', () async {
@@ -286,7 +297,8 @@ void main() {
         expect(
           title,
           'MINE',
-          reason: 'SyncStatus.${status.name} is not covered by the guard. '
+          reason:
+              'SyncStatus.${status.name} is not covered by the guard. '
               'A state was added to the enum without being classified as '
               'pending or terminal, and the pull will overwrite it.',
         );
@@ -296,12 +308,12 @@ void main() {
 }
 
 Map<String, dynamic> _row(String id) => {
-      'id': id,
-      'title': id,
-      'version': 1,
-      'updated_at': '2026-01-01T00:00:00.000Z',
-      'is_deleted': false,
-    };
+  'id': id,
+  'title': id,
+  'version': 1,
+  'updated_at': '2026-01-01T00:00:00.000Z',
+  'is_deleted': false,
+};
 
 // ── Doubles ──────────────────────────────────────────────────────────────────
 
@@ -317,13 +329,9 @@ class _FixedPullExecutor implements SyncPullExecutor {
     required SyncCursor cursor,
     required bool includeDeleted,
     required int limit,
-  }) async =>
-      Right(
-        SyncPullPage(
-          records: _records,
-          serverTime: '2026-01-01T00:00:00.000Z',
-        ),
-      );
+  }) async => Right(
+    SyncPullPage(records: _records, serverTime: '2026-01-01T00:00:00.000Z'),
+  );
 }
 
 class _PagingPullExecutor implements SyncPullExecutor {
@@ -425,22 +433,22 @@ class _EmptyQueue implements SyncQueueRepository {
   Future<List<SyncQueueJob>> getDueJobs({
     required int nowMs,
     required int limit,
-  }) async =>
-      const [];
+  }) async => const [];
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      throw StateError('SyncQueueRepository.${invocation.memberName} unexpected');
+  dynamic noSuchMethod(Invocation invocation) => throw StateError(
+    'SyncQueueRepository.${invocation.memberName} unexpected',
+  );
 }
 
 class _ActiveSettings implements SyncSettingsStore {
   @override
   Future<SyncSettings> getSettings() async => const SyncSettings(
-        mode: SyncMode.active,
-        syncEnabled: true,
-        wifiOnly: false,
-        periodicIntervalSeconds: 300,
-      );
+    mode: SyncMode.active,
+    syncEnabled: true,
+    wifiOnly: false,
+    periodicIntervalSeconds: 300,
+  );
 
   @override
   dynamic noSuchMethod(Invocation invocation) async {}
@@ -505,5 +513,10 @@ class _SilentLog implements LogDelegate {
   @override
   void debug(String message, {String? tag}) {}
   @override
-  void error(String message, {String? tag, Object? error, StackTrace? stackTrace}) {}
+  void error(
+    String message, {
+    String? tag,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {}
 }

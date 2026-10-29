@@ -256,14 +256,16 @@ Future<void> _cmdNode(String nodeId, String? knownName) async {
   final entry = (res['nodes'] as Map<String, dynamic>)[nodeId];
   if (entry == null) _die('لا عقدة بالمعرّف $nodeId — جرّب --list.');
 
-  final node = (entry as Map<String, dynamic>)['document'] as Map<String, dynamic>;
+  final node =
+      (entry as Map<String, dynamic>)['document'] as Map<String, dynamic>;
   final name = knownName ?? node['name'] as String;
   final slug = _slug(name, nodeId);
 
   // 1) الشجرة مُقلَّمة
   final pruned = _prune(node, null);
-  File('$_cacheDir/$slug.json')
-      .writeAsStringSync(const JsonEncoder.withIndent('  ').convert(pruned));
+  File(
+    '$_cacheDir/$slug.json',
+  ).writeAsStringSync(const JsonEncoder.withIndent('  ').convert(pruned));
 
   // 2) الخلاصة المقروءة
   final md = StringBuffer()
@@ -313,7 +315,10 @@ Future<void> _cmdNode(String nodeId, String? knownName) async {
 
 /// شجرة الفيغما الخام تصل ميغابايتات للإطار الواحد — أغلبها مصفوفات هندسية
 /// وحالات مكوّنات لا تُقرأ. هذه تحتفظ بما يُترجَم إلى Flutter وحده.
-Map<String, dynamic> _prune(Map<String, dynamic> n, Map<String, dynamic>? parent) {
+Map<String, dynamic> _prune(
+  Map<String, dynamic> n,
+  Map<String, dynamic>? parent,
+) {
   final box = n['absoluteBoundingBox'] as Map<String, dynamic>?;
   final pBox = parent?['absoluteBoundingBox'] as Map<String, dynamic>?;
 
@@ -339,7 +344,9 @@ Map<String, dynamic> _prune(Map<String, dynamic> n, Map<String, dynamic>? parent
   final grad = _gradient(n);
   if (grad != null) out['gradient'] = grad;
 
-  final stroke = _firstHex((n['strokes'] as List?)?.cast<Map<String, dynamic>>());
+  final stroke = _firstHex(
+    (n['strokes'] as List?)?.cast<Map<String, dynamic>>(),
+  );
   if (stroke != null) {
     out['border'] = stroke;
     if (n['strokeWeight'] != null) out['borderWidth'] = _num(n['strokeWeight']);
@@ -364,8 +371,12 @@ Map<String, dynamic> _prune(Map<String, dynamic> n, Map<String, dynamic>? parent
       _num(n['paddingLeft'] ?? 0),
     ];
     if (pad.any((v) => v != 0)) out['padding'] = pad; // T R B L
-    if (n['primaryAxisAlignItems'] != null) out['mainAxis'] = n['primaryAxisAlignItems'];
-    if (n['counterAxisAlignItems'] != null) out['crossAxis'] = n['counterAxisAlignItems'];
+    if (n['primaryAxisAlignItems'] != null) {
+      out['mainAxis'] = n['primaryAxisAlignItems'];
+    }
+    if (n['counterAxisAlignItems'] != null) {
+      out['crossAxis'] = n['counterAxisAlignItems'];
+    }
   }
 
   if (n['type'] == 'TEXT') {
@@ -396,7 +407,11 @@ Map<String, dynamic> _prune(Map<String, dynamic> n, Map<String, dynamic>? parent
 
 // ── Readable outline ──────────────────────────────────────────────────────────
 
-String _outline(Map<String, dynamic> n, Map<String, dynamic>? parent, String indent) {
+String _outline(
+  Map<String, dynamic> n,
+  Map<String, dynamic>? parent,
+  String indent,
+) {
   final p = _prune(n, parent);
   final bits = <String>[];
 
@@ -410,7 +425,9 @@ String _outline(Map<String, dynamic> n, Map<String, dynamic>? parent, String ind
   if (p['fill'] != null) bits.add('fill ${p['fill']}');
   if (p['gradient'] != null) bits.add('grad ${p['gradient']}');
   if (p['border'] != null) {
-    bits.add('border ${p['border']}${p['borderWidth'] != null ? ' ${p['borderWidth']}' : ''}');
+    bits.add(
+      'border ${p['border']}${p['borderWidth'] != null ? ' ${p['borderWidth']}' : ''}',
+    );
   }
   if (p['radius'] != null) bits.add('r${p['radius']}');
   if (p['radii'] != null) bits.add('r${(p['radii'] as List).join('/')}');
@@ -420,7 +437,9 @@ String _outline(Map<String, dynamic> n, Map<String, dynamic>? parent, String ind
   final font = p['font'] as Map<String, dynamic>?;
   if (font != null) {
     bits.add('${font['size']}/${font['weight']} ${font['family']}');
-    if (font['align'] != null && font['align'] != 'LEFT') bits.add('${font['align']}');
+    if (font['align'] != null && font['align'] != 'LEFT') {
+      bits.add('${font['align']}');
+    }
   }
 
   final label = p['text'] != null
@@ -428,7 +447,9 @@ String _outline(Map<String, dynamic> n, Map<String, dynamic>? parent, String ind
       : p['name'];
 
   final buf = StringBuffer()
-    ..writeln('$indent${_pad(p['type'] as String, 9)} $label   ${bits.join('  ')}');
+    ..writeln(
+      '$indent${_pad(p['type'] as String, 9)} $label   ${bits.join('  ')}',
+    );
 
   for (final child in ((n['children'] as List?) ?? [])) {
     buf.write(_outline(child as Map<String, dynamic>, n, '$indent  '));
@@ -467,8 +488,11 @@ String? _paintHex(Map<String, dynamic> paint) {
   final c = paint['color'] as Map<String, dynamic>?;
   if (c == null) return null;
 
-  String ch(Object? v) =>
-      (((v as num?) ?? 0) * 255).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
+  String ch(Object? v) => (((v as num?) ?? 0) * 255)
+      .round()
+      .clamp(0, 255)
+      .toRadixString(16)
+      .padLeft(2, '0');
   final hex = '#${ch(c['r'])}${ch(c['g'])}${ch(c['b'])}'.toUpperCase();
 
   final alpha = ((paint['opacity'] as num?) ?? 1) * ((c['a'] as num?) ?? 1);
@@ -481,10 +505,12 @@ String? _gradient(Map<String, dynamic> n) {
     if (p['visible'] == false) continue;
     final type = p['type'] as String?;
     if (type == null || !type.startsWith('GRADIENT')) continue;
-    final stops = ((p['gradientStops'] as List?) ?? []).map((s) {
-      final st = s as Map<String, dynamic>;
-      return _paintHex({'type': 'SOLID', 'color': st['color']}) ?? '?';
-    }).join(' → ');
+    final stops = ((p['gradientStops'] as List?) ?? [])
+        .map((s) {
+          final st = s as Map<String, dynamic>;
+          return _paintHex({'type': 'SOLID', 'color': st['color']}) ?? '?';
+        })
+        .join(' → ');
     return '${type.replaceFirst('GRADIENT_', '').toLowerCase()} $stops';
   }
   return null;
@@ -560,8 +586,9 @@ String? _effects(Map<String, dynamic>? n) {
 Future<Map<String, dynamic>> _api(String path) async {
   final client = HttpClient()..connectionTimeout = const Duration(seconds: 20);
   try {
-    final req = await client.getUrl(Uri.https(_apiHost, path.split('?').first,
-        _queryOf(path)));
+    final req = await client.getUrl(
+      Uri.https(_apiHost, path.split('?').first, _queryOf(path)),
+    );
     req.headers.set('X-Figma-Token', _token);
     final res = await req.close();
     final body = await res.transform(utf8.decoder).join();
@@ -572,14 +599,16 @@ Future<Map<String, dynamic>> _api(String path) async {
       case 403:
         // `/styles` يقع تحت صلاحية أخرى غير التي يحتاجها محتوى الملف. تمييز
         // الحالتين هنا يمنع مطاردة توكنٍ سليم: كل شيء آخر يعمل، وهذا وحده يُرفض.
-        _die(path.contains('/styles')
-            ? 'الأنماط المنشورة مرفوضة (403).\n'
-                '    `/styles` يحتاج صلاحية «Library content: read» —\n'
-                '    وهي غير «File content: read» التي يحتاجها سحب الإطارات.\n'
-                '    أضفها للتوكن، أو تجاهل الأمر: جدول الألوان بذيل كل\n'
-                '    `<slug>.md` يعطي اللوحة نفسها مستخرَجةً من الإطارات.'
-            : 'التوكن مرفوض (403).\n'
-                '    تأكّد أنه صالح وأن صلاحيته تشمل «File content: read».');
+        _die(
+          path.contains('/styles')
+              ? 'الأنماط المنشورة مرفوضة (403).\n'
+                    '    `/styles` يحتاج صلاحية «Library content: read» —\n'
+                    '    وهي غير «File content: read» التي يحتاجها سحب الإطارات.\n'
+                    '    أضفها للتوكن، أو تجاهل الأمر: جدول الألوان بذيل كل\n'
+                    '    `<slug>.md` يعطي اللوحة نفسها مستخرَجةً من الإطارات.'
+              : 'التوكن مرفوض (403).\n'
+                    '    تأكّد أنه صالح وأن صلاحيته تشمل «File content: read».',
+        );
       case 404:
         _die('الملف غير موجود (404) — راجع مفتاح الملف بـ$_configFile.');
       case 429:
@@ -647,9 +676,11 @@ String _resolveFileKey() {
     final key = cfg['fileKey'] as String?;
     if (key != null && key.isNotEmpty) return key;
   }
-  _die('لا مفتاح ملف.\n'
-      '    شغّل مرّة واحدة:\n'
-      '      dart run scripts/pull_figma.dart --file "<الصق رابط الفيغما>"');
+  _die(
+    'لا مفتاح ملف.\n'
+    '    شغّل مرّة واحدة:\n'
+    '      dart run scripts/pull_figma.dart --file "<الصق رابط الفيغما>"',
+  );
 }
 
 void _saveConfig(String key) {
@@ -664,7 +695,9 @@ void _saveConfig(String key) {
 String _extractFileKey(String input) {
   final s = input.trim();
   if (!s.contains('/')) return s;
-  final m = RegExp(r'figma\.com/(?:file|design|proto)/([A-Za-z0-9]+)').firstMatch(s);
+  final m = RegExp(
+    r'figma\.com/(?:file|design|proto)/([A-Za-z0-9]+)',
+  ).firstMatch(s);
   if (m != null) return m.group(1)!;
   _die('تعذّر استخراج مفتاح الملف من:\n    $s');
 }

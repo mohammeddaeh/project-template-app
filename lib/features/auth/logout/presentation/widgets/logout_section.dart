@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/features/auth/logout/presentation/cubits/logout_cubit.dart';
 import 'package:app_template/core/di/injection.dart';

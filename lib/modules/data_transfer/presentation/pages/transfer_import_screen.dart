@@ -66,19 +66,29 @@ class TransferImportScreen extends StatelessWidget {
             builder: (context, state) => switch (state) {
               ImportInitial() || ImportLoading() => const LoadingWidget(),
               ImportFailed(:final message, :final code) => TransferFailureView(
-                  message: message,
-                  code: code,
-                  onRetry: () => context.read<ImportCubit>().load(resource),
-                ),
-              ImportReady(:final resource) =>
-                _PickStep(resource: resource, busy: false),
-              ImportTemplateLoading(:final resource) =>
-                _PickStep(resource: resource, busy: true),
-              ImportTemplateReady(:final resource) =>
-                _PickStep(resource: resource, busy: false),
-              ImportValidating() => const _Busy(labelKey: LocaleKeys.importValidating),
+                message: message,
+                code: code,
+                onRetry: () => context.read<ImportCubit>().load(resource),
+              ),
+              ImportReady(:final resource) => _PickStep(
+                resource: resource,
+                busy: false,
+              ),
+              ImportTemplateLoading(:final resource) => _PickStep(
+                resource: resource,
+                busy: true,
+              ),
+              ImportTemplateReady(:final resource) => _PickStep(
+                resource: resource,
+                busy: false,
+              ),
+              ImportValidating() => const _Busy(
+                labelKey: LocaleKeys.importValidating,
+              ),
               ImportReviewing() => _ReviewStep(state: state),
-              ImportCommitting() => const _Busy(labelKey: LocaleKeys.importCommitting),
+              ImportCommitting() => const _Busy(
+                labelKey: LocaleKeys.importCommitting,
+              ),
               ImportCommitted(:final result) => _DoneStep(result: result),
             },
           ),
@@ -86,7 +96,6 @@ class TransferImportScreen extends StatelessWidget {
       ),
     );
   }
-
 }
 
 // ── Phase 0: choose a file ───────────────────────────────────────────────────
@@ -449,15 +458,15 @@ class _Busy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const AppLoader(),
-            const SizedBox(height: 16),
-            Text(labelKey.tr(), style: context.textTheme.bodyMedium),
-          ],
-        ),
-      );
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const AppLoader(),
+        const SizedBox(height: 16),
+        Text(labelKey.tr(), style: context.textTheme.bodyMedium),
+      ],
+    ),
+  );
 }
 
 /// One importable column, explained.
@@ -522,10 +531,7 @@ class _ColumnRow extends StatelessWidget {
                   // The server's own explanation of what this column means —
                   // not a sample value, which is what used to be shown here and
                   // answered a question nobody was asking.
-                  Text(
-                    hint,
-                    style: context.textTheme.bodySmall,
-                  ),
+                  Text(hint, style: context.textTheme.bodySmall),
                 ],
                 if (column.example != null && column.example!.isNotEmpty) ...[
                   const SizedBox(height: 2),
@@ -549,13 +555,13 @@ class _ColumnRow extends StatelessWidget {
   /// A glyph for the cell type, so "this wants a date" is visible before the
   /// user fills the file in rather than after the importer refuses it.
   static IconData _iconFor(TransferColumnType type) => switch (type) {
-        TransferColumnType.number => Icons.tag,
-        TransferColumnType.boolean => Icons.check_box_outlined,
-        TransferColumnType.date => Icons.event_outlined,
-        TransferColumnType.datetime => Icons.schedule_outlined,
-        TransferColumnType.string || TransferColumnType.unknown =>
-          Icons.text_fields,
-      };
+    TransferColumnType.number => Icons.tag,
+    TransferColumnType.boolean => Icons.check_box_outlined,
+    TransferColumnType.date => Icons.event_outlined,
+    TransferColumnType.datetime => Icons.schedule_outlined,
+    TransferColumnType.string ||
+    TransferColumnType.unknown => Icons.text_fields,
+  };
 }
 
 class _Badge extends StatelessWidget {
@@ -566,14 +572,14 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          text,
-          style: context.textTheme.bodySmall?.copyWith(color: color),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.12),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Text(
+      text,
+      style: context.textTheme.bodySmall?.copyWith(color: color),
+    ),
+  );
 }

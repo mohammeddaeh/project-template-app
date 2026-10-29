@@ -17,15 +17,15 @@ abstract final class Env {
   /// عنوان الـ API الخاص بهذه البيئة
   static const String baseUrl = String.fromEnvironment('BASE_URL');
 
-  static bool get isDev     => flavor == 'dev';
+  static bool get isDev => flavor == 'dev';
   static bool get isStaging => flavor == 'staging';
-  static bool get isProd    => flavor == 'prod';
+  static bool get isProd => flavor == 'prod';
 
   /// لاحقة قصيرة للعرض في FlavorBanner — فارغة في prod
   static String get label => switch (flavor) {
-    'dev'     => 'Dev',
+    'dev' => 'Dev',
     'staging' => 'Test',
-    _         => '',
+    _ => '',
   };
 
   /// **جردُ ما لا يعمل التطبيقُ بدونه** — أضِف إليه كلَّ مفتاحٍ تقرؤه بلا

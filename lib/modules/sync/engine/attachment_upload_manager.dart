@@ -125,19 +125,23 @@ class AttachmentUploadManager {
           tag: _tag,
         );
       }
-      await _store.upsert(record.copyWith(
-        uploadStatus: AttachmentUploadStatus.failed,
-        retryCount: maxUploadAttempts,
-        lastError: 'local file missing',
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-      ));
+      await _store.upsert(
+        record.copyWith(
+          uploadStatus: AttachmentUploadStatus.failed,
+          retryCount: maxUploadAttempts,
+          lastError: 'local file missing',
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
       return false;
     }
 
-    await _store.upsert(record.copyWith(
-      uploadStatus: AttachmentUploadStatus.uploading,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await _store.upsert(
+      record.copyWith(
+        uploadStatus: AttachmentUploadStatus.uploading,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
 
     try {
       // يُوصَل قبل الاستدعاء ويُفصَل بـ`finally` أدناه: الهدفُ مفردٌ مشترك
@@ -158,22 +162,24 @@ class AttachmentUploadManager {
         idempotencyKey: 'attachment_${record.attachmentId}',
       );
 
-      await _store.upsert(record.copyWith(
-        // Only now. "Sent" is not "stored", and treating it as such is what
-        // makes it safe to free the local copy — which it is not.
-        uploadStatus: AttachmentUploadStatus.uploaded,
-        // **Recorded at the moment the file stops existing only here.**
-        //
-        // A device-captured row is born with no url, and confirming the upload
-        // is exactly when one becomes true. Without it the row was confirmed
-        // (so the cache manager may reclaim it) and unfetchable (so
-        // `AttachmentDownloadManager.access` answers `fetchFailed`) — the two
-        // states that must never be reachable together.
-        remoteUrl: record.remoteUrl ?? target.contentUrlFor(serverId),
-        retryCount: 0,
-        clearLastError: true,
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-      ));
+      await _store.upsert(
+        record.copyWith(
+          // Only now. "Sent" is not "stored", and treating it as such is what
+          // makes it safe to free the local copy — which it is not.
+          uploadStatus: AttachmentUploadStatus.uploaded,
+          // **Recorded at the moment the file stops existing only here.**
+          //
+          // A device-captured row is born with no url, and confirming the upload
+          // is exactly when one becomes true. Without it the row was confirmed
+          // (so the cache manager may reclaim it) and unfetchable (so
+          // `AttachmentDownloadManager.access` answers `fetchFailed`) — the two
+          // states that must never be reachable together.
+          remoteUrl: record.remoteUrl ?? target.contentUrlFor(serverId),
+          retryCount: 0,
+          clearLastError: true,
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
 
       LogService.info(
         'Uploaded ${record.fileName} → $serverId. The local copy stays until '
@@ -195,15 +201,16 @@ class AttachmentUploadManager {
       // connection, a 401 the refresh layer may yet fix) keeps its attempts.
       final failure = FailureMapperRegistry.map(e, source: 'attachment_upload');
       final permanent = _isPermanent(failure);
-      final attempts =
-          permanent ? maxUploadAttempts : record.retryCount + 1;
+      final attempts = permanent ? maxUploadAttempts : record.retryCount + 1;
 
-      await _store.upsert(record.copyWith(
-        uploadStatus: AttachmentUploadStatus.failed,
-        retryCount: attempts,
-        lastError: e.toString(),
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-      ));
+      await _store.upsert(
+        record.copyWith(
+          uploadStatus: AttachmentUploadStatus.failed,
+          retryCount: attempts,
+          lastError: e.toString(),
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
       LogService.warning(
         'Upload of ${record.attachmentId} failed (attempt '
         '$attempts/$maxUploadAttempts, ${permanent ? 'permanent' : 'transient'}) '

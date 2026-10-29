@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const SignUp = 'SignUp';
   static const accessControlDisabled = 'accessControlDisabled';
   static const accessNotEnforced = 'accessNotEnforced';
@@ -68,8 +68,10 @@ abstract class  LocaleKeys {
   static const deviceRevokeConfirmTitle = 'deviceRevokeConfirmTitle';
   static const deviceRevokeDone = 'deviceRevokeDone';
   static const deviceRevokeOthers = 'deviceRevokeOthers';
-  static const deviceRevokeOthersConfirmMessage = 'deviceRevokeOthersConfirmMessage';
-  static const deviceRevokeOthersConfirmTitle = 'deviceRevokeOthersConfirmTitle';
+  static const deviceRevokeOthersConfirmMessage =
+      'deviceRevokeOthersConfirmMessage';
+  static const deviceRevokeOthersConfirmTitle =
+      'deviceRevokeOthersConfirmTitle';
   static const deviceRevokeOthersDone = 'deviceRevokeOthersDone';
   static const deviceSecurityNote = 'deviceSecurityNote';
   static const deviceSignedInAt = 'deviceSignedInAt';
@@ -223,8 +225,10 @@ abstract class  LocaleKeys {
   static const notPrimaryDevice = 'notPrimaryDevice';
   static const notSpecified = 'notSpecified';
   static const notificationCenterClearAll = 'notificationCenterClearAll';
-  static const notificationCenterClearConfirmMessage = 'notificationCenterClearConfirmMessage';
-  static const notificationCenterClearConfirmTitle = 'notificationCenterClearConfirmTitle';
+  static const notificationCenterClearConfirmMessage =
+      'notificationCenterClearConfirmMessage';
+  static const notificationCenterClearConfirmTitle =
+      'notificationCenterClearConfirmTitle';
   static const notificationCenterEmpty = 'notificationCenterEmpty';
   static const notificationCenterMarkAllRead = 'notificationCenterMarkAllRead';
   static const notificationCenterTitle = 'notificationCenterTitle';
@@ -393,5 +397,4 @@ abstract class  LocaleKeys {
   static const orLoginWithAnotherAccount = 'orLoginWithAnotherAccount';
   static const continueLabel = 'continueLabel';
   static const notThisAccount = 'notThisAccount';
-
 }

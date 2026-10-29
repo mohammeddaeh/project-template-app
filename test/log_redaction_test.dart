@@ -110,18 +110,20 @@ void main() {
     expect(log.all, isNot(contains(_token)));
   });
 
-  test('a secret in a multipart field is redacted, and files are named only',
-      () async {
-    await dio.post<dynamic>(
-      '/upload',
-      data: FormData.fromMap({
-        'client_secret': _token,
-        'file': MultipartFile.fromBytes([1, 2, 3], filename: 'a.bin'),
-      }),
-    );
+  test(
+    'a secret in a multipart field is redacted, and files are named only',
+    () async {
+      await dio.post<dynamic>(
+        '/upload',
+        data: FormData.fromMap({
+          'client_secret': _token,
+          'file': MultipartFile.fromBytes([1, 2, 3], filename: 'a.bin'),
+        }),
+      );
 
-    expect(log.all, isNot(contains(_token)));
-  });
+      expect(log.all, isNot(contains(_token)));
+    },
+  );
 
   test('the key set covers every credential this template can carry', () {
     // مفتاحٌ يُضاف إلى العقد ولا يُضاف هنا يُطبع خاماً، ولا يشكو شيء.
@@ -141,9 +143,12 @@ void main() {
     }
   });
 
-  test('non-secret values are still logged — redaction is not a blackout', () async {
-    await dio.post<dynamic>('/x', data: {'title': 'readable-value'});
+  test(
+    'non-secret values are still logged — redaction is not a blackout',
+    () async {
+      await dio.post<dynamic>('/x', data: {'title': 'readable-value'});
 
-    expect(log.all, contains('readable-value'));
-  });
+      expect(log.all, contains('readable-value'));
+    },
+  );
 }

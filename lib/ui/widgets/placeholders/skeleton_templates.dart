@@ -1,14 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/placeholders/shimmer_loading_widget.dart';
 
 // Internal box — colored rectangle / circle with no shimmer of its own.
 // Shimmer is supplied by the parent template's ShimmerLoadingWidget.
 class _Box extends StatelessWidget {
-  const _Box({
-    this.width,
-    required this.height,
-    this.circle = false,
-  });
+  const _Box({this.width, required this.height, this.circle = false});
 
   final double? width;
   final double height;
@@ -16,13 +12,13 @@ class _Box extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(circle ? height / 2 : 6),
-        ),
-      );
+    width: width,
+    height: height,
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(circle ? height / 2 : 6),
+    ),
+  );
 }
 
 /// Horizontal row: leading avatar circle + two text lines.
@@ -55,8 +51,8 @@ class SkeletonListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShimmerLoadingWidget(
       child: Padding(
-        padding: padding ??
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -132,9 +128,9 @@ class SkeletonCard extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     height: imageHeight,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                   ),
                 Padding(
                   padding: const EdgeInsets.all(12),
@@ -176,11 +172,7 @@ class SkeletonCard extends StatelessWidget {
 /// - [aspectRatio] — نسبة عرض/ارتفاع منطقة الصورة المربعة (افتراضي: 0.85)
 /// - [padding] — padding داخل كل خلية
 class SkeletonGridItem extends StatelessWidget {
-  const SkeletonGridItem({
-    super.key,
-    this.aspectRatio = 0.85,
-    this.padding,
-  });
+  const SkeletonGridItem({super.key, this.aspectRatio = 0.85, this.padding});
 
   final double aspectRatio;
   final EdgeInsets? padding;
@@ -242,8 +234,8 @@ class SkeletonProfile extends StatelessWidget {
     final diameter = avatarRadius * 2;
     return ShimmerLoadingWidget(
       child: Padding(
-        padding: padding ??
-            const EdgeInsets.symmetric(vertical: 24, horizontal: 48),
+        padding:
+            padding ?? const EdgeInsets.symmetric(vertical: 24, horizontal: 48),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -278,11 +270,8 @@ class SkeletonProfile extends StatelessWidget {
 /// - [count] — عدد الإحصائيات جنباً لجنب (افتراضي: 3)
 /// - [padding] — padding خارجي (افتراضي: horizontal 16, vertical 12)
 class SkeletonStatRow extends StatelessWidget {
-  const SkeletonStatRow({
-    super.key,
-    this.count = 3,
-    this.padding,
-  }) : assert(count >= 2 && count <= 6, 'count must be 2–6');
+  const SkeletonStatRow({super.key, this.count = 3, this.padding})
+    : assert(count >= 2 && count <= 6, 'count must be 2–6');
 
   final int count;
   final EdgeInsets? padding;
@@ -291,8 +280,8 @@ class SkeletonStatRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShimmerLoadingWidget(
       child: Padding(
-        padding: padding ??
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
             for (int i = 0; i < count; i++) ...[

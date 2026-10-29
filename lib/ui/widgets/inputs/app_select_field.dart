@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/app_colors.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -215,7 +215,9 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
                 child: Row(
                   children: [
                     AppAssetImage(
-                        Assets.images.vectors.errorIconSvg, height: 16),
+                      Assets.images.vectors.errorIconSvg,
+                      height: 16,
+                    ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
@@ -297,8 +299,11 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
     return GestureDetector(
       onTap: () => _openBottomSheet(context),
       child: InputDecorator(
-        decoration:
-            _inputDecoration(colors, hasError: hasError, focused: false),
+        decoration: _inputDecoration(
+          colors,
+          hasError: hasError,
+          focused: false,
+        ),
         child: Row(
           children: [
             if (widget.prefixIcon != null) ...[
@@ -339,22 +344,22 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
     final borderColor = hasError
         ? colors.error
         : focused
-            ? colors.primary
-            : colors.borderSubtle;
+        ? colors.primary
+        : colors.borderSubtle;
     final border = OutlineInputBorder(
       borderRadius: radius,
       borderSide: BorderSide(width: 1, color: borderColor),
     );
     return InputDecoration(
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       border: border,
       enabledBorder: border,
       focusedBorder: border,
       errorBorder: border,
       focusedErrorBorder: border,
       disabledBorder: border,
-      prefixIcon: widget.prefixIcon != null && widget.mode == AppSelectMode.dropdown
+      prefixIcon:
+          widget.prefixIcon != null && widget.mode == AppSelectMode.dropdown
           ? widget.prefixIcon
           : null,
       isDense: true,
@@ -399,38 +404,41 @@ class _SelectBottomSheet<T> extends StatelessWidget {
             ),
           ),
           // Options
-          ...items.map(
-            (item) {
-              final isSelected = item == selectedValue;
-              return InkWell(
-                onTap: () => Navigator.of(context).pop(item),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 14),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          labelResolver(item),
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: isSelected
-                                ? scheme.primary
-                                : colors.textPrimary,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                          ),
+          ...items.map((item) {
+            final isSelected = item == selectedValue;
+            return InkWell(
+              onTap: () => Navigator.of(context).pop(item),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        labelResolver(item),
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: isSelected
+                              ? scheme.primary
+                              : colors.textPrimary,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
                         ),
                       ),
-                      if (isSelected)
-                        Icon(Icons.check_rounded,
-                            size: 18, color: scheme.primary),
-                    ],
-                  ),
+                    ),
+                    if (isSelected)
+                      Icon(
+                        Icons.check_rounded,
+                        size: 18,
+                        color: scheme.primary,
+                      ),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          }),
           const SizedBox(height: 8),
         ],
       ),

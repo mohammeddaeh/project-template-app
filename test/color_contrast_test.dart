@@ -13,9 +13,7 @@ double _relativeLuminance(Color c) {
   double channel(double v) =>
       v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4) as double;
 
-  return 0.2126 * channel(c.r) +
-      0.7152 * channel(c.g) +
-      0.0722 * channel(c.b);
+  return 0.2126 * channel(c.r) + 0.7152 * channel(c.g) + 0.0722 * channel(c.b);
 }
 
 double contrast(Color a, Color b) {
@@ -46,8 +44,14 @@ void main() {
       });
 
       test('primary text is readable on the page and on cards', () {
-        expect(contrast(c.textPrimary, c.bgPage), greaterThanOrEqualTo(bodyText));
-        expect(contrast(c.textPrimary, c.bgCard), greaterThanOrEqualTo(bodyText));
+        expect(
+          contrast(c.textPrimary, c.bgPage),
+          greaterThanOrEqualTo(bodyText),
+        );
+        expect(
+          contrast(c.textPrimary, c.bgCard),
+          greaterThanOrEqualTo(bodyText),
+        );
       });
 
       test('every status foreground is readable on its own background', () {

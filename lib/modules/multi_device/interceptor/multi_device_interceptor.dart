@@ -36,10 +36,7 @@ class MultiDeviceInterceptor extends Interceptor {
   final DeviceIdService _deviceIdService;
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (_deviceIdService.deviceId.isNotEmpty) {
       options.headers[MultiDeviceConfig.headerDeviceId] =
           _deviceIdService.deviceId;

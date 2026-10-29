@@ -103,21 +103,24 @@ void main() {
   });
 
   group('eviction empties the row rather than deleting it', () {
-    test('clearLocalPath is explicit, because null already means "unchanged"', () {
-      final present = _record(origin: AttachmentOrigin.server);
-      final evicted = present.copyWith(
-        clearLocalPath: true,
-        downloadStatus: AttachmentDownloadStatus.absent,
-      );
+    test(
+      'clearLocalPath is explicit, because null already means "unchanged"',
+      () {
+        final present = _record(origin: AttachmentOrigin.server);
+        final evicted = present.copyWith(
+          clearLocalPath: true,
+          downloadStatus: AttachmentDownloadStatus.absent,
+        );
 
-      // The row survives — it is what knows the url and the checksum, which is
-      // what makes the bytes re-fetchable. Deleting it would turn an evicted
-      // file into a missing one.
-      expect(evicted.localPath, isNull);
-      expect(evicted.remoteUrl, present.remoteUrl);
-      expect(evicted.checksum, present.checksum);
-      expect(evicted.isAvailableLocally, isFalse);
-    });
+        // The row survives — it is what knows the url and the checksum, which is
+        // what makes the bytes re-fetchable. Deleting it would turn an evicted
+        // file into a missing one.
+        expect(evicted.localPath, isNull);
+        expect(evicted.remoteUrl, present.remoteUrl);
+        expect(evicted.checksum, present.checksum);
+        expect(evicted.isAvailableLocally, isFalse);
+      },
+    );
 
     test('a plain copyWith does not clear the path by accident', () {
       final present = _record(origin: AttachmentOrigin.server);
@@ -156,7 +159,8 @@ void main() {
       expect(
         code.contains('getTemporaryDirectory'),
         isFalse,
-        reason: 'the OS empties the temporary directory exactly when a long, '
+        reason:
+            'the OS empties the temporary directory exactly when a long, '
             'photo-heavy round is running',
       );
       expect(
@@ -200,7 +204,8 @@ void main() {
       expect(
         fields['entity_name'],
         record.entityName,
-        reason: 'entity_name is required by uploadAttachmentBodySchema. '
+        reason:
+            'entity_name is required by uploadAttachmentBodySchema. '
             'Without it every upload is refused with 422, the row stays '
             'failed, and it is retried forever — S11-1.',
       );
@@ -215,7 +220,11 @@ void main() {
       );
 
       for (final key in required) {
-        expect(fields.keys, contains(key), reason: '$key is required server-side');
+        expect(
+          fields.keys,
+          contains(key),
+          reason: '$key is required server-side',
+        );
         expect(fields[key], isNotEmpty, reason: '$key is min(1) server-side');
       }
     });
@@ -252,7 +261,13 @@ void main() {
       expect(fields['checksum_algo'], record.checksumAlgo);
       expect(
         fields.keys.toSet(),
-        {'attachment_id', 'entity_name', 'entity_id', 'checksum', 'checksum_algo'},
+        {
+          'attachment_id',
+          'entity_name',
+          'entity_id',
+          'checksum',
+          'checksum_algo',
+        },
         reason: 'the body gained or lost a field beyond entity_name',
       );
     });
@@ -279,12 +294,15 @@ void main() {
           .join('\n');
 
       final clause = RegExp(r"upload_status IN \(([^)]*)\)").firstMatch(code);
-      expect(clause, isNotNull, reason: 'findPendingUploads lost its IN clause');
+      expect(
+        clause,
+        isNotNull,
+        reason: 'findPendingUploads lost its IN clause',
+      );
 
-      final selected = RegExp("'([a-zA-Z]+)'")
-          .allMatches(clause!.group(1)!)
-          .map((m) => m.group(1)!)
-          .toSet();
+      final selected = RegExp(
+        "'([a-zA-Z]+)'",
+      ).allMatches(clause!.group(1)!).map((m) => m.group(1)!).toSet();
 
       final owed = AttachmentUploadStatus.values
           .where((s) => s.isOwed)
@@ -294,7 +312,8 @@ void main() {
       expect(
         selected,
         owed,
-        reason: 'the upload queue and the eviction veto disagree about which '
+        reason:
+            'the upload queue and the eviction veto disagree about which '
             'files this device still owes the server',
       );
       expect(selected, contains('uploading'), reason: 'S11-2');
@@ -321,79 +340,90 @@ void main() {
       );
     });
 
-    test('a transient failure costs one attempt; a permanent one retires it',
-        () async {
-      // The module already distinguishes these — `FailureMapperRegistry` is the
-      // one place that turns a transport error into a typed Failure. A 500 may
-      // succeed next cycle; a 422 whose checksum cannot match never will, and
-      // re-sending it costs a full multipart upload every cycle forever.
-      final dir = Directory.systemTemp.createTempSync('attachment_retry');
-      addTearDown(() => dir.deleteSync(recursive: true));
-      final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1, 2, 3]);
+    test(
+      'a transient failure costs one attempt; a permanent one retires it',
+      () async {
+        // The module already distinguishes these — `FailureMapperRegistry` is the
+        // one place that turns a transport error into a typed Failure. A 500 may
+        // succeed next cycle; a 422 whose checksum cannot match never will, and
+        // re-sending it costs a full multipart upload every cycle forever.
+        final dir = Directory.systemTemp.createTempSync('attachment_retry');
+        addTearDown(() => dir.deleteSync(recursive: true));
+        final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1, 2, 3]);
 
-      Future<int> attemptsAfter(int status) async {
-        final record = _record(
-          origin: AttachmentOrigin.device,
-          upload: AttachmentUploadStatus.pending,
-        ).copyWith(localPath: file.path);
-        final store = _RecoveryStore([record]);
-        await AttachmentUploadManager(store, [_FailingTarget(status)], progress)
-            .uploadPending();
-        return store.saved.last.retryCount;
-      }
+        Future<int> attemptsAfter(int status) async {
+          final record = _record(
+            origin: AttachmentOrigin.device,
+            upload: AttachmentUploadStatus.pending,
+          ).copyWith(localPath: file.path);
+          final store = _RecoveryStore([record]);
+          await AttachmentUploadManager(store, [
+            _FailingTarget(status),
+          ], progress).uploadPending();
+          return store.saved.last.retryCount;
+        }
 
-      expect(await attemptsAfter(500), 1, reason: '5xx is transient');
-      expect(
-        await attemptsAfter(422),
-        AttachmentUploadManager.maxUploadAttempts,
-        reason: '422 will refuse identically next cycle — retire it',
-      );
-      expect(
-        await attemptsAfter(403),
-        AttachmentUploadManager.maxUploadAttempts,
-        reason: 'a permission that will not appear is permanent',
-      );
-    });
+        expect(await attemptsAfter(500), 1, reason: '5xx is transient');
+        expect(
+          await attemptsAfter(422),
+          AttachmentUploadManager.maxUploadAttempts,
+          reason: '422 will refuse identically next cycle — retire it',
+        );
+        expect(
+          await attemptsAfter(403),
+          AttachmentUploadManager.maxUploadAttempts,
+          reason: 'a permission that will not appear is permanent',
+        );
+      },
+    );
 
-    test('a 401 keeps its attempts — the refresh layer may still repair it',
-        () async {
-      // Retiring an irreplaceable photograph because a token expired mid-round
-      // would be the module causing the loss it exists to prevent.
-      final dir = Directory.systemTemp.createTempSync('attachment_401');
-      addTearDown(() => dir.deleteSync(recursive: true));
-      final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1]);
+    test(
+      'a 401 keeps its attempts — the refresh layer may still repair it',
+      () async {
+        // Retiring an irreplaceable photograph because a token expired mid-round
+        // would be the module causing the loss it exists to prevent.
+        final dir = Directory.systemTemp.createTempSync('attachment_401');
+        addTearDown(() => dir.deleteSync(recursive: true));
+        final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1]);
 
-      final store = _RecoveryStore([
-        _record(
-          origin: AttachmentOrigin.device,
-          upload: AttachmentUploadStatus.pending,
-        ).copyWith(localPath: file.path),
-      ]);
-      await AttachmentUploadManager(store, [_FailingTarget(401)], progress).uploadPending();
+        final store = _RecoveryStore([
+          _record(
+            origin: AttachmentOrigin.device,
+            upload: AttachmentUploadStatus.pending,
+          ).copyWith(localPath: file.path),
+        ]);
+        await AttachmentUploadManager(store, [
+          _FailingTarget(401),
+        ], progress).uploadPending();
 
-      expect(store.saved.last.retryCount, 1);
-    });
+        expect(store.saved.last.retryCount, 1);
+      },
+    );
 
-    test('a file missing from disk is retired at once, not retried forever',
-        () async {
-      // It will not be on disk next cycle either. Left retryable, this branch
-      // re-selected the row every cycle and re-emitted its IRRECOVERABLE error
-      // for a condition that can never change.
-      final store = _RecoveryStore([
-        _record(
-          origin: AttachmentOrigin.device,
-          upload: AttachmentUploadStatus.pending,
-        ).copyWith(localPath: '/nowhere/gone.jpg'),
-      ]);
+    test(
+      'a file missing from disk is retired at once, not retried forever',
+      () async {
+        // It will not be on disk next cycle either. Left retryable, this branch
+        // re-selected the row every cycle and re-emitted its IRRECOVERABLE error
+        // for a condition that can never change.
+        final store = _RecoveryStore([
+          _record(
+            origin: AttachmentOrigin.device,
+            upload: AttachmentUploadStatus.pending,
+          ).copyWith(localPath: '/nowhere/gone.jpg'),
+        ]);
 
-      await AttachmentUploadManager(store, [_RecordingTarget()], progress).uploadPending();
+        await AttachmentUploadManager(store, [
+          _RecordingTarget(),
+        ], progress).uploadPending();
 
-      expect(store.saved.single.uploadStatus, AttachmentUploadStatus.failed);
-      expect(
-        store.saved.single.retryCount,
-        AttachmentUploadManager.maxUploadAttempts,
-      );
-    });
+        expect(store.saved.single.uploadStatus, AttachmentUploadStatus.failed);
+        expect(
+          store.saved.single.retryCount,
+          AttachmentUploadManager.maxUploadAttempts,
+        );
+      },
+    );
 
     test('a row at the ceiling is no longer offered for upload', () async {
       final store = _RecoveryStore([
@@ -404,88 +434,102 @@ void main() {
       ]);
       final target = _RecordingTarget();
 
-      final sent =
-          await AttachmentUploadManager(store, [target], progress).uploadPending();
+      final sent = await AttachmentUploadManager(store, [
+        target,
+      ], progress).uploadPending();
 
       expect(sent, 0);
-      expect(target.seen, isEmpty, reason: 'a retired upload must not be re-sent');
+      expect(
+        target.seen,
+        isEmpty,
+        reason: 'a retired upload must not be re-sent',
+      );
     });
 
-    test('a confirmed upload records where the bytes can be fetched from',
-        () async {
-      // A device row is born with no url. Confirming the upload is when one
-      // becomes true — and without it the row is both reclaimable (confirmed)
-      // and unfetchable (no url), which is how an uploaded photograph becomes
-      // unreachable.
-      final dir = Directory.systemTemp.createTempSync('attachment_url');
-      addTearDown(() => dir.deleteSync(recursive: true));
-      final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1]);
+    test(
+      'a confirmed upload records where the bytes can be fetched from',
+      () async {
+        // A device row is born with no url. Confirming the upload is when one
+        // becomes true — and without it the row is both reclaimable (confirmed)
+        // and unfetchable (no url), which is how an uploaded photograph becomes
+        // unreachable.
+        final dir = Directory.systemTemp.createTempSync('attachment_url');
+        addTearDown(() => dir.deleteSync(recursive: true));
+        final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1]);
 
-      // Built without a url, which is how `AttachmentCapture` creates one: the
-      // file was born here and nothing else knew about it.
-      final record = AttachmentRecord(
-        attachmentId: 'att-captured',
-        entityName: 'notes',
-        entityLocalId: 'note-1',
-        fileName: 'photo.jpg',
-        origin: AttachmentOrigin.device,
-        downloadStatus: AttachmentDownloadStatus.downloaded,
-        uploadStatus: AttachmentUploadStatus.pending,
-        localPath: file.path,
-        createdAt: 1755500000000,
-        updatedAt: 1755500000000,
-      );
-      expect(record.remoteUrl, isNull, reason: 'the premise of this test');
+        // Built without a url, which is how `AttachmentCapture` creates one: the
+        // file was born here and nothing else knew about it.
+        final record = AttachmentRecord(
+          attachmentId: 'att-captured',
+          entityName: 'notes',
+          entityLocalId: 'note-1',
+          fileName: 'photo.jpg',
+          origin: AttachmentOrigin.device,
+          downloadStatus: AttachmentDownloadStatus.downloaded,
+          uploadStatus: AttachmentUploadStatus.pending,
+          localPath: file.path,
+          createdAt: 1755500000000,
+          updatedAt: 1755500000000,
+        );
+        expect(record.remoteUrl, isNull, reason: 'the premise of this test');
 
-      final store = _RecoveryStore([record]);
-      final target = _RecordingTarget();
+        final store = _RecoveryStore([record]);
+        final target = _RecordingTarget();
 
-      await AttachmentUploadManager(store, [target], progress).uploadPending();
+        await AttachmentUploadManager(store, [
+          target,
+        ], progress).uploadPending();
 
-      final saved = store.saved.last;
-      expect(saved.uploadStatus, AttachmentUploadStatus.uploaded);
-      expect(
-        saved.remoteUrl,
-        isNotNull,
-        reason: 'a confirmed device file with no url is reclaimable and '
-            'unfetchable at the same time',
-      );
-      expect(saved.remoteUrl, contains(record.attachmentId));
-    });
+        final saved = store.saved.last;
+        expect(saved.uploadStatus, AttachmentUploadStatus.uploaded);
+        expect(
+          saved.remoteUrl,
+          isNotNull,
+          reason:
+              'a confirmed device file with no url is reclaimable and '
+              'unfetchable at the same time',
+        );
+        expect(saved.remoteUrl, contains(record.attachmentId));
+      },
+    );
 
-    test('pending → uploading → interruption → recovered and re-sent', () async {
-      // The whole scenario, through the production manager. The store hands
-      // back the row exactly as the fixed query now would; nothing downstream
-      // may special-case it.
-      final dir = Directory.systemTemp.createTempSync('attachment_recovery');
-      addTearDown(() => dir.deleteSync(recursive: true));
-      final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1, 2, 3]);
+    test(
+      'pending → uploading → interruption → recovered and re-sent',
+      () async {
+        // The whole scenario, through the production manager. The store hands
+        // back the row exactly as the fixed query now would; nothing downstream
+        // may special-case it.
+        final dir = Directory.systemTemp.createTempSync('attachment_recovery');
+        addTearDown(() => dir.deleteSync(recursive: true));
+        final file = File('${dir.path}/photo.jpg')..writeAsBytesSync([1, 2, 3]);
 
-      final stranded = _record(
-        origin: AttachmentOrigin.device,
-        upload: AttachmentUploadStatus.uploading,
-      ).copyWith(localPath: file.path);
+        final stranded = _record(
+          origin: AttachmentOrigin.device,
+          upload: AttachmentUploadStatus.uploading,
+        ).copyWith(localPath: file.path);
 
-      final store = _RecoveryStore([stranded]);
-      final target = _RecordingTarget();
-      final manager = AttachmentUploadManager(store, [target], progress);
+        final store = _RecoveryStore([stranded]);
+        final target = _RecordingTarget();
+        final manager = AttachmentUploadManager(store, [target], progress);
 
-      final sent = await manager.uploadPending();
+        final sent = await manager.uploadPending();
 
-      expect(sent, 1, reason: 'the recovered row was not uploaded');
-      expect(target.seen, hasLength(1));
-      expect(
-        target.keys.single,
-        'attachment_${stranded.attachmentId}',
-        reason: 'the idempotency key must be identity-derived and unchanged '
-            'across attempts — it is what makes re-sending safe',
-      );
-      expect(
-        store.saved.last.uploadStatus,
-        AttachmentUploadStatus.uploaded,
-        reason: 'a recovered upload must reach a terminal confirmed state',
-      );
-    });
+        expect(sent, 1, reason: 'the recovered row was not uploaded');
+        expect(target.seen, hasLength(1));
+        expect(
+          target.keys.single,
+          'attachment_${stranded.attachmentId}',
+          reason:
+              'the idempotency key must be identity-derived and unchanged '
+              'across attempts — it is what makes re-sending safe',
+        );
+        expect(
+          store.saved.last.uploadStatus,
+          AttachmentUploadStatus.uploaded,
+          reason: 'a recovered upload must reach a terminal confirmed state',
+        );
+      },
+    );
   });
 }
 
@@ -501,8 +545,7 @@ class _RecoveryStore implements AttachmentStore {
   Future<List<AttachmentRecord>> findPendingUploads({
     int limit = 50,
     int maxRetries = 5,
-  }) async =>
-      _pending.where((r) => r.retryCount < maxRetries).toList();
+  }) async => _pending.where((r) => r.retryCount < maxRetries).toList();
 
   @override
   Future<void> upsert(AttachmentRecord record) async => saved.add(record);
@@ -543,26 +586,25 @@ AttachmentRecord _record({
   AttachmentDownloadStatus download = AttachmentDownloadStatus.downloaded,
   AttachmentUploadStatus upload = AttachmentUploadStatus.notApplicable,
   bool isRequired = false,
-}) =>
-    AttachmentRecord(
-      attachmentId: 'att-1',
-      entityName: 'notes',
-      entityLocalId: 'note-1',
-      fileName: 'photo.jpg',
-      origin: origin,
-      downloadStatus: download,
-      uploadStatus: upload,
-      isRequired: isRequired,
-      localPath: download == AttachmentDownloadStatus.downloaded
-          ? '/data/app/sync_files/files/ab/abc123'
-          : null,
-      remoteUrl: 'https://example.test/files/abc123',
-      checksum: 'abc123',
-      checksumAlgo: 'sha256',
-      sizeBytes: 1024,
-      createdAt: 1755500000000,
-      updatedAt: 1755500000000,
-    );
+}) => AttachmentRecord(
+  attachmentId: 'att-1',
+  entityName: 'notes',
+  entityLocalId: 'note-1',
+  fileName: 'photo.jpg',
+  origin: origin,
+  downloadStatus: download,
+  uploadStatus: upload,
+  isRequired: isRequired,
+  localPath: download == AttachmentDownloadStatus.downloaded
+      ? '/data/app/sync_files/files/ab/abc123'
+      : null,
+  remoteUrl: 'https://example.test/files/abc123',
+  checksum: 'abc123',
+  checksumAlgo: 'sha256',
+  sizeBytes: 1024,
+  createdAt: 1755500000000,
+  updatedAt: 1755500000000,
+);
 
 /// Refuses with a given HTTP status, the way Dio surfaces one.
 class _FailingTarget implements AttachmentUploadTarget {
@@ -577,7 +619,8 @@ class _FailingTarget implements AttachmentUploadTarget {
   String get entityName => 'notes';
 
   @override
-  String contentUrlFor(String attachmentId) => 'https://server.test/$attachmentId';
+  String contentUrlFor(String attachmentId) =>
+      'https://server.test/$attachmentId';
 
   @override
   Future<String> upload({

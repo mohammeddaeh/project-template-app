@@ -106,10 +106,8 @@ class _RolesList extends StatelessWidget {
             busy: state.busyRoleId == role.id,
             onOpen: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => RoleEditorScreen(
-                  role: role,
-                  catalog: state.catalog,
-                ),
+                builder: (_) =>
+                    RoleEditorScreen(role: role, catalog: state.catalog),
               ),
             ),
           );
@@ -170,9 +168,7 @@ class _RoleCard extends StatelessWidget {
                 tooltip: role.isActive
                     ? LocaleKeys.roleDeactivate.tr()
                     : LocaleKeys.roleActivate.tr(),
-                icon: Icon(
-                  role.isActive ? Icons.block : Icons.restore,
-                ),
+                icon: Icon(role.isActive ? Icons.block : Icons.restore),
                 onPressed: () => context.read<RolesCubit>().setActive(
                   role,
                   isActive: !role.isActive,

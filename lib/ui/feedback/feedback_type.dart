@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/theme/app_palette.dart';
@@ -14,26 +14,26 @@ enum FeedbackType { success, error, warning, info }
 extension FeedbackTypeX on FeedbackType {
   /// Default translated title — used when no custom title is supplied.
   String defaultTitle(BuildContext context) => switch (this) {
-        FeedbackType.success => LocaleKeys.success.tr(),
-        FeedbackType.error   => LocaleKeys.error.tr(),
-        FeedbackType.warning => LocaleKeys.warning.tr(),
-        FeedbackType.info    => LocaleKeys.info.tr(),
-      };
+    FeedbackType.success => LocaleKeys.success.tr(),
+    FeedbackType.error => LocaleKeys.error.tr(),
+    FeedbackType.warning => LocaleKeys.warning.tr(),
+    FeedbackType.info => LocaleKeys.info.tr(),
+  };
 
   IconData get icon => switch (this) {
-        FeedbackType.success => Icons.check_circle_rounded,
-        FeedbackType.error   => Icons.error_rounded,
-        FeedbackType.warning => Icons.warning_rounded,
-        FeedbackType.info    => Icons.info_rounded,
-      };
+    FeedbackType.success => Icons.check_circle_rounded,
+    FeedbackType.error => Icons.error_rounded,
+    FeedbackType.warning => Icons.warning_rounded,
+    FeedbackType.info => Icons.info_rounded,
+  };
 
   /// Accent / brand color for the feedback type (border, icon tint).
   Color accentColor(BuildContext context) => switch (this) {
-        FeedbackType.success => AppPalette.successMain,
-        FeedbackType.error   => AppPalette.errorMain,
-        FeedbackType.warning => AppPalette.warningMain,
-        FeedbackType.info    => AppPalette.infoMain,
-      };
+    FeedbackType.success => AppPalette.successMain,
+    FeedbackType.error => AppPalette.errorMain,
+    FeedbackType.warning => AppPalette.warningMain,
+    FeedbackType.info => AppPalette.infoMain,
+  };
 
   /// Card/background color — usually bgCard so toast blends with theme.
   Color backgroundColor(BuildContext context) => context.colors.bgCard;

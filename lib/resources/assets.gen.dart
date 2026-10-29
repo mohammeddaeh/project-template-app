@@ -9,7 +9,8 @@ abstract final class Assets {
 
 final class _AssetsImages {
   const _AssetsImages();
-  _AssetsImagesMinistryLogo get ministryLogo => const _AssetsImagesMinistryLogo();
+  _AssetsImagesMinistryLogo get ministryLogo =>
+      const _AssetsImagesMinistryLogo();
   _AssetsImagesVectors get vectors => const _AssetsImagesVectors();
 }
 
@@ -54,4 +55,3 @@ final class _AssetsLottie {
   /// `assets/lottie/success.json`
   String get success => 'assets/lottie/success.json';
 }
-

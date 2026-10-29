@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:app_template/core/platform/haptics/haptic_service.dart';
@@ -59,8 +59,13 @@ class BoundFeedback {
   static String? _activeMessage;
   static Timer? _cooldownTimer;
 
-  bool _throttled(String message, {Duration cooldown = const Duration(seconds: 3)}) {
-    if (_activeMessage == message && (_cooldownTimer?.isActive ?? false)) return true;
+  bool _throttled(
+    String message, {
+    Duration cooldown = const Duration(seconds: 3),
+  }) {
+    if (_activeMessage == message && (_cooldownTimer?.isActive ?? false)) {
+      return true;
+    }
     _cooldownTimer?.cancel();
     _activeMessage = message;
     _cooldownTimer = Timer(cooldown, () => _activeMessage = null);
@@ -71,44 +76,92 @@ class BoundFeedback {
     final cooldown = config.duration ?? const Duration(seconds: 3);
     if (_throttled(config.message, cooldown: cooldown)) return;
     switch (config.type) {
-      case FeedbackType.success: _haptics?.medium();
-      case FeedbackType.error:   _haptics?.heavy();
-      case FeedbackType.warning: _haptics?.medium();
-      case FeedbackType.info:    _haptics?.light();
+      case FeedbackType.success:
+        _haptics?.medium();
+      case FeedbackType.error:
+        _haptics?.heavy();
+      case FeedbackType.warning:
+        _haptics?.medium();
+      case FeedbackType.info:
+        _haptics?.light();
     }
     _service.show(_context, config);
   }
 
-  void success(String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
-    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) return;
+  void success(
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
+    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) {
+      return;
+    }
     _haptics?.medium();
-    _service.success(_context, message,
-        title: title, duration: duration, style: style);
+    _service.success(
+      _context,
+      message,
+      title: title,
+      duration: duration,
+      style: style,
+    );
   }
 
-  void error(String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
-    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) return;
+  void error(
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
+    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) {
+      return;
+    }
     _haptics?.heavy();
-    _service.error(_context, message,
-        title: title, duration: duration, style: style);
+    _service.error(
+      _context,
+      message,
+      title: title,
+      duration: duration,
+      style: style,
+    );
   }
 
-  void warning(String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
-    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) return;
+  void warning(
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
+    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) {
+      return;
+    }
     _haptics?.medium();
-    _service.warning(_context, message,
-        title: title, duration: duration, style: style);
+    _service.warning(
+      _context,
+      message,
+      title: title,
+      duration: duration,
+      style: style,
+    );
   }
 
-  void info(String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
-    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) return;
+  void info(
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
+    if (_throttled(message, cooldown: duration ?? const Duration(seconds: 3))) {
+      return;
+    }
     _haptics?.light();
-    _service.info(_context, message,
-        title: title, duration: duration, style: style);
+    _service.info(
+      _context,
+      message,
+      title: title,
+      duration: duration,
+      style: style,
+    );
   }
 
   void toast(String message, {int seconds = 3, FeedbackStyle? style}) {

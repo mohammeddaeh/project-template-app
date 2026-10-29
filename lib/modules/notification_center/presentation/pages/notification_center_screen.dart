@@ -44,7 +44,8 @@ class _NotificationCenterView extends StatefulWidget {
   const _NotificationCenterView();
 
   @override
-  State<_NotificationCenterView> createState() => _NotificationCenterViewState();
+  State<_NotificationCenterView> createState() =>
+      _NotificationCenterViewState();
 }
 
 class _NotificationCenterViewState extends State<_NotificationCenterView> {
@@ -56,11 +57,13 @@ class _NotificationCenterViewState extends State<_NotificationCenterView> {
     // ضغطة «تعليم الكل مقروء» أو «مسح الكل» كانت لا تُظهر شيئاً حين يفشل
     // الحفظ على القرص — التغيير يبدو نافذاً بالواجهة (تفاؤلياً) ثم يضيع
     // بصمتٍ عند إعادة التشغيل. راجع `NotificationCenterCubit.persistFailures`.
-    _persistFailureSubscription =
-        context.read<NotificationCenterCubit>().persistFailures.listen((_) {
-      if (!mounted) return;
-      context.feedback.error(LocaleKeys.cacheError.tr());
-    });
+    _persistFailureSubscription = context
+        .read<NotificationCenterCubit>()
+        .persistFailures
+        .listen((_) {
+          if (!mounted) return;
+          context.feedback.error(LocaleKeys.cacheError.tr());
+        });
   }
 
   @override
@@ -80,15 +83,14 @@ class _NotificationCenterViewState extends State<_NotificationCenterView> {
       body: SafeArea(
         child: BlocBuilder<NotificationCenterCubit, NotificationCenterState>(
           builder: (context, state) => switch (state) {
-            NotificationCenterLoading() => const Center(
-              child: LoadingWidget(),
-            ),
-            NotificationCenterLoaded(:final items) => items.isEmpty
-                ? const EmptyStateWidget(
-                    titleKey: LocaleKeys.notificationCenterEmpty,
-                    icon: Icons.notifications_none_rounded,
-                  )
-                : _List(items: items),
+            NotificationCenterLoading() => const Center(child: LoadingWidget()),
+            NotificationCenterLoaded(:final items) =>
+              items.isEmpty
+                  ? const EmptyStateWidget(
+                      titleKey: LocaleKeys.notificationCenterEmpty,
+                      icon: Icons.notifications_none_rounded,
+                    )
+                  : _List(items: items),
           },
         ),
       ),
@@ -120,8 +122,9 @@ class _ClearAllAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<NotificationCenterCubit>().state;
-    final isEmpty =
-        state is NotificationCenterLoaded ? state.items.isEmpty : true;
+    final isEmpty = state is NotificationCenterLoaded
+        ? state.items.isEmpty
+        : true;
 
     return IconButton(
       icon: const Icon(Icons.delete_outline),

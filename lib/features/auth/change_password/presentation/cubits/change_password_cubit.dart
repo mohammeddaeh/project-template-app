@@ -29,17 +29,14 @@ class ChangePasswordCubit extends SafeCubit<ChangePasswordState> {
       ),
     );
 
-    res.fold(
-      (failure) {
-        switch (FailureUiMapper.toAction(failure)) {
-          case ShowError(:final message):
-            emit(ChangePasswordState.error(errorMessage: message));
-          case NavigateToLogin():
-          case Silent():
-            break;
-        }
-      },
-      (_) => emit(const ChangePasswordState.success()),
-    );
+    res.fold((failure) {
+      switch (FailureUiMapper.toAction(failure)) {
+        case ShowError(:final message):
+          emit(ChangePasswordState.error(errorMessage: message));
+        case NavigateToLogin():
+        case Silent():
+          break;
+      }
+    }, (_) => emit(const ChangePasswordState.success()));
   }
 }

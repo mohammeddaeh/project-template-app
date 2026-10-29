@@ -1,4 +1,4 @@
-﻿import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:app_template/core/platform/locale/app_locale.dart';
 import 'locale_extension.dart';
@@ -22,13 +22,13 @@ class LocaleSwitcherController {
 
   /// Display label for [locale].
   static String labelFor(AppLocale locale) => switch (locale) {
-        AppLocale.arabic  => 'العربية',
-        AppLocale.english => 'English',
-      };
+    AppLocale.arabic => 'العربية',
+    AppLocale.english => 'English',
+  };
 
   /// Short code label (used in segmented / icon variants).
   static String shortLabelFor(AppLocale locale) => switch (locale) {
-        AppLocale.arabic  => 'ع',
-        AppLocale.english => 'EN',
-      };
+    AppLocale.arabic => 'ع',
+    AppLocale.english => 'EN',
+  };
 }

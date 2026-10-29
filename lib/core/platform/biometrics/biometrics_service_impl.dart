@@ -1,4 +1,4 @@
-﻿import 'package:app_template/core/platform/biometrics/biometrics_service.dart';
+import 'package:app_template/core/platform/biometrics/biometrics_service.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -15,7 +15,10 @@ class BiometricsServiceImpl implements BiometricsService {
     try {
       return await _auth.canCheckBiometrics || await _auth.isDeviceSupported();
     } catch (e) {
-      LogService.warning('BiometricsService.isAvailable failed: $e', tag: 'BIO');
+      LogService.warning(
+        'BiometricsService.isAvailable failed: $e',
+        tag: 'BIO',
+      );
       return false;
     }
   }

@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -41,9 +41,9 @@ class KeyValueRow extends StatefulWidget {
     this.valueStyle,
     this.copySuccessKey = 'copied',
   }) : assert(
-          value != null || valueWidget != null,
-          'KeyValueRow: either value or valueWidget must be provided',
-        );
+         value != null || valueWidget != null,
+         'KeyValueRow: either value or valueWidget must be provided',
+       );
 
   /// مفتاح ترجمة التسمية
   final String labelKey;
@@ -103,7 +103,8 @@ class _KeyValueRowState extends State<KeyValueRow> {
     } else {
       valueContent = Text(
         widget.value ?? '',
-        style: widget.valueStyle ??
+        style:
+            widget.valueStyle ??
             textTheme.bodyMedium?.copyWith(color: scheme.onSurface),
         textAlign: TextAlign.end,
       );
@@ -120,17 +121,16 @@ class _KeyValueRowState extends State<KeyValueRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: widget.padding ??
-              const EdgeInsets.symmetric(vertical: 12),
+          padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Text(
                   widget.labelKey.tr(),
-                  style: widget.labelStyle ??
-                      textTheme.bodyMedium
-                          ?.copyWith(color: colors.textMuted),
+                  style:
+                      widget.labelStyle ??
+                      textTheme.bodyMedium?.copyWith(color: colors.textMuted),
                 ),
               ),
               const SizedBox(width: 8),

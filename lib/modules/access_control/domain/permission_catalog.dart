@@ -53,7 +53,14 @@ class PermissionDescriptor extends Equatable {
   final bool synthetic;
 
   @override
-  List<Object?> get props => [key, action, label, labelInferred, implies, synthetic];
+  List<Object?> get props => [
+    key,
+    action,
+    label,
+    labelInferred,
+    implies,
+    synthetic,
+  ];
 }
 
 /// Every permission of one resource — one card in the roles screen.

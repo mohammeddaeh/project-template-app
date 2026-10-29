@@ -31,8 +31,9 @@ class _FakeQueueRepository implements SyncQueueRepository {
   Future<int> countPendingJobs() async => pendingCount;
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      throw StateError('SyncQueueRepository.${invocation.memberName} unexpected');
+  dynamic noSuchMethod(Invocation invocation) => throw StateError(
+    'SyncQueueRepository.${invocation.memberName} unexpected',
+  );
 }
 
 /// `triggerManualSync` كانت تُعيد `void` — فرفضٌ (بلا شبكة، بلا جلسة، ينتظر

@@ -38,7 +38,9 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
     final settings = await _settingsStore.getSettings();
     final now = DateTime.now().millisecondsSinceEpoch;
     final shouldQueue =
-        command.enqueue && settings.mode == SyncMode.active && settings.syncEnabled;
+        command.enqueue &&
+        settings.mode == SyncMode.active &&
+        settings.syncEnabled;
 
     if (shouldQueue) {
       _contractValidator.validateQueuePayload(
@@ -49,26 +51,22 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
     }
 
     await db.transaction((txn) async {
-      await txn.insert(
-        'synced_entities',
-        {
-          'local_id': command.localId,
-          'entity_name': command.entityName,
-          'server_id': command.serverId,
-          'data_json': command.dataJson,
-          'updated_at': command.updatedAt,
-          'version': command.version,
-          // **و`holdLocal` تكتب `pending*` بلا وظيفة** — صفٌّ كتبه المستخدم
-          // ولم يحن رفعُه ليس `synced`، وإلا كتب السحبُ فوقه وقالت الشاشة
-          // «مُزامَن» عن شغلٍ لم يغادر الجهاز. راجع `SyncWriteCommand.holdLocal`.
-          'sync_status': shouldQueue || command.holdLocal
-              ? _pendingStatus(command.jobType).raw
-              : SyncStatus.synced.raw,
-          'is_deleted': command.isDeleted ? 1 : 0,
-          'last_error': null,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await txn.insert('synced_entities', {
+        'local_id': command.localId,
+        'entity_name': command.entityName,
+        'server_id': command.serverId,
+        'data_json': command.dataJson,
+        'updated_at': command.updatedAt,
+        'version': command.version,
+        // **و`holdLocal` تكتب `pending*` بلا وظيفة** — صفٌّ كتبه المستخدم
+        // ولم يحن رفعُه ليس `synced`، وإلا كتب السحبُ فوقه وقالت الشاشة
+        // «مُزامَن» عن شغلٍ لم يغادر الجهاز. راجع `SyncWriteCommand.holdLocal`.
+        'sync_status': shouldQueue || command.holdLocal
+            ? _pendingStatus(command.jobType).raw
+            : SyncStatus.synced.raw,
+        'is_deleted': command.isDeleted ? 1 : 0,
+        'last_error': null,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
 
       if (!shouldQueue) {
         return;
@@ -85,7 +83,9 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
       final mergedType = existing.isEmpty
           ? command.jobType
           : _mergeType(
-              existingType: SyncJobType.fromRaw(existing.first['type'] as String),
+              existingType: SyncJobType.fromRaw(
+                existing.first['type'] as String,
+              ),
               incomingType: command.jobType,
             );
 
@@ -136,22 +136,23 @@ class SqlSyncWriteGateway implements SyncWriteGateway {
   }
 
   SyncStatus _pendingStatus(SyncJobType type) => switch (type) {
-        SyncJobType.create => SyncStatus.pendingCreate,
-        SyncJobType.update => SyncStatus.pendingUpdate,
-        SyncJobType.delete => SyncStatus.pendingDelete,
-        // A file upload does not change the entity's own content — the row is
-        // exactly what the server already has. It is `pending` rather than
-        // `pendingUpdate` so a screen shows "not finished syncing" without
-        // claiming the text was edited.
-        SyncJobType.fileUpload => SyncStatus.pending,
-      };
+    SyncJobType.create => SyncStatus.pendingCreate,
+    SyncJobType.update => SyncStatus.pendingUpdate,
+    SyncJobType.delete => SyncStatus.pendingDelete,
+    // A file upload does not change the entity's own content — the row is
+    // exactly what the server already has. It is `pending` rather than
+    // `pendingUpdate` so a screen shows "not finished syncing" without
+    // claiming the text was edited.
+    SyncJobType.fileUpload => SyncStatus.pending,
+  };
 
   SyncJobType _mergeType({
     required SyncJobType existingType,
     required SyncJobType incomingType,
   }) {
     if (incomingType == SyncJobType.delete) return SyncJobType.delete;
-    if (existingType == SyncJobType.create && incomingType == SyncJobType.update) {
+    if (existingType == SyncJobType.create &&
+        incomingType == SyncJobType.update) {
       return SyncJobType.create;
     }
     return incomingType;

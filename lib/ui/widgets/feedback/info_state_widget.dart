@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/states/app_state_widget.dart';
 
 /// حالة المعلومة التوجيهية (inline — ليست toast).
@@ -15,9 +15,6 @@ class InfoStateWidget extends StatelessWidget {
   final IconData icon;
 
   @override
-  Widget build(BuildContext context) => AppStateWidget(
-        type: AppStateType.info,
-        titleKey: messageKey,
-        icon: icon,
-      );
+  Widget build(BuildContext context) =>
+      AppStateWidget(type: AppStateType.info, titleKey: messageKey, icon: icon);
 }

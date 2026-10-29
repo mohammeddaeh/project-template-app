@@ -10,7 +10,11 @@ import 'package:app_template/ui/widgets/inputs/form_reveal.dart';
 
 /// نموذج أطول من الشاشة: الحقل الأول والثاني يفصلهما فراغ 1200px، فلا يمكن أن
 /// يكون أحدهما مرئياً مع الآخر.
-Widget _tallForm(GlobalKey<FormState> formKey, {required bool firstValid, required bool secondValid}) {
+Widget _tallForm(
+  GlobalKey<FormState> formKey, {
+  required bool firstValid,
+  required bool secondValid,
+}) {
   return MaterialApp(
     home: Scaffold(
       body: Form(
@@ -18,9 +22,15 @@ Widget _tallForm(GlobalKey<FormState> formKey, {required bool firstValid, requir
         child: SingleChildScrollView(
           child: Column(
             children: [
-              TextFormField(key: const Key('first'), validator: (_) => firstValid ? null : 'مطلوب'),
+              TextFormField(
+                key: const Key('first'),
+                validator: (_) => firstValid ? null : 'مطلوب',
+              ),
               const SizedBox(height: 1200),
-              TextFormField(key: const Key('second'), validator: (_) => secondValid ? null : 'مطلوب'),
+              TextFormField(
+                key: const Key('second'),
+                validator: (_) => secondValid ? null : 'مطلوب',
+              ),
               const SizedBox(height: 1200),
               const SizedBox(key: Key('bottom'), height: 80),
             ],
@@ -47,7 +57,9 @@ Future<void> _scrollToBottom(WidgetTester tester) async {
 void main() {
   testWidgets('النموذج السليم يُرجع true ولا يُحرّك الشاشة', (tester) async {
     final formKey = GlobalKey<FormState>();
-    await tester.pumpWidget(_tallForm(formKey, firstValid: true, secondValid: true));
+    await tester.pumpWidget(
+      _tallForm(formKey, firstValid: true, secondValid: true),
+    );
     await _scrollToBottom(tester);
     final before = tester.getTopLeft(find.byKey(const Key('bottom'))).dy;
 
@@ -60,7 +72,9 @@ void main() {
 
   testWidgets('الحقل الناقص خارج الشاشة يُعاد إليها', (tester) async {
     final formKey = GlobalKey<FormState>();
-    await tester.pumpWidget(_tallForm(formKey, firstValid: false, secondValid: true));
+    await tester.pumpWidget(
+      _tallForm(formKey, firstValid: false, secondValid: true),
+    );
     await _scrollToBottom(tester);
     expect(_onScreen(tester, const Key('first')), isFalse);
 
@@ -72,7 +86,9 @@ void main() {
 
   testWidgets('يُظهر الأول من حقلين ناقصين لا الأخير', (tester) async {
     final formKey = GlobalKey<FormState>();
-    await tester.pumpWidget(_tallForm(formKey, firstValid: false, secondValid: false));
+    await tester.pumpWidget(
+      _tallForm(formKey, firstValid: false, secondValid: false),
+    );
     await _scrollToBottom(tester);
 
     expect(formKey.validateAndReveal(), isFalse);
@@ -83,9 +99,13 @@ void main() {
     expect(_onScreen(tester, const Key('second')), isFalse);
   });
 
-  testWidgets('النقص أسفل الشاشة يُعرض أيضاً — لا يُفترض أنه فوقها', (tester) async {
+  testWidgets('النقص أسفل الشاشة يُعرض أيضاً — لا يُفترض أنه فوقها', (
+    tester,
+  ) async {
     final formKey = GlobalKey<FormState>();
-    await tester.pumpWidget(_tallForm(formKey, firstValid: true, secondValid: false));
+    await tester.pumpWidget(
+      _tallForm(formKey, firstValid: true, secondValid: false),
+    );
     expect(_onScreen(tester, const Key('second')), isFalse);
 
     expect(formKey.validateAndReveal(), isFalse);

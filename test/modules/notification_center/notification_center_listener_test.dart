@@ -99,14 +99,17 @@ void main() {
     expect(store.items.single.read, isFalse);
   });
 
-  test('start() is idempotent — a second call does not double-subscribe', () async {
-    listener.start();
-    listener.start();
-    push.emitForeground(const PushNotificationEvent(id: '1'));
-    await pumpEventQueue();
+  test(
+    'start() is idempotent — a second call does not double-subscribe',
+    () async {
+      listener.start();
+      listener.start();
+      push.emitForeground(const PushNotificationEvent(id: '1'));
+      await pumpEventQueue();
 
-    expect(store.items, hasLength(1));
-  });
+      expect(store.items, hasLength(1));
+    },
+  );
 
   test('a tap-stream event is never recorded — foreground only', () async {
     listener.start();
@@ -116,14 +119,17 @@ void main() {
     expect(store.items, isEmpty);
   });
 
-  test('stop() ends the subscription — a later event is not recorded', () async {
-    listener.start();
-    await listener.stop();
-    push.emitForeground(const PushNotificationEvent(id: '1'));
-    await pumpEventQueue();
+  test(
+    'stop() ends the subscription — a later event is not recorded',
+    () async {
+      listener.start();
+      await listener.stop();
+      push.emitForeground(const PushNotificationEvent(id: '1'));
+      await pumpEventQueue();
 
-    expect(store.items, isEmpty);
-  });
+      expect(store.items, isEmpty);
+    },
+  );
 
   test('without start(), nothing is ever recorded', () async {
     push.emitForeground(const PushNotificationEvent(id: '1'));

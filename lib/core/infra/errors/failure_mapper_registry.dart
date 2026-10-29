@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/errors/dio_failure_mapper.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -35,28 +35,28 @@ abstract final class FailureMapperRegistry {
   }
 
   static Failure _classify(Object error) => switch (error) {
-        // ── Already a typed Failure — pass through ──────────────────────────
-        Failure() => error,
+    // ── Already a typed Failure — pass through ──────────────────────────
+    Failure() => error,
 
-        // ── Dio network/HTTP errors ──────────────────────────────────────────
-        DioException() => _dioMapper.map(error),
+    // ── Dio network/HTTP errors ──────────────────────────────────────────
+    DioException() => _dioMapper.map(error),
 
-        // ── JSON parse errors (thrown by Retrofit / fromJson, NOT via Dio) ──
-        // FormatException: response body is not valid JSON (e.g. HTML response).
-        FormatException() => ParseFailure(
-            kind: ParseErrorKind.malformedJson,
-            message: error.message,
-          ),
+    // ── JSON parse errors (thrown by Retrofit / fromJson, NOT via Dio) ──
+    // FormatException: response body is not valid JSON (e.g. HTML response).
+    FormatException() => ParseFailure(
+      kind: ParseErrorKind.malformedJson,
+      message: error.message,
+    ),
 
-        // TypeError: wrong Dart type in a JSON field (int got "abc", etc.).
-        TypeError() => ParseFailure(
-            kind: ParseErrorKind.typeMismatch,
-            message: error.toString(),
-          ),
+    // TypeError: wrong Dart type in a JSON field (int got "abc", etc.).
+    TypeError() => ParseFailure(
+      kind: ParseErrorKind.typeMismatch,
+      message: error.toString(),
+    ),
 
-        // ── Catch-all ────────────────────────────────────────────────────────
-        _ => UnknownFailure(message: error.toString()),
-      };
+    // ── Catch-all ────────────────────────────────────────────────────────
+    _ => UnknownFailure(message: error.toString()),
+  };
 
   // NOTE — CheckedFromJsonException (json_annotation):
   // If your models use @JsonSerializable(checked: true), override this method

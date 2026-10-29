@@ -259,8 +259,7 @@ class DetailHeaderCard extends StatelessWidget {
               child: Column(
                 children: [
                   for (var i = 0; i < facts.length; i++) ...[
-                    if (i > 0)
-                      Divider(height: 1, color: colors.dividerSubtle),
+                    if (i > 0) Divider(height: 1, color: colors.dividerSubtle),
                     facts[i],
                   ],
                 ],

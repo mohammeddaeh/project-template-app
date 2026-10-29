@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:app_template/modules/analytics/adapters/analytics_route_observer.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:app_template/features/startup/startup_destination.dart';
@@ -226,16 +226,17 @@ class _AppState extends State<App> {
               builder: (context, child) {
                 // AnnotatedRegion يُحدِّث ألوان أيقونات شريط الحالة والتنقل
                 // تلقائياً عند التبديل بين الثيم الفاتح والداكن.
-                final isDark =
-                    Theme.of(context).brightness == Brightness.dark;
-                final iconBrightness =
-                    isDark ? Brightness.light : Brightness.dark;
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+                final iconBrightness = isDark
+                    ? Brightness.light
+                    : Brightness.dark;
                 return AnnotatedRegion<SystemUiOverlayStyle>(
                   value: SystemUiOverlayStyle(
                     statusBarColor: Colors.transparent,
                     statusBarIconBrightness: iconBrightness,
-                    statusBarBrightness:
-                        isDark ? Brightness.dark : Brightness.light,
+                    statusBarBrightness: isDark
+                        ? Brightness.dark
+                        : Brightness.light,
                     systemNavigationBarColor: Colors.transparent,
                     systemNavigationBarDividerColor: Colors.transparent,
                     systemNavigationBarIconBrightness: iconBrightness,

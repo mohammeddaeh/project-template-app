@@ -42,9 +42,6 @@ class LoginModel {
     );
   }
 
-  LoginEntity toEntity() => LoginEntity(
-        token: token,
-        user: account.toEntity(),
-        sessionId: sessionId,
-      );
+  LoginEntity toEntity() =>
+      LoginEntity(token: token, user: account.toEntity(), sessionId: sessionId);
 }

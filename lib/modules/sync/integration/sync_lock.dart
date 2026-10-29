@@ -1,4 +1,4 @@
-﻿import 'package:app_template/core/platform/logging/log_service.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/core/platform/storage/persistence_keys.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
 
@@ -36,13 +36,18 @@ class SyncLock {
   /// Returns `true` if the lock was acquired by this call.
   /// Returns `false` if another sync is already running.
   Future<bool> tryAcquire({Duration timeout = _defaultTimeout}) async {
-    final existing = await _storage.readString(PersistenceKeys.syncLockAcquiredAt);
+    final existing = await _storage.readString(
+      PersistenceKeys.syncLockAcquiredAt,
+    );
     if (existing != null) {
       final acquiredAt = int.tryParse(existing);
       if (acquiredAt != null) {
         final elapsed = DateTime.now().millisecondsSinceEpoch - acquiredAt;
         if (elapsed < timeout.inMilliseconds) {
-          LogService.debug('SyncLock held — skip. (acquired ${elapsed}ms ago)', tag: 'SYNC');
+          LogService.debug(
+            'SyncLock held — skip. (acquired ${elapsed}ms ago)',
+            tag: 'SYNC',
+          );
           return false;
         }
         LogService.warning(
@@ -66,7 +71,9 @@ class SyncLock {
   /// Called on app startup to clear any lock left over from a crash or kill.
   /// Only clears if the lock is older than [timeout].
   Future<void> releaseIfStale({Duration timeout = _defaultTimeout}) async {
-    final existing = await _storage.readString(PersistenceKeys.syncLockAcquiredAt);
+    final existing = await _storage.readString(
+      PersistenceKeys.syncLockAcquiredAt,
+    );
     if (existing == null) return;
     final acquiredAt = int.tryParse(existing);
     if (acquiredAt == null) {
@@ -85,7 +92,9 @@ class SyncLock {
 
   /// Returns `true` if the lock is currently held and not yet stale.
   Future<bool> isHeld({Duration timeout = _defaultTimeout}) async {
-    final existing = await _storage.readString(PersistenceKeys.syncLockAcquiredAt);
+    final existing = await _storage.readString(
+      PersistenceKeys.syncLockAcquiredAt,
+    );
     if (existing == null) return false;
     final acquiredAt = int.tryParse(existing);
     if (acquiredAt == null) return false;

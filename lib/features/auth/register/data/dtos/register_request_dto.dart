@@ -11,11 +11,11 @@ class RegisterRequestDto {
   final String? fullName;
 
   Map<String, dynamic> toJson() => {
-        'email': email,
-        'password': password,
-        // Omitted rather than sent as null: zod's `.optional()` accepts an
-        // absent key and rejects an explicit null.
-        if (fullName != null && fullName!.trim().isNotEmpty)
-          'full_name': fullName!.trim(),
-      };
+    'email': email,
+    'password': password,
+    // Omitted rather than sent as null: zod's `.optional()` accepts an
+    // absent key and rejects an explicit null.
+    if (fullName != null && fullName!.trim().isNotEmpty)
+      'full_name': fullName!.trim(),
+  };
 }

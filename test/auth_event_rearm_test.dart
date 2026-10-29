@@ -47,17 +47,20 @@ void main() {
 
   Future<void> flush() => Future<void>.delayed(Duration.zero);
 
-  test('a new session re-arms expiry — the second sign-out still navigates', () async {
-    await session.saveToken('first');
-    AuthEventBus.instance.emit(AuthEvent.sessionExpired);
-    session.clearSession();
+  test(
+    'a new session re-arms expiry — the second sign-out still navigates',
+    () async {
+      await session.saveToken('first');
+      AuthEventBus.instance.emit(AuthEvent.sessionExpired);
+      session.clearSession();
 
-    await session.saveToken('second');
-    AuthEventBus.instance.emit(AuthEvent.sessionExpired);
-    await flush();
+      await session.saveToken('second');
+      AuthEventBus.instance.emit(AuthEvent.sessionExpired);
+      await flush();
 
-    expect(events, [AuthEvent.sessionExpired, AuthEvent.sessionExpired]);
-  });
+      expect(events, [AuthEvent.sessionExpired, AuthEvent.sessionExpired]);
+    },
+  );
 
   test('re-arms revocation too — the flags are reset together', () async {
     await session.saveToken('first');

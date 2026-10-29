@@ -33,13 +33,17 @@ import 'dart:io';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
-    _die('الاستخدام: dart run scripts/scaffold_feature.dart <feature_name>\n'
-        '  مثال: dart run scripts/scaffold_feature.dart invoices');
+    _die(
+      'الاستخدام: dart run scripts/scaffold_feature.dart <feature_name>\n'
+      '  مثال: dart run scripts/scaffold_feature.dart invoices',
+    );
   }
 
   final feature = _toSnakeCase(args.first);
   if (feature.isEmpty || !RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(feature)) {
-    _die('اسم غير صالح: "${args.first}" — أحرف صغيرة وأرقام و"_" فقط، يبدأ بحرف.');
+    _die(
+      'اسم غير صالح: "${args.first}" — أحرف صغيرة وأرقام و"_" فقط، يبدأ بحرف.',
+    );
   }
 
   final vars = <String, String>{
@@ -51,7 +55,9 @@ Future<void> main(List<String> args) async {
 
   final featureDir = Directory('lib/features/$feature');
   if (featureDir.existsSync()) {
-    _die('lib/features/$feature/ موجود بالفعل — احذفه أولاً إن أردت إعادة التوليد.');
+    _die(
+      'lib/features/$feature/ موجود بالفعل — احذفه أولاً إن أردت إعادة التوليد.',
+    );
   }
 
   // ── ربط سلسلة العقد تلقائياً ─────────────────────────────────────────────
@@ -63,27 +69,33 @@ Future<void> main(List<String> args) async {
   final accessControl = _isFlagEnabled('accessControl');
 
   _header('🏗️   scaffold_feature — إنشاء "${vars['__Feature__']}"');
-  if (offlineSync) print('  ℹ️   AppFeatures.offlineSync مُشعَل — ستُولَّد ملفات المزامنة أيضاً.');
+  if (offlineSync) {
+    print(
+      '  ℹ️   AppFeatures.offlineSync مُشعَل — ستُولَّد ملفات المزامنة أيضاً.',
+    );
+  }
   if (accessControl) {
-    print('  ℹ️   AppFeatures.accessControl مُشعَل — سيُغلَّف زرّ الإضافة بصلاحية.');
+    print(
+      '  ℹ️   AppFeatures.accessControl مُشعَل — سيُغلَّف زرّ الإضافة بصلاحية.',
+    );
   }
 
   vars['__AccessControlImport__'] = accessControl
       ? "import 'package:app_template/modules/access_control/access_control_plugin.dart';\n"
-          "import 'package:app_template/resources/permission_keys.g.dart';\n"
+            "import 'package:app_template/resources/permission_keys.g.dart';\n"
       : '';
   vars['__FabWidget__'] = accessControl
       ? 'Can(\n'
-          "          permission: PermKeys.${vars['__featureCamel__']}Create,\n"
-          '          child: FloatingActionButton(\n'
-          '            onPressed: () => _openForm(context, null),\n'
-          '            child: const Icon(Icons.add),\n'
-          '          ),\n'
-          '        )'
+            "          permission: PermKeys.${vars['__featureCamel__']}Create,\n"
+            '          child: FloatingActionButton(\n'
+            '            onPressed: () => _openForm(context, null),\n'
+            '            child: const Icon(Icons.add),\n'
+            '          ),\n'
+            '        )'
       : 'FloatingActionButton(\n'
-          '          onPressed: () => _openForm(context, null),\n'
-          '          child: const Icon(Icons.add),\n'
-          '        )';
+            '          onPressed: () => _openForm(context, null),\n'
+            '          child: const Icon(Icons.add),\n'
+            '        )';
 
   _section('📁  كتابة ملفات الشريحة');
   for (final entry in _fileTemplates.entries) {
@@ -106,7 +118,10 @@ Future<void> main(List<String> args) async {
   _addTranslationKeys(vars, 'assets/translations/ar.json', _arTranslations);
   _addTranslationKeys(vars, 'assets/translations/en.json', _enTranslations);
 
-  await _stream('⚙️   gen_code — توليد الكود', 'dart', ['run', 'scripts/gen_code.dart']);
+  await _stream('⚙️   gen_code — توليد الكود', 'dart', [
+    'run',
+    'scripts/gen_code.dart',
+  ]);
   await _stream('🎨  dart format', 'dart', ['format', featureDir.path]);
 
   final healthy = await _runHealthChecks();
@@ -125,8 +140,8 @@ Future<void> main(List<String> args) async {
     healthy
         ? '✅  "${vars['__Feature__']}" جاهزة — التحليل والاختبارات نظيفة'
         : accessControl
-            ? '⚠️   الملفات كُتبت — لا يُصرَّف المشروع بعد PermKeys.${vars['__featureCamel__']}Create (متوقَّع، راجع أعلاه)'
-            : '⚠️   الملفات كُتبت لكن فحصاً واحداً على الأقل فشل — راجع الإخراج أعلاه',
+        ? '⚠️   الملفات كُتبت — لا يُصرَّف المشروع بعد PermKeys.${vars['__featureCamel__']}Create (متوقَّع، راجع أعلاه)'
+        : '⚠️   الملفات كُتبت لكن فحصاً واحداً على الأقل فشل — راجع الإخراج أعلاه',
   );
 
   final next = StringBuffer('التالي:\n')
@@ -134,8 +149,12 @@ Future<void> main(List<String> args) async {
       '  1. بدّل الحقل التجريبي "title" بحقول ${vars['__Feature__']} الحقيقية —\n'
       '     domain/entities · data/models · data/dtos · presentation/pages.\n',
     )
-    ..write("  2. راجع GET ApiUrls.${vars['__featureCamel__']} مقابل عقد الباك الفعلي.\n")
-    ..write('  3. لا اختبارات مولَّدة — أضفها بـtest/features/$feature/ (راجع أمثلة auth/).\n');
+    ..write(
+      "  2. راجع GET ApiUrls.${vars['__featureCamel__']} مقابل عقد الباك الفعلي.\n",
+    )
+    ..write(
+      '  3. لا اختبارات مولَّدة — أضفها بـtest/features/$feature/ (راجع أمثلة auth/).\n',
+    );
   if (offlineSync) {
     next.write(
       '  4. راجع lib/features/$feature/data/sync/sync_aware_${feature}_repository.dart —\n'
@@ -171,24 +190,41 @@ bool _isFlagEnabled(String flagName) {
 // بالضبط ما تحتاجه أسطرٌ مثل `${ApiUrls.x}/{id}` بالملف الناتج.
 
 final Map<String, String> _fileTemplates = {
-  'lib/features/__feature__/domain/entities/__feature___entity.dart': _entityTemplate,
-  'lib/features/__feature__/domain/repositories/__feature___repository.dart': _repositoryTemplate,
-  'lib/features/__feature__/domain/params/__feature___params.dart': _paramsTemplate,
-  'lib/features/__feature__/domain/usecases/get___feature___list.dart': _getListUseCaseTemplate,
-  'lib/features/__feature__/domain/usecases/create___feature__.dart': _createUseCaseTemplate,
-  'lib/features/__feature__/domain/usecases/update___feature__.dart': _updateUseCaseTemplate,
-  'lib/features/__feature__/domain/usecases/delete___feature__.dart': _deleteUseCaseTemplate,
-  'lib/features/__feature__/data/dtos/__feature___request_dto.dart': _dtoTemplate,
+  'lib/features/__feature__/domain/entities/__feature___entity.dart':
+      _entityTemplate,
+  'lib/features/__feature__/domain/repositories/__feature___repository.dart':
+      _repositoryTemplate,
+  'lib/features/__feature__/domain/params/__feature___params.dart':
+      _paramsTemplate,
+  'lib/features/__feature__/domain/usecases/get___feature___list.dart':
+      _getListUseCaseTemplate,
+  'lib/features/__feature__/domain/usecases/create___feature__.dart':
+      _createUseCaseTemplate,
+  'lib/features/__feature__/domain/usecases/update___feature__.dart':
+      _updateUseCaseTemplate,
+  'lib/features/__feature__/domain/usecases/delete___feature__.dart':
+      _deleteUseCaseTemplate,
+  'lib/features/__feature__/data/dtos/__feature___request_dto.dart':
+      _dtoTemplate,
   'lib/features/__feature__/data/models/__feature___model.dart': _modelTemplate,
-  'lib/features/__feature__/data/datasources/__feature___api_service.dart': _apiServiceTemplate,
-  'lib/features/__feature__/data/datasources/__feature___remote_datasource.dart': _remoteDataSourceTemplate,
-  'lib/features/__feature__/data/repositories/__feature___repository_impl.dart': _repositoryImplTemplate,
-  'lib/features/__feature__/presentation/cubits/__feature___list_cubit.dart': _listCubitTemplate,
-  'lib/features/__feature__/presentation/cubits/__feature___form_cubit.dart': _formCubitTemplate,
-  'lib/features/__feature__/presentation/cubits/__feature___form_state.dart': _formStateTemplate,
-  'lib/features/__feature__/presentation/widgets/__feature___item_tile.dart': _itemTileTemplate,
-  'lib/features/__feature__/presentation/pages/__feature___list_screen.dart': _listScreenTemplate,
-  'lib/features/__feature__/presentation/pages/__feature___form_screen.dart': _formScreenTemplate,
+  'lib/features/__feature__/data/datasources/__feature___api_service.dart':
+      _apiServiceTemplate,
+  'lib/features/__feature__/data/datasources/__feature___remote_datasource.dart':
+      _remoteDataSourceTemplate,
+  'lib/features/__feature__/data/repositories/__feature___repository_impl.dart':
+      _repositoryImplTemplate,
+  'lib/features/__feature__/presentation/cubits/__feature___list_cubit.dart':
+      _listCubitTemplate,
+  'lib/features/__feature__/presentation/cubits/__feature___form_cubit.dart':
+      _formCubitTemplate,
+  'lib/features/__feature__/presentation/cubits/__feature___form_state.dart':
+      _formStateTemplate,
+  'lib/features/__feature__/presentation/widgets/__feature___item_tile.dart':
+      _itemTileTemplate,
+  'lib/features/__feature__/presentation/pages/__feature___list_screen.dart':
+      _listScreenTemplate,
+  'lib/features/__feature__/presentation/pages/__feature___form_screen.dart':
+      _formScreenTemplate,
 };
 
 /// تُكتب فقط حين `AppFeatures.offlineSync == true` — انظر `_isFlagEnabled`.
@@ -1174,7 +1210,8 @@ class SyncAware__Feature__Repository implements __Feature__Repository {
 
 void _appendApiUrl(Map<String, String> vars) {
   final file = File('lib/core/infra/network/rest/api_urls.dart');
-  const marker = '  // ── Your own features go below ────────────────────────────────────────────\n}';
+  const marker =
+      '  // ── Your own features go below ────────────────────────────────────────────\n}';
   final line =
       "  static const String ${vars['__featureCamel__']} = '/api/v1/${vars['__feature-kebab__']}';\n\n$marker";
   final content = file.readAsStringSync();
@@ -1205,7 +1242,8 @@ void _appendInjection(Map<String, String> vars) {
   @lazySingleton
   VerifyEmailApiService verifyEmailApiService(Dio dio) =>
       VerifyEmailApiService(dio);''';
-  final newRegistration = '''
+  final newRegistration =
+      '''
 $registrationMarker
 
   @lazySingleton
@@ -1240,20 +1278,20 @@ void _appendRoutes(Map<String, String> vars) {
 // ── Translations ──────────────────────────────────────────────────────────────
 
 Map<String, String> _arTranslations(String camel, String pascal) => {
-      '${camel}ListTitle': pascal,
-      '${camel}Empty': 'لا توجد عناصر بعد',
-      '${camel}FormTitleAdd': 'إضافة',
-      '${camel}FormTitleEdit': 'تعديل',
-      '${camel}TitleFieldLabel': 'العنوان',
-    };
+  '${camel}ListTitle': pascal,
+  '${camel}Empty': 'لا توجد عناصر بعد',
+  '${camel}FormTitleAdd': 'إضافة',
+  '${camel}FormTitleEdit': 'تعديل',
+  '${camel}TitleFieldLabel': 'العنوان',
+};
 
 Map<String, String> _enTranslations(String camel, String pascal) => {
-      '${camel}ListTitle': pascal,
-      '${camel}Empty': 'No items yet',
-      '${camel}FormTitleAdd': 'Add',
-      '${camel}FormTitleEdit': 'Edit',
-      '${camel}TitleFieldLabel': 'Title',
-    };
+  '${camel}ListTitle': pascal,
+  '${camel}Empty': 'No items yet',
+  '${camel}FormTitleAdd': 'Add',
+  '${camel}FormTitleEdit': 'Edit',
+  '${camel}TitleFieldLabel': 'Title',
+};
 
 void _addTranslationKeys(
   Map<String, String> vars,
@@ -1267,7 +1305,9 @@ void _addTranslationKeys(
 
   for (final entry in newKeys.entries) {
     if (decoded.containsKey(entry.key)) {
-      _die('المفتاح "${entry.key}" موجود بالفعل بـ$path — الشريحة أُنشئت من قبل؟');
+      _die(
+        'المفتاح "${entry.key}" موجود بالفعل بـ$path — الشريحة أُنشئت من قبل؟',
+      );
     }
     decoded[entry.key] = entry.value;
   }
@@ -1306,11 +1346,10 @@ Future<bool> _runHealthChecks() async {
   var allPassed = true;
   allPassed &= await _check('🔍  dart analyze lib', 'dart', ['analyze', 'lib']);
   allPassed &= await _check('🧪  flutter test', 'flutter', ['test']);
-  allPassed &= await _check(
-    '🏗   check_structure',
-    'dart',
-    ['run', 'scripts/check_structure.dart'],
-  );
+  allPassed &= await _check('🏗   check_structure', 'dart', [
+    'run',
+    'scripts/check_structure.dart',
+  ]);
   return allPassed;
 }
 
@@ -1361,7 +1400,9 @@ String _toPascalCase(String snake) => snake
 
 String _toCamelCase(String snake) {
   final pascal = _toPascalCase(snake);
-  return pascal.isEmpty ? pascal : pascal[0].toLowerCase() + pascal.substring(1);
+  return pascal.isEmpty
+      ? pascal
+      : pascal[0].toLowerCase() + pascal.substring(1);
 }
 
 void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');

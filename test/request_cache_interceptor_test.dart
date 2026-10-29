@@ -38,35 +38,37 @@ void main() {
   }
 
   RequestOptions cacheable(String path, {Duration? ttl}) => RequestOptions(
-        path: path,
-        method: 'GET',
-        extra: <String, dynamic>{
-          RequestCacheInterceptor.cacheKey: true,
-          RequestCacheInterceptor.ttlKey: ?ttl,
-        },
-      );
+    path: path,
+    method: 'GET',
+    extra: <String, dynamic>{
+      RequestCacheInterceptor.cacheKey: true,
+      RequestCacheInterceptor.ttlKey: ?ttl,
+    },
+  );
 
   group('read path', () {
-    test('a written entry is served back — the bug this file exists for',
-        () async {
-      final options = cacheable('/notes');
+    test(
+      'a written entry is served back — the bug this file exists for',
+      () async {
+        final options = cacheable('/notes');
 
-      interceptor.onResponse(
-        Response<dynamic>(
-          requestOptions: options,
-          statusCode: 200,
-          data: {'status': true, 'data': 'from-cache'},
-        ),
-        _NoopResponseHandler(),
-      );
-      await Future<void>.delayed(Duration.zero);
+        interceptor.onResponse(
+          Response<dynamic>(
+            requestOptions: options,
+            statusCode: 200,
+            data: {'status': true, 'data': 'from-cache'},
+          ),
+          _NoopResponseHandler(),
+        );
+        await Future<void>.delayed(Duration.zero);
 
-      final hit = await ask(cacheable('/notes'));
+        final hit = await ask(cacheable('/notes'));
 
-      expect(hit, isNotNull, reason: 'the cache must answer a repeat GET');
-      expect((hit!.data as Map)['data'], 'from-cache');
-      expect(hit.headers.value('x-from-cache'), 'true');
-    });
+        expect(hit, isNotNull, reason: 'the cache must answer a repeat GET');
+        expect((hit!.data as Map)['data'], 'from-cache');
+        expect(hit.headers.value('x-from-cache'), 'true');
+      },
+    );
 
     test('an expired entry falls through to the network', () async {
       final options = cacheable('/notes', ttl: Duration.zero);
@@ -146,11 +148,18 @@ void main() {
 
       await interceptor.invalidateAll();
 
-      expect(await ask(cacheable('/notes')), isNull,
-          reason: 'the cached response must be gone');
-      expect(await storage.readString('app_theme_mode'), 'dark',
-          reason: 'invalidating the HTTP cache must not sign the user out of '
-              'their own settings');
+      expect(
+        await ask(cacheable('/notes')),
+        isNull,
+        reason: 'the cached response must be gone',
+      );
+      expect(
+        await storage.readString('app_theme_mode'),
+        'dark',
+        reason:
+            'invalidating the HTTP cache must not sign the user out of '
+            'their own settings',
+      );
       expect(await storage.readString('app_locale'), 'ar');
     });
   });
@@ -189,8 +198,7 @@ class _RecordingRequestHandler extends RequestInterceptorHandler {
   void reject(
     DioException error, [
     bool callFollowingErrorInterceptor = false,
-  ]) =>
-      _settle();
+  ]) => _settle();
 
   @override
   bool get isCompleted => _done.isCompleted;

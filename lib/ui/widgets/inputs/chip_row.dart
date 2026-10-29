@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -51,9 +51,9 @@ class ChipRow<T> extends StatelessWidget {
     this.inactiveColor,
     this.padding,
     this.spacing = 8,
-  })  : multiSelect = false,
-        selectedValues = const [],
-        onMultiChanged = null;
+  }) : multiSelect = false,
+       selectedValues = const [],
+       onMultiChanged = null;
 
   /// Multi-select
   const ChipRow.multi({
@@ -67,10 +67,10 @@ class ChipRow<T> extends StatelessWidget {
     this.inactiveColor,
     this.padding,
     this.spacing = 8,
-  })  : multiSelect = true,
-        selectedValue = null,
-        onSelected = null,
-        onMultiChanged = onChanged;
+  }) : multiSelect = true,
+       selectedValue = null,
+       onSelected = null,
+       onMultiChanged = onChanged;
 
   final List<T> items;
 
@@ -113,27 +113,29 @@ class ChipRow<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chips = items.map((item) => _ChipItem<T>(
-          item: item,
-          label: labelResolver(item),
-          isSelected: multiSelect
-              ? selectedValues.contains(item)
-              : item == selectedValue,
-          activeColor: activeColor ?? context.colors.primary,
-          inactiveColor: inactiveColor ?? context.colors.textMuted,
-          borderColor: context.colors.borderSubtle,
-          bgSelected: (activeColor ?? context.colors.primary).withValues(alpha: 0.12),
-          onTap: () => _handleTap(item),
-        )).toList();
+    final chips = items
+        .map(
+          (item) => _ChipItem<T>(
+            item: item,
+            label: labelResolver(item),
+            isSelected: multiSelect
+                ? selectedValues.contains(item)
+                : item == selectedValue,
+            activeColor: activeColor ?? context.colors.primary,
+            inactiveColor: inactiveColor ?? context.colors.textMuted,
+            borderColor: context.colors.borderSubtle,
+            bgSelected: (activeColor ?? context.colors.primary).withValues(
+              alpha: 0.12,
+            ),
+            onTap: () => _handleTap(item),
+          ),
+        )
+        .toList();
 
     if (!scrollable) {
       return Padding(
         padding: padding ?? EdgeInsets.zero,
-        child: Wrap(
-          spacing: spacing,
-          runSpacing: spacing,
-          children: chips,
-        ),
+        child: Wrap(spacing: spacing, runSpacing: spacing, children: chips),
       );
     }
 

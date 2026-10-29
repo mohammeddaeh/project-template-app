@@ -30,7 +30,7 @@ class AvatarWidget extends StatelessWidget {
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       return Bone.circle(
         child: CircleAvatar(
-        radius: radius,
+          radius: radius,
           backgroundImage: NetworkImage(imageUrl!),
           backgroundColor: bg,
         ),

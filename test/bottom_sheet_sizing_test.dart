@@ -74,9 +74,10 @@ void main() {
       tester.getSize(find.byType(BottomSheet)).height;
 
   EdgeInsets contentPadding(WidgetTester tester) =>
-      tester.widget<SingleChildScrollView>(
-        find.byType(SingleChildScrollView),
-      ).padding! as EdgeInsets;
+      tester
+              .widget<SingleChildScrollView>(find.byType(SingleChildScrollView))
+              .padding!
+          as EdgeInsets;
 
   testWidgets('short content gives a short sheet, not the ceiling', (
     tester,
@@ -93,25 +94,26 @@ void main() {
     );
   });
 
-  testWidgets('tall content stops at the ceiling instead of filling the screen', (
-    tester,
-  ) async {
-    await openSheet(tester, childHeight: 4000);
+  testWidgets(
+    'tall content stops at the ceiling instead of filling the screen',
+    (tester) async {
+      await openSheet(tester, childHeight: 4000);
 
-    // The inverse of the case above: proving "short content, short sheet"
-    // alone would also pass with no ceiling at all, which is how a sheet ends
-    // up taller than the screen.
-    expect(
-      sheetHeight(tester),
-      lessThanOrEqualTo(screenHeight * fraction + 0.5),
-      reason: 'maxHeightFraction is a ceiling; nothing may exceed it.',
-    );
-    expect(
-      sheetHeight(tester),
-      greaterThan(screenHeight * 0.7),
-      reason: 'Content taller than the ceiling must actually reach it.',
-    );
-  });
+      // The inverse of the case above: proving "short content, short sheet"
+      // alone would also pass with no ceiling at all, which is how a sheet ends
+      // up taller than the screen.
+      expect(
+        sheetHeight(tester),
+        lessThanOrEqualTo(screenHeight * fraction + 0.5),
+        reason: 'maxHeightFraction is a ceiling; nothing may exceed it.',
+      );
+      expect(
+        sheetHeight(tester),
+        greaterThan(screenHeight * 0.7),
+        reason: 'Content taller than the ceiling must actually reach it.',
+      );
+    },
+  );
 
   testWidgets('the keyboard shrinks the ceiling it is measured against', (
     tester,

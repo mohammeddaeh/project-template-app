@@ -35,10 +35,7 @@ class MediaServiceImpl implements MediaService {
   }
 
   @override
-  Future<File?> capturePrivate({
-    int maxWidth = 2048,
-    int quality = 85,
-  }) async {
+  Future<File?> capturePrivate({int maxWidth = 2048, int quality = 85}) async {
     final xFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
       // Downscaled and re-encoded **by the picker**, so no image library is

@@ -30,7 +30,9 @@ class CsvPreviewView extends StatefulWidget {
 }
 
 class _CsvPreviewViewState extends State<CsvPreviewView> {
-  late final Future<CsvPreview> _preview = CsvPreviewParser.fromFile(widget.file);
+  late final Future<CsvPreview> _preview = CsvPreviewParser.fromFile(
+    widget.file,
+  );
 
   /// Shared by the header and the body so the two cannot drift apart while
   /// scrolling a wide file sideways.
@@ -93,10 +95,12 @@ class _CsvPreviewViewState extends State<CsvPreviewView> {
                     // parser stopped early — a number read off a truncated
                     // table would otherwise be taken for the file's total.
                     preview.truncated
-                        ? LocaleKeys.filePreviewTruncated
-                            .tr(args: ['${preview.rows.length}'])
-                        : LocaleKeys.filePreviewRows
-                            .tr(args: ['${preview.rows.length}']),
+                        ? LocaleKeys.filePreviewTruncated.tr(
+                            args: ['${preview.rows.length}'],
+                          )
+                        : LocaleKeys.filePreviewRows.tr(
+                            args: ['${preview.rows.length}'],
+                          ),
                     style: context.textTheme.bodySmall,
                   ),
                 ],
@@ -153,49 +157,49 @@ class _HeaderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: 40,
-        decoration: BoxDecoration(
-          color: context.colors.bgNeutral,
-          border: Border(bottom: BorderSide(color: context.colors.borderSubtle)),
+    height: 40,
+    decoration: BoxDecoration(
+      color: context.colors.bgNeutral,
+      border: Border(bottom: BorderSide(color: context.colors.borderSubtle)),
+    ),
+    child: Row(
+      children: [
+        SizedBox(
+          width: gutter,
+          child: Center(child: Text('#', style: context.textTheme.bodySmall)),
         ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: gutter,
-              child: Center(child: Text('#', style: context.textTheme.bodySmall)),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                controller: controller,
-                scrollDirection: Axis.horizontal,
-                // The body owns the gesture; the header follows it. Two
-                // independently scrollable axes drift out of alignment.
-                physics: const NeverScrollableScrollPhysics(),
-                child: Row(
-                  children: [
-                    for (final cell in header)
-                      SizedBox(
-                        width: columnWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Text(
-                              cell,
-                              style: context.textTheme.bodyMedium,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+        Expanded(
+          child: SingleChildScrollView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            // The body owns the gesture; the header follows it. Two
+            // independently scrollable axes drift out of alignment.
+            physics: const NeverScrollableScrollPhysics(),
+            child: Row(
+              children: [
+                for (final cell in header)
+                  SizedBox(
+                    width: columnWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          cell,
+                          style: context.textTheme.bodyMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 class _DataRow extends StatelessWidget {
@@ -217,53 +221,53 @@ class _DataRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: context.colors.dividerSubtle)),
+    decoration: BoxDecoration(
+      border: Border(bottom: BorderSide(color: context.colors.dividerSubtle)),
+    ),
+    child: Row(
+      children: [
+        SizedBox(
+          width: gutter,
+          child: Center(
+            child: Text('$number', style: context.textTheme.bodySmall),
+          ),
         ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: gutter,
-              child: Center(
-                child: Text('$number', style: context.textTheme.bodySmall),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                controller: controller,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    // Indexed against the HEADER's width, not this row's: a
-                    // short row must leave blank cells rather than shift the
-                    // columns after it left by one.
-                    for (var i = 0; i < columnCount; i++)
-                      SizedBox(
-                        width: columnWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Text(
-                              i < cells.length && cells[i].isNotEmpty
-                                  ? cells[i]
-                                  : '—',
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: i < cells.length && cells[i].isNotEmpty
-                                    ? null
-                                    : context.colors.textMuted,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+        Expanded(
+          child: SingleChildScrollView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                // Indexed against the HEADER's width, not this row's: a
+                // short row must leave blank cells rather than shift the
+                // columns after it left by one.
+                for (var i = 0; i < columnCount; i++)
+                  SizedBox(
+                    width: columnWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          i < cells.length && cells[i].isNotEmpty
+                              ? cells[i]
+                              : '—',
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: i < cells.length && cells[i].isNotEmpty
+                                ? null
+                                : context.colors.textMuted,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }

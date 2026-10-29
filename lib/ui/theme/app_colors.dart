@@ -438,8 +438,16 @@ class AppColors extends ThemeExtension<AppColors> {
       )!,
       tertiary: Color.lerp(tertiary, other.tertiary, t)!,
       onTertiary: Color.lerp(onTertiary, other.onTertiary, t)!,
-      tertiaryContainer: Color.lerp(tertiaryContainer, other.tertiaryContainer, t)!,
-      onTertiaryContainer: Color.lerp(onTertiaryContainer, other.onTertiaryContainer, t)!,
+      tertiaryContainer: Color.lerp(
+        tertiaryContainer,
+        other.tertiaryContainer,
+        t,
+      )!,
+      onTertiaryContainer: Color.lerp(
+        onTertiaryContainer,
+        other.onTertiaryContainer,
+        t,
+      )!,
       errorContainer: Color.lerp(errorContainer, other.errorContainer, t)!,
       onErrorContainer: Color.lerp(
         onErrorContainer,
@@ -474,8 +482,16 @@ class AppColors extends ThemeExtension<AppColors> {
       stateError: Color.lerp(stateError, other.stateError, t)!,
       logo: Color.lerp(logo, other.logo, t)!,
       // Toast
-      primaryToastError: Color.lerp(primaryToastError, other.primaryToastError, t)!,
-      secondaryToastError: Color.lerp(secondaryToastError, other.secondaryToastError, t)!,
+      primaryToastError: Color.lerp(
+        primaryToastError,
+        other.primaryToastError,
+        t,
+      )!,
+      secondaryToastError: Color.lerp(
+        secondaryToastError,
+        other.secondaryToastError,
+        t,
+      )!,
       // Avatar
       avatarBg: Color.lerp(avatarBg, other.avatarBg, t)!,
       avatarFg: Color.lerp(avatarFg, other.avatarFg, t)!,

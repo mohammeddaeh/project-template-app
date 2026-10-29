@@ -40,22 +40,46 @@ abstract interface class AppFeedbackService {
   void show(BuildContext context, FeedbackConfig config);
 
   /// Convenience — shows a [FeedbackType.success] toast.
-  void success(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style});
+  void success(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  });
 
   /// Convenience — shows a [FeedbackType.error] toast.
-  void error(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style});
+  void error(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  });
 
   /// Convenience — shows a [FeedbackType.warning] toast.
-  void warning(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style});
+  void warning(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  });
 
   /// Convenience — shows a [FeedbackType.info] toast.
-  void info(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style});
+  void info(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  });
 
   /// Shows a minimal bottom toast — no icon, no title, plain message.
-  void toast(BuildContext context, String message,
-      {int seconds = 3, FeedbackStyle? style});
+  void toast(
+    BuildContext context,
+    String message, {
+    int seconds = 3,
+    FeedbackStyle? style,
+  });
 }

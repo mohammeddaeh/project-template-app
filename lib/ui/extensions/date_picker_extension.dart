@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' as material;
@@ -229,7 +229,9 @@ extension DatePickerContextExtension on BuildContext {
                         : HijriDateTime.fromDateTime(maxDate),
                     onSelectionChanged: (details) {
                       if (details.value is HijriDateTime) {
-                        setState(() => selected = details.value as HijriDateTime);
+                        setState(
+                          () => selected = details.value as HijriDateTime,
+                        );
                       }
                     },
                     selectionMode: DateRangePickerSelectionMode.single,

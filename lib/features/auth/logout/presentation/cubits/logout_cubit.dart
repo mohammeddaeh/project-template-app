@@ -14,7 +14,7 @@ part 'logout_state.dart';
 @injectable
 class LogoutCubit extends SafeCubit<LogoutState> {
   LogoutCubit(this._logoutUseCase, this._unsyncedWork)
-      : super(const LogoutState.initial());
+    : super(const LogoutState.initial());
 
   final LogoutUseCase _logoutUseCase;
   final UnsyncedWorkProbe _unsyncedWork;
@@ -46,18 +46,15 @@ class LogoutCubit extends SafeCubit<LogoutState> {
 
     emit(const LogoutState.loading());
     final res = await _logoutUseCase(const NoParams());
-    res.fold(
-      (failure) {
-        switch (FailureUiMapper.toAction(failure)) {
-          case ShowError(:final message):
-            emit(LogoutState.error(errorMessage: message));
-          case NavigateToLogin():
-            AuthEventBus.instance.emit(AuthEvent.sessionExpired);
-          case Silent():
-            break;
-        }
-      },
-      (_) => AuthEventBus.instance.emit(AuthEvent.sessionExpired),
-    );
+    res.fold((failure) {
+      switch (FailureUiMapper.toAction(failure)) {
+        case ShowError(:final message):
+          emit(LogoutState.error(errorMessage: message));
+        case NavigateToLogin():
+          AuthEventBus.instance.emit(AuthEvent.sessionExpired);
+        case Silent():
+          break;
+      }
+    }, (_) => AuthEventBus.instance.emit(AuthEvent.sessionExpired));
   }
 }

@@ -72,14 +72,10 @@ class SyncCursorStore {
   /// dropped, and never offered again.
   Future<void> write(String entityName, SyncCursor cursor) async {
     final db = await _database.database;
-    await db.insert(
-      _table,
-      {
-        'meta_key': '$_prefix$entityName',
-        'meta_value': jsonEncode(cursor.toJson()),
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert(_table, {
+      'meta_key': '$_prefix$entityName',
+      'meta_value': jsonEncode(cursor.toJson()),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   /// Forgets every cursor — the next sync re-pulls everything.

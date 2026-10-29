@@ -19,7 +19,7 @@ part 'verify_email_state.dart';
 @injectable
 class VerifyEmailCubit extends SafeCubit<VerifyEmailState> {
   VerifyEmailCubit(this._verifyEmail, this._resendVerification)
-      : super(const VerifyEmailState.initial());
+    : super(const VerifyEmailState.initial());
 
   final VerifyEmailUseCase _verifyEmail;
   final ResendVerificationUseCase _resendVerification;

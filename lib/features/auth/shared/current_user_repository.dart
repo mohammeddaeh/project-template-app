@@ -67,8 +67,9 @@ class CurrentUserRepository {
   /// crash while the background `/account/me` refresh already covers the gap.
   Future<void> restoreFromCache() async {
     try {
-      final userJson =
-          await _storage.readString(PersistenceKeys.cachedCurrentUser);
+      final userJson = await _storage.readString(
+        PersistenceKeys.cachedCurrentUser,
+      );
       if (userJson == null || userJson.isEmpty) return;
 
       _user = AuthUserModel.fromJson(

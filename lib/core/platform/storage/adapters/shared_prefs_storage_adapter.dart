@@ -1,4 +1,4 @@
-﻿import 'package:app_template/core/foundation/errors/failure.dart';
+import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,8 +58,11 @@ class SharedPrefsStorageAdapter implements StorageService {
   // ── String list ──────────────────────────────────────────────────────────────
 
   @override
-  Future<void> writeStringList(String key, List<String> values) =>
-      _wrap(() => _prefs.setStringList(key, values), key, StorageOperation.write);
+  Future<void> writeStringList(String key, List<String> values) => _wrap(
+    () => _prefs.setStringList(key, values),
+    key,
+    StorageOperation.write,
+  );
 
   @override
   Future<List<String>?> readStringList(String key) async =>
@@ -91,11 +94,7 @@ class SharedPrefsStorageAdapter implements StorageService {
     try {
       await call();
     } catch (e) {
-      throw StorageFailure(
-        operation: op,
-        key: key,
-        message: e.toString(),
-      );
+      throw StorageFailure(operation: op, key: key, message: e.toString());
     }
   }
 }

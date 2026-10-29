@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -105,40 +105,51 @@ class AppButton extends StatelessWidget {
     final textTheme = context.textTheme;
 
     final (bgColor, fgColor, borderColor) = switch (variant) {
-      AppButtonVariant.filled =>
-        (colors.primary, colors.textOnPrimary, colors.primary),
-      AppButtonVariant.tonal =>
-        (colors.secondaryContainer, colors.onSecondaryContainer, Colors.transparent),
-      AppButtonVariant.outlined =>
-        (Colors.transparent, colors.primary, colors.primary),
-      AppButtonVariant.text =>
-        (Colors.transparent, colors.primary, Colors.transparent),
-      AppButtonVariant.danger =>
-        (colors.error, colors.onError, colors.error),
+      AppButtonVariant.filled => (
+        colors.primary,
+        colors.textOnPrimary,
+        colors.primary,
+      ),
+      AppButtonVariant.tonal => (
+        colors.secondaryContainer,
+        colors.onSecondaryContainer,
+        Colors.transparent,
+      ),
+      AppButtonVariant.outlined => (
+        Colors.transparent,
+        colors.primary,
+        colors.primary,
+      ),
+      AppButtonVariant.text => (
+        Colors.transparent,
+        colors.primary,
+        Colors.transparent,
+      ),
+      AppButtonVariant.danger => (colors.error, colors.onError, colors.error),
     };
 
     final vPad = switch (size) {
-      AppButtonSize.small  => 8.0,
+      AppButtonSize.small => 8.0,
       AppButtonSize.medium => 12.0,
-      AppButtonSize.large  => 16.0,
+      AppButtonSize.large => 16.0,
     };
 
     final hPad = switch (size) {
-      AppButtonSize.small  => 16.0,
+      AppButtonSize.small => 16.0,
       AppButtonSize.medium => 24.0,
-      AppButtonSize.large  => 32.0,
+      AppButtonSize.large => 32.0,
     };
 
     final minHeight = switch (size) {
-      AppButtonSize.small  => 36.0,
+      AppButtonSize.small => 36.0,
       AppButtonSize.medium => 44.0,
-      AppButtonSize.large  => 52.0,
+      AppButtonSize.large => 52.0,
     };
 
     final labelStyle = switch (size) {
-      AppButtonSize.small  => textTheme.labelMedium,
+      AppButtonSize.small => textTheme.labelMedium,
       AppButtonSize.medium => textTheme.labelLarge,
-      AppButtonSize.large  => textTheme.bodyMedium,
+      AppButtonSize.large => textTheme.bodyMedium,
     };
 
     final padding = EdgeInsets.symmetric(horizontal: hPad, vertical: vPad);
@@ -146,7 +157,9 @@ class AppButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
     );
 
-    final child = isLoading ? _buildLoader(fgColor) : _buildLabel(labelStyle, fgColor);
+    final child = isLoading
+        ? _buildLoader(fgColor)
+        : _buildLabel(labelStyle, fgColor);
 
     if (variant == AppButtonVariant.outlined) {
       return SizedBox(
@@ -193,8 +206,9 @@ class AppButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: _interactive ? onTap : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              _interactive ? bgColor : bgColor.withValues(alpha: 0.5),
+          backgroundColor: _interactive
+              ? bgColor
+              : bgColor.withValues(alpha: 0.5),
           foregroundColor: fgColor,
           disabledBackgroundColor: bgColor.withValues(alpha: 0.5),
           disabledForegroundColor: fgColor.withValues(alpha: 0.6),
@@ -212,17 +226,17 @@ class AppButton extends StatelessWidget {
       AppProgress.circular(size: AppProgressSize.sm, color: color);
 
   Widget _buildLabel(TextStyle? style, Color color) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (leadingIcon != null) ...[
-            Icon(leadingIcon, size: 18, color: color),
-            const SizedBox(width: 6),
-          ],
-          Text(
-            text,
-            style: style?.copyWith(color: color, fontWeight: FontWeight.w600),
-          ),
-        ],
-      );
+    mainAxisAlignment: MainAxisAlignment.center,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      if (leadingIcon != null) ...[
+        Icon(leadingIcon, size: 18, color: color),
+        const SizedBox(width: 6),
+      ],
+      Text(
+        text,
+        style: style?.copyWith(color: color, fontWeight: FontWeight.w600),
+      ),
+    ],
+  );
 }

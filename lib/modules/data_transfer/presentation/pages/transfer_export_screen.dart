@@ -50,10 +50,10 @@ class TransferExportScreen extends StatelessWidget {
             builder: (context, state) => switch (state) {
               ExportInitial() || ExportLoading() => const LoadingWidget(),
               ExportFailed(:final message, :final code) => TransferFailureView(
-                  message: message,
-                  code: code,
-                  onRetry: () => context.read<ExportCubit>().load(resource),
-                ),
+                message: message,
+                code: code,
+                onRetry: () => context.read<ExportCubit>().load(resource),
+              ),
               ExportReady() => _Form(state: state, busy: false),
               ExportRunning(:final ready) => _Form(state: ready, busy: true),
               ExportDone(:final ready) => _Form(state: ready, busy: false),
@@ -166,8 +166,9 @@ class _FormState extends State<_Form> {
                   ButtonSegment(value: format, label: Text(format.label)),
               ],
               selected: {state.format},
-              onSelectionChanged:
-                  busy ? null : (s) => cubit.selectFormat(s.first),
+              onSelectionChanged: busy
+                  ? null
+                  : (s) => cubit.selectFormat(s.first),
             ),
             const SizedBox(height: 24),
 
@@ -181,8 +182,9 @@ class _FormState extends State<_Form> {
                   FilterChip(
                     label: Text(column.label(isArabic: isArabic)),
                     selected: state.selectedColumns.contains(column.key),
-                    onSelected:
-                        busy ? null : (_) => cubit.toggleColumn(column.key),
+                    onSelected: busy
+                        ? null
+                        : (_) => cubit.toggleColumn(column.key),
                   ),
               ],
             ),
@@ -269,41 +271,39 @@ class _FilterField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => switch (filter.type) {
-        TransferFilterType.text => CustomTextField(
-            controller: controller,
-            labelText: filter.label(isArabic: isArabic),
-            // The placeholder says what the box searches. Without it the field
-            // reads as "Filters", which answers nothing.
-            hint: filter.placeholder(isArabic: isArabic) ??
-                filter.label(isArabic: isArabic),
-            enabled: enabled,
-          ),
-        // The project's own select field: it takes items + a label resolver,
-        // not DropdownMenuItems, and matches CustomTextField visually.
-        TransferFilterType.select => AppSelectField<TransferFilterOption>(
-            labelText: filter.label(isArabic: isArabic),
-            hint: filter.placeholder(isArabic: isArabic),
-            items: filter.options,
-            labelResolver: (o) => o.label(isArabic: isArabic),
-            value: filter.options
-                .where((o) => o.value == value)
-                .firstOrNull,
-            enabled: enabled,
-            onChanged: (o) => onChanged(o?.value ?? ''),
-          ),
-        TransferFilterType.boolean => SwitchListTile(
-            title: Text(
-              filter.label(isArabic: isArabic),
-              style: context.textTheme.bodyMedium,
-            ),
-            value: value == 'true',
-            // Cleared rather than sent as `false`: for most boolean filters
-            // "off" means "do not filter", and sending `false` would narrow the
-            // export to the rows that are explicitly false.
-            onChanged:
-                enabled ? (on) => onChanged(on ? 'true' : '') : null,
-            contentPadding: EdgeInsets.zero,
-          ),
-        TransferFilterType.unknown => const SizedBox.shrink(),
-      };
+    TransferFilterType.text => CustomTextField(
+      controller: controller,
+      labelText: filter.label(isArabic: isArabic),
+      // The placeholder says what the box searches. Without it the field
+      // reads as "Filters", which answers nothing.
+      hint:
+          filter.placeholder(isArabic: isArabic) ??
+          filter.label(isArabic: isArabic),
+      enabled: enabled,
+    ),
+    // The project's own select field: it takes items + a label resolver,
+    // not DropdownMenuItems, and matches CustomTextField visually.
+    TransferFilterType.select => AppSelectField<TransferFilterOption>(
+      labelText: filter.label(isArabic: isArabic),
+      hint: filter.placeholder(isArabic: isArabic),
+      items: filter.options,
+      labelResolver: (o) => o.label(isArabic: isArabic),
+      value: filter.options.where((o) => o.value == value).firstOrNull,
+      enabled: enabled,
+      onChanged: (o) => onChanged(o?.value ?? ''),
+    ),
+    TransferFilterType.boolean => SwitchListTile(
+      title: Text(
+        filter.label(isArabic: isArabic),
+        style: context.textTheme.bodyMedium,
+      ),
+      value: value == 'true',
+      // Cleared rather than sent as `false`: for most boolean filters
+      // "off" means "do not filter", and sending `false` would narrow the
+      // export to the rows that are explicitly false.
+      onChanged: enabled ? (on) => onChanged(on ? 'true' : '') : null,
+      contentPadding: EdgeInsets.zero,
+    ),
+    TransferFilterType.unknown => const SizedBox.shrink(),
+  };
 }

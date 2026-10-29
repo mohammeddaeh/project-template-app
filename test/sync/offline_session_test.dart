@@ -110,23 +110,26 @@ void main() {
       expect(events, contains(AuthEvent.sessionExpired));
     });
 
-    test('a client with no token to rotate is terminal, not transient', () async {
-      // `StateError` from the gateway carries no response either — but it is
-      // not a connectivity problem: the client holds a credential it cannot
-      // renew, and retrying forever would be worse than saying so.
-      final gateway = _RecordingRefreshGateway(
-        throws: StateError('No session token to refresh'),
-      );
-      final events = <AuthEvent>[];
-      final sub = AuthEventBus.instance.stream.listen(events.add);
+    test(
+      'a client with no token to rotate is terminal, not transient',
+      () async {
+        // `StateError` from the gateway carries no response either — but it is
+        // not a connectivity problem: the client holds a credential it cannot
+        // renew, and retrying forever would be worse than saying so.
+        final gateway = _RecordingRefreshGateway(
+          throws: StateError('No session token to refresh'),
+        );
+        final events = <AuthEvent>[];
+        final sub = AuthEventBus.instance.stream.listen(events.add);
 
-      await _fireUnauthorised(gateway);
-      await Future<void>.delayed(Duration.zero);
-      await sub.cancel();
+        await _fireUnauthorised(gateway);
+        await Future<void>.delayed(Duration.zero);
+        await sub.cancel();
 
-      expect(gateway.onRefreshFailedCalls, 1);
-      expect(events, contains(AuthEvent.sessionExpired));
-    });
+        expect(gateway.onRefreshFailedCalls, 1);
+        expect(events, contains(AuthEvent.sessionExpired));
+      },
+    );
   });
 
   group('UnsyncedWorkProbe', () {
@@ -138,11 +141,7 @@ void main() {
 
 /// Drives the interceptor's 401 path with a gateway whose refresh fails.
 Future<void> _fireUnauthorised(_RecordingRefreshGateway gateway) async {
-  final interceptor = TokenRefreshInterceptor(
-    Dio(),
-    gateway,
-    _TokenHolder(),
-  );
+  final interceptor = TokenRefreshInterceptor(Dio(), gateway, _TokenHolder());
 
   final completer = _CapturingHandler();
   interceptor.onError(

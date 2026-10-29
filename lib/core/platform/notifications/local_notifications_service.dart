@@ -32,7 +32,9 @@ abstract interface class LocalNotificationsService {
   ///
   /// Call once from main() before runApp. Safe to call multiple times.
   Future<void> initialize({
-    List<NotificationChannel> channels = const [NotificationChannel.defaultChannel],
+    List<NotificationChannel> channels = const [
+      NotificationChannel.defaultChannel,
+    ],
   });
 
   /// Stream of tap events — subscribe once in app.dart.

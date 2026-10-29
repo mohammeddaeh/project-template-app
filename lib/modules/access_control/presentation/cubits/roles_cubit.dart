@@ -23,16 +23,15 @@ class RolesCubit extends SafeCubit<RolesState> {
     emit(const RolesLoading());
 
     final catalogResult = await _repository.catalog();
-    await catalogResult.fold(
-      (failure) async => _emitFailure(failure),
-      (catalog) async {
-        final rolesResult = await _repository.roles();
-        rolesResult.fold(
-          (failure) => _emitFailure(failure),
-          (roles) => emit(RolesReady(roles: roles, catalog: catalog)),
-        );
-      },
-    );
+    await catalogResult.fold((failure) async => _emitFailure(failure), (
+      catalog,
+    ) async {
+      final rolesResult = await _repository.roles();
+      rolesResult.fold(
+        (failure) => _emitFailure(failure),
+        (roles) => emit(RolesReady(roles: roles, catalog: catalog)),
+      );
+    });
   }
 
   /// Reloads only the list, keeping the catalog already held.
@@ -61,13 +60,10 @@ class RolesCubit extends SafeCubit<RolesState> {
       isActive: isActive,
     );
 
-    await result.fold(
-      (failure) async {
-        emit(current.copyWith(busyRoleId: null));
-        _emitActionFailure(current, failure);
-      },
-      (_) => refreshRoles(),
-    );
+    await result.fold((failure) async {
+      emit(current.copyWith(busyRoleId: null));
+      _emitActionFailure(current, failure);
+    }, (_) => refreshRoles());
   }
 
   Future<void> create({
@@ -108,8 +104,9 @@ class RolesCubit extends SafeCubit<RolesState> {
   /// `null` for the two actions that are not messages: an expired session is
   /// routed to login by the network layer on its own, and painting an error
   /// over a screen already being torn down is noise.
-  String? _describe(Failure failure) => switch (FailureUiMapper.toAction(failure)) {
-    ShowError(:final message) => message,
-    NavigateToLogin() || Silent() => null,
-  };
+  String? _describe(Failure failure) =>
+      switch (FailureUiMapper.toAction(failure)) {
+        ShowError(:final message) => message,
+        NavigateToLogin() || Silent() => null,
+      };
 }

@@ -97,21 +97,21 @@ class _AttachmentViewState extends State<AttachmentView> {
 
           return switch (snapshot.data) {
             AttachmentReady(:final file) => ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  File(file.path),
-                  fit: widget.fit,
-                  // A file that vanished between resolution and paint — the
-                  // cache manager can run at any moment. Handled rather than
-                  // thrown, because the answer is simply to fetch it again.
-                  errorBuilder: (_, _, _) => _Placeholder(
-                    icon: Icons.refresh_rounded,
-                    label: LocaleKeys.attachmentUnavailable.tr(),
-                    height: widget.height,
-                    onTap: _retry,
-                  ),
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(file.path),
+                fit: widget.fit,
+                // A file that vanished between resolution and paint — the
+                // cache manager can run at any moment. Handled rather than
+                // thrown, because the answer is simply to fetch it again.
+                errorBuilder: (_, _, _) => _Placeholder(
+                  icon: Icons.refresh_rounded,
+                  label: LocaleKeys.attachmentUnavailable.tr(),
+                  height: widget.height,
+                  onTap: _retry,
                 ),
               ),
+            ),
             AttachmentUnavailable(reason: AttachmentUnavailability.offline) =>
               _Placeholder(
                 icon: Icons.cloud_off_rounded,
@@ -119,12 +119,12 @@ class _AttachmentViewState extends State<AttachmentView> {
                 height: widget.height,
               ),
             _ => _Placeholder(
-                icon: Icons.error_outline_rounded,
-                label: LocaleKeys.attachmentFailed.tr(),
-                height: widget.height,
-                isError: true,
-                onTap: _retry,
-              ),
+              icon: Icons.error_outline_rounded,
+              label: LocaleKeys.attachmentFailed.tr(),
+              height: widget.height,
+              isError: true,
+              onTap: _retry,
+            ),
           };
         },
       ),
@@ -152,7 +152,9 @@ class _Placeholder extends StatelessWidget {
     // Neutral by default. Only a real failure — the server answered and
     // something went wrong — gets the error colour; "not here, you are
     // offline" is an ordinary state of an offline-first app.
-    final color = isError ? context.colors.stateError : context.colors.textMuted;
+    final color = isError
+        ? context.colors.stateError
+        : context.colors.textMuted;
 
     return InkWell(
       onTap: onTap,

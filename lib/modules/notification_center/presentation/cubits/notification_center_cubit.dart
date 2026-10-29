@@ -12,7 +12,8 @@ part 'notification_center_state.dart';
 /// cubit's screen is not even open, since both hold the same store instance
 /// (a `@lazySingleton` — see `integration/notification_center_bootstrap.dart`).
 class NotificationCenterCubit extends SafeCubit<NotificationCenterState> {
-  NotificationCenterCubit(this._store) : super(const NotificationCenterLoading()) {
+  NotificationCenterCubit(this._store)
+    : super(const NotificationCenterLoading()) {
     _subscription = _store.changes.listen(_onItemsChanged);
     _onItemsChanged(_store.items);
   }

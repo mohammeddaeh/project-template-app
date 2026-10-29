@@ -19,22 +19,26 @@ import 'dart:io';
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
-const _excludedFolders  = {'fonts', 'translations', 'app_icons'};
+const _excludedFolders = {'fonts', 'translations', 'app_icons'};
 const _vectorExtensions = {'.svg'};
 const _rasterExtensions = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.avif'};
-const _dataExtensions   = {'.json'}; // Lottie animations & other JSON assets
-final  _allExtensions   = {..._vectorExtensions, ..._rasterExtensions, ..._dataExtensions};
+const _dataExtensions = {'.json'}; // Lottie animations & other JSON assets
+final _allExtensions = {
+  ..._vectorExtensions,
+  ..._rasterExtensions,
+  ..._dataExtensions,
+};
 
-const _outFile    = 'lib/resources/assets.gen.dart';
+const _outFile = 'lib/resources/assets.gen.dart';
 const _barrelFile = 'lib/resources/assets.dart';
 const _assetsRoot = 'assets';
 
 // ── Tree node ─────────────────────────────────────────────────────────────────
 
 class _FolderNode {
-  final String name;       // اسم المجلد فقط: 'vectors'
-  final String assetPath;  // المسار الكامل: 'assets/images/vectors'
-  final List<_Asset>      files;
+  final String name; // اسم المجلد فقط: 'vectors'
+  final String assetPath; // المسار الكامل: 'assets/images/vectors'
+  final List<_Asset> files;
   final List<_FolderNode> subfolders;
 
   _FolderNode({
@@ -55,10 +59,15 @@ void main(List<String> args) {
   print('\n🎨  gen_assets — scanning $_assetsRoot/\n');
 
   final dir = Directory(_assetsRoot);
-  if (!dir.existsSync()) _die('$_assetsRoot/ not found — run from project root.');
+  if (!dir.existsSync()) {
+    _die('$_assetsRoot/ not found — run from project root.');
+  }
 
   final topFolders = _collectTopLevel(dir);
-  if (topFolders.isEmpty) { print('⚠️  No image assets found.'); return; }
+  if (topFolders.isEmpty) {
+    print('⚠️  No image assets found.');
+    return;
+  }
 
   print('');
   if (!checkOnly) {
@@ -79,7 +88,7 @@ void main(List<String> args) {
 // ── Collect ───────────────────────────────────────────────────────────────────
 
 List<_FolderNode> _collectTopLevel(Directory root) {
-  final result  = <_FolderNode>[];
+  final result = <_FolderNode>[];
   final entries = root.listSync()..sort((a, b) => a.path.compareTo(b.path));
 
   for (final entity in entries) {
@@ -99,7 +108,7 @@ List<_FolderNode> _collectTopLevel(Directory root) {
 
 _FolderNode _buildNode(Directory dir, String name, String assetPath) {
   final directFiles = <_Asset>[];
-  final children    = <_FolderNode>[];
+  final children = <_FolderNode>[];
 
   final entries = dir.listSync()..sort((a, b) => a.path.compareTo(b.path));
   for (final entity in entries) {
@@ -107,21 +116,24 @@ _FolderNode _buildNode(Directory dir, String name, String assetPath) {
       directFiles.add(_Asset(entity));
     } else if (entity is Directory) {
       final subName = _basename(entity.path);
-      final child   = _buildNode(entity, subName, '$assetPath/$subName');
+      final child = _buildNode(entity, subName, '$assetPath/$subName');
       if (child.hasContent) children.add(child);
     }
   }
 
   _resolveGetterNames(directFiles);
   return _FolderNode(
-    name: name, assetPath: assetPath, files: directFiles, subfolders: children,
+    name: name,
+    assetPath: assetPath,
+    files: directFiles,
+    subfolders: children,
   );
 }
 
 void _printTree(_FolderNode node, String indent) {
   final info = [
-    if (node.files.isNotEmpty)       '${node.files.length} ملف',
-    if (node.subfolders.isNotEmpty)  '${node.subfolders.length} مجلد فرعي',
+    if (node.files.isNotEmpty) '${node.files.length} ملف',
+    if (node.subfolders.isNotEmpty) '${node.subfolders.length} مجلد فرعي',
   ].join('، ');
   print('$indent📁  ${node.name}/  ($info)');
   for (final f in node.files) {
@@ -147,8 +159,8 @@ void _resolveGetterNames(List<_Asset> assets) {
       asset.getterName = collision
           ? '${_camel(asset.stem)}${_extSuffix(asset.ext)}'
           : isVector
-              ? '${_camel(asset.stem)}Svg'
-              : _camel(asset.stem);
+          ? '${_camel(asset.stem)}Svg'
+          : _camel(asset.stem);
     }
   }
 }
@@ -164,7 +176,9 @@ void _generate(List<_FolderNode> topFolders) {
     ..writeln('abstract final class Assets {');
 
   for (final node in topFolders) {
-    buf.writeln('  static const ${_camel(node.name)} = _Assets${_pascal(node.name)}();');
+    buf.writeln(
+      '  static const ${_camel(node.name)} = _Assets${_pascal(node.name)}();',
+    );
   }
   buf.writeln('}');
 
@@ -188,7 +202,7 @@ void _writeClass(StringBuffer buf, _FolderNode node, String classPrefix) {
 
   // getter لكل مجلد فرعي — يُقرأ عبر instance بشكل طبيعي
   for (final sub in node.subfolders) {
-    final subClass     = '$className${_pascal(sub.name)}';
+    final subClass = '$className${_pascal(sub.name)}';
     final accessorName = _camel(sub.name);
     buf.writeln('  $subClass get $accessorName => const $subClass();');
   }
@@ -221,7 +235,10 @@ void _deleteObsoleteFiles() {
     'lib/resources/images.dart',
   ]) {
     final f = File(path);
-    if (f.existsSync()) { f.deleteSync(); print('🗑   Deleted $path'); }
+    if (f.existsSync()) {
+      f.deleteSync();
+      print('🗑   Deleted $path');
+    }
   }
 }
 
@@ -229,7 +246,10 @@ void _deleteObsoleteFiles() {
 
 void _syncPubspec(List<_FolderNode> topFolders, {required bool dryRun}) {
   final pubspec = File('pubspec.yaml');
-  if (!pubspec.existsSync()) { _warn('pubspec.yaml not found'); return; }
+  if (!pubspec.existsSync()) {
+    _warn('pubspec.yaml not found');
+    return;
+  }
 
   var content = pubspec.readAsStringSync();
   var changed = false;
@@ -247,19 +267,26 @@ void _syncPubspec(List<_FolderNode> topFolders, {required bool dryRun}) {
 
   for (final assetPath in needed) {
     if (content.contains('$assetPath/')) continue;
-    if (dryRun) { print('⚠️  Missing in pubspec: - $assetPath/'); continue; }
+    if (dryRun) {
+      print('⚠️  Missing in pubspec: - $assetPath/');
+      continue;
+    }
 
     // دعم كلا النوعين LF و CRLF
     var idx = content.indexOf('\r\n  assets:\r\n');
     final crlf = idx != -1;
     if (idx == -1) idx = content.indexOf('\n  assets:\n');
-    if (idx == -1) { _warn('Cannot find flutter → assets: in pubspec.yaml'); break; }
+    if (idx == -1) {
+      _warn('Cannot find flutter → assets: in pubspec.yaml');
+      break;
+    }
 
-    final marker   = crlf ? '\r\n  assets:\r\n' : '\n  assets:\n';
-    final eol      = crlf ? '\r\n' : '\n';
+    final marker = crlf ? '\r\n  assets:\r\n' : '\n  assets:\n';
+    final eol = crlf ? '\r\n' : '\n';
     final insertAt = idx + marker.length;
-    content = '${content.substring(0, insertAt)}    - $assetPath/$eol'
-              '${content.substring(insertAt)}';
+    content =
+        '${content.substring(0, insertAt)}    - $assetPath/$eol'
+        '${content.substring(insertAt)}';
     print('➕  pubspec.yaml ← $assetPath/');
     changed = true;
   }
@@ -295,12 +322,16 @@ _RemovalResult _removeStaleEntries(
   final after = content.substring(blockEnd);
 
   var changed = false;
-  final lineRe = RegExp(r'^(\s*)-\s*(assets/[^\s]+?)/\s*\r?\n', multiLine: true);
+  final lineRe = RegExp(
+    r'^(\s*)-\s*(assets/[^\s]+?)/\s*\r?\n',
+    multiLine: true,
+  );
 
   final newBlock = block.replaceAllMapped(lineRe, (m) {
     final path = m.group(2)!;
-    final isStaticEntry =
-        _excludedFolders.any((f) => path == '$_assetsRoot/$f');
+    final isStaticEntry = _excludedFolders.any(
+      (f) => path == '$_assetsRoot/$f',
+    );
     if (isStaticEntry || neededSet.contains(path)) return m.group(0)!;
 
     if (dryRun) {
@@ -348,9 +379,9 @@ class _Asset {
   String getterName = '';
 
   _Asset(File file)
-      : assetPath = _toAssetPath(file.path),
-        stem      = _stem(file.path),
-        ext       = _ext(file.path).replaceFirst('.', '');
+    : assetPath = _toAssetPath(file.path),
+      stem = _stem(file.path),
+      ext = _ext(file.path).replaceFirst('.', '');
 
   static String _toAssetPath(String p) {
     final n = p.replaceAll('\\', '/');
@@ -378,15 +409,19 @@ String _basename(String p) => p.replaceAll('\\', '/').split('/').last;
 
 String _stem(String p) {
   final name = _basename(p);
-  final i    = name.lastIndexOf('.');
+  final i = name.lastIndexOf('.');
   return i == -1 ? name : name.substring(0, i);
 }
 
 String _ext(String p) {
   final name = _basename(p);
-  final i    = name.lastIndexOf('.');
+  final i = name.lastIndexOf('.');
   return i == -1 ? '' : name.substring(i).toLowerCase();
 }
 
-void _die(String msg)  { print('❌  $msg'); exit(1); }
+void _die(String msg) {
+  print('❌  $msg');
+  exit(1);
+}
+
 void _warn(String msg) => print('⚠️  $msg');

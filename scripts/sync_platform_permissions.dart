@@ -12,9 +12,9 @@ import 'dart:io';
 
 // ── Managed block markers ────────────────────────────────────────────────────
 const _androidStart = '    <!-- SYNC:PERMISSIONS:START -->';
-const _androidEnd   = '    <!-- SYNC:PERMISSIONS:END -->';
-const _iosStart     = '    <!-- SYNC:PERMISSIONS:START -->';
-const _iosEnd       = '    <!-- SYNC:PERMISSIONS:END -->';
+const _androidEnd = '    <!-- SYNC:PERMISSIONS:END -->';
+const _iosStart = '    <!-- SYNC:PERMISSIONS:START -->';
+const _iosEnd = '    <!-- SYNC:PERMISSIONS:END -->';
 
 // ── Android permissions per feature ─────────────────────────────────────────
 const _androidPermissions = <String, List<String>>{
@@ -39,9 +39,7 @@ const _androidPermissions = <String, List<String>>{
   // **داخل العملية**، و`NSCameraUsageDescription` شرطٌ هناك لا خيار — غيابه
   // إسقاطٌ فوري لا حوارٌ مرفوض. الفرق بين المنصّتين حقيقي، لا سهو.
   'camera': [],
-  'microphone': [
-    'android.permission.RECORD_AUDIO',
-  ],
+  'microphone': ['android.permission.RECORD_AUDIO'],
   'location': [
     'android.permission.ACCESS_FINE_LOCATION',
     'android.permission.ACCESS_COARSE_LOCATION',
@@ -59,16 +57,12 @@ const _androidPermissions = <String, List<String>>{
     'android.permission.READ_EXTERNAL_STORAGE',
     'android.permission.WRITE_EXTERNAL_STORAGE',
   ],
-  'contacts': [
-    'android.permission.READ_CONTACTS',
-  ],
+  'contacts': ['android.permission.READ_CONTACTS'],
   'bluetooth': [
     'android.permission.BLUETOOTH_SCAN',
     'android.permission.BLUETOOTH_CONNECT',
   ],
-  'pushNotifications': [
-    'android.permission.POST_NOTIFICATIONS',
-  ],
+  'pushNotifications': ['android.permission.POST_NOTIFICATIONS'],
   'localNotifications': [
     'android.permission.POST_NOTIFICATIONS',
     'android.permission.SCHEDULE_EXACT_ALARM',
@@ -106,24 +100,19 @@ const _iosPlistKeys = <String, Map<String, String>>{
         'This app saves files to your photo library.',
   },
   'contacts': {
-    'NSContactsUsageDescription':
-        'This app accesses your contacts.',
+    'NSContactsUsageDescription': 'This app accesses your contacts.',
   },
   'bluetooth': {
     'NSBluetoothAlwaysUsageDescription':
         'This app uses Bluetooth to connect to nearby devices.',
   },
-  'localNotifications': {
-    'UIBackgroundModes': 'fetch',
-  },
+  'localNotifications': {'UIBackgroundModes': 'fetch'},
 };
 
 // ────────────────────────────────────────────────────────────────────────────
 
 void main() {
-  final featuresFile = File(
-    'lib/core/platform/features/app_features.dart',
-  );
+  final featuresFile = File('lib/core/platform/features/app_features.dart');
 
   if (!featuresFile.existsSync()) {
     _error('app_features.dart not found at ${featuresFile.path}');
@@ -131,7 +120,9 @@ void main() {
   }
 
   final enabled = _parseFeatures(featuresFile.readAsStringSync());
-  print('\n📋 Enabled features: ${enabled.isEmpty ? "none" : enabled.join(", ")}');
+  print(
+    '\n📋 Enabled features: ${enabled.isEmpty ? "none" : enabled.join(", ")}',
+  );
 
   _syncAndroid(enabled);
   _syncIos(enabled);
@@ -145,7 +136,7 @@ List<String> _parseFeatures(String source) {
   final enabled = <String>[];
   final pattern = RegExp(r'static const (\w+)\s*=\s*(true|false)');
   for (final match in pattern.allMatches(source)) {
-    final name  = match.group(1)!;
+    final name = match.group(1)!;
     final value = match.group(2)!;
     if (value == 'true') enabled.add(name);
   }
@@ -170,17 +161,15 @@ void _syncAndroid(List<String> enabled) {
     (p) => '    <uses-permission android:name="$p"/>',
   );
 
-  final block = [
-    _androidStart,
-    ...lines,
-    _androidEnd,
-  ].join('\n');
+  final block = [_androidStart, ...lines, _androidEnd].join('\n');
 
   var content = manifest.readAsStringSync();
   content = _replaceBlock(content, _androidStart, _androidEnd, block);
   manifest.writeAsStringSync(content);
 
-  print('🤖 Android: ${permissions.length} permission(s) written to AndroidManifest.xml');
+  print(
+    '🤖 Android: ${permissions.length} permission(s) written to AndroidManifest.xml',
+  );
 }
 
 // ── iOS ──────────────────────────────────────────────────────────────────────
@@ -198,17 +187,10 @@ void _syncIos(List<String> enabled) {
   }
 
   final lines = keys.entries.expand(
-    (e) => [
-      '    <key>${e.key}</key>',
-      '    <string>${e.value}</string>',
-    ],
+    (e) => ['    <key>${e.key}</key>', '    <string>${e.value}</string>'],
   );
 
-  final block = [
-    _iosStart,
-    ...lines,
-    _iosEnd,
-  ].join('\n');
+  final block = [_iosStart, ...lines, _iosEnd].join('\n');
 
   var content = plist.readAsStringSync();
   content = _replaceBlock(content, _iosStart, _iosEnd, block);
@@ -266,5 +248,5 @@ String _replaceBlock(
   return content;
 }
 
-void _warn(String msg)  => print('⚠️  $msg');
+void _warn(String msg) => print('⚠️  $msg');
 void _error(String msg) => print('❌  $msg');

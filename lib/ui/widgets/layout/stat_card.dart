@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -38,9 +38,9 @@ class StatCard extends StatelessWidget {
     this.onTap,
     this.isLoading = false,
   }) : assert(
-          labelKey != null || labelText != null,
-          'StatCard: provide labelKey or labelText',
-        );
+         labelKey != null || labelText != null,
+         'StatCard: provide labelKey or labelText',
+       );
 
   final String value;
   final String? labelKey;
@@ -98,8 +98,9 @@ class StatCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       labelStr,
-                      style: textTheme.bodySmall
-                          ?.copyWith(color: colors.textMuted),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.textMuted,
+                      ),
                     ),
                   ],
                 ),

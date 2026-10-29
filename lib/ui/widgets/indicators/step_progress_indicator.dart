@@ -57,9 +57,9 @@ class StepProgressIndicator extends StatelessWidget {
     this.inactiveColor,
     this.stepLabelResolver,
   }) : assert(
-          currentStep >= 1 && currentStep <= totalSteps,
-          'currentStep must be between 1 and totalSteps',
-        );
+         currentStep >= 1 && currentStep <= totalSteps,
+         'currentStep must be between 1 and totalSteps',
+       );
 
   final int currentStep;
   final int totalSteps;
@@ -82,25 +82,25 @@ class StepProgressIndicator extends StatelessWidget {
 
     return switch (type) {
       StepIndicatorType.bar => _Bar(
-          currentStep: currentStep,
-          totalSteps: totalSteps,
-          activeColor: active,
-          inactiveColor: inactive,
-        ),
+        currentStep: currentStep,
+        totalSteps: totalSteps,
+        activeColor: active,
+        inactiveColor: inactive,
+      ),
       StepIndicatorType.dots => _Dots(
-          currentStep: currentStep,
-          totalSteps: totalSteps,
-          activeColor: active,
-          inactiveColor: inactive,
-          stepLabelResolver: stepLabelResolver,
-        ),
+        currentStep: currentStep,
+        totalSteps: totalSteps,
+        activeColor: active,
+        inactiveColor: inactive,
+        stepLabelResolver: stepLabelResolver,
+      ),
       StepIndicatorType.numbered => _Numbered(
-          currentStep: currentStep,
-          totalSteps: totalSteps,
-          activeColor: active,
-          inactiveColor: inactive,
-          stepLabelResolver: stepLabelResolver,
-        ),
+        currentStep: currentStep,
+        totalSteps: totalSteps,
+        activeColor: active,
+        inactiveColor: inactive,
+        stepLabelResolver: stepLabelResolver,
+      ),
     };
   }
 }

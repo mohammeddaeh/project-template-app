@@ -102,9 +102,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         // ```
         context.router.replaceAll([const HomeRoute()]);
       },
-      codeResent: () => context.feedback.success(
-        LocaleKeys.verifyEmailResent.tr(),
-      ),
+      codeResent: () =>
+          context.feedback.success(LocaleKeys.verifyEmailResent.tr()),
       error: (message) => context.feedback.error(message),
       orElse: () {},
     );
@@ -178,8 +177,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         onFieldSubmitted: _submit,
                         validator: (value) =>
                             (value == null || value.trim().isEmpty)
-                                ? LocaleKeys.verifyEmailCodeRequired.tr()
-                                : null,
+                            ? LocaleKeys.verifyEmailCodeRequired.tr()
+                            : null,
                       ),
                       const SizedBox(height: 12),
                       Text(

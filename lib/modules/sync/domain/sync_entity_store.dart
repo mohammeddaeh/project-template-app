@@ -53,7 +53,10 @@ abstract class SyncEntityStore {
   ///
   /// So a **read-through cache passes `false`**, and every write that carries
   /// new information leaves it `true`.
-  Future<void> upsertRecords(List<SyncEntityRecord> records, {bool notify = true});
+  Future<void> upsertRecords(
+    List<SyncEntityRecord> records, {
+    bool notify = true,
+  });
 
   /// Fires whenever [entityName]'s local rows change — from a user write, a
   /// pull merge, or a push result.

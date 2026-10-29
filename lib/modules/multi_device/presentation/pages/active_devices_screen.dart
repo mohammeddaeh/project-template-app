@@ -58,25 +58,24 @@ class _ActiveDevicesView extends StatelessWidget {
 
             return switch (state) {
               ActiveDevicesInitial() ||
-              ActiveDevicesLoading() =>
-                const Center(child: LoadingWidget()),
+              ActiveDevicesLoading() => const Center(child: LoadingWidget()),
               // `messageKey` receives an already-translated string, matching
               // how every other screen here does it: `.tr()` returns its input
               // unchanged when the input is not a known key.
               ActiveDevicesError(:final message) => ErrorStateWidget(
-                  messageKey: message,
-                  onRetry: cubit.load,
-                ),
+                messageKey: message,
+                onRetry: cubit.load,
+              ),
               ActiveDevicesLoaded(:final sessions) => _List(
-                  sessions: sessions,
-                  otherCount: state.otherCount,
-                  revokingId: null,
-                ),
+                sessions: sessions,
+                otherCount: state.otherCount,
+                revokingId: null,
+              ),
               ActiveDevicesRevoking(:final sessions, :final id) => _List(
-                  sessions: sessions,
-                  otherCount: sessions.where((s) => !s.isCurrent).length,
-                  revokingId: id,
-                ),
+                sessions: sessions,
+                otherCount: sessions.where((s) => !s.isCurrent).length,
+                revokingId: id,
+              ),
             };
           },
         ),
@@ -235,7 +234,9 @@ class _SessionCard extends StatelessWidget {
         color: colors.bgCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: session.isCurrent ? colors.statusSuccessFg : colors.borderSubtle,
+          color: session.isCurrent
+              ? colors.statusSuccessFg
+              : colors.borderSubtle,
           width: session.isCurrent ? 1.5 : 1,
         ),
       ),
@@ -276,7 +277,11 @@ class _SessionCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _fact(context, LocaleKeys.deviceLastActive.tr(), session.lastActiveAt),
+          _fact(
+            context,
+            LocaleKeys.deviceLastActive.tr(),
+            session.lastActiveAt,
+          ),
           _fact(context, LocaleKeys.deviceSignedInAt.tr(), session.createdAt),
           _fact(context, LocaleKeys.deviceExpiresAt.tr(), session.expiresAt),
           // No "sign out" on the current session: that is logout, it lives
@@ -317,9 +322,9 @@ class _SessionCard extends StatelessWidget {
           Text(
             // Localised through easy_localization's DateFormat so an Arabic
             // reader gets Arabic month names, not an ISO string.
-            DateFormat.yMMMd(context.locale.languageCode).add_jm().format(
-                  value.toLocal(),
-                ),
+            DateFormat.yMMMd(
+              context.locale.languageCode,
+            ).add_jm().format(value.toLocal()),
             style: context.textTheme.bodySmall?.copyWith(
               color: context.colors.textSecondary,
             ),

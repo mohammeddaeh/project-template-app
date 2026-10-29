@@ -36,10 +36,13 @@ void main() {
     );
   });
 
-  test('the periodic name is a constant — rescheduling replaces, never stacks', () {
-    expect(src, contains("_periodicName = 'app.sync.periodic'"));
-    expect(src, contains('ExistingPeriodicWorkPolicy.keep'));
-  });
+  test(
+    'the periodic name is a constant — rescheduling replaces, never stacks',
+    () {
+      expect(src, contains("_periodicName = 'app.sync.periodic'"));
+      expect(src, contains('ExistingPeriodicWorkPolicy.keep'));
+    },
+  );
 
   test('the period is the real floor Android enforces, not a wish', () {
     // طلبُ أقلَّ من ربع ساعة **لا يُخفق**: النظام يرفعه بصمت. فكتابةُ الرقم
@@ -47,11 +50,14 @@ void main() {
     expect(src, contains('Duration(minutes: 15)'));
   });
 
-  test('the network is a constraint the system enforces, not a check we run', () {
-    // فحصُها بأنفسنا يعني إيقاظَ الجهاز ليكتشف أنه بلا شبكة ثم ينام — والنظام
-    // يستطيع ألّا يوقظه أصلاً.
-    expect(src, contains('NetworkType.connected'));
-  });
+  test(
+    'the network is a constraint the system enforces, not a check we run',
+    () {
+      // فحصُها بأنفسنا يعني إيقاظَ الجهاز ليكتشف أنه بلا شبكة ثم ينام — والنظام
+      // يستطيع ألّا يوقظه أصلاً.
+      expect(src, contains('NetworkType.connected'));
+    },
+  );
 
   test('the second isolate rebuilds everything — it inherits nothing', () {
     // `WorkManager` يُشغّل الـdispatcher بآلة Dart نظيفة: لا `getIt`، ولا Hive،

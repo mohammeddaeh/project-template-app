@@ -32,38 +32,41 @@ class LoginRepositoryImpl extends BaseRepository implements LoginRepository {
   Future<Either<Failure, LoginEntity>> login(LoginParams params) =>
       // **وسمُ المنفذ: الدخول** — استثناءٌ بحكم التعريف، ويُعلَن ليُميَّز عن
       // طلبٍ نسي وسمَه. راجع `NetworkOrigin`.
-      NetworkOrigin.run(NetworkOrigin.auth, () => handle(() async {
-        final res = await _dataSource.login(params);
+      NetworkOrigin.run(
+        NetworkOrigin.auth,
+        () => handle(() async {
+          final res = await _dataSource.login(params);
 
-        if (res.error != null) {
-          return Left(_mapLoginError(res.error!, res.message));
-        }
+          if (res.error != null) {
+            return Left(_mapLoginError(res.error!, res.message));
+          }
 
-        if (res.data == null) {
-          return const Left(BusinessFailure(statusCode: 400));
-        }
+          if (res.data == null) {
+            return const Left(BusinessFailure(statusCode: 400));
+          }
 
-        final entity = res.data!.toEntity();
+          final entity = res.data!.toEntity();
 
-        // **قبل كل شيء: هل هذا الجهاز يحمل بيانات حسابٍ آخر؟**
-        //
-        // ويقع **قبل** حفظ التوكن ونشر المستخدم عمداً: مسحٌ بعدهما يترك نافذةً
-        // تُقرأ فيها صفوفُ السابق بهوية اللاحق — وأسوأُ منها أن محرّك المزامنة
-        // قد يدفع طابورَ السابق بتوكن اللاحق، فيصل الخادمَ عملُ موظّفٍ باسم
-        // زميله.
-        //
-        // ولا يكفي المسحُ عند الخروج وحده: التطبيق قد يُقتل، أو تنتهي الجلسة
-        // فيُترك، أو يُسلَّم الجهاز مفتوحاً — وبكلٍّ منها لا يمرّ أحدٌ بمسار
-        // الخروج إطلاقاً.
-        await _accountDataCleaner.clearIfAccountChanged(entity.user.email);
+          // **قبل كل شيء: هل هذا الجهاز يحمل بيانات حسابٍ آخر؟**
+          //
+          // ويقع **قبل** حفظ التوكن ونشر المستخدم عمداً: مسحٌ بعدهما يترك نافذةً
+          // تُقرأ فيها صفوفُ السابق بهوية اللاحق — وأسوأُ منها أن محرّك المزامنة
+          // قد يدفع طابورَ السابق بتوكن اللاحق، فيصل الخادمَ عملُ موظّفٍ باسم
+          // زميله.
+          //
+          // ولا يكفي المسحُ عند الخروج وحده: التطبيق قد يُقتل، أو تنتهي الجلسة
+          // فيُترك، أو يُسلَّم الجهاز مفتوحاً — وبكلٍّ منها لا يمرّ أحدٌ بمسار
+          // الخروج إطلاقاً.
+          await _accountDataCleaner.clearIfAccountChanged(entity.user.email);
 
-        // Token first: `setCurrentUser` persists asynchronously, and a user
-        // snapshot on disk without the credential that justifies it is the one
-        // ordering that can survive a crash in a misleading state.
-        await _sessionRepository.saveToken(entity.token);
-        _currentUserRepository.setCurrentUser(entity.user);
-        return Right(entity);
-      }));
+          // Token first: `setCurrentUser` persists asynchronously, and a user
+          // snapshot on disk without the credential that justifies it is the one
+          // ordering that can survive a crash in a misleading state.
+          await _sessionRepository.saveToken(entity.token);
+          _currentUserRepository.setCurrentUser(entity.user);
+          return Right(entity);
+        }),
+      );
 
   /// Turns a refusal into the failure that names it.
   ///

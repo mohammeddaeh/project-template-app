@@ -14,7 +14,10 @@ abstract class SyncQueueRepository {
     String? idempotencyKey,
   });
 
-  Future<List<SyncQueueJob>> getDueJobs({required int nowMs, required int limit});
+  Future<List<SyncQueueJob>> getDueJobs({
+    required int nowMs,
+    required int limit,
+  });
 
   Future<List<SyncQueueJob>> getAllJobs({int limit = 500});
 

@@ -5,7 +5,7 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 
 class FontPreferenceCubit extends SafeCubit<AppFontOption> {
   FontPreferenceCubit(this._storage, {AppFontOption? initial})
-      : super(initial ?? AppFonts.available.first);
+    : super(initial ?? AppFonts.available.first);
 
   final StorageService _storage;
 

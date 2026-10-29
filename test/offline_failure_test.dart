@@ -44,10 +44,7 @@ void main() {
         FailureStateView.isOffline(const BusinessFailure(statusCode: 409)),
         isFalse,
       );
-      expect(
-        FailureStateView.isOffline(const ForbiddenFailure()),
-        isFalse,
-      );
+      expect(FailureStateView.isOffline(const ForbiddenFailure()), isFalse);
     });
 
     test('a timeout is NOT offline — the link exists, it is slow', () {
@@ -73,7 +70,8 @@ void main() {
       expect(
         FailureStateView.isOffline(const ServerUnreachableFailure()),
         isFalse,
-        reason: 'the device is online — saying otherwise sends the reader to '
+        reason:
+            'the device is online — saying otherwise sends the reader to '
             'fight a router that is working',
       );
       expect(

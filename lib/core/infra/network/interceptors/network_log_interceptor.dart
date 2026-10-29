@@ -55,6 +55,7 @@ class NetworkLogInterceptor extends Interceptor {
   /// Bodies are truncated in the log, not in the request. A 200 KB payload
   /// dumped in full is the same readability problem in a different costume.
   static const _maxBodyChars = 2000;
+
   /// **جردُ ما لا يُطبع** — ترويسةً كان أو حقلاً بالجسد، بأي عمق.
   ///
   /// ومكشوفٌ بقصد: مفتاحٌ يُضاف إلى عقد الباك ولا يُضاف هنا **يُطبع خاماً ولا

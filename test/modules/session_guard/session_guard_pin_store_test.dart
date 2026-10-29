@@ -66,23 +66,29 @@ void main() {
     expect(await store.verify('2222'), isTrue);
   });
 
-  test('two accounts choosing the same PIN get different stored hashes', () async {
-    await store.setPin('4271');
-    final firstHash = (await storage.readAll())['session_guard_pin_hash'];
+  test(
+    'two accounts choosing the same PIN get different stored hashes',
+    () async {
+      await store.setPin('4271');
+      final firstHash = (await storage.readAll())['session_guard_pin_hash'];
 
-    await store.clearForAccount();
-    await store.setPin('4271');
-    final secondHash = (await storage.readAll())['session_guard_pin_hash'];
+      await store.clearForAccount();
+      await store.setPin('4271');
+      final secondHash = (await storage.readAll())['session_guard_pin_hash'];
 
-    // ملحٌ عشوائي مختلف في كل مرة — نفس الرقم لا ينتج نفس البصمة، وإلا صارت
-    // البصمة نفسها قابلة لهجوم قاموسٍ عبر الأجهزة.
-    expect(firstHash, isNot(equals(secondHash)));
-  });
+      // ملحٌ عشوائي مختلف في كل مرة — نفس الرقم لا ينتج نفس البصمة، وإلا صارت
+      // البصمة نفسها قابلة لهجوم قاموسٍ عبر الأجهزة.
+      expect(firstHash, isNot(equals(secondHash)));
+    },
+  );
 
-  test('clearForAccount (AccountScopedStore) removes the PIN entirely', () async {
-    await store.setPin('4271');
-    await store.clearForAccount();
-    expect(await store.hasPin(), isFalse);
-    expect(await store.verify('4271'), isFalse);
-  });
+  test(
+    'clearForAccount (AccountScopedStore) removes the PIN entirely',
+    () async {
+      await store.setPin('4271');
+      await store.clearForAccount();
+      expect(await store.hasPin(), isFalse);
+      expect(await store.verify('4271'), isFalse);
+    },
+  );
 }

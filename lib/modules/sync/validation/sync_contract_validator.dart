@@ -14,11 +14,7 @@ import 'sync_contract_migrator.dart';
 import 'sync_contract_validation_exception.dart';
 
 class SyncContractValidator {
-  SyncContractValidator(
-    this._di,
-    this._queueRepository,
-    this._migrator,
-  );
+  SyncContractValidator(this._di, this._queueRepository, this._migrator);
 
   // GetIt is injected rather than pre-resolved lists because this validator
   // runs during SyncSDK.initialize() after decorators are applied and must
@@ -130,7 +126,8 @@ class SyncContractValidator {
       }
 
       final decoded = jsonDecode(migration.payloadJson);
-      if (decoded is! Map<String, dynamic> || !contract.isValidQueuePayload(decoded)) {
+      if (decoded is! Map<String, dynamic> ||
+          !contract.isValidQueuePayload(decoded)) {
         throw SyncContractValidationException(
           'invalid payload in queued job "${job.jobId}" for entity "${job.entityName}".',
         );
@@ -169,7 +166,9 @@ class SyncContractValidator {
       executorMap[executor.entityName] = executor;
     }
 
-    final duplicates = counts.entries.where((entry) => entry.value > 1).toList();
+    final duplicates = counts.entries
+        .where((entry) => entry.value > 1)
+        .toList();
     if (duplicates.isNotEmpty) {
       final names = duplicates.map((e) => '${e.key}(${e.value})').join(', ');
       throw SyncContractValidationException(
@@ -181,7 +180,9 @@ class SyncContractValidator {
         .where((c) => c.requiresExecutor)
         .map((c) => c.entityName)
         .toSet();
-    final missing = requiredEntities.where((e) => !executorMap.containsKey(e)).toList();
+    final missing = requiredEntities
+        .where((e) => !executorMap.containsKey(e))
+        .toList();
     if (missing.isNotEmpty) {
       throw SyncContractValidationException(
         'missing executor for entities: ${missing.join(', ')}',
@@ -191,7 +192,9 @@ class SyncContractValidator {
     for (final contract in contracts.where((c) => c.requiresExecutor)) {
       // O(1) lookup — safe because missing-check above guarantees presence.
       final executor = executorMap[contract.entityName]!;
-      if (!executor.supportedContractVersions.contains(contract.contractVersion)) {
+      if (!executor.supportedContractVersions.contains(
+        contract.contractVersion,
+      )) {
         throw SyncContractValidationException(
           'executor "${executor.runtimeType}" for entity "${contract.entityName}" '
           'does not support current contract version ${contract.contractVersion}.',
@@ -220,7 +223,10 @@ class SyncContractValidator {
     }
   }
 
-  SyncFeatureContractBase? _findContractByEntityName(GetIt di, String entityName) {
+  SyncFeatureContractBase? _findContractByEntityName(
+    GetIt di,
+    String entityName,
+  ) {
     for (final contract in _allContracts(di)) {
       if (contract.entityName == entityName) {
         return contract;

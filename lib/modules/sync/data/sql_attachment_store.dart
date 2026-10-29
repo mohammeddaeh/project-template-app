@@ -108,7 +108,8 @@ class SqlAttachmentStore implements AttachmentStore {
       // lives in one Dart place (`AttachmentUploadManager.maxUploadAttempts`)
       // instead of being split between a constant and a SQL literal. The row is
       // kept, not deleted: it still holds the path and the last error.
-      where: "upload_status IN ('pending', 'uploading', 'failed') "
+      where:
+          "upload_status IN ('pending', 'uploading', 'failed') "
           'AND retry_count < ?',
       whereArgs: [maxRetries],
       // Device-origin first: those bytes exist nowhere else. Then oldest, so a
@@ -151,7 +152,8 @@ class SqlAttachmentStore implements AttachmentStore {
       //   1. present on disk at all
       //   2. not required
       //   3. not a device file the server has yet to confirm
-      where: "download_status = 'downloaded' "
+      where:
+          "download_status = 'downloaded' "
           'AND local_path IS NOT NULL '
           'AND is_required = 0 '
           "AND NOT (origin = 'device' AND upload_status IN ('pending', 'uploading', 'failed'))",
@@ -191,52 +193,52 @@ class SqlAttachmentStore implements AttachmentStore {
   }
 
   Map<String, dynamic> _toMap(AttachmentRecord r) => {
-        'attachment_id': r.attachmentId,
-        'entity_name': r.entityName,
-        'entity_local_id': r.entityLocalId,
-        'role': r.role,
-        'remote_url': r.remoteUrl,
-        'local_path': r.localPath,
-        'file_name': r.fileName,
-        'mime_type': r.mimeType,
-        'size_bytes': r.sizeBytes,
-        'checksum': r.checksum,
-        'checksum_algo': r.checksumAlgo,
-        'bytes_received': r.bytesReceived,
-        'download_status': r.downloadStatus.raw,
-        'upload_status': r.uploadStatus.raw,
-        'origin': r.origin.raw,
-        'is_required': r.isRequired ? 1 : 0,
-        'last_accessed_at': r.lastAccessedAt,
-        'retry_count': r.retryCount,
-        'last_error': r.lastError,
-        'created_at': r.createdAt,
-        'updated_at': r.updatedAt,
-      };
+    'attachment_id': r.attachmentId,
+    'entity_name': r.entityName,
+    'entity_local_id': r.entityLocalId,
+    'role': r.role,
+    'remote_url': r.remoteUrl,
+    'local_path': r.localPath,
+    'file_name': r.fileName,
+    'mime_type': r.mimeType,
+    'size_bytes': r.sizeBytes,
+    'checksum': r.checksum,
+    'checksum_algo': r.checksumAlgo,
+    'bytes_received': r.bytesReceived,
+    'download_status': r.downloadStatus.raw,
+    'upload_status': r.uploadStatus.raw,
+    'origin': r.origin.raw,
+    'is_required': r.isRequired ? 1 : 0,
+    'last_accessed_at': r.lastAccessedAt,
+    'retry_count': r.retryCount,
+    'last_error': r.lastError,
+    'created_at': r.createdAt,
+    'updated_at': r.updatedAt,
+  };
 
   AttachmentRecord _fromMap(Map<String, dynamic> m) => AttachmentRecord(
-        attachmentId: m['attachment_id'] as String,
-        entityName: m['entity_name'] as String,
-        entityLocalId: m['entity_local_id'] as String,
-        role: m['role'] as String?,
-        remoteUrl: m['remote_url'] as String?,
-        localPath: m['local_path'] as String?,
-        fileName: m['file_name'] as String,
-        mimeType: m['mime_type'] as String?,
-        sizeBytes: m['size_bytes'] as int?,
-        checksum: m['checksum'] as String?,
-        checksumAlgo: m['checksum_algo'] as String?,
-        bytesReceived: (m['bytes_received'] as int?) ?? 0,
-        downloadStatus:
-            AttachmentDownloadStatus.fromRaw(m['download_status'] as String),
-        uploadStatus:
-            AttachmentUploadStatus.fromRaw(m['upload_status'] as String),
-        origin: AttachmentOrigin.fromRaw(m['origin'] as String),
-        isRequired: (m['is_required'] as int? ?? 0) == 1,
-        lastAccessedAt: m['last_accessed_at'] as int?,
-        retryCount: (m['retry_count'] as int?) ?? 0,
-        lastError: m['last_error'] as String?,
-        createdAt: m['created_at'] as int,
-        updatedAt: m['updated_at'] as int,
-      );
+    attachmentId: m['attachment_id'] as String,
+    entityName: m['entity_name'] as String,
+    entityLocalId: m['entity_local_id'] as String,
+    role: m['role'] as String?,
+    remoteUrl: m['remote_url'] as String?,
+    localPath: m['local_path'] as String?,
+    fileName: m['file_name'] as String,
+    mimeType: m['mime_type'] as String?,
+    sizeBytes: m['size_bytes'] as int?,
+    checksum: m['checksum'] as String?,
+    checksumAlgo: m['checksum_algo'] as String?,
+    bytesReceived: (m['bytes_received'] as int?) ?? 0,
+    downloadStatus: AttachmentDownloadStatus.fromRaw(
+      m['download_status'] as String,
+    ),
+    uploadStatus: AttachmentUploadStatus.fromRaw(m['upload_status'] as String),
+    origin: AttachmentOrigin.fromRaw(m['origin'] as String),
+    isRequired: (m['is_required'] as int? ?? 0) == 1,
+    lastAccessedAt: m['last_accessed_at'] as int?,
+    retryCount: (m['retry_count'] as int?) ?? 0,
+    lastError: m['last_error'] as String?,
+    createdAt: m['created_at'] as int,
+    updatedAt: m['updated_at'] as int,
+  );
 }

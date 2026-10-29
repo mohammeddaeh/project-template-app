@@ -22,28 +22,26 @@ class UserAccessCubit extends SafeCubit<UserAccessState> {
     emit(const UserAccessLoading());
 
     final catalogResult = await _repository.catalog();
-    await catalogResult.fold(
-      (failure) async => _emitFailure(failure),
-      (catalog) async {
-        final rolesResult = await _repository.roles();
-        await rolesResult.fold(
-          (failure) async => _emitFailure(failure),
-          (allRoles) async {
-            final accessResult = await _repository.userAccess(userId);
-            accessResult.fold(
-              (failure) => _emitFailure(failure),
-              (access) => emit(
-                UserAccessReady(
-                  access: access,
-                  catalog: catalog,
-                  allRoles: allRoles.where((r) => r.isActive).toList(),
-                ),
-              ),
-            );
-          },
+    await catalogResult.fold((failure) async => _emitFailure(failure), (
+      catalog,
+    ) async {
+      final rolesResult = await _repository.roles();
+      await rolesResult.fold((failure) async => _emitFailure(failure), (
+        allRoles,
+      ) async {
+        final accessResult = await _repository.userAccess(userId);
+        accessResult.fold(
+          (failure) => _emitFailure(failure),
+          (access) => emit(
+            UserAccessReady(
+              access: access,
+              catalog: catalog,
+              allRoles: allRoles.where((r) => r.isActive).toList(),
+            ),
+          ),
         );
-      },
-    );
+      });
+    });
   }
 
   Future<void> toggleRole(Role role) async {
@@ -126,8 +124,9 @@ class UserAccessCubit extends SafeCubit<UserAccessState> {
     );
   }
 
-  String? _describe(Failure failure) => switch (FailureUiMapper.toAction(failure)) {
-    ShowError(:final message) => message,
-    NavigateToLogin() || Silent() => null,
-  };
+  String? _describe(Failure failure) =>
+      switch (FailureUiMapper.toAction(failure)) {
+        ShowError(:final message) => message,
+        NavigateToLogin() || Silent() => null,
+      };
 }

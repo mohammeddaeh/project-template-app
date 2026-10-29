@@ -83,15 +83,15 @@ class TransferResourceModel {
   }
 
   static TransferColumnType _type(String? wire) => switch (wire) {
-        'string' => TransferColumnType.string,
-        'number' => TransferColumnType.number,
-        'boolean' => TransferColumnType.boolean,
-        'date' => TransferColumnType.date,
-        'datetime' => TransferColumnType.datetime,
-        // A type added server-side after this build shipped renders as text
-        // rather than taking the whole descriptor down with it.
-        _ => TransferColumnType.unknown,
-      };
+    'string' => TransferColumnType.string,
+    'number' => TransferColumnType.number,
+    'boolean' => TransferColumnType.boolean,
+    'date' => TransferColumnType.date,
+    'datetime' => TransferColumnType.datetime,
+    // A type added server-side after this build shipped renders as text
+    // rather than taking the whole descriptor down with it.
+    _ => TransferColumnType.unknown,
+  };
 
   static List<TransferFormat> _formats(dynamic raw) =>
       (raw as List<dynamic>? ?? const [])

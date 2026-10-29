@@ -27,13 +27,15 @@ class LocaleSwitcher extends StatelessWidget {
   const factory LocaleSwitcher.tile({Key? key}) = _TileLocaleSwitcher;
 
   /// Compact icon button — best for AppBar actions.
-  const factory LocaleSwitcher.iconButton({Key? key}) = _IconButtonLocaleSwitcher;
+  const factory LocaleSwitcher.iconButton({Key? key}) =
+      _IconButtonLocaleSwitcher;
 
   /// SegmentedButton — best for onboarding or inline settings cards.
   const factory LocaleSwitcher.segmented({Key? key}) = _SegmentedLocaleSwitcher;
 
   /// Inline text toggle: العربية | English — minimal footprint.
-  const factory LocaleSwitcher.textToggle({Key? key}) = _TextToggleLocaleSwitcher;
+  const factory LocaleSwitcher.textToggle({Key? key}) =
+      _TextToggleLocaleSwitcher;
 
   final Widget _child;
 
@@ -44,21 +46,26 @@ class LocaleSwitcher extends StatelessWidget {
 // ── Private factory implementations ─────────────────────────────────────────
 
 class _DefaultLocaleSwitcher extends LocaleSwitcher {
-  const _DefaultLocaleSwitcher({super.key}) : super._(child: const LocaleTileVariant());
+  const _DefaultLocaleSwitcher({super.key})
+    : super._(child: const LocaleTileVariant());
 }
 
 class _TileLocaleSwitcher extends LocaleSwitcher {
-  const _TileLocaleSwitcher({super.key}) : super._(child: const LocaleTileVariant());
+  const _TileLocaleSwitcher({super.key})
+    : super._(child: const LocaleTileVariant());
 }
 
 class _IconButtonLocaleSwitcher extends LocaleSwitcher {
-  const _IconButtonLocaleSwitcher({super.key}) : super._(child: const LocaleIconButtonVariant());
+  const _IconButtonLocaleSwitcher({super.key})
+    : super._(child: const LocaleIconButtonVariant());
 }
 
 class _SegmentedLocaleSwitcher extends LocaleSwitcher {
-  const _SegmentedLocaleSwitcher({super.key}) : super._(child: const LocaleSegmentedVariant());
+  const _SegmentedLocaleSwitcher({super.key})
+    : super._(child: const LocaleSegmentedVariant());
 }
 
 class _TextToggleLocaleSwitcher extends LocaleSwitcher {
-  const _TextToggleLocaleSwitcher({super.key}) : super._(child: const LocaleTextToggleVariant());
+  const _TextToggleLocaleSwitcher({super.key})
+    : super._(child: const LocaleTextToggleVariant());
 }

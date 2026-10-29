@@ -92,8 +92,10 @@ class SyncEngine {
   Future<void> runPendingJobs({int batchSize = 30}) async {
     // Guard first, and synchronously. Everything below may suspend.
     if (_cycleInProgress) {
-      LogService.debug('SyncEngine skipped — a cycle is already running.',
-          tag: 'SYNC');
+      LogService.debug(
+        'SyncEngine skipped — a cycle is already running.',
+        tag: 'SYNC',
+      );
       return;
     }
     _cycleInProgress = true;
@@ -157,7 +159,12 @@ class SyncEngine {
       if (!_cycleFailed) await _cycleStamp.markSuccess();
     } catch (e, st) {
       _cycleFailed = true;
-      LogService.error('SyncEngine failed', tag: 'SYNC', error: e, stackTrace: st);
+      LogService.error(
+        'SyncEngine failed',
+        tag: 'SYNC',
+        error: e,
+        stackTrace: st,
+      );
     } finally {
       // Release first, and on its own. A throw anywhere later in this block
       // would skip it and leave the lock held for its full ten-minute timeout,
@@ -227,7 +234,10 @@ class SyncEngine {
 
     while (true) {
       final now = DateTime.now().millisecondsSinceEpoch;
-      final jobs = await _queueRepository.getDueJobs(nowMs: now, limit: batchSize);
+      final jobs = await _queueRepository.getDueJobs(
+        nowMs: now,
+        limit: batchSize,
+      );
       if (jobs.isEmpty) break;
 
       for (final job in jobs) {
@@ -268,7 +278,9 @@ class SyncEngine {
             contractVersion: migration.contractVersion,
           );
 
-          if (!executor.supportedContractVersions.contains(effectiveContractVersion)) {
+          if (!executor.supportedContractVersions.contains(
+            effectiveContractVersion,
+          )) {
             throw StateError(
               'Executor "${executor.runtimeType}" does not support '
               'contract version $effectiveContractVersion for ${job.entityName}',
@@ -341,26 +353,25 @@ class SyncEngine {
           continue;
         }
 
-        await result.fold(
-          (error) async => _handleJobFailure(job, error),
-          (success) async {
-            await _queueRepository.markEntitySyncState(
-              entityName: job.entityName,
-              localId: success.localId,
-              status: SyncStatus.synced,
-              serverId: success.serverId,
-              lastError: null,
-            );
-            await _queueRepository.markJobSuccess(jobId: job.jobId);
-            await _opsLog.log(
-              entityName: job.entityName,
-              entityId: job.entityId,
-              jobId: job.jobId,
-              operation: SyncLogOperation.pushed,
-              serverId: success.serverId,
-            );
-          },
-        );
+        await result.fold((error) async => _handleJobFailure(job, error), (
+          success,
+        ) async {
+          await _queueRepository.markEntitySyncState(
+            entityName: job.entityName,
+            localId: success.localId,
+            status: SyncStatus.synced,
+            serverId: success.serverId,
+            lastError: null,
+          );
+          await _queueRepository.markJobSuccess(jobId: job.jobId);
+          await _opsLog.log(
+            entityName: job.entityName,
+            entityId: job.entityId,
+            jobId: job.jobId,
+            operation: SyncLogOperation.pushed,
+            serverId: success.serverId,
+          );
+        });
       }
     }
   }
@@ -377,7 +388,10 @@ class SyncEngine {
   /// Each entity is pulled independently and its cursor advanced independently:
   /// one entity's server error must not stall or, worse, skip past another's
   /// changes.
-  Future<void> _processPullPhase({int pageLimit = 200, int maxPages = 50}) async {
+  Future<void> _processPullPhase({
+    int pageLimit = 200,
+    int maxPages = 50,
+  }) async {
     if (!_getIt.isRegistered<SyncPullExecutor>()) return;
 
     for (final executor in _getIt.getAll<SyncPullExecutor>()) {
@@ -633,7 +647,6 @@ class SyncEngine {
         tag: 'SYNC',
       );
     }
-
   }
 
   /// Server timestamps arrive as ISO-8601 strings; the store keeps epoch ms.
@@ -651,7 +664,9 @@ class SyncEngine {
   /// the record instead of storing a misordered one.
   static int? _epochOf(dynamic value) {
     if (value is int) return value;
-    if (value is String) return DateTime.tryParse(value)?.millisecondsSinceEpoch;
+    if (value is String) {
+      return DateTime.tryParse(value)?.millisecondsSinceEpoch;
+    }
     return null;
   }
 
@@ -686,6 +701,7 @@ class SyncEngine {
       }
     }
   }
+
   Future<void> _processFileUploads() async {
     if (!_getIt.isRegistered<AttachmentUploadManager>()) return;
     try {
@@ -749,20 +765,26 @@ class SyncEngine {
       entityName: job.entityName,
       entityId: job.entityId,
       jobId: job.jobId,
-      operation: exceeded ? SyncLogOperation.deadLetter : SyncLogOperation.retried,
+      operation: exceeded
+          ? SyncLogOperation.deadLetter
+          : SyncLogOperation.retried,
       errorCode: error.runtimeType.toString(),
       errorDetail: error.diagnosticMessage,
     );
   }
 
-  Future<void> _handleConflict(SyncQueueJob job, ConflictFailure conflict) async {
+  Future<void> _handleConflict(
+    SyncQueueJob job,
+    ConflictFailure conflict,
+  ) async {
     LogService.warning(
       'HTTP 409 conflict for ${job.entityName}/${job.entityId}',
       tag: 'SYNC',
     );
 
     final contract = _resolveContract(job.entityName);
-    final strategy = contract?.conflictStrategy ?? SyncConflictStrategy.serverWins;
+    final strategy =
+        contract?.conflictStrategy ?? SyncConflictStrategy.serverWins;
 
     // Fetch the EXACT record that conflicted (by entityId), not just the
     // most-recently-updated record of this entity type.

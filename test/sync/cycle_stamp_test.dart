@@ -13,7 +13,9 @@ void main() {
   late String engine;
 
   setUp(() {
-    engine = File('lib/modules/sync/engine/sync_engine.dart').readAsStringSync();
+    engine = File(
+      'lib/modules/sync/engine/sync_engine.dart',
+    ).readAsStringSync();
   });
 
   test('the stamp is written inside try, never in finally', () {
@@ -35,7 +37,8 @@ void main() {
     expect(
       engine,
       contains('if (!_cycleFailed) await _cycleStamp.markSuccess()'),
-      reason: 'a cycle that pushed nine rows and failed the tenth is not '
+      reason:
+          'a cycle that pushed nine rows and failed the tenth is not '
           'a successful sync',
     );
   });

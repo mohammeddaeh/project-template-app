@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -64,7 +64,8 @@ class CertificatePinningConfig {
     (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
       final client = HttpClient();
 
-      client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+      client
+          .badCertificateCallback = (X509Certificate cert, String host, int port) {
         final certDer = cert.der;
         // Compute SHA-256 of the DER-encoded certificate
         final fingerprint = _sha256Hex(certDer);

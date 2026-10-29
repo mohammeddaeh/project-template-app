@@ -62,7 +62,6 @@ export 'domain/sync_queue_job.dart' show SyncQueueJob;
 export 'domain/sync_refresh_task.dart' show SyncRefreshTask;
 export 'domain/sync_hydration.dart' show SyncHydration;
 
-
 /// **ماذا سيصل الخادمَ من هذا الصفّ — وما الذي يحجز الباقي.**
 ///
 /// تنفّذه الشريحةُ صاحبةُ الكيان، ويقرؤه من يعرض الطابور.
@@ -83,7 +82,8 @@ export 'engine/sync_pull_executor.dart'
 // `SyncRepositoryDecorator` swaps the bound repository at startup;
 // `SyncableRepository` is what the swapped-in one must extend, and
 // `SyncWriteGateway` is how it writes locally and queues the push in one step.
-export 'integration/sync_repository_decorator.dart' show SyncRepositoryDecorator;
+export 'integration/sync_repository_decorator.dart'
+    show SyncRepositoryDecorator;
 export 'domain/syncable_repository.dart' show SyncableRepository;
 export 'domain/sync_write_gateway.dart' show SyncWriteGateway, SyncWriteCommand;
 

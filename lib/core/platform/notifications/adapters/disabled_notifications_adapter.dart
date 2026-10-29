@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:app_template/core/platform/notifications/local_notifications_service.dart';
 import 'package:app_template/core/platform/notifications/notification_channel.dart';
@@ -16,14 +16,19 @@ class DisabledNotificationsAdapter implements LocalNotificationsService {
 
   @override
   Future<void> initialize({
-    List<NotificationChannel> channels = const [NotificationChannel.defaultChannel],
+    List<NotificationChannel> channels = const [
+      NotificationChannel.defaultChannel,
+    ],
   }) async {}
 
   @override
   Future<void> show(NotificationPayload payload) async {}
 
   @override
-  Future<void> schedule(NotificationPayload payload, DateTime scheduledAt) async {}
+  Future<void> schedule(
+    NotificationPayload payload,
+    DateTime scheduledAt,
+  ) async {}
 
   @override
   Future<void> cancel(int id) async {}

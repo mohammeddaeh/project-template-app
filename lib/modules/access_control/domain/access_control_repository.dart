@@ -18,7 +18,9 @@ abstract class AccessControlRepository {
   ///
   /// [includeDeclared] asks the server to list every key it declares — sent
   /// only by debug builds, so the module can shout about a key no server knows.
-  Future<Either<Failure, AbilitySet>> myAbilities({bool includeDeclared = false});
+  Future<Either<Failure, AbilitySet>> myAbilities({
+    bool includeDeclared = false,
+  });
 
   /// Every permission the server declares, grouped by resource. Requires
   /// `roles.view`; the roles screen is built entirely from it.

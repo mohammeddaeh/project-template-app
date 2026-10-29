@@ -34,8 +34,9 @@ class ImportCubit extends SafeCubit<ImportState> {
 
     final result = await _repository.resources();
     result.fold(_emitFailure, (resources) {
-      final resource =
-          resources.where((r) => r.name == resourceName).firstOrNull;
+      final resource = resources
+          .where((r) => r.name == resourceName)
+          .firstOrNull;
 
       if (resource == null) {
         emit(const ImportFailed(code: 'unknown_resource'));
@@ -193,9 +194,8 @@ class ImportCubit extends SafeCubit<ImportState> {
       // guarantees it. The token is spent either way, which is why
       // `startOver` (re-upload), not a retry of `confirm`, is the way back.
       _emitFailure,
-      (outcome) => emit(
-        ImportCommitted(resource: current.resource, result: outcome),
-      ),
+      (outcome) =>
+          emit(ImportCommitted(resource: current.resource, result: outcome)),
     );
   }
 
@@ -206,16 +206,16 @@ class ImportCubit extends SafeCubit<ImportState> {
   }
 
   TransferResource? get _resource => switch (state) {
-        ImportReady(:final resource) => resource,
-        ImportTemplateLoading(:final resource) => resource,
-        ImportTemplateReady(:final resource) => resource,
-        ImportValidating(:final resource) => resource,
-        ImportReviewing(:final resource) => resource,
-        ImportCommitting(:final resource) => resource,
-        ImportCommitted(:final resource) => resource,
-        ImportFailed(:final resource) => resource,
-        _ => null,
-      };
+    ImportReady(:final resource) => resource,
+    ImportTemplateLoading(:final resource) => resource,
+    ImportTemplateReady(:final resource) => resource,
+    ImportValidating(:final resource) => resource,
+    ImportReviewing(:final resource) => resource,
+    ImportCommitting(:final resource) => resource,
+    ImportCommitted(:final resource) => resource,
+    ImportFailed(:final resource) => resource,
+    _ => null,
+  };
 
   /// Resolves a [Failure] to displayable text here rather than in the widget —
   /// see the identical note on `ExportCubit`.

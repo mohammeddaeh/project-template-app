@@ -22,7 +22,8 @@ class NotificationCenterStore implements AccountScopedStore {
   static const _key = 'notification_center_items';
 
   final StorageService _storage;
-  final _controller = StreamController<List<NotificationCenterItem>>.broadcast();
+  final _controller =
+      StreamController<List<NotificationCenterItem>>.broadcast();
   List<NotificationCenterItem> _items = const [];
 
   List<NotificationCenterItem> get items => List.unmodifiable(_items);
@@ -81,10 +82,9 @@ class NotificationCenterStore implements AccountScopedStore {
 
   Future<void> _persist() async {
     _emit();
-    await _storage.writeStringList(
-      _key,
-      [for (final item in _items) jsonEncode(item.toJson())],
-    );
+    await _storage.writeStringList(_key, [
+      for (final item in _items) jsonEncode(item.toJson()),
+    ]);
   }
 
   void _emit() => _controller.add(items);

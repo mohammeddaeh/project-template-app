@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -37,9 +37,9 @@ class ExpandableSection extends StatefulWidget {
     this.contentPadding,
     this.showDivider = true,
   }) : assert(
-          titleKey != null || titleText != null,
-          'ExpandableSection: provide titleKey or titleText',
-        );
+         titleKey != null || titleText != null,
+         'ExpandableSection: provide titleKey or titleText',
+       );
 
   final String? titleKey;
   final String? titleText;
@@ -97,8 +97,9 @@ class _ExpandableSectionState extends State<ExpandableSection> {
     final textTheme = context.textTheme;
     final scheme = context.colorScheme;
 
-    final title =
-        widget.titleKey != null ? widget.titleKey!.tr() : widget.titleText!;
+    final title = widget.titleKey != null
+        ? widget.titleKey!.tr()
+        : widget.titleText!;
     final subtitle = widget.subtitleKey != null
         ? widget.subtitleKey!.tr()
         : widget.subtitleText;
@@ -112,7 +113,8 @@ class _ExpandableSectionState extends State<ExpandableSection> {
           onTap: _toggle,
           borderRadius: BorderRadius.circular(8),
           child: Padding(
-            padding: widget.headerPadding ??
+            padding:
+                widget.headerPadding ??
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
@@ -136,8 +138,9 @@ class _ExpandableSectionState extends State<ExpandableSection> {
                         const SizedBox(height: 2),
                         Text(
                           subtitle,
-                          style: textTheme.bodySmall
-                              ?.copyWith(color: colors.textMuted),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.textMuted,
+                          ),
                         ),
                       ],
                     ],
@@ -146,8 +149,11 @@ class _ExpandableSectionState extends State<ExpandableSection> {
                 AnimatedRotation(
                   turns: _expanded ? 0.5 : 0,
                   duration: const Duration(milliseconds: 220),
-                  child: Icon(Icons.keyboard_arrow_down_rounded,
-                      color: colors.iconSubtle, size: 22),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: colors.iconSubtle,
+                    size: 22,
+                  ),
                 ),
               ],
             ),
@@ -161,9 +167,13 @@ class _ExpandableSectionState extends State<ExpandableSection> {
           child: _expanded
               ? ClipRect(
                   child: Padding(
-                    padding: widget.contentPadding ??
-                        const EdgeInsets.only(
-                            left: 16, right: 16, bottom: 12),
+                    padding:
+                        widget.contentPadding ??
+                        const EdgeInsetsDirectional.only(
+                          start: 16,
+                          end: 16,
+                          bottom: 12,
+                        ),
                     child: widget.child,
                   ),
                 )

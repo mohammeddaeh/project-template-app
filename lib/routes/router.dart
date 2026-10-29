@@ -1,4 +1,4 @@
-﻿import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:app_template/modules/access_control/guards/permission_route_guard.dart';
 import 'package:app_template/resources/permission_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
@@ -66,7 +66,6 @@ class AppRouter extends RootStackRouter {
     // should not restore the tab bar. Ordinary navigation goes to the shell.
     AutoRoute(page: HomeRoute.page, path: '/home'),
 
-
     // ── Import / export (modules/data_transfer) ────────────────────────────
     //
     // Generic: `:resource` is a wire name, so these two routes serve every
@@ -74,8 +73,14 @@ class AppRouter extends RootStackRouter {
     // `AppFeatures.dataTransfer` is off — `DataTransferSheet.show` is the guard,
     // and it refuses before navigating, so an unreachable route costs nothing
     // while a conditionally-registered one would break deep links per build.
-    AutoRoute(page: TransferExportRoute.page, path: '/transfer/:resource/export'),
-    AutoRoute(page: TransferImportRoute.page, path: '/transfer/:resource/import'),
+    AutoRoute(
+      page: TransferExportRoute.page,
+      path: '/transfer/:resource/export',
+    ),
+    AutoRoute(
+      page: TransferImportRoute.page,
+      path: '/transfer/:resource/import',
+    ),
 
     // ── Roles & permissions (modules/access_control) ───────────────────────
     //
@@ -102,7 +107,6 @@ class AppRouter extends RootStackRouter {
       path: '/users/:userId/access',
       guards: [PermissionRouteGuard(PermKeys.userAccessView)],
     ),
-
 
     AutoRoute(page: ErrorRoute.page, path: '/error'),
   ];

@@ -1,4 +1,4 @@
-﻿import 'package:injectable/injectable.dart';
+import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:app_template/core/platform/features/app_features.dart';
@@ -45,37 +45,36 @@ class PermissionsServiceImpl implements PermissionsService {
   // ── Mapping helpers ────────────────────────────────────────────────────────
 
   Permission _toNative(AppPermission p) => switch (p) {
-        AppPermission.camera => Permission.camera,
-        AppPermission.microphone => Permission.microphone,
-        AppPermission.location => Permission.location,
-        AppPermission.locationAlways => Permission.locationAlways,
-        AppPermission.photos => Permission.photos,
-        AppPermission.storage => Permission.storage,
-        AppPermission.notifications => Permission.notification,
-        AppPermission.contacts => Permission.contacts,
-        AppPermission.bluetooth => Permission.bluetooth,
-      };
+    AppPermission.camera => Permission.camera,
+    AppPermission.microphone => Permission.microphone,
+    AppPermission.location => Permission.location,
+    AppPermission.locationAlways => Permission.locationAlways,
+    AppPermission.photos => Permission.photos,
+    AppPermission.storage => Permission.storage,
+    AppPermission.notifications => Permission.notification,
+    AppPermission.contacts => Permission.contacts,
+    AppPermission.bluetooth => Permission.bluetooth,
+  };
 
   AppPermission _fromNativePermission(Permission p) => switch (p) {
-        Permission.camera => AppPermission.camera,
-        Permission.microphone => AppPermission.microphone,
-        Permission.location => AppPermission.location,
-        Permission.locationAlways => AppPermission.locationAlways,
-        Permission.photos => AppPermission.photos,
-        Permission.storage => AppPermission.storage,
-        Permission.notification => AppPermission.notifications,
-        Permission.contacts => AppPermission.contacts,
-        Permission.bluetooth => AppPermission.bluetooth,
-        _ => AppPermission.camera, // fallback — never reached for known types
-      };
+    Permission.camera => AppPermission.camera,
+    Permission.microphone => AppPermission.microphone,
+    Permission.location => AppPermission.location,
+    Permission.locationAlways => AppPermission.locationAlways,
+    Permission.photos => AppPermission.photos,
+    Permission.storage => AppPermission.storage,
+    Permission.notification => AppPermission.notifications,
+    Permission.contacts => AppPermission.contacts,
+    Permission.bluetooth => AppPermission.bluetooth,
+    _ => AppPermission.camera, // fallback — never reached for known types
+  };
 
   AppPermissionStatus _fromNative(PermissionStatus s) => switch (s) {
-        PermissionStatus.granted => AppPermissionStatus.granted,
-        PermissionStatus.denied => AppPermissionStatus.denied,
-        PermissionStatus.permanentlyDenied =>
-          AppPermissionStatus.permanentlyDenied,
-        PermissionStatus.restricted => AppPermissionStatus.restricted,
-        PermissionStatus.limited => AppPermissionStatus.limited,
-        _ => AppPermissionStatus.denied,
-      };
+    PermissionStatus.granted => AppPermissionStatus.granted,
+    PermissionStatus.denied => AppPermissionStatus.denied,
+    PermissionStatus.permanentlyDenied => AppPermissionStatus.permanentlyDenied,
+    PermissionStatus.restricted => AppPermissionStatus.restricted,
+    PermissionStatus.limited => AppPermissionStatus.limited,
+    _ => AppPermissionStatus.denied,
+  };
 }

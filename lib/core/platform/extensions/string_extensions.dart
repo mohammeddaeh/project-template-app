@@ -47,7 +47,9 @@ extension StringExtension on String {
     final uri = Uri.tryParse(this);
     if (uri == null) return this;
     final parts = uri.host.split('.');
-    return parts.length > 2 ? parts.sublist(parts.length - 2).join('.') : uri.host;
+    return parts.length > 2
+        ? parts.sublist(parts.length - 2).join('.')
+        : uri.host;
   }
 
   /// Returns `true` if the string contains exactly one emoji character.

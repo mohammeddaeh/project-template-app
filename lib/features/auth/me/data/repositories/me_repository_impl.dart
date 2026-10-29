@@ -24,10 +24,12 @@ class MeRepositoryImpl extends BaseRepository implements MeRepository {
     final res = await _dataSource.getCurrentUser();
 
     if (res.error != null) {
-      return Left(BusinessFailure(
-        statusCode: res.error?.code ?? 400,
-        serverMessage: res.message.isNotEmpty ? res.message : null,
-      ));
+      return Left(
+        BusinessFailure(
+          statusCode: res.error?.code ?? 400,
+          serverMessage: res.message.isNotEmpty ? res.message : null,
+        ),
+      );
     }
 
     if (res.data == null) {

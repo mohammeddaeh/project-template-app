@@ -13,12 +13,7 @@ import '../config/sync_settings_store.dart';
 /// A reason rather than a bool, because "sync is not running" is the single
 /// most common thing a user reports and the single hardest thing to explain
 /// from a log that only ever said `false`.
-enum SyncBlockReason {
-  disabled,
-  offline,
-  waitingForWifi,
-  noSession,
-}
+enum SyncBlockReason { disabled, offline, waitingForWifi, noSession }
 
 /// Decides whether a sync cycle may start.
 ///

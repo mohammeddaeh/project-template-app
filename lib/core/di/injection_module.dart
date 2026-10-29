@@ -109,7 +109,6 @@ abstract class InjectableModule {
     Connectivity connectivity,
   ) => ServerReachability(checker, connectivity);
 
-
   @lazySingleton
   Connectivity get connectivity => Connectivity();
 
@@ -124,8 +123,7 @@ abstract class InjectableModule {
   /// Current adapter: [HiveStorageAdapter] (reads are synchronous after open).
   /// To swap backend: replace the adapter here — no other code changes needed.
   @lazySingleton
-  StorageService storageService(Box<dynamic> box) =>
-      HiveStorageAdapter(box);
+  StorageService storageService(Box<dynamic> box) => HiveStorageAdapter(box);
 
   /// Resolved before DI finishes, because the one thing that asks for it does so
   /// **synchronously**: `registerSyncCore` binds

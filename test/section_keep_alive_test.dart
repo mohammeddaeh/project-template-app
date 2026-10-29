@@ -12,8 +12,13 @@ import 'package:flutter_test/flutter_test.dart';
 /// second proves the ListView really does dispose here, so a passing first case
 /// cannot be an artefact of the child never leaving the viewport.
 void main() {
-  testWidgets('AutomaticKeepAliveClientMixin stops the refetch', (tester) async {
-    final withKeepAlive = await _loadsAfterScrollRoundTrip(tester, keepAlive: true);
+  testWidgets('AutomaticKeepAliveClientMixin stops the refetch', (
+    tester,
+  ) async {
+    final withKeepAlive = await _loadsAfterScrollRoundTrip(
+      tester,
+      keepAlive: true,
+    );
     expect(
       withKeepAlive,
       1,

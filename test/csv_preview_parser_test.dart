@@ -39,7 +39,10 @@ void main() {
     });
 
     test('drops blank rows rather than showing empty table lines', () {
-      expect(CsvPreviewParser.parse('a,b\r\n1,2\r\n\r\n,\r\n').rows, hasLength(1));
+      expect(
+        CsvPreviewParser.parse('a,b\r\n1,2\r\n\r\n,\r\n').rows,
+        hasLength(1),
+      );
     });
 
     test('treats a quote inside an unquoted field as literal', () {

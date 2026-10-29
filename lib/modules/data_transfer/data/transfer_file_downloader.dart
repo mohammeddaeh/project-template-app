@@ -156,7 +156,9 @@ class TransferFileDownloader {
 String joinBaseUrl(String base, String path) {
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
 
-  final trimmedBase = base.endsWith('/') ? base.substring(0, base.length - 1) : base;
+  final trimmedBase = base.endsWith('/')
+      ? base.substring(0, base.length - 1)
+      : base;
   final suffix = path.startsWith('/') ? path : '/$path';
   return '$trimmedBase$suffix';
 }

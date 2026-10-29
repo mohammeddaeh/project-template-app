@@ -91,14 +91,13 @@ class ImportReviewing extends ImportState {
     ImportReport? report,
     List<Map<String, String>>? rows,
     bool? dirty,
-  }) =>
-      ImportReviewing(
-        resource: resource,
-        file: file,
-        report: report ?? this.report,
-        rows: rows ?? this.rows,
-        dirty: dirty ?? this.dirty,
-      );
+  }) => ImportReviewing(
+    resource: resource,
+    file: file,
+    report: report ?? this.report,
+    rows: rows ?? this.rows,
+    dirty: dirty ?? this.dirty,
+  );
 }
 
 class ImportCommitting extends ImportState {

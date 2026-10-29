@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/states/app_state_widget.dart';
 
 /// حالة القائمة الفارغة.
@@ -24,12 +24,12 @@ class EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateWidget(
-        type: AppStateType.empty,
-        titleKey: titleKey,
-        descriptionKey: descriptionKey,
-        icon: icon,
-        iconSize: iconSize,
-        onAction: onAction,
-        actionLabelKey: actionLabelKey,
-      );
+    type: AppStateType.empty,
+    titleKey: titleKey,
+    descriptionKey: descriptionKey,
+    icon: icon,
+    iconSize: iconSize,
+    onAction: onAction,
+    actionLabelKey: actionLabelKey,
+  );
 }

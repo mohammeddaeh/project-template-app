@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/ui/error/failure_ui_mapper.dart';
 import 'package:app_template/ui/error/ui_action.dart';
@@ -75,7 +75,8 @@ class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
             return const SizedBox.shrink();
           },
           success: (entity, loading, error) => Padding(
-            padding: widget.contentPadding ??
+            padding:
+                widget.contentPadding ??
                 const EdgeInsets.symmetric(horizontal: 24.0),
             child: RefreshIndicator(
               onRefresh: paginationCubit.refresh,

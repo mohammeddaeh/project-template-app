@@ -9,8 +9,13 @@ import 'integration/access_control_bootstrap.dart';
 export 'domain/ability_set.dart' show AbilitySet;
 export 'domain/access_control_repository.dart' show AccessControlRepository;
 export 'domain/permission_catalog.dart'
-    show LocalizedLabel, PermissionCatalog, PermissionDescriptor, PermissionGroup;
-export 'domain/role.dart' show OverrideEffect, PermissionOverride, Role, UserAccess;
+    show
+        LocalizedLabel,
+        PermissionCatalog,
+        PermissionDescriptor,
+        PermissionGroup;
+export 'domain/role.dart'
+    show OverrideEffect, PermissionOverride, Role, UserAccess;
 export 'guards/permission_route_guard.dart' show PermissionRouteGuard;
 export 'integration/abilities_store.dart' show AbilitiesStore;
 export 'presentation/widgets/can.dart' show AbilityContext, Can, CanMode;

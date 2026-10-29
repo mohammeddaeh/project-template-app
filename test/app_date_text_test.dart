@@ -43,17 +43,18 @@ void main() {
       expect(text, isNot(contains('27')));
     });
 
-    testWidgets('hijri, English, full name → English month name + western digits', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        host(AppDateText(reference, language: AppDateLanguage.english)),
-      );
-      final text = textOf(tester, find.byType(Text));
-      expect(text, contains('Ramadan'));
-      expect(text, contains('27'));
-      expect(text, contains('1441'));
-    });
+    testWidgets(
+      'hijri, English, full name → English month name + western digits',
+      (tester) async {
+        await tester.pumpWidget(
+          host(AppDateText(reference, language: AppDateLanguage.english)),
+        );
+        final text = textOf(tester, find.byType(Text));
+        expect(text, contains('Ramadan'));
+        expect(text, contains('27'));
+        expect(text, contains('1441'));
+      },
+    );
 
     testWidgets('gregorian, numeric month, custom separator', (tester) async {
       await tester.pumpWidget(
@@ -120,30 +121,31 @@ void main() {
       expect(texts[1].data, contains('May'));
     });
 
-    testWidgets('inline layout renders a single non-clipping Text.rich with the separator', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        host(
-          AppDateText(
-            reference,
-            calendar: AppDateCalendar.both,
-            layout: AppDateLayout.inline,
-            language: AppDateLanguage.english,
-            calendarSeparator: ' | ',
+    testWidgets(
+      'inline layout renders a single non-clipping Text.rich with the separator',
+      (tester) async {
+        await tester.pumpWidget(
+          host(
+            AppDateText(
+              reference,
+              calendar: AppDateCalendar.both,
+              layout: AppDateLayout.inline,
+              language: AppDateLanguage.english,
+              calendarSeparator: ' | ',
+            ),
           ),
-        ),
-      );
+        );
 
-      expect(find.byType(Text), findsOneWidget);
-      final richText = tester.widget<Text>(find.byType(Text));
-      final plain = richText.textSpan!.toPlainText();
-      expect(plain, contains('Ramadan'));
-      expect(plain, contains('May'));
-      expect(plain, contains(' | '));
-      // لا `maxLines` ولا `overflow: ellipsis` — النصّ يتمدّد بحرّية.
-      expect(richText.maxLines, isNull);
-      expect(richText.overflow, isNull);
-    });
+        expect(find.byType(Text), findsOneWidget);
+        final richText = tester.widget<Text>(find.byType(Text));
+        final plain = richText.textSpan!.toPlainText();
+        expect(plain, contains('Ramadan'));
+        expect(plain, contains('May'));
+        expect(plain, contains(' | '));
+        // لا `maxLines` ولا `overflow: ellipsis` — النصّ يتمدّد بحرّية.
+        expect(richText.maxLines, isNull);
+        expect(richText.overflow, isNull);
+      },
+    );
   });
 }

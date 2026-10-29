@@ -1,4 +1,4 @@
-﻿import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 
@@ -149,7 +149,9 @@ class BaseBottomSheet extends StatelessWidget {
                 ))
             .copyWith(
               bottom:
-                  (padding?.bottom ?? (effectiveBottom + context.bottomPadding)) + keyboardInset,
+                  (padding?.bottom ??
+                      (effectiveBottom + context.bottomPadding)) +
+                  keyboardInset,
             );
 
     final content = Column(
@@ -190,7 +192,8 @@ class BaseBottomSheet extends StatelessWidget {
       top: false,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxHeight: (context.sh - keyboardInset) * maxHeightRatio.clamp(0.1, 0.95),
+          maxHeight:
+              (context.sh - keyboardInset) * maxHeightRatio.clamp(0.1, 0.95),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

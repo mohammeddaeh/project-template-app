@@ -32,16 +32,16 @@ class DeviceSessionModel {
       );
 
   DeviceSession toDomain() => DeviceSession(
-        id: id,
-        deviceInfo: deviceInfo,
-        provider: provider,
-        // `DateTime(2000)` on an unparseable value rather than throwing: one
-        // malformed timestamp must not blank the whole devices list, which is
-        // the screen someone opens *because* something is wrong. An obviously
-        // stale date is visible; an empty screen is not explicable.
-        createdAt: DateTime.tryParse(createdAt) ?? DateTime(2000),
-        lastActiveAt: DateTime.tryParse(lastActiveAt) ?? DateTime(2000),
-        expiresAt: DateTime.tryParse(expiresAt) ?? DateTime(2000),
-        isCurrent: isCurrent,
-      );
+    id: id,
+    deviceInfo: deviceInfo,
+    provider: provider,
+    // `DateTime(2000)` on an unparseable value rather than throwing: one
+    // malformed timestamp must not blank the whole devices list, which is
+    // the screen someone opens *because* something is wrong. An obviously
+    // stale date is visible; an empty screen is not explicable.
+    createdAt: DateTime.tryParse(createdAt) ?? DateTime(2000),
+    lastActiveAt: DateTime.tryParse(lastActiveAt) ?? DateTime(2000),
+    expiresAt: DateTime.tryParse(expiresAt) ?? DateTime(2000),
+    isCurrent: isCurrent,
+  );
 }

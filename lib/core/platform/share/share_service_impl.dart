@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:app_template/core/platform/share/share_service.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,17 +14,14 @@ class ShareServiceImpl implements ShareService {
       SharePlus.instance.share(ShareParams(text: text, subject: subject));
 
   @override
-  Future<void> url(String url, {String? subject}) =>
-      SharePlus.instance.share(ShareParams(uri: Uri.parse(url), subject: subject));
+  Future<void> url(String url, {String? subject}) => SharePlus.instance.share(
+    ShareParams(uri: Uri.parse(url), subject: subject),
+  );
 
   @override
   Future<void> file(File file, {String? text, String? subject}) =>
       SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          text: text,
-          subject: subject,
-        ),
+        ShareParams(files: [XFile(file.path)], text: text, subject: subject),
       );
 
   @override

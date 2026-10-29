@@ -24,24 +24,36 @@ void main() {
   group('joinBaseUrl', () {
     test('collapses the double slash a trailing-slash base would produce', () {
       expect(
-        joinBaseUrl('http://10.0.2.2:3000/api/v1/', '/data-transfer/branches/template'),
+        joinBaseUrl(
+          'http://10.0.2.2:3000/api/v1/',
+          '/data-transfer/branches/template',
+        ),
         'http://10.0.2.2:3000/api/v1/data-transfer/branches/template',
       );
     });
 
     test('leaves a well-formed pair alone', () {
       expect(
-        joinBaseUrl('http://10.0.2.2:3000/api/v1', '/data-transfer/branches/export'),
+        joinBaseUrl(
+          'http://10.0.2.2:3000/api/v1',
+          '/data-transfer/branches/export',
+        ),
         'http://10.0.2.2:3000/api/v1/data-transfer/branches/export',
       );
     });
 
     test('adds the separator when the path has none', () {
-      expect(joinBaseUrl('http://host/api/v1', 'health'), 'http://host/api/v1/health');
+      expect(
+        joinBaseUrl('http://host/api/v1', 'health'),
+        'http://host/api/v1/health',
+      );
     });
 
     test('handles both halves being sloppy at once', () {
-      expect(joinBaseUrl('http://host/api/v1/', 'health'), 'http://host/api/v1/health');
+      expect(
+        joinBaseUrl('http://host/api/v1/', 'health'),
+        'http://host/api/v1/health',
+      );
     });
 
     test('passes an already-absolute URL through untouched', () {
@@ -55,7 +67,10 @@ void main() {
       // `String.fromEnvironment('BASE_URL')` defaults to '' when the define is
       // missing. The result is a relative URL that fails loudly at the request,
       // rather than a malformed absolute one that fails somewhere stranger.
-      expect(joinBaseUrl('', '/data-transfer/x/export'), '/data-transfer/x/export');
+      expect(
+        joinBaseUrl('', '/data-transfer/x/export'),
+        '/data-transfer/x/export',
+      );
     });
   });
 }

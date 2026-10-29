@@ -1,4 +1,3 @@
-
 import 'sync_database.dart';
 
 /// All recognized operation types recorded in [sync_operations_log].
@@ -49,8 +48,8 @@ class SyncOperationsLog {
     final now = DateTime.now().millisecondsSinceEpoch;
     final snapshot = payloadSnapshot != null
         ? payloadSnapshot.length > _maxPayloadSnapshotLength
-            ? payloadSnapshot.substring(0, _maxPayloadSnapshotLength)
-            : payloadSnapshot
+              ? payloadSnapshot.substring(0, _maxPayloadSnapshotLength)
+              : payloadSnapshot
         : null;
 
     await db.insert('sync_operations_log', {

@@ -75,16 +75,16 @@ class ImportReport extends Equatable {
 
   @override
   List<Object?> get props => [
-        token,
-        expiresIn,
-        totalRows,
-        validRows,
-        errors,
-        truncatedErrors,
-        columns,
-        rows,
-        truncatedRows,
-      ];
+    token,
+    expiresIn,
+    totalRows,
+    validRows,
+    errors,
+    truncatedErrors,
+    columns,
+    rows,
+    truncatedRows,
+  ];
 }
 
 /// How much a problem matters — and therefore what colour the cell is.
@@ -145,8 +145,15 @@ class ImportRowError extends Equatable {
   int get spreadsheetLine => row + 1;
 
   @override
-  List<Object?> get props =>
-      [row, column, code, message, severity, value, duplicateOfRow];
+  List<Object?> get props => [
+    row,
+    column,
+    code,
+    message,
+    severity,
+    value,
+    duplicateOfRow,
+  ];
 }
 
 /// The codes the engine emits, so the UI can explain a problem in the user's

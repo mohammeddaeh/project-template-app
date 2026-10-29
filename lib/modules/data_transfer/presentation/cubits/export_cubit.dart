@@ -29,8 +29,9 @@ class ExportCubit extends SafeCubit<ExportState> {
 
     final result = await _repository.resources();
     result.fold(_emitFailure, (resources) {
-      final resource =
-          resources.where((r) => r.name == resourceName).firstOrNull;
+      final resource = resources
+          .where((r) => r.name == resourceName)
+          .firstOrNull;
 
       if (resource == null) {
         // The server does not offer this resource. Saying so beats an empty

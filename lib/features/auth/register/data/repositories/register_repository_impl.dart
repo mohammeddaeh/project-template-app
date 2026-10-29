@@ -12,7 +12,7 @@ import 'package:app_template/features/auth/shared/entities/auth_user.dart';
 class RegisterRepositoryImpl extends BaseRepository
     implements RegisterRepository {
   RegisterRepositoryImpl(this._dataSource, HandleBodyResponse handler)
-      : super(handler);
+    : super(handler);
 
   final RegisterRemoteDataSource _dataSource;
 

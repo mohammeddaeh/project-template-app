@@ -43,13 +43,13 @@ class NotificationCenterListener {
             ),
           )
           .catchError((Object error, StackTrace stackTrace) {
-        LogService.error(
-          'NotificationCenterListener persist error',
-          tag: 'NOTIFICATION_CENTER',
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }),
+            LogService.error(
+              'NotificationCenterListener persist error',
+              tag: 'NOTIFICATION_CENTER',
+              error: error,
+              stackTrace: stackTrace,
+            );
+          }),
     );
   }
 

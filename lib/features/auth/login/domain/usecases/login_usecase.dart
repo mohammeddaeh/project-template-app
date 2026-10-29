@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:app_template/core/foundation/domain/base_usecase.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/features/auth/login/domain/entities/login_entity.dart';
@@ -7,7 +7,8 @@ import 'package:app_template/features/auth/login/domain/repositories/login_repos
 import 'package:injectable/injectable.dart';
 
 @injectable
-class LoginUseCase extends BaseUseCase<Either<Failure, LoginEntity>, LoginParams> {
+class LoginUseCase
+    extends BaseUseCase<Either<Failure, LoginEntity>, LoginParams> {
   LoginUseCase(this._repository);
 
   final LoginRepository _repository;

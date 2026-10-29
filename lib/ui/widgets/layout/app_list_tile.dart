@@ -38,9 +38,9 @@ class AppListTile extends StatelessWidget {
     this.enabled = true,
     this.titleColor,
   }) : assert(
-          titleKey != null || titleText != null,
-          'AppListTile: provide titleKey or titleText',
-        );
+         titleKey != null || titleText != null,
+         'AppListTile: provide titleKey or titleText',
+       );
 
   final String? titleKey;
   final String? titleText;
@@ -79,8 +79,7 @@ class AppListTile extends StatelessWidget {
     final scheme = context.colorScheme;
 
     final titleStr = titleKey != null ? titleKey!.tr() : titleText!;
-    final subtitleStr =
-        subtitleKey != null ? subtitleKey!.tr() : subtitleText;
+    final subtitleStr = subtitleKey != null ? subtitleKey!.tr() : subtitleText;
 
     Widget? resolvedLeading;
     if (leading != null) {
@@ -100,11 +99,9 @@ class AppListTile extends StatelessWidget {
           onTap: enabled ? onTap : null,
           onLongPress: enabled ? onLongPress : null,
           child: Padding(
-            padding: padding ??
-                EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: dense ? 8 : 12,
-                ),
+            padding:
+                padding ??
+                EdgeInsets.symmetric(horizontal: 16, vertical: dense ? 8 : 12),
             child: Row(
               children: [
                 if (resolvedLeading != null) ...[
@@ -123,23 +120,23 @@ class AppListTile extends StatelessWidget {
                       _TileText(
                         text: titleStr,
                         isDynamic: titleKey == null,
-                        style: (dense
-                                ? textTheme.bodyMedium
-                                : textTheme.bodyLarge)
-                            ?.copyWith(
-                          color: enabled
-                              ? (titleColor ?? scheme.onSurface)
-                              : colors.textMuted,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style:
+                            (dense ? textTheme.bodyMedium : textTheme.bodyLarge)
+                                ?.copyWith(
+                                  color: enabled
+                                      ? (titleColor ?? scheme.onSurface)
+                                      : colors.textMuted,
+                                  fontWeight: FontWeight.w500,
+                                ),
                       ),
                       if (subtitleStr != null) ...[
                         const SizedBox(height: 2),
                         _TileText(
                           text: subtitleStr,
                           isDynamic: subtitleKey == null,
-                          style: textTheme.bodySmall
-                              ?.copyWith(color: colors.textMuted),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.textMuted,
+                          ),
                         ),
                       ],
                     ],
@@ -149,8 +146,11 @@ class AppListTile extends StatelessWidget {
                   const SizedBox(width: 8),
                   trailing!,
                 ] else if (onTap != null)
-                  Icon(Icons.chevron_right_rounded,
-                      size: 18, color: colors.iconSubtle),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 18,
+                    color: colors.iconSubtle,
+                  ),
               ],
             ),
           ),

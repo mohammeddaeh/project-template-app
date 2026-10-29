@@ -58,76 +58,70 @@ class DataTransferRepositoryImpl extends BaseRepository
     required TransferFormat format,
     List<String> columns = const [],
     Map<String, String> filters = const {},
-  }) =>
-      _downloadTo(
-        path: DataTransferUrls.transferExport(resource),
-        fileName: '$resource-${_stamp()}.${format.wire}',
-        query: {
-          'format': format.wire,
-          // Omitted entirely when empty — sending `columns=` would be read as
-          // "select no columns" and answered 422.
-          if (columns.isNotEmpty) 'columns': columns.join(','),
-          ...filters,
-        },
-      );
+  }) => _downloadTo(
+    path: DataTransferUrls.transferExport(resource),
+    fileName: '$resource-${_stamp()}.${format.wire}',
+    query: {
+      'format': format.wire,
+      // Omitted entirely when empty — sending `columns=` would be read as
+      // "select no columns" and answered 422.
+      if (columns.isNotEmpty) 'columns': columns.join(','),
+      ...filters,
+    },
+  );
 
   @override
   Future<Either<Failure, File>> template({
     required String resource,
     required TransferFormat format,
-  }) =>
-      _downloadTo(
-        path: DataTransferUrls.transferTemplate(resource),
-        fileName: '$resource-template.${format.wire}',
-        query: {'format': format.wire},
-      );
+  }) => _downloadTo(
+    path: DataTransferUrls.transferTemplate(resource),
+    fileName: '$resource-template.${format.wire}',
+    query: {'format': format.wire},
+  );
 
   @override
   Future<Either<Failure, ImportReport>> validateImport({
     required String resource,
     required File file,
-  }) =>
-      handle(() async {
-        final multipart = await MultipartFile.fromFile(
-          file.path,
-          // The **basename**, never the full path: the server decides the
-          // format from this extension, and a Windows path would arrive with
-          // separators in the filename.
-          filename: p.basename(file.path),
-        );
-        final envelope = _read(await _api.validateImport(resource, multipart));
-        return envelope.map(
-          (data) => ImportReportModel.fromJson(data as Map<String, dynamic>),
-        );
-      });
+  }) => handle(() async {
+    final multipart = await MultipartFile.fromFile(
+      file.path,
+      // The **basename**, never the full path: the server decides the
+      // format from this extension, and a Windows path would arrive with
+      // separators in the filename.
+      filename: p.basename(file.path),
+    );
+    final envelope = _read(await _api.validateImport(resource, multipart));
+    return envelope.map(
+      (data) => ImportReportModel.fromJson(data as Map<String, dynamic>),
+    );
+  });
 
   @override
   Future<Either<Failure, ImportReport>> revalidateRows({
     required String resource,
     required List<String> columns,
     required List<Map<String, String>> rows,
-  }) =>
-      handle(() async {
-        final envelope = _read(
-          await _api.revalidateRows(resource, {'columns': columns, 'rows': rows}),
-        );
-        return envelope.map(
-          (data) => ImportReportModel.fromJson(data as Map<String, dynamic>),
-        );
-      });
+  }) => handle(() async {
+    final envelope = _read(
+      await _api.revalidateRows(resource, {'columns': columns, 'rows': rows}),
+    );
+    return envelope.map(
+      (data) => ImportReportModel.fromJson(data as Map<String, dynamic>),
+    );
+  });
 
   @override
   Future<Either<Failure, ImportResult>> commitImport({
     required String resource,
     required String token,
-  }) =>
-      handle(() async {
-        final envelope =
-            _read(await _api.commitImport(resource, {'token': token}));
-        return envelope.map(
-          (data) => ImportReportModel.resultFromJson(data as Map<String, dynamic>),
-        );
-      });
+  }) => handle(() async {
+    final envelope = _read(await _api.commitImport(resource, {'token': token}));
+    return envelope.map(
+      (data) => ImportReportModel.resultFromJson(data as Map<String, dynamic>),
+    );
+  });
 
   // ── The bytes path ─────────────────────────────────────────────────────────
 
@@ -141,7 +135,11 @@ class DataTransferRepositoryImpl extends BaseRepository
   }) async {
     try {
       return Right(
-        await _downloader.download(path: path, fileName: fileName, query: query),
+        await _downloader.download(
+          path: path,
+          fileName: fileName,
+          query: query,
+        ),
       );
     } on TransferDownloadException catch (e) {
       // The server refused, and said why. Carrying `serverMessage` through is

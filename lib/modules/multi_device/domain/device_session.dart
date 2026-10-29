@@ -56,12 +56,12 @@ class DeviceSession extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        deviceInfo,
-        provider,
-        createdAt,
-        lastActiveAt,
-        expiresAt,
-        isCurrent,
-      ];
+    id,
+    deviceInfo,
+    provider,
+    createdAt,
+    lastActiveAt,
+    expiresAt,
+    isCurrent,
+  ];
 }

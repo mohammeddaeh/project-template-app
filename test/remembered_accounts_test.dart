@@ -111,7 +111,10 @@ void main() {
 
     expect(repo.accounts, hasLength(RememberedAccountsRepository.maxAccounts));
     // u0 signed in first, so it is the one that goes.
-    expect(repo.accounts.map((a) => a.email), isNot(contains('u0@example.com')));
+    expect(
+      repo.accounts.map((a) => a.email),
+      isNot(contains('u0@example.com')),
+    );
     expect(repo.accounts.first.email, 'u5@example.com');
   });
 

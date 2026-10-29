@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -24,10 +24,10 @@ class FilterOption<T> {
   bool isSelected;
 
   FilterOption<T> copyWith({bool? isSelected}) => FilterOption(
-        value: value,
-        labelKey: labelKey,
-        isSelected: isSelected ?? this.isSelected,
-      );
+    value: value,
+    labelKey: labelKey,
+    isSelected: isSelected ?? this.isSelected,
+  );
 }
 
 /// مجموعة فلاتر ذات عنوان.
@@ -58,10 +58,10 @@ class SortOption<T> {
   bool isAscending;
 
   SortOption<T> copyWith({bool? isAscending}) => SortOption(
-        value: value,
-        labelKey: labelKey,
-        isAscending: isAscending ?? this.isAscending,
-      );
+    value: value,
+    labelKey: labelKey,
+    isAscending: isAscending ?? this.isAscending,
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -116,8 +116,8 @@ class AppFilterSheet {
       maxHeightFraction: 0.85,
       contentPadding: EdgeInsets.zero,
       child: _FilterSheetContent<T>(
-        filterGroups:   filterGroups,
-        sortOptions:    sortOptions ?? const [],
+        filterGroups: filterGroups,
+        sortOptions: sortOptions ?? const [],
         activeSortOption: activeSortOption,
         onApply: onApply,
         onReset: onReset,
@@ -158,13 +158,15 @@ class _FilterSheetContentState<T> extends State<_FilterSheetContent<T>> {
   void initState() {
     super.initState();
     _groups = widget.filterGroups
-        .map((g) => FilterGroup<T>(
-              titleKey: g.titleKey,
-              multiSelect: g.multiSelect,
-              options: g.options
-                  .map((o) => o.copyWith(isSelected: o.isSelected))
-                  .toList(),
-            ))
+        .map(
+          (g) => FilterGroup<T>(
+            titleKey: g.titleKey,
+            multiSelect: g.multiSelect,
+            options: g.options
+                .map((o) => o.copyWith(isSelected: o.isSelected))
+                .toList(),
+          ),
+        )
         .toList();
     _selectedSort = widget.activeSortOption;
   }
@@ -214,10 +216,12 @@ class _FilterSheetContentState<T> extends State<_FilterSheetContent<T>> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // ── قوائم الفلاتر ──
-        ..._groups.map((group) => _FilterGroupSection<T>(
-              group: group,
-              onToggle: (opt) => _toggleFilter(group, opt),
-            )),
+        ..._groups.map(
+          (group) => _FilterGroupSection<T>(
+            group: group,
+            onToggle: (opt) => _toggleFilter(group, opt),
+          ),
+        ),
 
         // ── الترتيب ──
         if (widget.sortOptions.isNotEmpty) ...[

@@ -45,8 +45,9 @@ class ImportErrorTable extends StatelessWidget {
           return Padding(
             padding: 8.verticalPadding,
             child: Text(
-              LocaleKeys.importErrorsTruncated
-                  .tr(args: ['${report.errors.length}']),
+              LocaleKeys.importErrorsTruncated.tr(
+                args: ['${report.errors.length}'],
+              ),
               style: context.textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),
@@ -69,64 +70,66 @@ class _ErrorRow extends StatelessWidget {
     // One colour for both would train the user to ignore whichever they meet
     // first — and the skip case is by far the more common.
     final isWarning = error.severity == ImportSeverity.warning;
-    final tint = isWarning ? context.colors.statusWarningFg : context.colors.error;
+    final tint = isWarning
+        ? context.colors.statusWarningFg
+        : context.colors.error;
 
     return AppCard(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              isWarning ? Icons.info_outline : Icons.error_outline,
-              size: 18,
-              color: tint,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            isWarning ? Icons.info_outline : Icons.error_outline,
+            size: 18,
+            color: tint,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  // `spreadsheetLine`, not `row` — see the class doc.
+                  '${LocaleKeys.importRowLabel.tr(args: ['${error.spreadsheetLine}'])}'
+                  ' · ${error.column ?? LocaleKeys.importWholeRow.tr()}',
+                  style: context.textTheme.headlineSmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  error.message,
+                  style: context.textTheme.bodySmall,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (error.value != null && error.value!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
                   Text(
-                    // `spreadsheetLine`, not `row` — see the class doc.
-                    '${LocaleKeys.importRowLabel.tr(args: ['${error.spreadsheetLine}'])}'
-                    ' · ${error.column ?? LocaleKeys.importWholeRow.tr()}',
-                    style: context.textTheme.headlineSmall,
+                    '"${error.value}"',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colors.textSecondary,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    error.message,
-                    style: context.textTheme.bodySmall,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (error.value != null && error.value!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      '"${error.value}"',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colors.textSecondary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  if (error.duplicateOfRow != null) ...[
-                    const SizedBox(height: 4),
-                    // Names the other row so the user can go delete one of the
-                    // pair. "Duplicate" without saying of what is a dead end.
-                    Text(
-                      LocaleKeys.importDuplicateOf.tr(
-                        args: ['${error.duplicateOfRow! + 1}'],
-                      ),
-                      style: context.textTheme.bodySmall?.copyWith(color: tint),
-                    ),
-                  ],
                 ],
-              ),
+                if (error.duplicateOfRow != null) ...[
+                  const SizedBox(height: 4),
+                  // Names the other row so the user can go delete one of the
+                  // pair. "Duplicate" without saying of what is a dead end.
+                  Text(
+                    LocaleKeys.importDuplicateOf.tr(
+                      args: ['${error.duplicateOfRow! + 1}'],
+                    ),
+                    style: context.textTheme.bodySmall?.copyWith(color: tint),
+                  ),
+                ],
+              ],
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
 }

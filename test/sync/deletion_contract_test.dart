@@ -135,10 +135,15 @@ void main() {
       isTrue,
     );
     expect(
-      featureSyncAdapter.hasMatch('lib/features/notes/data/repositories/x.dart'),
+      featureSyncAdapter.hasMatch(
+        'lib/features/notes/data/repositories/x.dart',
+      ),
       isFalse,
     );
-    expect(featureSyncAdapter.hasMatch('lib/Features/notes/data/sync/x.dart'), isFalse);
+    expect(
+      featureSyncAdapter.hasMatch('lib/Features/notes/data/sync/x.dart'),
+      isFalse,
+    );
     expect(featureSyncAdapter.hasMatch('lib/core/sync/x.dart'), isFalse);
   });
 
@@ -151,7 +156,9 @@ void main() {
     );
     // The entry file and the data layer stay out: one doorway, not three.
     expect(
-      moduleSyncOptIn.hasMatch('lib/modules/in_app_updates/in_app_updates_module.dart'),
+      moduleSyncOptIn.hasMatch(
+        'lib/modules/in_app_updates/in_app_updates_module.dart',
+      ),
       isFalse,
     );
     expect(
@@ -233,26 +240,34 @@ void main() {
   test('the public-surface matcher judges the suffix, not the substring', () {
     // Guards the guard: a matcher that accepted anything containing the barrel's
     // name, or that missed a relative import, would be a hole shaped like a rule.
-    String? uriOf(String line) =>
-        syncImportUri.firstMatch(line)?.group(1);
+    String? uriOf(String line) => syncImportUri.firstMatch(line)?.group(1);
 
     expect(
       uriOf("import 'package:app_template/modules/sync/sync_plugin.dart';"),
       endsWith(publicApi),
     );
-    expect(uriOf("import '../../../modules/sync/sync_plugin.dart';"), endsWith(publicApi));
     expect(
-      uriOf("import 'package:app_template/modules/sync/engine/sync_engine.dart';"),
+      uriOf("import '../../../modules/sync/sync_plugin.dart';"),
+      endsWith(publicApi),
+    );
+    expect(
+      uriOf(
+        "import 'package:app_template/modules/sync/engine/sync_engine.dart';",
+      ),
       isNot(endsWith(publicApi)),
     );
     expect(
-      uriOf("import 'package:app_template/modules/sync/domain/sync_status.dart';"),
+      uriOf(
+        "import 'package:app_template/modules/sync/domain/sync_status.dart';",
+      ),
       isNot(endsWith(publicApi)),
     );
     // An export is a dependency too, and re-exporting an internal would hand it
     // to everyone downstream while this file's own import looked clean.
     expect(
-      uriOf("export 'package:app_template/modules/sync/data/sync_database.dart';"),
+      uriOf(
+        "export 'package:app_template/modules/sync/data/sync_database.dart';",
+      ),
       isNot(endsWith(publicApi)),
     );
   });
@@ -294,7 +309,8 @@ void main() {
     expect(
       offenders,
       isEmpty,
-      reason: 'These files can write collected data into the public Downloads '
+      reason:
+          'These files can write collected data into the public Downloads '
           'folder:\n  ${offenders.join('\n  ')}\n\n'
           'Attachments belong in AttachmentFileStore, which only ever uses '
           'getApplicationDocumentsDirectory().',

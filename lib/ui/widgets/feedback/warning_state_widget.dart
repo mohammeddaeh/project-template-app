@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/states/app_state_widget.dart';
 
 /// حالة التحذير (inline — ليست toast).
@@ -16,8 +16,8 @@ class WarningStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateWidget(
-        type: AppStateType.warning,
-        titleKey: messageKey,
-        icon: icon,
-      );
+    type: AppStateType.warning,
+    titleKey: messageKey,
+    icon: icon,
+  );
 }

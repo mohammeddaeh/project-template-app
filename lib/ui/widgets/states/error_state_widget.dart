@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/states/app_state_widget.dart';
 
 /// حالة الخطأ.
@@ -20,10 +20,10 @@ class ErrorStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateWidget(
-        type: AppStateType.error,
-        titleKey: messageKey,
-        icon: icon,
-        onAction: onRetry,
-        actionLabelKey: onRetry != null ? retryLabelKey : null,
-      );
+    type: AppStateType.error,
+    titleKey: messageKey,
+    icon: icon,
+    onAction: onRetry,
+    actionLabelKey: onRetry != null ? retryLabelKey : null,
+  );
 }

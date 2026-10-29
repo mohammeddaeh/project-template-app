@@ -47,10 +47,10 @@ void main() {
   });
 
   SyncContractValidator buildValidator() => SyncContractValidator(
-        di,
-        _FakeQueueRepository(),
-        SyncContractMigrator(di),
-      );
+    di,
+    _FakeQueueRepository(),
+    SyncContractMigrator(di),
+  );
 
   group('«لم يُعَدّ بعد» — يُعطَّل ولا يرمي', () {
     test('صفر عقود: يعيد false ولا يرمي', () {
@@ -143,7 +143,9 @@ void main() {
     });
 
     test('executor لا يدعم نسخة العقد يرمي', () {
-      di.registerSingleton<SyncFeatureContractBase>(const _NotesContract(version: 3));
+      di.registerSingleton<SyncFeatureContractBase>(
+        const _NotesContract(version: 3),
+      );
       di.registerSingleton<SyncExecutor>(
         const _Executor('notes', supported: {1, 2}),
       );
@@ -210,8 +212,7 @@ class _Executor implements SyncExecutor {
   Future<Either<Failure, SyncExecutionResult>> execute(
     SyncQueueJob job,
     int contractVersion,
-  ) async =>
-      Right(SyncExecutionResult(localId: job.entityId));
+  ) async => Right(SyncExecutionResult(localId: job.entityId));
 }
 
 class _NoopDecorator implements SyncRepositoryDecorator {
@@ -232,8 +233,7 @@ class _FakeQueueRepository implements SyncQueueRepository {
   Future<List<SyncQueueJob>> getDueJobs({
     required int nowMs,
     required int limit,
-  }) async =>
-      const [];
+  }) async => const [];
 
   @override
   Future<int> countPendingJobs() async => 0;

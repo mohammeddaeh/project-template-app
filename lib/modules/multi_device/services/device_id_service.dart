@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -69,7 +69,9 @@ class DeviceIdService {
     _deviceSessionId = deviceSessionId;
     _isPrimary = isPrimary;
     await _storage.writeString(
-        PersistenceKeys.deviceSessionId, deviceSessionId);
+      PersistenceKeys.deviceSessionId,
+      deviceSessionId,
+    );
     await _storage.writeBool(PersistenceKeys.deviceIsPrimary, value: isPrimary);
   }
 
@@ -95,8 +97,9 @@ class DeviceIdService {
   }
 
   Future<void> _restoreSessionState() async {
-    _deviceSessionId =
-        await _storage.readString(PersistenceKeys.deviceSessionId);
+    _deviceSessionId = await _storage.readString(
+      PersistenceKeys.deviceSessionId,
+    );
     _isPrimary =
         await _storage.readBool(PersistenceKeys.deviceIsPrimary) ?? false;
   }

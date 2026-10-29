@@ -119,12 +119,15 @@ void main() {
     expect(store.items, isEmpty);
   });
 
-  test('clearForAccount (AccountScopedStore) clears exactly like clearAll', () async {
-    await store.load();
-    await store.add(_item('1'));
-    await store.clearForAccount();
-    expect(store.items, isEmpty);
-  });
+  test(
+    'clearForAccount (AccountScopedStore) clears exactly like clearAll',
+    () async {
+      await store.load();
+      await store.add(_item('1'));
+      await store.clearForAccount();
+      expect(store.items, isEmpty);
+    },
+  );
 
   test('persists across a fresh store reading the same storage', () async {
     await store.load();
@@ -135,23 +138,29 @@ void main() {
     expect(reloaded.items.map((i) => i.id), ['1']);
   });
 
-  test('a single corrupt stored line is dropped, not fatal to the rest', () async {
-    await storage.writeStringList('notification_center_items', [
-      'not json at all',
-      '{"id": "ok", "received_at": "2026-01-01T00:00:00.000"}',
-    ]);
-    await store.load();
-    expect(store.items.map((i) => i.id), ['ok']);
-  });
+  test(
+    'a single corrupt stored line is dropped, not fatal to the rest',
+    () async {
+      await storage.writeStringList('notification_center_items', [
+        'not json at all',
+        '{"id": "ok", "received_at": "2026-01-01T00:00:00.000"}',
+      ]);
+      await store.load();
+      expect(store.items.map((i) => i.id), ['ok']);
+    },
+  );
 
-  test('oldest items are dropped past NotificationCenterConfig.maxStored', () async {
-    await store.load();
-    for (var i = 0; i < NotificationCenterConfig.maxStored + 5; i++) {
-      await store.add(_item('$i'));
-    }
-    expect(store.items.length, NotificationCenterConfig.maxStored);
-    // آخر ما أُضيف يبقى، وأوّل ما أُضيف هو ما سقط.
-    expect(store.items.first.id, '${NotificationCenterConfig.maxStored + 4}');
-    expect(store.items.map((i) => i.id), isNot(contains('0')));
-  });
+  test(
+    'oldest items are dropped past NotificationCenterConfig.maxStored',
+    () async {
+      await store.load();
+      for (var i = 0; i < NotificationCenterConfig.maxStored + 5; i++) {
+        await store.add(_item('$i'));
+      }
+      expect(store.items.length, NotificationCenterConfig.maxStored);
+      // آخر ما أُضيف يبقى، وأوّل ما أُضيف هو ما سقط.
+      expect(store.items.first.id, '${NotificationCenterConfig.maxStored + 4}');
+      expect(store.items.map((i) => i.id), isNot(contains('0')));
+    },
+  );
 }

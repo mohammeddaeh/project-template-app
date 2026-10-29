@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/core/infra/config/env.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -11,11 +11,7 @@ class FlavorBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (Env.isProd) return child;
-    return Material(
-      child: Stack(
-        children: [child, _buildBanner(context)],
-      ),
-    );
+    return Material(child: Stack(children: [child, _buildBanner(context)]));
   }
 
   Widget _buildBanner(BuildContext context) {

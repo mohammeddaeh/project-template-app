@@ -142,8 +142,9 @@ class _AttachmentsSectionState extends State<AttachmentsSection> {
         if (_records.isEmpty)
           Text(
             LocaleKeys.attachmentsEmpty.tr(),
-            style: context.textTheme.bodySmall
-                ?.copyWith(color: context.colors.textMuted),
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colors.textMuted,
+            ),
           )
         else
           GridView.builder(
@@ -160,7 +161,10 @@ class _AttachmentsSectionState extends State<AttachmentsSection> {
               return Stack(
                 fit: StackFit.expand,
                 children: [
-                  AttachmentView(attachmentId: record.attachmentId, height: 110),
+                  AttachmentView(
+                    attachmentId: record.attachmentId,
+                    height: 110,
+                  ),
                   // A file this device still owes the server is marked — the
                   // user who took it is the one person who can tell whether it
                   // matters that it has not gone yet.

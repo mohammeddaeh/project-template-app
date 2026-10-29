@@ -46,9 +46,9 @@ import 'package:app_template/modules/multi_device/data/models/device_session_mod
 /// **When a payload changes, edit the fixture first.** A green suite against a
 /// fixture nobody updated is exactly the reassurance that let the original
 /// defect ship.
-Map<String, dynamic> _fixture(String name) => jsonDecode(
-      File('test/fixtures/wire/$name.json').readAsStringSync(),
-    ) as Map<String, dynamic>;
+Map<String, dynamic> _fixture(String name) =>
+    jsonDecode(File('test/fixtures/wire/$name.json').readAsStringSync())
+        as Map<String, dynamic>;
 
 void main() {
   group('POST /api/v1/account/login → data', () {
@@ -61,7 +61,8 @@ void main() {
       expect(
         json.containsKey('user'),
         isFalse,
-        reason: 'If the server ever renames this key, change LoginModel with it '
+        reason:
+            'If the server ever renames this key, change LoginModel with it '
             '— do not relax this assertion.',
       );
 
@@ -120,7 +121,8 @@ void main() {
           'status',
           'created_at',
         },
-        reason: 'Adding a field means adding the column server-side first. '
+        reason:
+            'Adding a field means adding the column server-side first. '
             'See the class doc on AuthUser.',
       );
     });
@@ -130,19 +132,20 @@ void main() {
       // A field serialized but not parsed (or the reverse) silently empties
       // itself on the next app launch and nowhere else.
       final user = currentUserFromJson(json);
-      final restored =
-          AuthUserModel.fromJson(AuthUserModel.fromEntity(user).toJson())
-              .toEntity();
+      final restored = AuthUserModel.fromJson(
+        AuthUserModel.fromEntity(user).toJson(),
+      ).toEntity();
       expect(restored, user);
     });
   });
 
   group('POST /api/v1/auth/verify-email → data', () {
     test('carries exactly the three fields core/auth owns', () {
-      expect(
-        _fixture('verify_email_data').keys.toSet(),
-        {'status', 'email_verified', 'email_verified_at'},
-      );
+      expect(_fixture('verify_email_data').keys.toSet(), {
+        'status',
+        'email_verified',
+        'email_verified_at',
+      });
     });
   });
 
@@ -151,18 +154,15 @@ void main() {
     // backend_template/src/features/auth/dtos/auth.dto.ts
     test('every field is read', () {
       final json = _fixture('session');
-      expect(
-        json.keys.toSet(),
-        {
-          'id',
-          'device_info',
-          'provider',
-          'created_at',
-          'last_active_at',
-          'expires_at',
-          'is_current',
-        },
-      );
+      expect(json.keys.toSet(), {
+        'id',
+        'device_info',
+        'provider',
+        'created_at',
+        'last_active_at',
+        'expires_at',
+        'is_current',
+      });
 
       final session = DeviceSessionModel.fromJson(json).toDomain();
       expect(session.id, 108);
@@ -198,8 +198,8 @@ void main() {
     late final Map<String, dynamic> json = _fixture('transfer_resources');
 
     test('a resource carries exactly the eight documented keys', () {
-      final resource = (json['resources'] as List<dynamic>).first
-          as Map<String, dynamic>;
+      final resource =
+          (json['resources'] as List<dynamic>).first as Map<String, dynamic>;
       expect(resource.keys.toSet(), {
         'name',
         'label',
@@ -223,8 +223,10 @@ void main() {
       expect(resource.filters.single.key, 'q');
       expect(resource.filters.single.type, TransferFilterType.text);
       expect(resource.filters.single.label(isArabic: true), 'بحث بالعنوان');
-      expect(resource.filters.single.placeholder(isArabic: false),
-          'Part of the title');
+      expect(
+        resource.filters.single.placeholder(isArabic: false),
+        'Part of the title',
+      );
     });
 
     test('a filter type this build cannot draw is dropped, not guessed', () {
@@ -235,11 +237,23 @@ void main() {
         'name': 'x',
         'label': {'ar': 'س', 'en': 'X'},
         'columns': [
-          {'key': 'k', 'label': {'ar': 'ك', 'en': 'K'}, 'type': 'string'},
+          {
+            'key': 'k',
+            'label': {'ar': 'ك', 'en': 'K'},
+            'type': 'string',
+          },
         ],
         'filters': [
-          {'key': 'a', 'label': {'ar': 'أ', 'en': 'A'}, 'type': 'text'},
-          {'key': 'b', 'label': {'ar': 'ب', 'en': 'B'}, 'type': 'radar'},
+          {
+            'key': 'a',
+            'label': {'ar': 'أ', 'en': 'A'},
+            'type': 'text',
+          },
+          {
+            'key': 'b',
+            'label': {'ar': 'ب', 'en': 'B'},
+            'type': 'radar',
+          },
         ],
       });
       expect(resource.filters.map((f) => f.key), ['a']);
@@ -265,8 +279,11 @@ void main() {
         (json['resources'] as List<dynamic>).first as Map<String, dynamic>,
       );
       expect(resource.importableColumns.map((c) => c.key), ['title', 'body']);
-      expect(resource.systemColumns.map((c) => c.key),
-          ['id', 'created_at', 'updated_at']);
+      expect(resource.systemColumns.map((c) => c.key), [
+        'id',
+        'created_at',
+        'updated_at',
+      ]);
     });
 
     test('the parser reads every field, not just the ones a screen shows', () {
@@ -289,12 +306,11 @@ void main() {
       final resource = TransferResourceModel.fromJson(
         (json['resources'] as List<dynamic>).first as Map<String, dynamic>,
       );
+      expect(resource.importableColumns.map((c) => c.key), ['title', 'body']);
       expect(
-        resource.importableColumns.map((c) => c.key),
-        ['title', 'body'],
+        resource.columns.firstWhere((c) => c.key == 'title').required,
+        isTrue,
       );
-      expect(resource.columns.firstWhere((c) => c.key == 'title').required,
-          isTrue);
     });
 
     test('an unknown column type degrades instead of throwing', () {
@@ -304,7 +320,11 @@ void main() {
         'name': 'x',
         'label': {'ar': 'س', 'en': 'X'},
         'columns': [
-          {'key': 'k', 'label': {'ar': 'ك', 'en': 'K'}, 'type': 'geography'},
+          {
+            'key': 'k',
+            'label': {'ar': 'ك', 'en': 'K'},
+            'type': 'geography',
+          },
         ],
       });
       expect(resource.columns.single.type, TransferColumnType.unknown);
@@ -411,12 +431,7 @@ void main() {
     });
 
     test('the commit report carries exactly four counts', () {
-      expect(result.keys.toSet(), {
-        'inserted',
-        'updated',
-        'skipped',
-        'failed',
-      });
+      expect(result.keys.toSet(), {'inserted', 'updated', 'skipped', 'failed'});
     });
 
     test('a row error keeps `column: null` rather than dropping the key', () {
@@ -522,7 +537,9 @@ void main() {
 
     test('a permission carries key, action, label, implies and synthetic', () {
       final notes = catalog.groups.firstWhere((g) => g.resource == 'notes');
-      final update = notes.permissions.firstWhere((p) => p.key == 'notes.update');
+      final update = notes.permissions.firstWhere(
+        (p) => p.key == 'notes.update',
+      );
       expect(update.action, 'update');
       expect(update.label.resolve('ar'), 'تعديل');
       expect(update.label.resolve('en'), 'Edit');

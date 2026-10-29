@@ -74,10 +74,7 @@ class ProfileScreen extends StatelessWidget {
                   DetailHeaderCard(
                     title: user.displayName,
                     subtitle: user.email,
-                    leading: AvatarWidget(
-                      initial: user.initial,
-                      radius: 28,
-                    ),
+                    leading: AvatarWidget(initial: user.initial, radius: 28),
                     facts: [
                       DetailFact(
                         icon: Icons.alternate_email,

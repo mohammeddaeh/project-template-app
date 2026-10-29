@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -15,16 +15,15 @@ class FcmPushNotificationsAdapter implements PushNotificationsService {
   FcmPushNotificationsAdapter({
     required SecureStorageService secureStorage,
     required PushNotificationsConfig config,
-  })  : _secureStorage = secureStorage,
-        _config = config;
+  }) : _secureStorage = secureStorage,
+       _config = config;
 
   final SecureStorageService _secureStorage;
   final PushNotificationsConfig _config;
 
   final _foregroundController =
       StreamController<PushNotificationEvent>.broadcast();
-  final _tapController =
-      StreamController<PushNotificationEvent>.broadcast();
+  final _tapController = StreamController<PushNotificationEvent>.broadcast();
 
   @override
   Stream<PushNotificationEvent> get foregroundStream =>
@@ -85,8 +84,10 @@ class FcmPushNotificationsAdapter implements PushNotificationsService {
     try {
       await FirebaseMessaging.instance.subscribeToTopic(topic);
     } catch (e) {
-      LogService.warning('PUSH: subscribeToTopic($topic) failed: $e',
-          tag: 'PUSH');
+      LogService.warning(
+        'PUSH: subscribeToTopic($topic) failed: $e',
+        tag: 'PUSH',
+      );
     }
   }
 
@@ -95,8 +96,10 @@ class FcmPushNotificationsAdapter implements PushNotificationsService {
     try {
       await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
     } catch (e) {
-      LogService.warning('PUSH: unsubscribeFromTopic($topic) failed: $e',
-          tag: 'PUSH');
+      LogService.warning(
+        'PUSH: unsubscribeFromTopic($topic) failed: $e',
+        tag: 'PUSH',
+      );
     }
   }
 
@@ -143,7 +146,8 @@ class FcmPushNotificationsAdapter implements PushNotificationsService {
         id: msg.messageId ?? DateTime.now().toIso8601String(),
         title: msg.notification?.title,
         body: msg.notification?.body,
-        imageUrl: msg.notification?.android?.imageUrl ??
+        imageUrl:
+            msg.notification?.android?.imageUrl ??
             msg.notification?.apple?.imageUrl,
         data: msg.data,
       );

@@ -41,7 +41,11 @@ class _FakeSessionRepository extends SessionRepository {
 }
 
 class _FakeBiometrics implements BiometricsService {
-  _FakeBiometrics({this.available = true, this.enrolled = true, this.result = true});
+  _FakeBiometrics({
+    this.available = true,
+    this.enrolled = true,
+    this.result = true,
+  });
 
   final bool available;
   final bool enrolled;
@@ -99,14 +103,17 @@ void main() {
       await cubit.close();
     });
 
-    test('رقمٌ موجود ودخولٌ بكلمة مرور كُتبت للتوّ → unlocked مرّة واحدة', () async {
-      await pinStore.setPin('4271');
-      freshAuth.raise();
-      final cubit = build();
-      await pumpEventQueue();
-      expect(cubit.state, isA<SessionGuardUnlocked>());
-      await cubit.close();
-    });
+    test(
+      'رقمٌ موجود ودخولٌ بكلمة مرور كُتبت للتوّ → unlocked مرّة واحدة',
+      () async {
+        await pinStore.setPin('4271');
+        freshAuth.raise();
+        final cubit = build();
+        await pumpEventQueue();
+        expect(cubit.state, isA<SessionGuardUnlocked>());
+        await cubit.close();
+      },
+    );
 
     test('الراية تُستهلَك — تركيبٌ ثانٍ لا يستفيد منها', () async {
       await pinStore.setPin('4271');

@@ -20,14 +20,14 @@ class SyncCursor {
   bool get isBeginning => updatedSince == null;
 
   Map<String, dynamic> toJson() => {
-        if (updatedSince != null) 'updated_since': updatedSince,
-        if (afterId != null) 'after_id': afterId,
-      };
+    if (updatedSince != null) 'updated_since': updatedSince,
+    if (afterId != null) 'after_id': afterId,
+  };
 
   factory SyncCursor.fromJson(Map<String, dynamic> json) => SyncCursor(
-        updatedSince: json['updated_since'] as String?,
-        afterId: json['after_id'] as String?,
-      );
+    updatedSince: json['updated_since'] as String?,
+    afterId: json['after_id'] as String?,
+  );
 }
 
 /// One page of server changes.

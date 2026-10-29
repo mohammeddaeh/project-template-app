@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/ui/error/ui_action.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -18,241 +18,234 @@ abstract final class FailureUiMapper {
   const FailureUiMapper._();
 
   static UiAction toAction(Failure failure) => switch (failure) {
-        // ── Silent cases ────────────────────────────────────────────────────
+    // ── Silent cases ────────────────────────────────────────────────────
 
-        // Caller cancelled — intentional, nothing to show.
-        CancelledFailure() => const Silent(),
+    // Caller cancelled — intentional, nothing to show.
+    CancelledFailure() => const Silent(),
 
-        // Auth event bus + AuthInterceptor already handle navigation.
-        // The cubit fires AuthEventBus as a safety-net (deduplicated).
-        UnauthorizedFailure() => const NavigateToLogin(),
+    // Auth event bus + AuthInterceptor already handle navigation.
+    // The cubit fires AuthEventBus as a safety-net (deduplicated).
+    UnauthorizedFailure() => const NavigateToLogin(),
 
-        // 403 — the session is valid, this one action is not permitted. The
-        // user stays exactly where they are; ejecting them to the login screen
-        // over a missing permission reads as the app breaking, not a refusal.
-        ForbiddenFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.forbiddenAction.tr(),
-          ),
+    // 403 — the session is valid, this one action is not permitted. The
+    // user stays exactly where they are; ejecting them to the login screen
+    // over a missing permission reads as the app breaking, not a refusal.
+    ForbiddenFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.forbiddenAction.tr(),
+    ),
 
-        // ── Auth-specific ───────────────────────────────────────────────────
+    // ── Auth-specific ───────────────────────────────────────────────────
+    LoginFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.unauthorised.tr(),
+    ),
 
-        LoginFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.unauthorised.tr(),
-          ),
+    // The four refused-account states. Each says something different about
+    // what the user should do next, which is the entire reason they are
+    // separate types — see their docs in core/foundation/errors/failure.dart.
+    //
+    // The server's own message wins when it sends one: it can be more
+    // specific than anything hardcoded here ("suspended until Sunday").
+    // The local key is the floor, not the preference.
+    LoginPendingApprovalFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.loginPendingApproval.tr(),
+    ),
 
-        // The four refused-account states. Each says something different about
-        // what the user should do next, which is the entire reason they are
-        // separate types — see their docs in core/foundation/errors/failure.dart.
-        //
-        // The server's own message wins when it sends one: it can be more
-        // specific than anything hardcoded here ("suspended until Sunday").
-        // The local key is the floor, not the preference.
-        LoginPendingApprovalFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.loginPendingApproval.tr(),
-          ),
+    // `reason` outranks even the server message: it is the admin's own
+    // words about this specific account, and it is the only thing that
+    // makes a rejection actionable.
+    LoginRejectedFailure(:final reason, :final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: reason?.isNotEmpty == true
+          ? reason!
+          : serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.loginRejected.tr(),
+    ),
 
-        // `reason` outranks even the server message: it is the admin's own
-        // words about this specific account, and it is the only thing that
-        // makes a rejection actionable.
-        LoginRejectedFailure(:final reason, :final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: reason?.isNotEmpty == true
-                ? reason!
-                : serverMessage?.isNotEmpty == true
-                    ? serverMessage!
-                    : LocaleKeys.loginRejected.tr(),
-          ),
+    LoginSuspendedFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.loginSuspended.tr(),
+    ),
 
-        LoginSuspendedFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.loginSuspended.tr(),
-          ),
+    LoginDisabledFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.loginDisabled.tr(),
+    ),
 
-        LoginDisabledFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.loginDisabled.tr(),
-          ),
+    RegisterFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.somethingWrong.tr(),
+    ),
 
-        RegisterFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.somethingWrong.tr(),
-          ),
+    // ── Transport failures ───────────────────────────────────────────────
+    NoInternetFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.noInternetConnection.tr(),
+      canRetry: true,
+    ),
 
-        // ── Transport failures ───────────────────────────────────────────────
+    TimeoutFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.sessionTimedOut.tr(),
+      canRetry: true,
+    ),
 
-        NoInternetFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.noInternetConnection.tr(),
-            canRetry: true,
-          ),
+    BadCertificateFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.noInternetConnection.tr(),
+    ),
 
-        TimeoutFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.sessionTimedOut.tr(),
-            canRetry: true,
-          ),
+    // ── Server response failures ─────────────────────────────────────────
 
-        BadCertificateFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.noInternetConnection.tr(),
-          ),
+    // The wait the server asked for is appended when it sent one — it is
+    // the only actionable fact in a rate-limit refusal, and it used to be
+    // parsed and then dropped on the floor.
+    //
+    // `canRetry: false` on purpose: retrying immediately is precisely the
+    // behaviour that produced the 429, and a retry button here invites the
+    // user to make it worse.
+    RateLimitFailure(:final retryAfterSeconds, :final serverMessage) =>
+      ShowError(
+        title: LocaleKeys.error.tr(),
+        message: _withWait(
+          serverMessage?.isNotEmpty == true
+              ? serverMessage!
+              : LocaleKeys.tooManyRequests.tr(),
+          retryAfterSeconds,
+        ),
+      ),
 
-        // ── Server response failures ─────────────────────────────────────────
+    // ── Server is up but not serving — 502 / 503 / 504 ───────────────────
 
-        // The wait the server asked for is appended when it sent one — it is
-        // the only actionable fact in a rate-limit refusal, and it used to be
-        // parsed and then dropped on the floor.
-        //
-        // `canRetry: false` on purpose: retrying immediately is precisely the
-        // behaviour that produced the 429, and a retry button here invites the
-        // user to make it worse.
-        RateLimitFailure(:final retryAfterSeconds, :final serverMessage) =>
-          ShowError(
-            title: LocaleKeys.error.tr(),
-            message: _withWait(
-              serverMessage?.isNotEmpty == true
-                  ? serverMessage!
-                  : LocaleKeys.tooManyRequests.tr(),
-              retryAfterSeconds,
-            ),
-          ),
+    // Retryable, and said so: "busy right now, try shortly" is true here
+    // and false for the 500 below, which is why they are separate types.
+    ServiceUnavailableFailure(:final retryAfterSeconds, :final serverMessage) =>
+      ShowError(
+        title: LocaleKeys.error.tr(),
+        message: _withWait(
+          serverMessage?.isNotEmpty == true
+              ? serverMessage!
+              : LocaleKeys.serviceUnavailable.tr(),
+          retryAfterSeconds,
+        ),
+        canRetry: true,
+      ),
 
-        // ── Server is up but not serving — 502 / 503 / 504 ───────────────────
+    // Nothing answered, but the device is online — so the fault is the
+    // server's, and the message must not blame the user's connection.
+    ServerUnreachableFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.serverUnreachable.tr(),
+      canRetry: true,
+    ),
 
-        // Retryable, and said so: "busy right now, try shortly" is true here
-        // and false for the 500 below, which is why they are separate types.
-        ServiceUnavailableFailure(
-          :final retryAfterSeconds,
-          :final serverMessage
-        ) =>
-          ShowError(
-            title: LocaleKeys.error.tr(),
-            message: _withWait(
-              serverMessage?.isNotEmpty == true
-                  ? serverMessage!
-                  : LocaleKeys.serviceUnavailable.tr(),
-              retryAfterSeconds,
-            ),
-            canRetry: true,
-          ),
+    // A genuine defect inside the server. `canRetry` stays **false**: the
+    // same request in two seconds reproduces the same 500, and a retry
+    // button that never works is a worse answer than none.
+    ServerFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.serverError.tr(),
+    ),
 
-        // Nothing answered, but the device is online — so the fault is the
-        // server's, and the message must not blame the user's connection.
-        ServerUnreachableFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.serverUnreachable.tr(),
-            canRetry: true,
-          ),
+    BusinessFailure(:final serverMessage) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: serverMessage?.isNotEmpty == true
+          ? serverMessage!
+          : LocaleKeys.somethingWrong.tr(),
+    ),
 
-        // A genuine defect inside the server. `canRetry` stays **false**: the
-        // same request in two seconds reproduces the same 500, and a retry
-        // button that never works is a worse answer than none.
-        ServerFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.serverError.tr(),
-          ),
+    // ── Validation failures ───────────────────────────────────────────────
 
-        BusinessFailure(:final serverMessage) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: serverMessage?.isNotEmpty == true
-                ? serverMessage!
-                : LocaleKeys.somethingWrong.tr(),
-          ),
+    // Local validation error — show the first field message when available,
+    // otherwise the general message, otherwise the generic invalidInput key.
+    ValidationFailure(:final fields, :final message) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: fields.isNotEmpty
+          ? fields.values.first
+          : message?.isNotEmpty == true
+          ? message!
+          : LocaleKeys.invalidInput.tr(),
+    ),
 
-        // ── Validation failures ───────────────────────────────────────────────
+    // ── Parse failures ────────────────────────────────────────────────────
 
-        // Local validation error — show the first field message when available,
-        // otherwise the general message, otherwise the generic invalidInput key.
-        ValidationFailure(:final fields, :final message) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: fields.isNotEmpty
-                ? fields.values.first
-                : message?.isNotEmpty == true
-                    ? message!
-                    : LocaleKeys.invalidInput.tr(),
-          ),
+    // All three ParseErrorKind values show the same user-facing message.
+    // The kind + fieldName are preserved in diagnosticMessage for logging.
+    ParseFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.parseDataError.tr(),
+    ),
 
-        // ── Parse failures ────────────────────────────────────────────────────
+    // ── Permission failures ────────────────────────────────────────────────
 
-        // All three ParseErrorKind values show the same user-facing message.
-        // The kind + fieldName are preserved in diagnosticMessage for logging.
-        ParseFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.parseDataError.tr(),
-          ),
+    // permanentlyDenied → direct user to OS Settings (canRetry=false).
+    // denied / restricted → show informational message (canRetry=true only
+    // for denied so the caller can re-request).
+    PermissionFailure(:final reason) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: reason == PermissionDeniedReason.permanentlyDenied
+          ? LocaleKeys.permissionPermanentlyDenied.tr()
+          : LocaleKeys.permissionDenied.tr(),
+      canRetry: reason == PermissionDeniedReason.denied,
+    ),
 
-        // ── Permission failures ────────────────────────────────────────────────
+    // ── Storage failures ───────────────────────────────────────────────────
 
-        // permanentlyDenied → direct user to OS Settings (canRetry=false).
-        // denied / restricted → show informational message (canRetry=true only
-        // for denied so the caller can re-request).
-        PermissionFailure(:final reason) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: reason == PermissionDeniedReason.permanentlyDenied
-                ? LocaleKeys.permissionPermanentlyDenied.tr()
-                : LocaleKeys.permissionDenied.tr(),
-            canRetry: reason == PermissionDeniedReason.denied,
-          ),
+    // operation + key are for logging only — user sees the generic cacheError.
+    StorageFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.cacheError.tr(),
+    ),
 
-        // ── Storage failures ───────────────────────────────────────────────────
+    // ── Local failures ────────────────────────────────────────────────────
+    CacheFailure(:final message) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: message ?? LocaleKeys.cacheError.tr(),
+    ),
 
-        // operation + key are for logging only — user sees the generic cacheError.
-        StorageFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.cacheError.tr(),
-          ),
+    UnknownFailure(:final message) => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: message?.isNotEmpty == true
+          ? message!
+          : LocaleKeys.unknownError.tr(),
+      canRetry: true,
+    ),
 
-        // ── Local failures ────────────────────────────────────────────────────
+    // ── Sync conflict ──────────────────────────────────────────────────────
 
-        CacheFailure(:final message) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: message ?? LocaleKeys.cacheError.tr(),
-          ),
+    // Conflicts are resolved internally by SyncConflictResolver.
+    // For manual strategy: ConflictDetected event is emitted separately.
+    // Never show a conflict toast — the resolver owns the UX decision.
+    ConflictFailure() => const Silent(),
 
-        UnknownFailure(:final message) => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: message?.isNotEmpty == true
-                ? message!
-                : LocaleKeys.unknownError.tr(),
-            canRetry: true,
-          ),
+    // ── Multi-Device session failures ─────────────────────────────────────
+    DeviceNotFoundFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.deviceNotFound.tr(),
+    ),
 
-        // ── Sync conflict ──────────────────────────────────────────────────────
-
-        // Conflicts are resolved internally by SyncConflictResolver.
-        // For manual strategy: ConflictDetected event is emitted separately.
-        // Never show a conflict toast — the resolver owns the UX decision.
-        ConflictFailure() => const Silent(),
-
-        // ── Multi-Device session failures ─────────────────────────────────────
-
-        DeviceNotFoundFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.deviceNotFound.tr(),
-          ),
-
-        NotPrimaryDeviceFailure() => ShowError(
-            title: LocaleKeys.error.tr(),
-            message: LocaleKeys.notPrimaryDevice.tr(),
-          ),
-      };
+    NotPrimaryDeviceFailure() => ShowError(
+      title: LocaleKeys.error.tr(),
+      message: LocaleKeys.notPrimaryDevice.tr(),
+    ),
+  };
 
   /// Appends the server's own `Retry-After` to a message, as a **bucket rather
   /// than a number**.

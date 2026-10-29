@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -10,9 +10,9 @@ class FirebaseRemoteConfigAdapter implements RemoteConfigService {
     required Map<String, dynamic> defaults,
     Duration fetchTimeout = const Duration(minutes: 1),
     Duration minimumFetchInterval = const Duration(hours: 12),
-  })  : _defaults = defaults,
-        _fetchTimeout = fetchTimeout,
-        _minimumFetchInterval = minimumFetchInterval;
+  }) : _defaults = defaults,
+       _fetchTimeout = fetchTimeout,
+       _minimumFetchInterval = minimumFetchInterval;
 
   final Map<String, dynamic> _defaults;
   final Duration _fetchTimeout;
@@ -23,10 +23,12 @@ class FirebaseRemoteConfigAdapter implements RemoteConfigService {
   Future<void> init() async {
     final rc = FirebaseRemoteConfig.instance;
 
-    await rc.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: _fetchTimeout,
-      minimumFetchInterval: _minimumFetchInterval,
-    ));
+    await rc.setConfigSettings(
+      RemoteConfigSettings(
+        fetchTimeout: _fetchTimeout,
+        minimumFetchInterval: _minimumFetchInterval,
+      ),
+    );
 
     await rc.setDefaults(_defaults);
     await fetchAndActivate();
@@ -44,8 +46,10 @@ class FirebaseRemoteConfigAdapter implements RemoteConfigService {
     try {
       await FirebaseRemoteConfig.instance.fetchAndActivate();
     } catch (e) {
-      LogService.warning('RemoteConfig.fetchAndActivate failed: $e',
-          tag: 'RCONFIG');
+      LogService.warning(
+        'RemoteConfig.fetchAndActivate failed: $e',
+        tag: 'RCONFIG',
+      );
     }
   }
 

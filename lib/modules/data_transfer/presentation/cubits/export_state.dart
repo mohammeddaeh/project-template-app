@@ -37,13 +37,12 @@ class ExportReady extends ExportState {
     Set<String>? selectedColumns,
     TransferFormat? format,
     Map<String, String>? filters,
-  }) =>
-      ExportReady(
-        resource: resource,
-        selectedColumns: selectedColumns ?? this.selectedColumns,
-        format: format ?? this.format,
-        filters: filters ?? this.filters,
-      );
+  }) => ExportReady(
+    resource: resource,
+    selectedColumns: selectedColumns ?? this.selectedColumns,
+    format: format ?? this.format,
+    filters: filters ?? this.filters,
+  );
 }
 
 /// Downloading. Carries [ready] so the form stays on screen behind the spinner

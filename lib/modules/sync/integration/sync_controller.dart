@@ -38,6 +38,7 @@ class SyncController {
   final SyncEngine _syncEngine;
   final SyncGate _gate;
   final SyncQueueSignal _queueSignal;
+
   /// **اختياريةٌ بقصد**: تُسجَّل تحت `AppFeatures.appLifecycle` وحده، ومشروعٌ
   /// يُطفئه لا يملك الخدمة أصلاً. وحقنُها إلزامياً كان يجعل الموديولَ يسقط
   /// لعلَمٍ **لا شأنَ له به** — و`null` تعني «لا مُطلِقَ بالعودة»، لا خطأً.
@@ -177,7 +178,12 @@ class SyncController {
     try {
       await _runCycleNow();
     } catch (e, st) {
-      LogService.error('SyncController auto-cycle failed', tag: 'SYNC', error: e, stackTrace: st);
+      LogService.error(
+        'SyncController auto-cycle failed',
+        tag: 'SYNC',
+        error: e,
+        stackTrace: st,
+      );
       _errorController.add(const UnknownFailure());
     }
   }
@@ -193,8 +199,9 @@ class SyncController {
 
   Future<void> _bindConnectivity() async {
     _connectivitySubscription?.cancel();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen((_) => _scheduleSoon());
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
+      (_) => _scheduleSoon(),
+    );
   }
 
   Future<void> _setupPeriodic() async {

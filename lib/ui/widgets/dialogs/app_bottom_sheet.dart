@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -122,8 +122,13 @@ class _AppBottomSheetContent extends StatelessWidget {
     // كل إطار من ظهور الكيبورد، و`show()` تُنفَّذ مرة واحدة.
     final keyboardInset = context.keyboardInset;
     final effectivePadding =
-        (contentPadding ?? EdgeInsets.fromLTRB(24, 0, 24, 24 + context.bottomPadding))
-            .copyWith(bottom: (contentPadding?.bottom ?? (24 + context.bottomPadding)) + keyboardInset);
+        (contentPadding ??
+                EdgeInsets.fromLTRB(24, 0, 24, 24 + context.bottomPadding))
+            .copyWith(
+              bottom:
+                  (contentPadding?.bottom ?? (24 + context.bottomPadding)) +
+                  keyboardInset,
+            );
 
     final body = Column(
       // **دائماً `min`.**
@@ -142,7 +147,8 @@ class _AppBottomSheetContent extends StatelessWidget {
         if (title != null || titleWidget != null) ...[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: titleWidget ??
+            child:
+                titleWidget ??
                 Text(
                   title!,
                   style: context.textTheme.titleLarge?.copyWith(
@@ -174,10 +180,7 @@ class _AppBottomSheetContent extends StatelessWidget {
             ),
           )
         else
-          Padding(
-            padding: effectivePadding,
-            child: child,
-          ),
+          Padding(padding: effectivePadding, child: child),
       ],
     );
 

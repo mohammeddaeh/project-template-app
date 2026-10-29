@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
@@ -30,7 +30,9 @@ extension LocaleContextExtension on BuildContext {
   /// and syncs [AppLocaleProvider] so HTTP interceptors stay up to date.
   Future<void> changeLocale(AppLocale newLocale) async {
     await setLocale(newLocale.locale);
-    (GetIt.I<LocaleProvider>() as AppLocaleProvider).setLanguage(newLocale.code);
+    (GetIt.I<LocaleProvider>() as AppLocaleProvider).setLanguage(
+      newLocale.code,
+    );
   }
 
   /// Toggles between Arabic and English.

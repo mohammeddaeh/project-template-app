@@ -24,21 +24,24 @@ void main() {
     await signal.dispose();
   });
 
-  test('it is a broadcast — more than one listener may follow the queue', () async {
-    final signal = SyncQueueSignal();
-    var a = 0;
-    var b = 0;
-    final subA = signal.stream.listen((_) => a++);
-    final subB = signal.stream.listen((_) => b++);
+  test(
+    'it is a broadcast — more than one listener may follow the queue',
+    () async {
+      final signal = SyncQueueSignal();
+      var a = 0;
+      var b = 0;
+      final subA = signal.stream.listen((_) => a++);
+      final subB = signal.stream.listen((_) => b++);
 
-    signal.notify();
-    await Future<void>.delayed(Duration.zero);
+      signal.notify();
+      await Future<void>.delayed(Duration.zero);
 
-    expect([a, b], [1, 1]);
-    await subA.cancel();
-    await subB.cancel();
-    await signal.dispose();
-  });
+      expect([a, b], [1, 1]);
+      await subA.cancel();
+      await subB.cancel();
+      await signal.dispose();
+    },
+  );
 
   test('notifying with nobody listening is harmless', () async {
     final signal = SyncQueueSignal();
@@ -70,29 +73,33 @@ void _wiring() {
       );
     });
 
-    test('bootstrap gives the gateway its bell, and the controller hears it', () {
-      final src = File(
-        'lib/modules/sync/integration/sync_bootstrap.dart',
-      ).readAsStringSync();
+    test(
+      'bootstrap gives the gateway its bell, and the controller hears it',
+      () {
+        final src = File(
+          'lib/modules/sync/integration/sync_bootstrap.dart',
+        ).readAsStringSync();
 
-      expect(
-        src,
-        contains('..queueSignal = getIt<SyncQueueSignal>()'),
-        reason: 'the field is nullable — an unset bell compiles and stays mute',
-      );
-      // **الترتيبُ لا الوجود**: `getIt<SyncQueueSignal>()` يظهر بمواضع عدّة
-      // بالملف، والمقصودُ أن يُمرَّر إلى `SyncController` بالذات.
-      //
-      // والحدُّ **نافذةُ أحرفٍ** لا `indexOf('),')`: كلُّ وسيطٍ ينتهي بـ`(),`
-      // فيقع القصُّ عند الوسيط الأول — وهو خطأٌ يجعل الاختبار يفشل على كودٍ
-      // صحيح.
-      final at = src.indexOf('SyncController(');
-      final call = src.substring(at, at + 400);
-      expect(
-        call,
-        contains('getIt<SyncQueueSignal>()'),
-        reason: 'nobody listening means the bell rings into an empty room',
-      );
-    });
+        expect(
+          src,
+          contains('..queueSignal = getIt<SyncQueueSignal>()'),
+          reason:
+              'the field is nullable — an unset bell compiles and stays mute',
+        );
+        // **الترتيبُ لا الوجود**: `getIt<SyncQueueSignal>()` يظهر بمواضع عدّة
+        // بالملف، والمقصودُ أن يُمرَّر إلى `SyncController` بالذات.
+        //
+        // والحدُّ **نافذةُ أحرفٍ** لا `indexOf('),')`: كلُّ وسيطٍ ينتهي بـ`(),`
+        // فيقع القصُّ عند الوسيط الأول — وهو خطأٌ يجعل الاختبار يفشل على كودٍ
+        // صحيح.
+        final at = src.indexOf('SyncController(');
+        final call = src.substring(at, at + 400);
+        expect(
+          call,
+          contains('getIt<SyncQueueSignal>()'),
+          reason: 'nobody listening means the bell rings into an empty room',
+        );
+      },
+    );
   });
 }

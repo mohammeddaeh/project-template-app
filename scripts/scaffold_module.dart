@@ -21,13 +21,17 @@ import 'dart:io';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
-    _die('الاستخدام: dart run scripts/scaffold_module.dart <module_name>\n'
-        '  مثال: dart run scripts/scaffold_module.dart audit_log');
+    _die(
+      'الاستخدام: dart run scripts/scaffold_module.dart <module_name>\n'
+      '  مثال: dart run scripts/scaffold_module.dart audit_log',
+    );
   }
 
   final module = _toSnakeCase(args.first);
   if (module.isEmpty || !RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(module)) {
-    _die('اسم غير صالح: "${args.first}" — أحرف صغيرة وأرقام و"_" فقط، يبدأ بحرف.');
+    _die(
+      'اسم غير صالح: "${args.first}" — أحرف صغيرة وأرقام و"_" فقط، يبدأ بحرف.',
+    );
   }
 
   final vars = <String, String>{
@@ -39,7 +43,9 @@ Future<void> main(List<String> args) async {
 
   final moduleDir = Directory('lib/modules/$module');
   if (moduleDir.existsSync()) {
-    _die('lib/modules/$module/ موجود بالفعل — احذفه أولاً إن أردت إعادة التوليد.');
+    _die(
+      'lib/modules/$module/ موجود بالفعل — احذفه أولاً إن أردت إعادة التوليد.',
+    );
   }
 
   _header("🧩  scaffold_module — إنشاء \"${vars['__Module__']}Plugin\"");
@@ -142,7 +148,9 @@ void _appendFeatureFlag(Map<String, String> vars) {
     _die('لم أجد نقطة الإدراج بـ${file.path} — راجعها يدوياً.');
   }
   file.writeAsStringSync(content.replaceFirst(marker, addition));
-  print('  ✓ app_features.dart (AppFeatures.${vars['__moduleCamel__']} = false)');
+  print(
+    '  ✓ app_features.dart (AppFeatures.${vars['__moduleCamel__']} = false)',
+  );
 }
 
 void _appendBootstrapRegistration(Map<String, String> vars) {
@@ -152,7 +160,8 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
   final featurePascal = vars['__Module__']!;
   final camel = vars['__moduleCamel__']!;
 
-  const importMarker = "import 'package:app_template/modules/sync/sync_plugin.dart';";
+  const importMarker =
+      "import 'package:app_template/modules/sync/sync_plugin.dart';";
   final newImport =
       "$importMarker\n"
       "import 'package:app_template/modules/$module/${module}_plugin.dart';";
@@ -166,7 +175,8 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
       await DataTransferPlugin.initialize(di);
     }
   }''';
-  final newRegistration = '''
+  final newRegistration =
+      '''
     if (AppFeatures.dataTransfer) {
       await DataTransferPlugin.initialize(di);
     }
@@ -180,7 +190,9 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
   content = content.replaceFirst(registrationMarker, newRegistration);
 
   file.writeAsStringSync(content);
-  print('  ✓ modules_bootstrap.dart (${featurePascal}Plugin.initialize موصولٌ بعلَمه)');
+  print(
+    '  ✓ modules_bootstrap.dart (${featurePascal}Plugin.initialize موصولٌ بعلَمه)',
+  );
 }
 
 void _appendArchitectureTableRow(Map<String, String> vars) {
@@ -204,7 +216,9 @@ void _appendArchitectureTableRow(Map<String, String> vars) {
     return;
   }
   file.writeAsStringSync(content.replaceFirst(marker, newRow));
-  print('  ✓ readme/10_ARCHITECTURE.md (عمود Packages لا يزال TODO — عدّله يدوياً)');
+  print(
+    '  ✓ readme/10_ARCHITECTURE.md (عمود Packages لا يزال TODO — عدّله يدوياً)',
+  );
 }
 
 /// ب٠٠_START_HERE.md هو الملف الوحيد الذي يُقال لعضو فريق جديد أن يقرأه
@@ -227,12 +241,16 @@ void _appendStartHereRow(Map<String, String> vars) {
   final newRow = '$marker\n$newRowLine';
   final content = file.readAsStringSync();
   if (!content.contains(marker)) {
-    print('  ⚠️   لم أجد جدول الموديولات الاختيارية بالشكل المتوقَّع — أضف الصفّ يدوياً:');
+    print(
+      '  ⚠️   لم أجد جدول الموديولات الاختيارية بالشكل المتوقَّع — أضف الصفّ يدوياً:',
+    );
     print('      $newRowLine');
     return;
   }
   file.writeAsStringSync(content.replaceFirst(marker, newRow));
-  print('  ✓ readme/00_START_HERE.md (العمود الأول لا يزال وصفاً عاماً — عدّله يدوياً)');
+  print(
+    '  ✓ readme/00_START_HERE.md (العمود الأول لا يزال وصفاً عاماً — عدّله يدوياً)',
+  );
 }
 
 // ── Health checks ─────────────────────────────────────────────────────────────
@@ -242,11 +260,10 @@ Future<bool> _runHealthChecks() async {
   var allPassed = true;
   allPassed &= await _check('🔍  dart analyze lib', 'dart', ['analyze', 'lib']);
   allPassed &= await _check('🧪  flutter test', 'flutter', ['test']);
-  allPassed &= await _check(
-    '🏗   check_structure',
-    'dart',
-    ['run', 'scripts/check_structure.dart'],
-  );
+  allPassed &= await _check('🏗   check_structure', 'dart', [
+    'run',
+    'scripts/check_structure.dart',
+  ]);
   return allPassed;
 }
 
@@ -290,7 +307,9 @@ String _toPascalCase(String snake) => snake
 
 String _toCamelCase(String snake) {
   final pascal = _toPascalCase(snake);
-  return pascal.isEmpty ? pascal : pascal[0].toLowerCase() + pascal.substring(1);
+  return pascal.isEmpty
+      ? pascal
+      : pascal[0].toLowerCase() + pascal.substring(1);
 }
 
 void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');

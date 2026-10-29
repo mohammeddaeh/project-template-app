@@ -76,10 +76,7 @@ void main() {
 
     // فعلٌ لا رجعةَ فيه لا يُخمَّن: الحوارُ كان يَعِد بـ«عودةٍ إلى ما عند
     // الخادم» ثم يمحو صفّاً لا يعرفه الخادمُ أصلاً.
-    expect(
-      explainer.planFullRevert(const {}),
-      SyncFullRevertKind.unavailable,
-    );
+    expect(explainer.planFullRevert(const {}), SyncFullRevertKind.unavailable);
   });
 
   test('the three revert kinds are distinct, and none is a default', () {
@@ -90,14 +87,11 @@ void main() {
     // و`unavailable` ليست «لا شيء»: صفٌّ يعرفه الخادمُ ولا لقطةَ له — محوُه
     // يُخفي عن صاحبه شيئاً قائماً هناك، وردُّه إلى لقطةٍ لا وجود لها مستحيل.
     expect(SyncFullRevertKind.values, hasLength(3));
-    expect(
-      SyncFullRevertKind.values.toSet(),
-      {
-        SyncFullRevertKind.restore,
-        SyncFullRevertKind.discard,
-        SyncFullRevertKind.unavailable,
-      },
-    );
+    expect(SyncFullRevertKind.values.toSet(), {
+      SyncFullRevertKind.restore,
+      SyncFullRevertKind.discard,
+      SyncFullRevertKind.unavailable,
+    });
   });
 
   test('parts compare by value — the screen may rebuild without flicker', () {

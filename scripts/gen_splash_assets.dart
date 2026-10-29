@@ -35,10 +35,9 @@ const _iconCanvasDp = 288.0;
 
 void main() {
   final svg = File(_svgPath).readAsStringSync();
-  final paths = RegExp(r'<path d="([^"]*)" fill="([^"]*)"')
-      .allMatches(svg)
-      .map((m) => (d: m[1]!, gold: m[2] == _goldFill))
-      .toList();
+  final paths = RegExp(
+    r'<path d="([^"]*)" fill="([^"]*)"',
+  ).allMatches(svg).map((m) => (d: m[1]!, gold: m[2] == _goldFill)).toList();
 
   final pts = paths.expand((p) => _points(p.d)).toList();
   final box = _bounds(pts);
@@ -53,9 +52,12 @@ void main() {
   final logoDp = box.w / side * _iconCanvasDp;
 
   final body = paths
-      .map((p) => '        <path\n'
-          '            android:pathData="${p.d}"\n'
-          '            android:fillColor="${p.gold ? _goldFill : '#FFFFFF'}" />')
+      .map(
+        (p) =>
+            '        <path\n'
+            '            android:pathData="${p.d}"\n'
+            '            android:fillColor="${p.gold ? _goldFill : '#FFFFFF'}" />',
+      )
       .join('\n');
 
   String vector(String note, num w, num h, num vw, num vh) =>
@@ -70,29 +72,45 @@ void main() {
       '    <group android:translateX="${_fmt(vw / 2 - ax)}"'
       ' android:translateY="${_fmt(vh / 2 - ay)}">\n$body\n    </group>\n</vector>\n';
 
-  File('$_resDir/drawable/splash_icon_v31.xml').writeAsStringSync(vector(
-    'رمزُ SplashScreen API — يقصّه النظام بدائرةٍ قطرُها ثلثا الضلع.',
-    _iconCanvasDp, _iconCanvasDp, side, side,
-  ));
+  File('$_resDir/drawable/splash_icon_v31.xml').writeAsStringSync(
+    vector(
+      'رمزُ SplashScreen API — يقصّه النظام بدائرةٍ قطرُها ثلثا الضلع.',
+      _iconCanvasDp,
+      _iconCanvasDp,
+      side,
+      side,
+    ),
+  );
 
   // ما دون أندرويد 12: لا قناع، فيكفي أن تصير المرساةُ مركزَ المرسومة ليقع
   // الشعار حيث يقع هناك — يُمدّ الضلعُ حول المرساة، ثم `gravity="center"`.
   final vw = 2 * max(box.w - (ax - box.x), ax - box.x);
   final vh = 2 * max(box.h - (ay - box.y), ay - box.y);
-  File('$_resDir/drawable/splash_logo_full.xml').writeAsStringSync(vector(
-    'رسمةُ نافذة الإطلاق — المرساةُ مركزُها، فـgravity="center" يكفي.',
-    logoDp * vw / box.w, logoDp * vw / box.w * vh / vw, vw, vh,
-  ));
+  File('$_resDir/drawable/splash_logo_full.xml').writeAsStringSync(
+    vector(
+      'رسمةُ نافذة الإطلاق — المرساةُ مركزُها، فـgravity="center" يكفي.',
+      logoDp * vw / box.w,
+      logoDp * vw / box.w * vh / vw,
+      vw,
+      vh,
+    ),
+  );
 
   print('صندوق الحبر  : ${_fmt(box.w)} × ${_fmt(box.h)}');
   print('المرساة      : (${_fmt(ax)}, ${_fmt(ay)})   R=${_fmt(r)}');
-  print('رمز v31      : ضلع ${_fmt(side)} — الشعار ${(box.w / side * 100).toStringAsFixed(1)}٪ من اللوحة');
+  print(
+    'رمز v31      : ضلع ${_fmt(side)} — الشعار ${(box.w / side * 100).toStringAsFixed(1)}٪ من اللوحة',
+  );
   print('');
   print('⚠️  انقل هذه إلى الودجة التي ترسم الشعار بفلاتر (إن وُجدت):');
-  print('    static const _logoWidth       = ${logoDp.floorToDouble()};'
-      '   // ≤ ${_fmt(logoDp)} وإلا قُصّ');
+  print(
+    '    static const _logoWidth       = ${logoDp.floorToDouble()};'
+    '   // ≤ ${_fmt(logoDp)} وإلا قُصّ',
+  );
   print('    static const _logoAspect      = ${_fmt(box.w)} / ${_fmt(box.h)};');
-  print('    static const _logoAnchorRatio = ${_fmt(ay - box.y)} / ${_fmt(box.h)};');
+  print(
+    '    static const _logoAnchorRatio = ${_fmt(ay - box.y)} / ${_fmt(box.h)};',
+  );
 }
 
 String _fmt(num v) => v == v.roundToDouble()
@@ -109,7 +127,9 @@ String _fmt(num v) => v == v.roundToDouble()
 /// **يفوق** الحبر الحقيقي ولا يقصّر عنه.
 List<Point<double>> _points(String d) {
   final out = <Point<double>>[];
-  final t = RegExp(r'[MLHVCZ]|-?\d*\.?\d+').allMatches(d).map((m) => m[0]!).toList();
+  final t = RegExp(
+    r'[MLHVCZ]|-?\d*\.?\d+',
+  ).allMatches(d).map((m) => m[0]!).toList();
   double cx = 0, cy = 0;
   var i = 0, cmd = '';
   while (i < t.length) {
@@ -132,7 +152,9 @@ List<Point<double>> _points(String d) {
         cy = n();
         out.add(Point(cx, cy));
       case 'C':
-        out..add(Point(n(), n()))..add(Point(n(), n()));
+        out
+          ..add(Point(n(), n()))
+          ..add(Point(n(), n()));
         cx = n();
         cy = n();
         out.add(Point(cx, cy));
@@ -146,7 +168,9 @@ List<Point<double>> _points(String d) {
 /// أصغرُ دائرةٍ تسع النقاط — هبوطٌ على الشبكة من مركز الصندوق.
 ///
 /// كافٍ هنا: الدالّة محدّبة، والدقّة المطلوبة عُشر وحدة من ٢٧٥.
-({double cx, double cy, double r}) _smallestEnclosingCircle(List<Point<double>> p) {
+({double cx, double cy, double r}) _smallestEnclosingCircle(
+  List<Point<double>> p,
+) {
   final b = _bounds(p);
   var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
   double radius(double x, double y) =>
@@ -156,10 +180,20 @@ List<Point<double>> _points(String d) {
     var moved = true;
     while (moved) {
       moved = false;
-      for (final d in const [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      for (final d in const [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ]) {
         final nx = cx + d[0] * step, ny = cy + d[1] * step;
         final r = radius(nx, ny);
-        if (r < best - 1e-9) { cx = nx; cy = ny; best = r; moved = true; }
+        if (r < best - 1e-9) {
+          cx = nx;
+          cy = ny;
+          best = r;
+          moved = true;
+        }
       }
     }
   }

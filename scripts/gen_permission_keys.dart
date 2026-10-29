@@ -100,17 +100,23 @@ List<String>? _readLock() {
   }
 
   final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
-  return (json['keys'] as List<dynamic>? ?? const []).whereType<String>().toList();
+  return (json['keys'] as List<dynamic>? ?? const [])
+      .whereType<String>()
+      .toList();
 }
 
 void _writeLock(List<String> keys) {
   final lock = {
-    '_comment': 'GENERATED — do not edit by hand. '
+    '_comment':
+        'GENERATED — do not edit by hand. '
         'Run: dart run scripts/gen_permission_keys.dart --update --from <perms.json>',
-    'source': 'backend_template — every key its routes enforce, plus the grant-only umbrellas',
+    'source':
+        'backend_template — every key its routes enforce, plus the grant-only umbrellas',
     'keys': keys,
   };
-  File(_lockPath).writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(lock)}\n');
+  File(
+    _lockPath,
+  ).writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(lock)}\n');
   print('🔒 ${keys.length} مفتاحاً → $_lockPath');
 }
 
@@ -172,8 +178,8 @@ List<String>? _readDump(String path) {
       .whereType<Map<String, dynamic>>()
       .map((e) => e['key'] as String? ?? '')
       .where((k) => k.isNotEmpty);
-  final umbrellas =
-      (json['umbrellas'] as List<dynamic>? ?? const []).whereType<String>();
+  final umbrellas = (json['umbrellas'] as List<dynamic>? ?? const [])
+      .whereType<String>();
 
   return <String>{...enforced, ...umbrellas}.toList()..sort();
 }
@@ -184,8 +190,9 @@ List<String>? _readDump(String path) {
 Future<List<String>?> _fetchFromServer(String baseUrl, String? token) async {
   final client = HttpClient();
   try {
-    final request =
-        await client.getUrl(Uri.parse('$baseUrl/authz/me?include_declared=true'));
+    final request = await client.getUrl(
+      Uri.parse('$baseUrl/authz/me?include_declared=true'),
+    );
     if (token != null) {
       request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
     }
@@ -225,7 +232,9 @@ String _render(List<String> keys) {
     ..writeln('// استعمله بدل النصّ الخام:')
     ..writeln('//   Can(permission: PermKeys.notesUpdate, child: ...)')
     ..writeln('//')
-    ..writeln('// مفتاحٌ حُذف من الباك يختفي من هنا فيكسر البناء عند كل استعمال')
+    ..writeln(
+      '// مفتاحٌ حُذف من الباك يختفي من هنا فيكسر البناء عند كل استعمال',
+    )
     ..writeln('// له — وهذه هي الفائدة، لا إزعاجاً.')
     ..writeln()
     ..writeln('abstract final class PermKeys {')

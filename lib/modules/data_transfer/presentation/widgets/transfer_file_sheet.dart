@@ -40,12 +40,11 @@ class TransferFileSheet extends StatelessWidget {
     BuildContext context, {
     required File file,
     required String titleKey,
-  }) =>
-      showModalBottomSheet<void>(
-        context: context,
-        showDragHandle: true,
-        builder: (_) => TransferFileSheet._(file: file, titleKey: titleKey),
-      );
+  }) => showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    builder: (_) => TransferFileSheet._(file: file, titleKey: titleKey),
+  );
 
   bool get _isCsv => p.extension(file.path).toLowerCase() == '.csv';
 
@@ -132,7 +131,9 @@ class TransferFileSheet extends StatelessWidget {
       showDragHandle: true,
       // Nearly full height: a table in a short sheet shows two columns and
       // teaches nothing about whether the file is right.
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
       builder: (_) => CsvPreviewView(file: file),
     );
     if (!navigator.mounted) return;
@@ -215,11 +216,11 @@ class _Action extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-        leading: Icon(icon, color: context.colorScheme.primary),
-        title: Text(labelKey.tr(), style: context.textTheme.headlineSmall),
-        subtitle: subtitleKey == null
-            ? null
-            : Text(subtitleKey!.tr(), style: context.textTheme.bodySmall),
-        onTap: onTap,
-      );
+    leading: Icon(icon, color: context.colorScheme.primary),
+    title: Text(labelKey.tr(), style: context.textTheme.headlineSmall),
+    subtitle: subtitleKey == null
+        ? null
+        : Text(subtitleKey!.tr(), style: context.textTheme.bodySmall),
+    onTap: onTap,
+  );
 }

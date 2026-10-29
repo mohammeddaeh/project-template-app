@@ -19,7 +19,8 @@ class DashedDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lineColor =
-        color ?? Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.2);
+        color ??
+        Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.2);
 
     return SizedBox(
       height: height,
@@ -58,11 +59,7 @@ class _DashedLinePainter extends CustomPainter {
     double startX = 0;
     final y = size.height / 2;
     while (startX < size.width) {
-      canvas.drawLine(
-        Offset(startX, y),
-        Offset(startX + dashWidth, y),
-        paint,
-      );
+      canvas.drawLine(Offset(startX, y), Offset(startX + dashWidth, y), paint);
       startX += dashWidth + dashSpace;
     }
   }

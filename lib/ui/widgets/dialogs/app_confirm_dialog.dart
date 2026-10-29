@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/extensions/dialog_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -39,6 +39,7 @@ class AppConfirmDialog {
     BuildContext context, {
     required String titleKey,
     required String messageKey,
+
     /// Placeholders for [messageKey] — `{count}` in the translation, `{'count': '37'}`
     /// here. Exists because a confirmation whose stakes are a number is a
     /// different question at 1 and at 500, and a message that cannot hold the
@@ -54,13 +55,13 @@ class AppConfirmDialog {
     final result = await context.showCustomDialog<bool>(
       barrierDismissible: barrierDismissible,
       child: _AppConfirmDialogContent(
-        title:         titleKey.tr(),
-        message:       messageKey.tr(namedArgs: messageArgs),
-        confirmText:   (confirmKey ?? LocaleKeys.confirm).tr(),
-        cancelText:    (cancelKey  ?? LocaleKeys.cancel).tr(),
+        title: titleKey.tr(),
+        message: messageKey.tr(namedArgs: messageArgs),
+        confirmText: (confirmKey ?? LocaleKeys.confirm).tr(),
+        cancelText: (cancelKey ?? LocaleKeys.cancel).tr(),
         isDestructive: isDestructive,
-        onConfirm:     onConfirm,
-        onCancel:      onCancel,
+        onConfirm: onConfirm,
+        onCancel: onCancel,
       ),
     );
     return result ?? false;
@@ -102,8 +103,11 @@ class _AppConfirmDialogContent extends StatelessWidget {
           Row(
             children: [
               if (isDestructive) ...[
-                Icon(Icons.warning_amber_rounded,
-                    color: context.colors.stateError, size: 22),
+                Icon(
+                  Icons.warning_amber_rounded,
+                  color: context.colors.stateError,
+                  size: 22,
+                ),
                 const SizedBox(width: 8),
               ],
               Expanded(

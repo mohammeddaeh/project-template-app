@@ -10,10 +10,7 @@
 /// });
 /// ```
 class NotificationTapEvent {
-  const NotificationTapEvent({
-    required this.notificationId,
-    this.data,
-  });
+  const NotificationTapEvent({required this.notificationId, this.data});
 
   /// The id of the notification that was tapped.
   final int notificationId;

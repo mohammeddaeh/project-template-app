@@ -25,27 +25,26 @@ enum SyncStatus {
   failed;
 
   static SyncStatus fromRaw(String raw) => switch (raw) {
-        'synced'        => SyncStatus.synced,
-        'pending'       => SyncStatus.pending,
-        'pendingCreate' => SyncStatus.pendingCreate,
-        'pendingUpdate' => SyncStatus.pendingUpdate,
-        'pendingDelete' => SyncStatus.pendingDelete,
-        'conflicted'    => SyncStatus.conflicted,
-        'failed'        => SyncStatus.failed,
-        _               => SyncStatus.pending,
-      };
+    'synced' => SyncStatus.synced,
+    'pending' => SyncStatus.pending,
+    'pendingCreate' => SyncStatus.pendingCreate,
+    'pendingUpdate' => SyncStatus.pendingUpdate,
+    'pendingDelete' => SyncStatus.pendingDelete,
+    'conflicted' => SyncStatus.conflicted,
+    'failed' => SyncStatus.failed,
+    _ => SyncStatus.pending,
+  };
 
   String get raw => name;
 
   /// Returns true for any state that means a write is in-flight or queued.
   bool get isPending => switch (this) {
-        SyncStatus.pending ||
-        SyncStatus.pendingCreate ||
-        SyncStatus.pendingUpdate ||
-        SyncStatus.pendingDelete =>
-          true,
-        _ => false,
-      };
+    SyncStatus.pending ||
+    SyncStatus.pendingCreate ||
+    SyncStatus.pendingUpdate ||
+    SyncStatus.pendingDelete => true,
+    _ => false,
+  };
 
   bool get isTerminal =>
       this == SyncStatus.failed || this == SyncStatus.conflicted;
@@ -65,12 +64,12 @@ enum SyncJobType {
   fileUpload;
 
   static SyncJobType fromRaw(String raw) => switch (raw) {
-        'create'     => SyncJobType.create,
-        'update'     => SyncJobType.update,
-        'delete'     => SyncJobType.delete,
-        'fileUpload' => SyncJobType.fileUpload,
-        _            => SyncJobType.update,
-      };
+    'create' => SyncJobType.create,
+    'update' => SyncJobType.update,
+    'delete' => SyncJobType.delete,
+    'fileUpload' => SyncJobType.fileUpload,
+    _ => SyncJobType.update,
+  };
 
   String get raw => name;
 }

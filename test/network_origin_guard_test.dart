@@ -85,19 +85,21 @@ void main() {
     expect(log.warnings, isEmpty);
   });
 
-  test('a request that started outside is not covered by a concurrent origin',
-      () async {
-    // وهذا سببُ `Zone` بدل عَلَمٍ ساكن. العَلَمُ الساكن يبقى مضبوطاً طوال
-    // الدورة، فطلبُ شاشةٍ يقع أثناءها يقرؤه موسوماً **ويمرّ** — والعطلُ الذي
-    // وُجد الحارسُ لكشفه يمرّ معه.
-    final fromScreen = dio.get<dynamic>('/from/screen');
-    await NetworkOrigin.run(
-      NetworkOrigin.sync,
-      () => dio.get<dynamic>('/from/sync'),
-    );
-    await fromScreen;
+  test(
+    'a request that started outside is not covered by a concurrent origin',
+    () async {
+      // وهذا سببُ `Zone` بدل عَلَمٍ ساكن. العَلَمُ الساكن يبقى مضبوطاً طوال
+      // الدورة، فطلبُ شاشةٍ يقع أثناءها يقرؤه موسوماً **ويمرّ** — والعطلُ الذي
+      // وُجد الحارسُ لكشفه يمرّ معه.
+      final fromScreen = dio.get<dynamic>('/from/screen');
+      await NetworkOrigin.run(
+        NetworkOrigin.sync,
+        () => dio.get<dynamic>('/from/sync'),
+      );
+      await fromScreen;
 
-    expect(log.warnings, hasLength(1));
-    expect(log.warnings.single, contains('/from/screen'));
-  });
+      expect(log.warnings, hasLength(1));
+      expect(log.warnings.single, contains('/from/screen'));
+    },
+  );
 }

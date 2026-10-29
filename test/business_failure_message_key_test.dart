@@ -53,10 +53,7 @@ void main() {
         ),
       );
       expect(withKey, isA<BusinessFailure>());
-      expect(
-        (withKey as BusinessFailure).messageKey,
-        'last_qualified_staff',
-      );
+      expect((withKey as BusinessFailure).messageKey, 'last_qualified_staff');
       // The server's sentence must still come through — losing it while
       // gaining the key would trade one silent gap for another.
       expect(withKey.serverMessage, 'آخر موظف');

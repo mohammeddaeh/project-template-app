@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -199,7 +199,11 @@ class _BottomNav extends StatelessWidget {
         destinations: tabs.map((tab) {
           return NavigationDestination(
             icon: _NavIcon(tab: tab, color: inactiveColor, isSelected: false),
-            selectedIcon: _NavIcon(tab: tab, color: activeColor, isSelected: true),
+            selectedIcon: _NavIcon(
+              tab: tab,
+              color: activeColor,
+              isSelected: true,
+            ),
             label: tab.label,
           );
         }).toList(),
@@ -282,9 +286,6 @@ class _NavIcon extends StatelessWidget {
 
     if (!tab._hasBadge) return icon;
 
-    return Badge(
-      label: Text('${tab.badgeCount}'),
-      child: icon,
-    );
+    return Badge(label: Text('${tab.badgeCount}'), child: icon);
   }
 }

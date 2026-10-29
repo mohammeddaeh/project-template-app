@@ -51,12 +51,20 @@ void main() {
 
     test('a 503 carries the wait the server asked for', () {
       final failure = mapper.map(
-        badResponse(503, headers: {'retry-after': ['120']}),
+        badResponse(
+          503,
+          headers: {
+            'retry-after': ['120'],
+          },
+        ),
       );
       expect(
         failure,
-        isA<ServiceUnavailableFailure>()
-            .having((f) => f.retryAfterSeconds, 'retryAfterSeconds', 120),
+        isA<ServiceUnavailableFailure>().having(
+          (f) => f.retryAfterSeconds,
+          'retryAfterSeconds',
+          120,
+        ),
         reason: 'Retry-After is defined on 503, not only on 429',
       );
     });
@@ -70,9 +78,9 @@ void main() {
 
   group('offline device vs closed server', () {
     DioException connectionError() => DioException(
-          requestOptions: options,
-          type: DioExceptionType.connectionError,
-        );
+      requestOptions: options,
+      type: DioExceptionType.connectionError,
+    );
 
     test('device online + nothing answered → the server is the culprit', () {
       const mapper = DioFailureMapper(networkState: _online);
@@ -113,8 +121,8 @@ void main() {
 
   group('Retry-After, both legal forms', () {
     Headers header(String value) => Headers.fromMap({
-          'retry-after': [value],
-        });
+      'retry-after': [value],
+    });
 
     test('delta-seconds', () {
       expect(DioFailureMapper.retryAfterSeconds(header('30')), 30);
@@ -151,34 +159,35 @@ void main() {
     });
   });
 
-
   group('a 409 is read at the depth the server sends it', () {
     const mapper = DioFailureMapper();
 
     DioException conflict(Map<String, dynamic> body) => DioException(
-          requestOptions: options,
-          type: DioExceptionType.badResponse,
-          response: Response<dynamic>(
-            requestOptions: options,
-            statusCode: 409,
-            data: body,
-          ),
-        );
+      requestOptions: options,
+      type: DioExceptionType.badResponse,
+      response: Response<dynamic>(
+        requestOptions: options,
+        statusCode: 409,
+        data: body,
+      ),
+    );
 
     test('the envelope shape this backend sends becomes a ConflictFailure', () {
       // `notes.int.test.ts` asserts `conflict.body.data.server_version`, so the
       // payload arrives nested. Read only at the root, every real sync conflict
       // was classified as a BusinessFailure — and the engine branches on
       // ConflictFailure, so the resolver was unreachable.
-      final failure = mapper.map(conflict({
-        'status': false,
-        'message': 'conflict',
-        'data': {
-          'server_version': {'id': 'n1', 'title': 'theirs', 'version': 7},
-          'client_version': {'id': 'n1', 'title': 'mine', 'version': 1},
-          'conflict_fields': ['title'],
-        },
-      }));
+      final failure = mapper.map(
+        conflict({
+          'status': false,
+          'message': 'conflict',
+          'data': {
+            'server_version': {'id': 'n1', 'title': 'theirs', 'version': 7},
+            'client_version': {'id': 'n1', 'title': 'mine', 'version': 1},
+            'conflict_fields': ['title'],
+          },
+        }),
+      );
 
       expect(failure, isA<ConflictFailure>());
       final conflictFailure = failure as ConflictFailure;
@@ -190,10 +199,12 @@ void main() {
     test('a bare body at the root still works', () {
       // Kept so an endpoint that answers without the envelope is not broken by
       // the fix for the one that uses it.
-      final failure = mapper.map(conflict({
-        'server_version': {'id': 'n1', 'version': 7},
-        'conflict_fields': ['title'],
-      }));
+      final failure = mapper.map(
+        conflict({
+          'server_version': {'id': 'n1', 'version': 7},
+          'conflict_fields': ['title'],
+        }),
+      );
 
       expect(failure, isA<ConflictFailure>());
       expect((failure as ConflictFailure).serverVersion?['version'], 7);
@@ -202,11 +213,13 @@ void main() {
     test('a business 409 is still a business refusal, not a silent conflict', () {
       // The distinction the mapper was built to protect: "email already in use"
       // must reach the user, and ConflictFailure is silent by design.
-      final failure = mapper.map(conflict({
-        'status': false,
-        'message': 'Email already in use',
-        'data': {'field': 'email'},
-      }));
+      final failure = mapper.map(
+        conflict({
+          'status': false,
+          'message': 'Email already in use',
+          'data': {'field': 'email'},
+        }),
+      );
 
       expect(failure, isA<BusinessFailure>());
       expect((failure as BusinessFailure).statusCode, 409);

@@ -25,11 +25,12 @@ class _FakeCursors extends SyncCursorStore {
   }
 }
 
-
 void main() {
   test('a written cursor means the entity was pulled at least once', () async {
     final hydration = SyncHydration(
-      _FakeCursors({'notes': () => const SyncCursor(updatedSince: '2026-01-01')}),
+      _FakeCursors({
+        'notes': () => const SyncCursor(updatedSince: '2026-01-01'),
+      }),
     );
 
     expect(await hydration.isHydrated('notes'), isTrue);

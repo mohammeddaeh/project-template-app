@@ -33,8 +33,20 @@ import 'package:app_template/modules/sync/validation/sync_contract_validator.dar
 /// عشر مرّات بدقيقة كان سيُنتج عشرَ دوراتٍ متتابعة، كلُّ واحدةٍ نداءُ شبكةٍ على
 /// بيانات الجوّال.
 class _CountingEngine extends SyncEngine {
-  _CountingEngine(super.a, super.b, super.c, super.d, super.e, super.f,
-      super.g, super.h, super.i, super.j, super.k, super.l);
+  _CountingEngine(
+    super.a,
+    super.b,
+    super.c,
+    super.d,
+    super.e,
+    super.f,
+    super.g,
+    super.h,
+    super.i,
+    super.j,
+    super.k,
+    super.l,
+  );
 
   int cycles = 0;
 

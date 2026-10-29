@@ -32,10 +32,8 @@ part 'offline_ux_state.dart';
 /// ```
 @lazySingleton
 class OfflineUxCubit extends SafeCubit<OfflineUxState> {
-  OfflineUxCubit(
-    this._networkMonitor,
-    this._queueRepository,
-  ) : super(const ConnectivityUnknownState());
+  OfflineUxCubit(this._networkMonitor, this._queueRepository)
+    : super(const ConnectivityUnknownState());
 
   final NetworkStateMonitor _networkMonitor;
   final SyncQueueRepository _queueRepository;

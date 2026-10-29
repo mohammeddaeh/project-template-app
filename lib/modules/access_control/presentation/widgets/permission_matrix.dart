@@ -92,7 +92,8 @@ class _GroupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final real = group.permissions.where((p) => !p.synthetic).toList();
-    final allSelected = real.isNotEmpty && real.every((p) => selected.contains(p.key));
+    final allSelected =
+        real.isNotEmpty && real.every((p) => selected.contains(p.key));
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -108,10 +109,7 @@ class _GroupCard extends StatelessWidget {
                 // The server had no label and humanized the key. Said out loud
                 // rather than hidden: an English word in an Arabic screen is a
                 // visible prompt to add the real one.
-                ? Text(
-                    group.resource,
-                    style: context.textTheme.bodySmall,
-                  )
+                ? Text(group.resource, style: context.textTheme.bodySmall)
                 : null,
             trailing: readOnly
                 ? null
@@ -164,7 +162,9 @@ class _PermissionTile extends StatelessWidget {
         ? LocaleKeys.permissionManageHint.tr()
         : permission.implies.isEmpty
         ? null
-        : LocaleKeys.permissionImplies.tr(args: [permission.implies.join('، ')]);
+        : LocaleKeys.permissionImplies.tr(
+            args: [permission.implies.join('، ')],
+          );
 
     return CheckboxListTile(
       dense: true,

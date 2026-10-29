@@ -30,7 +30,10 @@ class NetworkImageWidget extends StatelessWidget {
           width: width,
           height: height,
           color: scheme.surfaceContainerHighest,
-          child: const AppProgress.circular(size: AppProgressSize.sm, centered: true),
+          child: const AppProgress.circular(
+            size: AppProgressSize.sm,
+            centered: true,
+          ),
         );
       },
       errorBuilder: (_, _, _) => Container(

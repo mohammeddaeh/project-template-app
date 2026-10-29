@@ -61,12 +61,13 @@ void _checkModuleWiring() {
   final modulesDir = Directory('lib/modules');
   if (!modulesDir.existsSync()) return;
 
-  final moduleDirs = modulesDir
-      .listSync()
-      .whereType<Directory>()
-      .map((d) => d.path.split(Platform.pathSeparator).last)
-      .toList()
-    ..sort();
+  final moduleDirs =
+      modulesDir
+          .listSync()
+          .whereType<Directory>()
+          .map((d) => d.path.split(Platform.pathSeparator).last)
+          .toList()
+        ..sort();
 
   var okCount = 0;
   for (final name in moduleDirs) {
@@ -78,15 +79,21 @@ void _checkModuleWiring() {
         .toList();
 
     if (entryFile.isEmpty) {
-      print('  ◌  $name: لا ملفّ مدخلٍ باسم ${name}_plugin.dart أو ${name}_module.dart — تُخطَّى (قد يكون sub-package لموديول آخر)');
+      print(
+        '  ◌  $name: لا ملفّ مدخلٍ باسم ${name}_plugin.dart أو ${name}_module.dart — تُخطَّى (قد يكون sub-package لموديول آخر)',
+      );
       continue;
     }
 
-    final imported = bootstrapContent.contains('modules/$name/${entryFile.first}');
+    final imported = bootstrapContent.contains(
+      'modules/$name/${entryFile.first}',
+    );
     if (imported) {
       okCount++;
     } else {
-      print('  ⚠️   $name: ${entryFile.first} موجود لكن غير مستورَد بـmodules_bootstrap.dart — راجع يدوياً');
+      print(
+        '  ⚠️   $name: ${entryFile.first} موجود لكن غير مستورَد بـmodules_bootstrap.dart — راجع يدوياً',
+      );
     }
   }
   print('  ✓ $okCount من ${moduleDirs.length} موديولاً موصولٌ بإقلاعه');
@@ -127,7 +134,9 @@ bool _checkSyncContracts() {
     );
     return true;
   }
-  print('  ✓ لا فجوة — ${offlineSyncEnabled ? 'العقود موجودة' : 'العلَم مطفأ'}');
+  print(
+    '  ✓ لا فجوة — ${offlineSyncEnabled ? 'العقود موجودة' : 'العلَم مطفأ'}',
+  );
   return false;
 }
 
@@ -165,16 +174,18 @@ void _checkRouteReachability() {
   var orphanCount = 0;
   for (final routeName in routePageClasses.toSet()) {
     // occurrences: مرّة بجدول AutoRoute بـrouter.dart + أي استخدام فعلي.
-    final occurrences = RegExp(
-      '\\b$routeName\\b',
-    ).allMatches(haystack).length;
+    final occurrences = RegExp('\\b$routeName\\b').allMatches(haystack).length;
     // occurrence واحدة فقط = التصريح بجدول AutoRoute ولا استدعاء تنقّل آخر.
     if (occurrences <= 1) {
       orphanCount++;
-      print('  ◌  $routeName — لا استدعاء تنقّل ظاهر بـlib/ (قد يكون مقصوداً — راجع 10_ARCHITECTURE.md)');
+      print(
+        '  ◌  $routeName — لا استدعاء تنقّل ظاهر بـlib/ (قد يكون مقصوداً — راجع 10_ARCHITECTURE.md)',
+      );
     }
   }
-  print('  $orphanCount من ${routePageClasses.length} مساراً بلا استدعاء تنقّل ظاهر');
+  print(
+    '  $orphanCount من ${routePageClasses.length} مساراً بلا استدعاء تنقّل ظاهر',
+  );
 }
 
 // ── 4. Doc-sync table completeness ───────────────────────────────────────────
@@ -190,23 +201,30 @@ void _checkDocSyncTable() {
   final readmeDir = Directory('readme');
   if (!readmeDir.existsSync()) return;
 
-  final readmeFiles = readmeDir
-      .listSync()
-      .whereType<File>()
-      .where((f) => f.path.endsWith('.md'))
-      .map((f) => f.path.split(Platform.pathSeparator).last)
-      .toList()
-    ..sort();
+  final readmeFiles =
+      readmeDir
+          .listSync()
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.md'))
+          .map((f) => f.path.split(Platform.pathSeparator).last)
+          .toList()
+        ..sort();
 
   var missing = 0;
   for (final name in readmeFiles) {
     if (!claudeContent.contains(name)) {
       missing++;
-      print('  ⚠️   readme/$name غير مذكور بجدول «Mandatory Documentation Sync» بـCLAUDE.md');
+      print(
+        '  ⚠️   readme/$name غير مذكور بجدول «Mandatory Documentation Sync» بـCLAUDE.md',
+      );
     }
   }
-  print('  $missing من ${readmeFiles.length} ملفاً بجذر readme/ غير مذكور بالجدول');
-  print('  (ملفات _template/archive/ مُستثناة عمداً — تغطّيها القاعدة العامة "لا يُصان")');
+  print(
+    '  $missing من ${readmeFiles.length} ملفاً بجذر readme/ غير مذكور بالجدول',
+  );
+  print(
+    '  (ملفات _template/archive/ مُستثناة عمداً — تغطّيها القاعدة العامة "لا يُصان")',
+  );
 }
 
 // ── 5. History in shipped files ──────────────────────────────────────────────
@@ -227,7 +245,15 @@ Set<String> _projectNames() {
 }
 
 /// ما يُنسخ للمشروع ويقرؤه الناس. `test/` خارجه عمداً: التواريخ هناك بيانات.
-const _shippedRoots = ['lib', 'readme', 'scripts', 'docs', 'loadtest', '.claude', '.github'];
+const _shippedRoots = [
+  'lib',
+  'readme',
+  'scripts',
+  'docs',
+  'loadtest',
+  '.claude',
+  '.github',
+];
 const _shippedRootFiles = ['CLAUDE.md', 'README.md'];
 
 /// طابعٌ زمنيّ كامل (`2026-06-21T08:00:00Z`) بمثال JSON بيانٌ لا تاريخ — يُستثنى.
@@ -235,7 +261,10 @@ final _isoDate = RegExp(r'\b20\d\d-\d\d-\d\d\b(?!T\d)');
 
 void _checkShippedHistory({required bool verbose}) {
   final names = _projectNames()..removeAll(_ownNames());
-  final namePattern = RegExp(names.map(RegExp.escape).join('|'), caseSensitive: false);
+  final namePattern = RegExp(
+    names.map(RegExp.escape).join('|'),
+    caseSensitive: false,
+  );
 
   final hits = <String, List<String>>{};
   for (final file in _shippedFiles()) {
@@ -246,7 +275,8 @@ void _checkShippedHistory({required bool verbose}) {
       final line = lines[i];
       // بالكود: التعليقات وحدها — تاريخٌ بنصٍّ حرفيّ قد يكون بياناتٍ مقصودة.
       if (isDart && !line.trimLeft().startsWith('//')) continue;
-      if (_isoDate.hasMatch(line) || (names.isNotEmpty && namePattern.hasMatch(line))) {
+      if (_isoDate.hasMatch(line) ||
+          (names.isNotEmpty && namePattern.hasMatch(line))) {
         hits.putIfAbsent(path, () => []).add('${i + 1}: ${line.trim()}');
       }
     }
@@ -258,13 +288,17 @@ void _checkShippedHistory({required bool verbose}) {
     print('  ◌  ${entry.value.length.toString().padLeft(3)}  ${entry.key}');
     if (verbose) {
       for (final hit in entry.value) {
-        print('        ${hit.length > 140 ? '${hit.substring(0, 140)}…' : hit}');
+        print(
+          '        ${hit.length > 140 ? '${hit.substring(0, 140)}…' : hit}',
+        );
       }
     }
   }
   final total = hits.values.fold<int>(0, (sum, list) => sum + list.length);
-  print('  $total سطراً بـ${hits.length} ملفاً فيه تاريخٌ أو اسمُ مشروع'
-      '${verbose ? '' : ' (--verbose للأسطر)'}');
+  print(
+    '  $total سطراً بـ${hits.length} ملفاً فيه تاريخٌ أو اسمُ مشروع'
+    '${verbose ? '' : ' (--verbose للأسطر)'}',
+  );
   print('  (الوثيقة تصف الحاضر — التاريخ بـgit و_template/. راجع CLAUDE.md)');
 }
 
@@ -279,11 +313,16 @@ Iterable<File> _shippedFiles() sync* {
     for (final entity in dir.listSync(recursive: true)) {
       if (entity is! File) continue;
       final path = entity.path;
-      if (!(path.endsWith('.md') || path.endsWith('.dart') || path.endsWith('.ps1') ||
-          path.endsWith('.yml') || path.endsWith('.js'))) {
+      if (!(path.endsWith('.md') ||
+          path.endsWith('.dart') ||
+          path.endsWith('.ps1') ||
+          path.endsWith('.yml') ||
+          path.endsWith('.js'))) {
         continue;
       }
-      if (path.endsWith('.g.dart') || path.endsWith('.freezed.dart') || path.endsWith('.gr.dart')) {
+      if (path.endsWith('.g.dart') ||
+          path.endsWith('.freezed.dart') ||
+          path.endsWith('.gr.dart')) {
         continue;
       }
       yield entity;
@@ -295,10 +334,9 @@ Set<String> _ownNames() {
   final manifest = File('.template_manifest.json');
   if (!manifest.existsSync()) return {};
   final content = manifest.readAsStringSync();
-  return RegExp(r'"(?:appName|package)"\s*:\s*"([^"]+)"')
-      .allMatches(content)
-      .map((m) => m.group(1)!)
-      .toSet();
+  return RegExp(
+    r'"(?:appName|package)"\s*:\s*"([^"]+)"',
+  ).allMatches(content).map((m) => m.group(1)!).toSet();
 }
 
 /// نمط auto_route الافتراضي عند غياب `@RoutePage(name: ...)` صريح: يُسقط

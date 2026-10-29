@@ -1,4 +1,4 @@
-﻿import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/core/platform/storage/secure_storage_service.dart';
 import 'package:app_template/modules/push_notifications/adapters/fcm_push_notifications_adapter.dart';
@@ -70,10 +70,10 @@ abstract final class PushNotificationsModule {
     // On iOS/macOS: show alerts in foreground (default is silent)
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
 
     final adapter = FcmPushNotificationsAdapter(
       secureStorage: di<SecureStorageService>(),

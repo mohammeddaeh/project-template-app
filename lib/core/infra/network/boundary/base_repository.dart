@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/network/rest/handle_body_response.dart';
@@ -11,6 +11,5 @@ abstract class BaseRepository {
   final HandleBodyResponse _handler;
 
   @protected
-  Future<Either<Failure, T>> handle<T>(BodyCall<T> call) =>
-      _handler.body(call);
+  Future<Either<Failure, T>> handle<T>(BodyCall<T> call) => _handler.body(call);
 }

@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/feedback/app_feedback_service.dart';
@@ -16,10 +16,10 @@ import 'simple_toast_adapter.dart';
 /// Falls back to a dismiss button when no action is provided.
 class SnackbarAdapter implements AppFeedbackService {
   AppFeedbackService _forStyle(FeedbackStyle style) => switch (style) {
-        FeedbackStyle.motionToast => MotionToastAdapter(),
-        FeedbackStyle.snackbar    => this,
-        FeedbackStyle.simpleToast => SimpleToastAdapter(),
-      };
+    FeedbackStyle.motionToast => MotionToastAdapter(),
+    FeedbackStyle.snackbar => this,
+    FeedbackStyle.simpleToast => SimpleToastAdapter(),
+  };
   static const _defaultDuration = Duration(seconds: 4);
 
   @override
@@ -31,8 +31,8 @@ class SnackbarAdapter implements AppFeedbackService {
 
     messenger.showSnackBar(
       SnackBar(
-        duration:  config.duration ?? _defaultDuration,
-        behavior:  SnackBarBehavior.floating,
+        duration: config.duration ?? _defaultDuration,
+        behavior: SnackBarBehavior.floating,
         backgroundColor: Theme.of(context).snackBarTheme.backgroundColor,
         content: Row(
           children: [
@@ -55,7 +55,9 @@ class SnackbarAdapter implements AppFeedbackService {
                   Text(
                     config.message,
                     style: TextStyle(
-                      color: config.type.textColor(context).withValues(alpha: 0.9),
+                      color: config.type
+                          .textColor(context)
+                          .withValues(alpha: 0.9),
                       fontSize: 13,
                     ),
                   ),
@@ -66,12 +68,12 @@ class SnackbarAdapter implements AppFeedbackService {
         ),
         action: config.action != null
             ? SnackBarAction(
-                label:     config.action!.label,
+                label: config.action!.label,
                 textColor: accentColor,
                 onPressed: config.action!.onTap,
               )
             : SnackBarAction(
-                label:     LocaleKeys.dismiss.tr(),
+                label: LocaleKeys.dismiss.tr(),
                 textColor: context.colors.secondary,
                 onPressed: () => messenger.hideCurrentSnackBar(),
               ),
@@ -80,56 +82,121 @@ class SnackbarAdapter implements AppFeedbackService {
   }
 
   @override
-  void success(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void success(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.snackbar) {
-      _forStyle(style).success(context, message, title: title, duration: duration);
+      _forStyle(
+        style,
+      ).success(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.success, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.success,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void error(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void error(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.snackbar) {
-      _forStyle(style).error(context, message, title: title, duration: duration);
+      _forStyle(
+        style,
+      ).error(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.error, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.error,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void warning(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void warning(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.snackbar) {
-      _forStyle(style).warning(context, message, title: title, duration: duration);
+      _forStyle(
+        style,
+      ).warning(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.warning, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.warning,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void info(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void info(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.snackbar) {
       _forStyle(style).info(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.info, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.info,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void toast(BuildContext context, String message,
-      {int seconds = 3, FeedbackStyle? style}) {
+  void toast(
+    BuildContext context,
+    String message, {
+    int seconds = 3,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.snackbar) {
       _forStyle(style).toast(context, message, seconds: seconds);
       return;
     }
-    show(context, FeedbackConfig(
-      type: FeedbackType.info,
-      message: message,
-      duration: Duration(seconds: seconds),
-    ));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.info,
+        message: message,
+        duration: Duration(seconds: seconds),
+      ),
+    );
   }
 }

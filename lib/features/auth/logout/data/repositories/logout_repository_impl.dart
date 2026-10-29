@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:app_template/core/foundation/contracts/network_origin.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/network/boundary/base_repository.dart';
@@ -28,20 +28,25 @@ class LogoutRepositoryImpl extends BaseRepository implements LogoutRepository {
   @override
   Future<Either<Failure, void>> logout() =>
       // **وسمُ المنفذ: الخروج** — راجع `NetworkOrigin`.
-      NetworkOrigin.run(NetworkOrigin.auth, () => handle(() async {
-        final res = await _remoteDataSource.logout();
-        if (res.error == null) {
-          _sessionRepository.clearSession();
-          _currentUserRepository.clear();
-          // **خروجٌ متعمَّد ⇒ يُمحى كلُّ ما يخصّ الحساب** — لا الجلسةُ وحدها.
-          // وبلا هذا السطر يرى الداخلُ التالي صفوفَ سلفه وصورَه، **ويُدفع
-          // طابورُ الأول بتوكن الثاني**: إسنادُ عملٍ إلى من لم يعمله.
-          await _accountDataCleaner.clearForSignOut();
-          return const Right(null);
-        }
-        return Left(BusinessFailure(
-          statusCode: res.error?.code ?? 400,
-          serverMessage: res.message.isNotEmpty ? res.message : null,
-        ));
-      }));
+      NetworkOrigin.run(
+        NetworkOrigin.auth,
+        () => handle(() async {
+          final res = await _remoteDataSource.logout();
+          if (res.error == null) {
+            _sessionRepository.clearSession();
+            _currentUserRepository.clear();
+            // **خروجٌ متعمَّد ⇒ يُمحى كلُّ ما يخصّ الحساب** — لا الجلسةُ وحدها.
+            // وبلا هذا السطر يرى الداخلُ التالي صفوفَ سلفه وصورَه، **ويُدفع
+            // طابورُ الأول بتوكن الثاني**: إسنادُ عملٍ إلى من لم يعمله.
+            await _accountDataCleaner.clearForSignOut();
+            return const Right(null);
+          }
+          return Left(
+            BusinessFailure(
+              statusCode: res.error?.code ?? 400,
+              serverMessage: res.message.isNotEmpty ? res.message : null,
+            ),
+          );
+        }),
+      );
 }

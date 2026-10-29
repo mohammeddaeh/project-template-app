@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,8 +46,8 @@ class _ConnectivityOverlayState extends State<ConnectivityOverlay> {
   Timer? _bannerTimer;
   Timer? _countdownTimer;
 
-  static const _subtleDelay   = Duration(milliseconds: 1500);
-  static const _bannerDelay   = Duration(seconds: 4);
+  static const _subtleDelay = Duration(milliseconds: 1500);
+  static const _bannerDelay = Duration(seconds: 4);
   static const _countdownFrom = 30;
 
   // ── الانتقال إلى وضع offline ──────────────────────────────────────────────
@@ -64,7 +64,7 @@ class _ConnectivityOverlayState extends State<ConnectivityOverlay> {
       _bannerTimer = Timer(_bannerDelay, () {
         if (!mounted) return;
         setState(() {
-          _phase    = _OfflinePhase.banner;
+          _phase = _OfflinePhase.banner;
           _countdown = _countdownFrom;
         });
         _startCountdown();
@@ -112,7 +112,7 @@ class _ConnectivityOverlayState extends State<ConnectivityOverlay> {
     return BlocListener<ConnectivityCubit, NetworkState>(
       listener: (_, state) {
         if (state.isOffline) _onOffline();
-        if (state.isOnline)  _onOnline();
+        if (state.isOnline) _onOnline();
       },
       // IgnorePointer: الـ overlay لا يحجب اللمس
       child: IgnorePointer(

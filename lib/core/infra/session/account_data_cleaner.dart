@@ -144,10 +144,7 @@ class AccountDataCleaner {
 
   Future<void> _remember(String username) async {
     try {
-      await _storage.writeString(
-        PersistenceKeys.lastAccountUsername,
-        username,
-      );
+      await _storage.writeString(PersistenceKeys.lastAccountUsername, username);
     } catch (e) {
       // **الأثر يُقال**: بلا هذا المفتاح لا يُكشف التبديل التالي، فيبدأ حسابٌ
       // ثالث فوق بيانات الثاني بصمت.

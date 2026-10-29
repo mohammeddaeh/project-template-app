@@ -113,8 +113,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ltr: true,
                         showRequired: true,
                         onChanged: _refreshCubit.refresh,
-                        validator: (value) =>
-                            (value == null || value.isEmpty)
+                        validator: (value) => (value == null || value.isEmpty)
                             ? LocaleKeys.fieldRequired.tr()
                             : null,
                       ),

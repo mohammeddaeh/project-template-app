@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 
 /// Validated date range value object.
@@ -75,8 +75,7 @@ final class DateRange {
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
-  static DateTime _dateOnly(DateTime dt) =>
-      DateTime(dt.year, dt.month, dt.day);
+  static DateTime _dateOnly(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 
   @override
   bool operator ==(Object other) =>

@@ -34,19 +34,19 @@ import 'dart:io';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const _settingsFile  = 'flavor_settings.json';
-const _pubspecFile   = 'pubspec.yaml';
+const _settingsFile = 'flavor_settings.json';
+const _pubspecFile = 'pubspec.yaml';
 const _lastBuildFile = '.dart_tool/last_build.json';
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 Future<void> main(List<String> args) async {
   // ── Parse args
-  final flavor    = _arg(args, '--flavor',  'dev');
-  final mode      = _arg(args, '--mode',    'debug');
-  final bump      = _arg(args, '--bump',    'build');
-  final noBump    = args.contains('--no-bump');
-  final clean     = args.contains('--clean');
+  final flavor = _arg(args, '--flavor', 'dev');
+  final mode = _arg(args, '--mode', 'debug');
+  final bump = _arg(args, '--bump', 'build');
+  final noBump = args.contains('--no-bump');
+  final clean = args.contains('--clean');
   final noCodegen = args.contains('--no-codegen');
 
   _validateFlavor(flavor);
@@ -54,7 +54,7 @@ Future<void> main(List<String> args) async {
   if (!noBump) _validateBump(bump);
 
   // ── Load flavor settings
-  final settings  = _loadSettings();
+  final settings = _loadSettings();
   final packageId = _packageId(settings, flavor);
 
   _header('🏗   build_apk.dart');
@@ -105,14 +105,18 @@ Future<void> main(List<String> args) async {
   // التحقق من وجود ملف البيئة قبل البناء
   final envFile = '.env.$flavor.json';
   if (!File(envFile).existsSync()) {
-    _die('ملف البيئة غير موجود: $envFile\n'
-        '    أنشئه أولاً بـ BASE_URL والإعدادات اللازمة.');
+    _die(
+      'ملف البيئة غير موجود: $envFile\n'
+      '    أنشئه أولاً بـ BASE_URL والإعدادات اللازمة.',
+    );
   }
 
   _section('🔨  Flutter build apk  [$flavor · $mode]');
   await _stream('flutter', [
-    'build', 'apk',
-    '--flavor', flavor,
+    'build',
+    'apk',
+    '--flavor',
+    flavor,
     '--$mode',
     '--dart-define=FLAVOR=$flavor',
     '--dart-define-from-file=$envFile',
@@ -129,25 +133,29 @@ Future<void> main(List<String> args) async {
   }
 
   // إعادة التسمية: {displayName}-{mode}-{version}.apk
-  final flavors     = settings['flavors'] as Map<String, dynamic>;
-  final displayName = (flavors[flavor] as Map<String, dynamic>)['displayName'] as String? ?? flavor;
-  final versionTag  = version.replaceAll('+', '_');
-  final apkDir      = rawApkFile.parent.path;
-  final apkPath     = '$apkDir/$displayName-$mode-$versionTag.apk';
+  final flavors = settings['flavors'] as Map<String, dynamic>;
+  final displayName =
+      (flavors[flavor] as Map<String, dynamic>)['displayName'] as String? ??
+      flavor;
+  final versionTag = version.replaceAll('+', '_');
+  final apkDir = rawApkFile.parent.path;
+  final apkPath = '$apkDir/$displayName-$mode-$versionTag.apk';
   rawApkFile.renameSync(apkPath);
 
   final sizeMb = (File(apkPath).lengthSync() / (1024 * 1024));
 
   // اكتب بيانات البناء
   Directory('.dart_tool').createSync(recursive: true);
-  File(_lastBuildFile).writeAsStringSync(jsonEncode({
-    'apkPath'  : apkPath,
-    'packageId': packageId,
-    'version'  : version,
-    'flavor'   : flavor,
-    'mode'     : mode,
-    'builtAt'  : DateTime.now().toIso8601String(),
-  }));
+  File(_lastBuildFile).writeAsStringSync(
+    jsonEncode({
+      'apkPath': apkPath,
+      'packageId': packageId,
+      'version': version,
+      'flavor': flavor,
+      'mode': mode,
+      'builtAt': DateTime.now().toIso8601String(),
+    }),
+  );
 
   _footer('''✅  Build complete
   APK     : $apkPath
@@ -161,7 +169,10 @@ Future<void> main(List<String> args) async {
 /// يقرأ version من pubspec.yaml كما هو.
 String _readVersion() {
   final content = File(_pubspecFile).readAsStringSync();
-  final match   = RegExp(r'^version:\s*(.+)$', multiLine: true).firstMatch(content);
+  final match = RegExp(
+    r'^version:\s*(.+)$',
+    multiLine: true,
+  ).firstMatch(content);
   if (match == null) _die('لم يُعثر على "version:" في $_pubspecFile');
   return match.group(1)!.trim();
 }
@@ -179,8 +190,10 @@ void _bumpVersion(String bump) {
   ).firstMatch(content);
 
   if (match == null) {
-    _die('لا يمكن قراءة رقم الإصدار من $_pubspecFile\n'
-        'التنسيق المتوقع: version: 1.2.3+45');
+    _die(
+      'لا يمكن قراءة رقم الإصدار من $_pubspecFile\n'
+      'التنسيق المتوقع: version: 1.2.3+45',
+    );
   }
 
   var major = int.parse(match.group(2)!);
@@ -188,16 +201,24 @@ void _bumpVersion(String bump) {
   var patch = int.parse(match.group(4)!);
   var build = int.parse(match.group(5) ?? '0'); // بدون +N → يبدأ من 0
 
-  final oldLabel = '$major.$minor.$patch${match.group(5) != null ? "+$build" : ""}';
+  final oldLabel =
+      '$major.$minor.$patch${match.group(5) != null ? "+$build" : ""}';
 
   // رفع versionCode دائماً (منع INSTALL_FAILED_VERSION_DOWNGRADE)
   build++;
 
   switch (bump) {
-    case 'major': major++; minor = 0; patch = 0;
-    case 'minor': minor++; patch = 0;
-    case 'patch': patch++;
-    case 'build': break; // versionCode فقط — رُفع بالفعل
+    case 'major':
+      major++;
+      minor = 0;
+      patch = 0;
+    case 'minor':
+      minor++;
+      patch = 0;
+    case 'patch':
+      patch++;
+    case 'build':
+      break; // versionCode فقط — رُفع بالفعل
   }
 
   final newVersion = '$major.$minor.$patch+$build';
@@ -217,12 +238,16 @@ void _bumpVersion(String bump) {
 /// يُحدِّث app_name في strings.xml الخاص بالـ flavor بإضافة رقم الإصدار.
 /// يعمل فقط إذا كان showVersion: true في flavor_settings.json.
 /// يستخدم MAJOR.MINOR.PATCH فقط (بدون +buildNumber).
-void _updateAppName(String flavor, String version, Map<String, dynamic> settings) {
+void _updateAppName(
+  String flavor,
+  String version,
+  Map<String, dynamic> settings,
+) {
   final flavors = settings['flavors'] as Map<String, dynamic>;
-  final cfg     = flavors[flavor] as Map<String, dynamic>? ?? {};
+  final cfg = flavors[flavor] as Map<String, dynamic>? ?? {};
 
   final showVersion = cfg['showVersion'] as bool? ?? false;
-  final baseName    = cfg['displayName'] as String? ?? flavor;
+  final baseName = cfg['displayName'] as String? ?? flavor;
 
   if (!showVersion) {
     print('  skipped (showVersion: false)  →  $baseName');
@@ -258,7 +283,7 @@ Map<String, dynamic> _loadSettings() {
 
 String _packageId(Map<String, dynamic> settings, String flavor) {
   final flavors = settings['flavors'] as Map<String, dynamic>;
-  final cfg     = flavors[flavor] as Map<String, dynamic>?;
+  final cfg = flavors[flavor] as Map<String, dynamic>?;
   if (cfg == null) {
     _die('الـ flavor "$flavor" غير موجود في $_settingsFile');
   }
@@ -295,16 +320,21 @@ void _validateMode(String m) {
 
 void _validateBump(String b) {
   if (!{'build', 'patch', 'minor', 'major'}.contains(b)) {
-    _die('bump غير معروف: "$b"\nالقيم المسموح بها: build | patch | minor | major');
+    _die(
+      'bump غير معروف: "$b"\nالقيم المسموح بها: build | patch | minor | major',
+    );
   }
 }
 
 // ── Print helpers ─────────────────────────────────────────────────────────────
 
-void _header(String msg)  => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
-void _footer(String msg)  => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
+void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
+void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
 void _section(String msg) => print('\n▸ $msg');
-Never _die(String msg)    { print('\n❌  $msg\n'); exit(1); }
+Never _die(String msg) {
+  print('\n❌  $msg\n');
+  exit(1);
+}
 
 // ── Arg parser ────────────────────────────────────────────────────────────────
 

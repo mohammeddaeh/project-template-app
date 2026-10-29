@@ -28,7 +28,9 @@ Future<void> registerNotificationCenter(GetIt di) async {
     );
   }
 
-  if (!di.isRegistered<AccountScopedStore>(instanceName: 'notificationCenter')) {
+  if (!di.isRegistered<AccountScopedStore>(
+    instanceName: 'notificationCenter',
+  )) {
     di.registerLazySingleton<AccountScopedStore>(
       () => di<NotificationCenterStore>(),
       instanceName: 'notificationCenter',

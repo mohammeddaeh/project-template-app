@@ -134,7 +134,6 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
       ),
     );
   }
-
 }
 
 class _PasswordField extends StatelessWidget {

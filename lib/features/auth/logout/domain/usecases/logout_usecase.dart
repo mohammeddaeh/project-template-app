@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:app_template/core/foundation/domain/base_usecase.dart';
 import 'package:app_template/core/foundation/domain/no_params.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
@@ -12,6 +12,5 @@ class LogoutUseCase extends BaseUseCase<Either<Failure, void>, NoParams> {
   final LogoutRepository _repository;
 
   @override
-  Future<Either<Failure, void>> call(NoParams params) =>
-      _repository.logout();
+  Future<Either<Failure, void>> call(NoParams params) => _repository.logout();
 }

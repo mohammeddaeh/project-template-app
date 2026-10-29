@@ -75,12 +75,14 @@ class DataTransferSheet extends StatelessWidget {
             _Option(
               icon: Icons.file_download_outlined,
               label: LocaleKeys.exportTitle.tr(),
-              onTap: () => _go(context, TransferExportRoute(resource: resource)),
+              onTap: () =>
+                  _go(context, TransferExportRoute(resource: resource)),
             ),
             _Option(
               icon: Icons.file_upload_outlined,
               label: LocaleKeys.importTitle.tr(),
-              onTap: () => _go(context, TransferImportRoute(resource: resource)),
+              onTap: () =>
+                  _go(context, TransferImportRoute(resource: resource)),
             ),
             const SizedBox(height: 12),
           ],
@@ -109,12 +111,12 @@ class _Option extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-        leading: Icon(icon, color: context.colorScheme.primary),
-        title: Text(label, style: context.textTheme.headlineSmall),
-        trailing: Icon(
-          context.isRtl ? Icons.chevron_left : Icons.chevron_right,
-          size: 20,
-        ),
-        onTap: onTap,
-      );
+    leading: Icon(icon, color: context.colorScheme.primary),
+    title: Text(label, style: context.textTheme.headlineSmall),
+    trailing: Icon(
+      context.isRtl ? Icons.chevron_left : Icons.chevron_right,
+      size: 20,
+    ),
+    onTap: onTap,
+  );
 }

@@ -42,6 +42,5 @@ class SyncQueueJob {
   /// Builds a deterministic idempotency key from job identity fields.
   /// Returns [idempotencyKey] if already set, otherwise derives it.
   String get effectiveIdempotencyKey =>
-      idempotencyKey ??
-      '${entityName}_${entityId}_${type.raw}_$createdAt';
+      idempotencyKey ?? '${entityName}_${entityId}_${type.raw}_$createdAt';
 }

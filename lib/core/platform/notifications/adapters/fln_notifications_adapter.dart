@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -28,11 +28,15 @@ class FlnNotificationsAdapter implements LocalNotificationsService {
 
   @override
   Future<void> initialize({
-    List<NotificationChannel> channels = const [NotificationChannel.defaultChannel],
+    List<NotificationChannel> channels = const [
+      NotificationChannel.defaultChannel,
+    ],
   }) async {
     tz.initializeTimeZones();
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -51,7 +55,8 @@ class FlnNotificationsAdapter implements LocalNotificationsService {
     // Create Android channels
     final androidPlugin = _plugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     for (final ch in channels) {
       await androidPlugin?.createNotificationChannel(
@@ -156,16 +161,16 @@ class FlnNotificationsAdapter implements LocalNotificationsService {
   }
 
   Importance _toAndroidImportance(NotificationImportance i) => switch (i) {
-        NotificationImportance.low    => Importance.low,
-        NotificationImportance.normal => Importance.defaultImportance,
-        NotificationImportance.high   => Importance.high,
-        NotificationImportance.max    => Importance.max,
-      };
+    NotificationImportance.low => Importance.low,
+    NotificationImportance.normal => Importance.defaultImportance,
+    NotificationImportance.high => Importance.high,
+    NotificationImportance.max => Importance.max,
+  };
 
   Priority _toAndroidPriority(NotificationImportance i) => switch (i) {
-        NotificationImportance.low    => Priority.low,
-        NotificationImportance.normal => Priority.defaultPriority,
-        NotificationImportance.high   => Priority.high,
-        NotificationImportance.max    => Priority.max,
-      };
+    NotificationImportance.low => Priority.low,
+    NotificationImportance.normal => Priority.defaultPriority,
+    NotificationImportance.high => Priority.high,
+    NotificationImportance.max => Priority.max,
+  };
 }

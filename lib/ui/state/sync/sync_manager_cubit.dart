@@ -34,10 +34,8 @@ part 'sync_manager_state.dart';
 /// ```
 @lazySingleton
 class SyncManagerCubit extends SafeCubit<SyncManagerState> {
-  SyncManagerCubit(
-    this._controller,
-    this._queueRepository,
-  ) : super(const SyncIdle()) {
+  SyncManagerCubit(this._controller, this._queueRepository)
+    : super(const SyncIdle()) {
     // المُطلِقات التلقائية (اتصالٌ يعود · مؤقّتٌ دوري · لفتةُ مستخدم) لا مستدعيَ
     // لها يلتقط استثناءها كما يفعل `triggerSync` — فتصل هنا عبر `errorStream`
     // بدل أن تسقط صامتة. راجع `SyncController._runCycleGuarded`.
@@ -67,12 +65,14 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
         return;
       }
       final pending = await _queueRepository.countPendingJobs();
-      emit(SyncSuccess(
-        pendingCount: pending,
-        completedAt: DateTime.now(),
-      ));
+      emit(SyncSuccess(pendingCount: pending, completedAt: DateTime.now()));
     } catch (e, st) {
-      LogService.error('SyncManagerCubit error', tag: 'SYNC', error: e, stackTrace: st);
+      LogService.error(
+        'SyncManagerCubit error',
+        tag: 'SYNC',
+        error: e,
+        stackTrace: st,
+      );
       // النصّ الخام يبقى بالسطر أعلاه (للتشخيص) فقط — `UnknownFailure.message`
       // هو ما يعرضه `FailureUiMapper` حرفياً للمستخدم حين لا يكون فارغاً، فتمريرُ
       // `e.toString()` هنا كان يسرّب استثناءً تقنياً خاماً غير مترجَم للواجهة.
@@ -88,7 +88,12 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
         emit(SyncSuccess(pendingCount: pending));
       }
     } catch (e, st) {
-      LogService.error('SyncManagerCubit refreshPendingCount error', tag: 'SYNC', error: e, stackTrace: st);
+      LogService.error(
+        'SyncManagerCubit refreshPendingCount error',
+        tag: 'SYNC',
+        error: e,
+        stackTrace: st,
+      );
     }
   }
 
@@ -100,12 +105,14 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
     required List<String> conflictFields,
     required Map<String, dynamic> serverSnapshot,
   }) {
-    emit(ConflictDetected(
-      entityName: entityName,
-      entityId: entityId,
-      conflictFields: conflictFields,
-      serverSnapshot: serverSnapshot,
-    ));
+    emit(
+      ConflictDetected(
+        entityName: entityName,
+        entityId: entityId,
+        conflictFields: conflictFields,
+        serverSnapshot: serverSnapshot,
+      ),
+    );
   }
 
   void resetToIdle() => emit(const SyncIdle());

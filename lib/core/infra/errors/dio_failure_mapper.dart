@@ -20,7 +20,7 @@ typedef NetworkStateProbe = NetworkState Function();
 /// - Pure data transformation only.
 class DioFailureMapper implements FailureMapper {
   const DioFailureMapper({NetworkStateProbe? networkState})
-      : _networkState = networkState;
+    : _networkState = networkState;
 
   /// Null until the composition root wires it — see
   /// [FailureMapperRegistry.useNetworkStateProbe]. When absent, a connection
@@ -37,16 +37,15 @@ class DioFailureMapper implements FailureMapper {
   }
 
   Failure _fromDioException(DioException error) => switch (error.type) {
-        DioExceptionType.cancel => const CancelledFailure(),
-        DioExceptionType.connectionTimeout ||
-        DioExceptionType.sendTimeout ||
-        DioExceptionType.receiveTimeout =>
-          const TimeoutFailure(),
-        DioExceptionType.connectionError => _fromConnectionError(error),
-        DioExceptionType.badCertificate => const BadCertificateFailure(),
-        DioExceptionType.badResponse => _fromBadResponse(error),
-        DioExceptionType.unknown => _fromUnknown(error),
-      };
+    DioExceptionType.cancel => const CancelledFailure(),
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.sendTimeout ||
+    DioExceptionType.receiveTimeout => const TimeoutFailure(),
+    DioExceptionType.connectionError => _fromConnectionError(error),
+    DioExceptionType.badCertificate => const BadCertificateFailure(),
+    DioExceptionType.badResponse => _fromBadResponse(error),
+    DioExceptionType.unknown => _fromUnknown(error),
+  };
 
   /// Nothing answered — but *whose* fault is it?
   ///
@@ -118,7 +117,8 @@ class DioFailureMapper implements FailureMapper {
 
       bool carries(String key) => conflictBody?.containsKey(key) == true;
 
-      final isSyncConflict = carries('server_version') ||
+      final isSyncConflict =
+          carries('server_version') ||
           carries('client_version') ||
           carries('conflict_fields');
 
@@ -126,9 +126,12 @@ class DioFailureMapper implements FailureMapper {
         // Read from the same depth the shape was detected at, or the two would
         // disagree and produce a ConflictFailure with every field empty.
         return ConflictFailure(
-          serverVersion: conflictBody?['server_version'] as Map<String, dynamic>?,
-          clientVersion: conflictBody?['client_version'] as Map<String, dynamic>?,
-          conflictFields: (conflictBody?['conflict_fields'] as List?)
+          serverVersion:
+              conflictBody?['server_version'] as Map<String, dynamic>?,
+          clientVersion:
+              conflictBody?['client_version'] as Map<String, dynamic>?,
+          conflictFields:
+              (conflictBody?['conflict_fields'] as List?)
                   ?.map((e) => e.toString())
                   .toList() ??
               [],

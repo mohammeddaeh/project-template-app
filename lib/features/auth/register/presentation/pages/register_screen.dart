@@ -125,8 +125,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             final isLoading = state is RegisterLoading;
             return KeyboardDismissWidget(
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -171,8 +173,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           if (value == null || value.trim().isEmpty) {
                             return LocaleKeys.invalidEmailAddress.tr();
                           }
-                          if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,}$')
-                              .hasMatch(value.trim())) {
+                          if (!RegExp(
+                            r'^[\w-.]+@([\w-]+\.)+[\w-]{2,}$',
+                          ).hasMatch(value.trim())) {
                             return LocaleKeys.invalidEmailAddress.tr();
                           }
                           return null;

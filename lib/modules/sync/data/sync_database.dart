@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:path/path.dart' as p;
@@ -75,7 +75,10 @@ class SyncDatabase {
       probe = null;
       try {
         await File(dbPath).delete();
-        LogService.warning('Corrupt sync DB deleted — will re-bootstrap.', tag: 'SYNC');
+        LogService.warning(
+          'Corrupt sync DB deleted — will re-bootstrap.',
+          tag: 'SYNC',
+        );
       } catch (_) {}
     } finally {
       await probe?.close();

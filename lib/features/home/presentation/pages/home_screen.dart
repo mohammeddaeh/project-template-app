@@ -51,8 +51,9 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 LocaleKeys.homeSubtitle.tr(),
-                style: context.textTheme.bodySmall
-                    ?.copyWith(color: context.colors.textSecondary),
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: context.colors.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],

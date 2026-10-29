@@ -6,8 +6,7 @@ abstract class PaginationState<E> with _$PaginationState {
 
   const factory PaginationState.loading() = PaginationLoadingState;
 
-  const factory PaginationState.error([Failure? error]) =
-      PaginationErrorState;
+  const factory PaginationState.error([Failure? error]) = PaginationErrorState;
 
   const factory PaginationState.initial() = PaginationInitState;
 

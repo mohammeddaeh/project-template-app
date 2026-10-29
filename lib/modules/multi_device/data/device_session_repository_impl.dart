@@ -10,7 +10,7 @@ import 'package:app_template/modules/multi_device/domain/device_session_reposito
 class DeviceSessionRepositoryImpl extends BaseRepository
     implements DeviceSessionRepository {
   DeviceSessionRepositoryImpl(this._apiService, HandleBodyResponse handler)
-      : super(handler);
+    : super(handler);
 
   final DeviceSessionApiService _apiService;
 
@@ -29,18 +29,18 @@ class DeviceSessionRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<Failure, void>> revokeSession(int id) => handle(() async {
-        final envelope = _read(await _apiService.revokeSession(id));
-        return envelope.map((_) {});
-      });
+    final envelope = _read(await _apiService.revokeSession(id));
+    return envelope.map((_) {});
+  });
 
   @override
   Future<Either<Failure, int>> revokeOthers() => handle(() async {
-        final envelope = _read(await _apiService.revokeOthers());
-        return envelope.map((data) {
-          final count = (data as Map<String, dynamic>?)?['sessions_revoked'];
-          return count is int ? count : 0;
-        });
-      });
+    final envelope = _read(await _apiService.revokeOthers());
+    return envelope.map((data) {
+      final count = (data as Map<String, dynamic>?)?['sessions_revoked'];
+      return count is int ? count : 0;
+    });
+  });
 
   /// Unwraps the shared envelope into either its `data` payload or a Failure.
   ///

@@ -150,8 +150,9 @@ extension AbilityContext on BuildContext {
 
   /// The full set, for a screen that reasons about permissions rather than
   /// gating on one — the roles editor, a diagnostics view.
-  AbilitySet get abilities =>
-      _moduleActive ? getIt<AbilitiesStore>().abilities : AbilitySet.unrestricted;
+  AbilitySet get abilities => _moduleActive
+      ? getIt<AbilitiesStore>().abilities
+      : AbilitySet.unrestricted;
 }
 
 /// True only when the module is both enabled and wired.

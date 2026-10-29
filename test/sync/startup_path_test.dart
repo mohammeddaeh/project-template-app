@@ -92,8 +92,9 @@ void main() {
     //
     // Ordering needs no separate assertion — this runs inside `getIt.init()`,
     // which `configureInjection` awaits before `ModulesBootstrap.initializeAll`.
-    final generated =
-        File('lib/core/di/injection.config.dart').readAsStringSync();
+    final generated = File(
+      'lib/core/di/injection.config.dart',
+    ).readAsStringSync();
 
     expect(
       RegExp(

@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -63,12 +63,12 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.backgroundColor,
     this.bottom,
-  })  : showBackButton = false,
-        leading = null,
-        onBack = null,
-        elevation = 0,
-        scrolledUnderElevation = 0,
-        centerTitle = true;
+  }) : showBackButton = false,
+       leading = null,
+       onBack = null,
+       elevation = 0,
+       scrolledUnderElevation = 0,
+       centerTitle = true;
 
   /// مفتاح ترجمة العنوان (يُستدعى عبر `.tr()`)
   final String? titleKey;
@@ -112,7 +112,8 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
 
     final canGoBack = showBackButton ?? Navigator.canPop(context);
 
-    final resolvedLeading = leading ??
+    final resolvedLeading =
+        leading ??
         (canGoBack
             ? IconButton(
                 icon: Icon(

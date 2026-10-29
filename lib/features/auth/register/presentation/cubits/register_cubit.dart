@@ -27,21 +27,18 @@ class RegisterCubit extends SafeCubit<RegisterState> {
       RegisterParams(email: email, password: password, fullName: fullName),
     );
 
-    res.fold(
-      (failure) {
-        switch (FailureUiMapper.toAction(failure)) {
-          case ShowError(:final message):
-            emit(RegisterState.error(errorMessage: message));
-          // Unreachable in practice — registration is unauthenticated, so
-          // nothing here can produce a 401. Handled rather than ignored because
-          // the switch is exhaustive and a silent fallthrough would leave the
-          // screen spinning forever if that ever changed.
-          case NavigateToLogin():
-          case Silent():
-            emit(const RegisterState.initial());
-        }
-      },
-      (account) => emit(RegisterState.success(account: account)),
-    );
+    res.fold((failure) {
+      switch (FailureUiMapper.toAction(failure)) {
+        case ShowError(:final message):
+          emit(RegisterState.error(errorMessage: message));
+        // Unreachable in practice — registration is unauthenticated, so
+        // nothing here can produce a 401. Handled rather than ignored because
+        // the switch is exhaustive and a silent fallthrough would leave the
+        // screen spinning forever if that ever changed.
+        case NavigateToLogin():
+        case Silent():
+          emit(const RegisterState.initial());
+      }
+    }, (account) => emit(RegisterState.success(account: account)));
   }
 }

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:app_template/ui/feedback/app_feedback_service.dart';
@@ -16,10 +16,10 @@ import 'snackbar_adapter.dart';
 /// Best for quick confirmations: "تم النسخ", "تم الحفظ".
 class SimpleToastAdapter implements AppFeedbackService {
   AppFeedbackService _forStyle(FeedbackStyle style) => switch (style) {
-        FeedbackStyle.motionToast => MotionToastAdapter(),
-        FeedbackStyle.snackbar    => SnackbarAdapter(),
-        FeedbackStyle.simpleToast => this,
-      };
+    FeedbackStyle.motionToast => MotionToastAdapter(),
+    FeedbackStyle.snackbar => SnackbarAdapter(),
+    FeedbackStyle.simpleToast => this,
+  };
   @override
   void show(BuildContext context, FeedbackConfig config) {
     _showToast(
@@ -32,48 +32,110 @@ class SimpleToastAdapter implements AppFeedbackService {
   }
 
   @override
-  void success(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void success(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.simpleToast) {
-      _forStyle(style).success(context, message, title: title, duration: duration);
+      _forStyle(
+        style,
+      ).success(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.success, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.success,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void error(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void error(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.simpleToast) {
-      _forStyle(style).error(context, message, title: title, duration: duration);
+      _forStyle(
+        style,
+      ).error(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.error, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.error,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void warning(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void warning(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.simpleToast) {
-      _forStyle(style).warning(context, message, title: title, duration: duration);
+      _forStyle(
+        style,
+      ).warning(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.warning, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.warning,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void info(BuildContext context, String message,
-      {String? title, Duration? duration, FeedbackStyle? style}) {
+  void info(
+    BuildContext context,
+    String message, {
+    String? title,
+    Duration? duration,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.simpleToast) {
       _forStyle(style).info(context, message, title: title, duration: duration);
       return;
     }
-    show(context, FeedbackConfig(type: FeedbackType.info, message: message, title: title, duration: duration));
+    show(
+      context,
+      FeedbackConfig(
+        type: FeedbackType.info,
+        message: message,
+        title: title,
+        duration: duration,
+      ),
+    );
   }
 
   @override
-  void toast(BuildContext context, String message,
-      {int seconds = 3, FeedbackStyle? style}) {
+  void toast(
+    BuildContext context,
+    String message, {
+    int seconds = 3,
+    FeedbackStyle? style,
+  }) {
     if (style != null && style != FeedbackStyle.simpleToast) {
       _forStyle(style).toast(context, message, seconds: seconds);
       return;

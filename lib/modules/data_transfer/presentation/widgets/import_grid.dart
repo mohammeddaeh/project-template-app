@@ -137,9 +137,11 @@ class _ImportGridState extends State<ImportGrid> {
       // Only real errors, not warnings: "show me what I must fix" should not
       // include rows that are merely going to be skipped.
       numbers = numbers
-          .where((n) => (errorsByCell[n] ?? const {}).values.any(
-                (e) => e.severity == ImportSeverity.error,
-              ))
+          .where(
+            (n) => (errorsByCell[n] ?? const {}).values.any(
+              (e) => e.severity == ImportSeverity.error,
+            ),
+          )
           .toList();
     }
 
@@ -163,20 +165,20 @@ class _ImportGridState extends State<ImportGrid> {
   }
 
   void _onSort(String column) => setState(() {
-        if (_sortColumn == column) {
-          // Third tap clears the sort and returns to file order — which is the
-          // order every error message refers to.
-          if (!_sortAscending) {
-            _sortColumn = null;
-            _sortAscending = true;
-          } else {
-            _sortAscending = false;
-          }
-        } else {
-          _sortColumn = column;
-          _sortAscending = true;
-        }
-      });
+    if (_sortColumn == column) {
+      // Third tap clears the sort and returns to file order — which is the
+      // order every error message refers to.
+      if (!_sortAscending) {
+        _sortColumn = null;
+        _sortAscending = true;
+      } else {
+        _sortAscending = false;
+      }
+    } else {
+      _sortColumn = column;
+      _sortAscending = true;
+    }
+  });
 
   Future<void> _editCell(int rowNumber, String column) async {
     final current = widget.report.rows[rowNumber - 1][column] ?? '';
@@ -219,33 +221,33 @@ class _Toolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                LocaleKeys.importShowingRows.tr(
-                  args: ['$shownCount', '$totalCount'],
-                ),
-                style: context.textTheme.bodySmall,
-              ),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            LocaleKeys.importShowingRows.tr(
+              args: ['$shownCount', '$totalCount'],
             ),
-            if (errorRowCount > 0)
-              FilterChip(
-                selected: errorsOnly,
-                avatar: Icon(
-                  Icons.error_outline,
-                  size: 16,
-                  color: context.colors.error,
-                ),
-                label: Text(
-                  LocaleKeys.importOnlyProblems.tr(args: ['$errorRowCount']),
-                ),
-                onSelected: (_) => onToggleErrorsOnly(),
-              ),
-          ],
+            style: context.textTheme.bodySmall,
+          ),
         ),
-      );
+        if (errorRowCount > 0)
+          FilterChip(
+            selected: errorsOnly,
+            avatar: Icon(
+              Icons.error_outline,
+              size: 16,
+              color: context.colors.error,
+            ),
+            label: Text(
+              LocaleKeys.importOnlyProblems.tr(args: ['$errorRowCount']),
+            ),
+            onSelected: (_) => onToggleErrorsOnly(),
+          ),
+      ],
+    ),
+  );
 }
 
 // ── Header ───────────────────────────────────────────────────────────────────
@@ -279,17 +281,13 @@ class _Header extends StatelessWidget {
       height: 44,
       decoration: BoxDecoration(
         color: context.colors.bgNeutral,
-        border: Border(
-          bottom: BorderSide(color: context.colors.borderSubtle),
-        ),
+        border: Border(bottom: BorderSide(color: context.colors.borderSubtle)),
       ),
       child: Row(
         children: [
           SizedBox(
             width: gutterWidth,
-            child: Center(
-              child: Text('#', style: context.textTheme.bodySmall),
-            ),
+            child: Center(child: Text('#', style: context.textTheme.bodySmall)),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -346,10 +344,11 @@ class _Header extends StatelessWidget {
   /// A file may legitimately carry a column the descriptor no longer describes
   /// — an older export, re-imported. Showing the raw key is honest; showing
   /// nothing would leave an unlabelled column the user cannot reason about.
-  String _label(String key, bool isArabic) => resource.columns
-      .where((c) => c.key == key)
-      .map((c) => c.label(isArabic: isArabic))
-      .firstOrNull ??
+  String _label(String key, bool isArabic) =>
+      resource.columns
+          .where((c) => c.key == key)
+          .map((c) => c.label(isArabic: isArabic))
+          .firstOrNull ??
       key;
 }
 
@@ -533,57 +532,52 @@ class _CellEditorState extends State<_CellEditor> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-        title: Text(widget.title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.rowLabel, style: context.textTheme.bodySmall),
-            const SizedBox(height: 12),
-            // `onFieldSubmitted` as well as the button: on a phone the
-            // keyboard's done key is the natural way to finish a one-cell
-            // correction.
-            CustomTextField(
-              controller: _controller,
-              maxLines: 3,
-              onFieldSubmitted: () =>
-                  Navigator.of(context).pop(_controller.text),
-            ),
-            if (widget.error != null) ...[
-              const SizedBox(height: 12),
-              // The reason this cell is red, in front of the user while they
-              // fix it — not on the screen they just left.
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 16,
+    title: Text(widget.title),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.rowLabel, style: context.textTheme.bodySmall),
+        const SizedBox(height: 12),
+        // `onFieldSubmitted` as well as the button: on a phone the
+        // keyboard's done key is the natural way to finish a one-cell
+        // correction.
+        CustomTextField(
+          controller: _controller,
+          maxLines: 3,
+          onFieldSubmitted: () => Navigator.of(context).pop(_controller.text),
+        ),
+        if (widget.error != null) ...[
+          const SizedBox(height: 12),
+          // The reason this cell is red, in front of the user while they
+          // fix it — not on the screen they just left.
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.error_outline, size: 16, color: context.colors.error),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  widget.error!.message,
+                  style: context.textTheme.bodySmall?.copyWith(
                     color: context.colors.error,
                   ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      widget.error!.message,
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colors.error,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(LocaleKeys.cancel.tr()),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(_controller.text),
-            child: Text(LocaleKeys.save.tr()),
           ),
         ],
-      );
+      ],
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: Text(LocaleKeys.cancel.tr()),
+      ),
+      FilledButton(
+        onPressed: () => Navigator.of(context).pop(_controller.text),
+        child: Text(LocaleKeys.save.tr()),
+      ),
+    ],
+  );
 }

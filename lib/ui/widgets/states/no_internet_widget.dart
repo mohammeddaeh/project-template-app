@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/states/app_state_widget.dart';
 
 /// حالة انقطاع الإنترنت.
@@ -18,9 +18,9 @@ class NoInternetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateWidget(
-        type: AppStateType.noInternet,
-        titleKey: messageKey,
-        onAction: onRetry,
-        actionLabelKey: onRetry != null ? retryLabelKey : null,
-      );
+    type: AppStateType.noInternet,
+    titleKey: messageKey,
+    onAction: onRetry,
+    actionLabelKey: onRetry != null ? retryLabelKey : null,
+  );
 }

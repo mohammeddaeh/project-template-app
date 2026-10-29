@@ -1,10 +1,7 @@
 part of 'navigation_cubit.dart';
 
 class NavigationState {
-  const NavigationState({
-    this.currentIndex = 0,
-    this.showExitDialog = false,
-  });
+  const NavigationState({this.currentIndex = 0, this.showExitDialog = false});
 
   final int currentIndex;
   final bool showExitDialog;

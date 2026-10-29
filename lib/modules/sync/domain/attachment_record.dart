@@ -185,6 +185,7 @@ class AttachmentRecord {
   AttachmentRecord copyWith({
     String? localPath,
     bool clearLocalPath = false,
+
     /// Where the server serves these bytes from.
     ///
     /// A device-captured row has none: it was born here, and nothing else knew

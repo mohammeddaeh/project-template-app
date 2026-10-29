@@ -55,11 +55,7 @@ class ForgotPasswordCubit extends SafeCubit<ForgotPasswordState> {
     emit(const ForgotPasswordState.loading());
 
     final res = await _resetPassword(
-      ResetPasswordParams(
-        email: email,
-        token: token,
-        newPassword: newPassword,
-      ),
+      ResetPasswordParams(email: email, token: token, newPassword: newPassword),
     );
 
     res.fold(_emitFailure, (_) => emit(const ForgotPasswordState.success()));

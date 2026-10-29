@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app_template/core/infra/config/app_fonts.dart';import 'package:app_template/ui/theme/app_theme.dart';
+import 'package:app_template/core/infra/config/app_fonts.dart';
+import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/ui/widgets/layout/app_list_tile.dart';
 import 'package:app_template/ui/widgets/misc/shimmer_text.dart';
 import 'package:app_template/ui/widgets/placeholders/skeleton_scope.dart';
@@ -13,7 +14,9 @@ import 'package:app_template/ui/widgets/placeholders/skeleton_scope.dart';
 void main() {
   Widget host(Widget child, {required bool loading}) => MaterialApp(
     theme: AppThemeData.light(const Locale('en'), AppFonts.available.first),
-    home: Scaffold(body: Skeletonized(enabled: loading, child: child)),
+    home: Scaffold(
+      body: Skeletonized(enabled: loading, child: child),
+    ),
   );
 
   testWidgets('outside a skeleton, ShimmerText is a plain Text', (t) async {

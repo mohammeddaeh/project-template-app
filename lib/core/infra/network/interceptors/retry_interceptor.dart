@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:app_template/core/infra/network/interceptors/internet_checker_interceptor.dart';
 import 'package:app_template/core/infra/errors/dio_failure_mapper.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -104,8 +104,7 @@ class RetryInterceptor extends Interceptor {
   /// The server's own `Retry-After` outranks the back-off curve whenever it
   /// sent one — it is the only party that knows how loaded it is.
   Duration? _delayFor(DioException err, int attempt) {
-    final requested =
-        DioFailureMapper.retryAfterSeconds(err.response?.headers);
+    final requested = DioFailureMapper.retryAfterSeconds(err.response?.headers);
 
     if (requested != null) {
       final wait = Duration(seconds: requested);
@@ -124,7 +123,8 @@ class RetryInterceptor extends Interceptor {
     // رحلة) — والوسمُ هو ما يفرّق: هذا لم يغادر الجهازَ أصلاً، وثلاثُ إعاداتٍ
     // بتراجعٍ ١+٢+٤ ثانية تُمنع الثلاثُ من الباب نفسِه. وسبعُ ثوانٍ ثمناً
     // لجوابٍ معلومٍ سلفاً: لا مقبس. ووضعُ الطيران لا يزول بالانتظار.
-    if (err.requestOptions.extra[InternetCheckerInterceptor.blockedOfflineKey] ==
+    if (err.requestOptions.extra[InternetCheckerInterceptor
+            .blockedOfflineKey] ==
         true) {
       return false;
     }

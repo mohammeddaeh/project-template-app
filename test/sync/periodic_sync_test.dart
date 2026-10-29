@@ -9,7 +9,8 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:app_template/modules/sync/config/sync_mode.dart';
 import 'package:app_template/modules/sync/config/sync_settings.dart';
 import 'package:app_template/modules/sync/config/sync_settings_store.dart';
-import 'package:app_template/modules/sync/data/sync_cursor_store.dart';import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
+import 'package:app_template/modules/sync/data/sync_cursor_store.dart';
+import 'package:app_template/modules/sync/data/sync_cycle_stamp.dart';
 import 'package:app_template/modules/sync/data/sync_database.dart';
 import 'package:app_template/modules/sync/data/sync_operations_log.dart';
 import 'package:app_template/modules/sync/domain/sync_entity_store.dart';
@@ -18,7 +19,8 @@ import 'package:app_template/modules/sync/engine/sync_backoff_policy.dart';
 import 'package:app_template/modules/sync/engine/sync_conflict_resolver.dart';
 import 'package:app_template/modules/sync/engine/sync_engine.dart';
 import 'package:app_template/modules/sync/integration/sync_controller.dart';
-import 'package:app_template/modules/sync/domain/sync_queue_signal.dart';import 'package:app_template/modules/sync/integration/sync_gate.dart';
+import 'package:app_template/modules/sync/domain/sync_queue_signal.dart';
+import 'package:app_template/modules/sync/integration/sync_gate.dart';
 import 'package:app_template/modules/sync/integration/sync_lock.dart';
 import 'package:app_template/modules/sync/sdk/sync_sdk_config.dart';
 import 'package:app_template/modules/sync/validation/sync_contract_migrator.dart';
@@ -56,7 +58,9 @@ void main() {
   /// `_bindConnectivity` raises an async error before `_setupPeriodic` is ever
   /// reached — which would make this file test the wrong thing. The handler
   /// below emits nothing; it only lets the subscription succeed.
-  const eventChannel = EventChannel('dev.fluttercommunity.plus/connectivity_status');
+  const eventChannel = EventChannel(
+    'dev.fluttercommunity.plus/connectivity_status',
+  );
 
   setUp(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -92,37 +96,43 @@ void main() {
       expect(config.periodicIntervalSeconds, greaterThan(0));
     });
 
-    test('an explicit null still disables the timer — the opt-out survives', () {
-      // `SETUP.md` documents `null = disable timer`. Fixing the default must
-      // not remove the choice, only stop it being made by accident.
-      const config = SyncSdkConfig(periodicIntervalSeconds: null);
+    test(
+      'an explicit null still disables the timer — the opt-out survives',
+      () {
+        // `SETUP.md` documents `null = disable timer`. Fixing the default must
+        // not remove the choice, only stop it being made by accident.
+        const config = SyncSdkConfig(periodicIntervalSeconds: null);
 
-      expect(config.periodicIntervalSeconds, isNull);
-    });
+        expect(config.periodicIntervalSeconds, isNull);
+      },
+    );
   });
 
   group('SyncController.init — what the settings actually produce', () {
-    test('active + enabled + default interval installs a periodic timer', () async {
-      final probe = await _runInit(
-        SyncSettings(
-          mode: SyncMode.active,
-          syncEnabled: true,
-          wifiOnly: false,
-          periodicIntervalSeconds:
-              SyncSdkConfig.defaultPeriodicIntervalSeconds,
-        ),
-      );
+    test(
+      'active + enabled + default interval installs a periodic timer',
+      () async {
+        final probe = await _runInit(
+          SyncSettings(
+            mode: SyncMode.active,
+            syncEnabled: true,
+            wifiOnly: false,
+            periodicIntervalSeconds:
+                SyncSdkConfig.defaultPeriodicIntervalSeconds,
+          ),
+        );
 
-      expect(
-        probe.periodicDurations,
-        hasLength(1),
-        reason: 'Timer.periodic was never created — periodic sync is off.',
-      );
-      expect(
-        probe.periodicDurations.single,
-        const Duration(seconds: SyncSdkConfig.defaultPeriodicIntervalSeconds),
-      );
-    });
+        expect(
+          probe.periodicDurations,
+          hasLength(1),
+          reason: 'Timer.periodic was never created — periodic sync is off.',
+        );
+        expect(
+          probe.periodicDurations.single,
+          const Duration(seconds: SyncSdkConfig.defaultPeriodicIntervalSeconds),
+        );
+      },
+    );
 
     test('a null interval installs nothing — the documented opt-out', () async {
       final probe = await _runInit(
@@ -229,7 +239,12 @@ SyncController _buildController(SyncSettings settings) {
     settingsStore,
     connectivity,
     engine,
-    SyncGate(settingsStore, connectivity, _UnusedSession(), _UnusedReachability()),
+    SyncGate(
+      settingsStore,
+      connectivity,
+      _UnusedSession(),
+      _UnusedReachability(),
+    ),
     SyncQueueSignal(),
     null, // بلا خدمةِ دورةِ حياة — راجع `_lifecycle`
   );

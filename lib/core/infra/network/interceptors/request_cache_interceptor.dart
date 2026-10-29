@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -109,7 +109,7 @@ class RequestCacheInterceptor extends Interceptor {
               headers: Headers.fromMap({
                 'x-from-cache': ['true'],
                 'x-cache-age': [
-                  '${DateTime.now().millisecondsSinceEpoch - entry.cachedAt}ms'
+                  '${DateTime.now().millisecondsSinceEpoch - entry.cachedAt}ms',
                 ],
               }),
             ),
@@ -146,7 +146,10 @@ class RequestCacheInterceptor extends Interceptor {
         cachedAt: DateTime.now().millisecondsSinceEpoch,
       );
       _storage.writeString('$_keyPrefix$cacheKey', entry.toJson());
-      LogService.info('Cache WRITE — ${response.requestOptions.path}', tag: 'CACHE');
+      LogService.info(
+        'Cache WRITE — ${response.requestOptions.path}',
+        tag: 'CACHE',
+      );
     }
 
     handler.next(response);
@@ -155,7 +158,10 @@ class RequestCacheInterceptor extends Interceptor {
   // ── Cache management ───────────────────────────────────────────────────────
 
   /// Removes the cached response for [path] + optional [queryParameters].
-  Future<void> invalidate(String path, {Map<String, dynamic>? queryParameters}) {
+  Future<void> invalidate(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) {
     final key = _buildKeyFromParts(path, queryParameters ?? {});
     return _storage.delete('$_keyPrefix$key');
   }
@@ -195,12 +201,8 @@ class RequestCacheInterceptor extends Interceptor {
   static String _buildKey(RequestOptions options) =>
       _buildKeyFromParts(options.path, options.queryParameters);
 
-  static String _buildKeyFromParts(
-    String path,
-    Map<String, dynamic> params,
-  ) {
-    final query = params.entries
-        .toList()
+  static String _buildKeyFromParts(String path, Map<String, dynamic> params) {
+    final query = params.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
     final queryStr = query.map((e) => '${e.key}=${e.value}').join('&');
     return queryStr.isEmpty ? path : '$path?$queryStr';

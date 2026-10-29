@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'package:app_template/core/platform/locale/app_locale.dart';
 import 'package:app_template/ui/locale/locale_extension.dart';
@@ -14,8 +14,8 @@ class LocaleTextToggleVariant extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final current  = context.appLocale;
-    final primary  = Theme.of(context).colorScheme.primary;
+    final current = context.appLocale;
+    final primary = Theme.of(context).colorScheme.primary;
     final disabled = Theme.of(context).colorScheme.outline;
 
     return Row(
@@ -30,9 +30,9 @@ class LocaleTextToggleVariant extends StatelessWidget {
             child: Text(
               LocaleSwitcherController.labelFor(locale),
               style: TextStyle(
-                color:      isActive ? primary : disabled,
+                color: isActive ? primary : disabled,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
-                fontSize:   14,
+                fontSize: 14,
               ),
             ),
           ),

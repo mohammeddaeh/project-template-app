@@ -1,4 +1,4 @@
-﻿import 'package:app_template/core/platform/features/app_features.dart';
+import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -31,10 +31,7 @@ class SyncSDK {
 
   static bool _isInitialized = false;
 
-  static Future<void> initialize(
-    SyncSdkConfig config,
-    GetIt di,
-  ) async {
+  static Future<void> initialize(SyncSdkConfig config, GetIt di) async {
     if (_isInitialized) return;
 
     // Hard gate: if the feature flag is off, exit immediately — zero overhead.

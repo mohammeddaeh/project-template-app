@@ -21,7 +21,8 @@ class VerifyEmailRepositoryImpl extends BaseRepository
   final CurrentUserRepository _currentUserRepository;
 
   @override
-  Future<Either<Failure, AuthUser>> verifyEmail(String code) => handle(() async {
+  Future<Either<Failure, AuthUser>> verifyEmail(String code) =>
+      handle(() async {
         final res = await _dataSource.verifyEmail(code);
 
         if (res.error != null) {
@@ -53,21 +54,21 @@ class VerifyEmailRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<Failure, void>> resendVerification() => handle(() async {
-        final res = await _dataSource.resendVerification();
+    final res = await _dataSource.resendVerification();
 
-        if (res.error != null) {
-          // The server's own message is passed through rather than replaced by
-          // a local string: only it knows which refusal this was — a cooldown,
-          // an already-verified account, or verification being switched off —
-          // and the three need different words. `message_key` in
-          // `error.data` is there for a caller that must branch programmatically.
-          return Left(
-            BusinessFailure(
-              statusCode: res.error!.code ?? 400,
-              serverMessage: res.message.isNotEmpty ? res.message : null,
-            ),
-          );
-        }
-        return const Right(null);
-      });
+    if (res.error != null) {
+      // The server's own message is passed through rather than replaced by
+      // a local string: only it knows which refusal this was — a cooldown,
+      // an already-verified account, or verification being switched off —
+      // and the three need different words. `message_key` in
+      // `error.data` is there for a caller that must branch programmatically.
+      return Left(
+        BusinessFailure(
+          statusCode: res.error!.code ?? 400,
+          serverMessage: res.message.isNotEmpty ? res.message : null,
+        ),
+      );
+    }
+    return const Right(null);
+  });
 }

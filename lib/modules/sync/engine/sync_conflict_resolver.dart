@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -67,14 +67,16 @@ class SyncConflictResolver {
     return switch (strategy) {
       SyncConflictStrategy.serverWins => _serverWins(localRecord, conflict),
       SyncConflictStrategy.clientWins => _clientWins(localRecord, conflict),
-      SyncConflictStrategy.lastWriteWins =>
-        _lastWriteWins(localRecord, conflict),
+      SyncConflictStrategy.lastWriteWins => _lastWriteWins(
+        localRecord,
+        conflict,
+      ),
       SyncConflictStrategy.merge => _merge(localRecord, conflict),
       SyncConflictStrategy.manual => ManualResolutionRequired(
-          localRecord: localRecord,
-          serverSnapshot: conflict.serverVersion ?? {},
-          conflictFields: conflict.conflictFields,
-        ),
+        localRecord: localRecord,
+        serverSnapshot: conflict.serverVersion ?? {},
+        conflictFields: conflict.conflictFields,
+      ),
     };
   }
 
@@ -145,10 +147,7 @@ class SyncConflictResolver {
     return _clientWins(local, conflict);
   }
 
-  ConflictResolution _merge(
-    SyncEntityRecord local,
-    ConflictFailure conflict,
-  ) {
+  ConflictResolution _merge(SyncEntityRecord local, ConflictFailure conflict) {
     final sv = conflict.serverVersion;
     if (sv == null || conflict.conflictFields.isEmpty) {
       // Nothing to merge — either the server sent no snapshot, or it named no

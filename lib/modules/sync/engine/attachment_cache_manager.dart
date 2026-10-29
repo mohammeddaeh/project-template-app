@@ -54,7 +54,11 @@ class CacheUsage {
 /// to prevent**: the disk fills mid-round, the sweep runs, and the reference
 /// document for the next site is deleted with no way to get it back.
 class AttachmentCacheManager {
-  AttachmentCacheManager(this._store, this._files, {this.budgetBytes = _defaultBudget});
+  AttachmentCacheManager(
+    this._store,
+    this._files, {
+    this.budgetBytes = _defaultBudget,
+  });
 
   final AttachmentStore _store;
   final AttachmentFileStore _files;
@@ -69,8 +73,10 @@ class AttachmentCacheManager {
   Future<CacheUsage> usage() async {
     final total = await _files.totalBytes();
     final evictable = await _store.findEvictable(limit: 100000);
-    final evictableBytes =
-        evictable.fold<int>(0, (sum, r) => sum + (r.sizeBytes ?? 0));
+    final evictableBytes = evictable.fold<int>(
+      0,
+      (sum, r) => sum + (r.sizeBytes ?? 0),
+    );
     return CacheUsage(
       totalBytes: total,
       evictableBytes: evictableBytes,
@@ -110,12 +116,14 @@ class AttachmentCacheManager {
         if (record.checksum != null) {
           await _files.deleteContent(record.checksum!);
         }
-        await _store.upsert(record.copyWith(
-          clearLocalPath: true,
-          downloadStatus: AttachmentDownloadStatus.absent,
-          bytesReceived: 0,
-          updatedAt: DateTime.now().millisecondsSinceEpoch,
-        ));
+        await _store.upsert(
+          record.copyWith(
+            clearLocalPath: true,
+            downloadStatus: AttachmentDownloadStatus.absent,
+            bytesReceived: 0,
+            updatedAt: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
         freed += size;
         toFree -= size;
       } catch (e) {

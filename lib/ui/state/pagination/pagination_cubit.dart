@@ -173,9 +173,7 @@ abstract class PaginationCubit<E> extends SafeCubit<PaginationState<E>> {
 
     emit(
       successState.copyWith(
-        paginationEntity: successState.paginationEntity.copyWith(
-          data: updated,
-        ),
+        paginationEntity: successState.paginationEntity.copyWith(data: updated),
       ),
     );
   }
@@ -190,9 +188,7 @@ abstract class PaginationCubit<E> extends SafeCubit<PaginationState<E>> {
 
     emit(
       successState.copyWith(
-        paginationEntity: successState.paginationEntity.copyWith(
-          data: backup,
-        ),
+        paginationEntity: successState.paginationEntity.copyWith(data: backup),
       ),
     );
   }
@@ -214,9 +210,7 @@ abstract class PaginationCubit<E> extends SafeCubit<PaginationState<E>> {
 
     emit(
       successState.copyWith(
-        paginationEntity: successState.paginationEntity.copyWith(
-          data: updated,
-        ),
+        paginationEntity: successState.paginationEntity.copyWith(data: updated),
       ),
     );
   }

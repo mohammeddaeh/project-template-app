@@ -1,4 +1,4 @@
-﻿import 'package:app_template/core/platform/logging/log_service.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/modules/analytics/adapters/firebase_analytics_adapter.dart';
 import 'package:app_template/modules/analytics/analytics_service.dart';
 import 'package:get_it/get_it.dart';
@@ -30,10 +30,7 @@ abstract final class AnalyticsModule {
   /// Registers [AnalyticsService] in [di].
   ///
   /// [enabled] — pass `false` during development to silence Firebase uploads.
-  static Future<void> initialize(
-    GetIt di, {
-    bool enabled = true,
-  }) async {
+  static Future<void> initialize(GetIt di, {bool enabled = true}) async {
     if (_initialized) return;
 
     final adapter = FirebaseAnalyticsAdapter();
@@ -42,8 +39,10 @@ abstract final class AnalyticsModule {
     di.registerSingleton<AnalyticsService>(adapter);
 
     _initialized = true;
-    LogService.info('AnalyticsModule initialized (enabled=$enabled)',
-        tag: 'ANALYTICS');
+    LogService.info(
+      'AnalyticsModule initialized (enabled=$enabled)',
+      tag: 'ANALYTICS',
+    );
   }
 
   // ── Convenience helpers ───────────────────────────────────────────────────

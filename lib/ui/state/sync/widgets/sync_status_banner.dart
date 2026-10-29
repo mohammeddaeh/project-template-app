@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,10 +18,7 @@ import '../offline_ux_cubit.dart';
 /// ])
 /// ```
 class SyncStatusBanner extends StatelessWidget {
-  const SyncStatusBanner({
-    super.key,
-    this.position = BannerPosition.top,
-  });
+  const SyncStatusBanner({super.key, this.position = BannerPosition.top});
 
   final BannerPosition position;
 
@@ -37,28 +34,29 @@ class SyncStatusBanner extends StatelessWidget {
                 : const Offset(0, 1);
             return SlideTransition(
               position: animation.drive(
-                Tween(begin: offset, end: Offset.zero).chain(
-                  CurveTween(curve: Curves.easeOut),
-                ),
+                Tween(
+                  begin: offset,
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeOut)),
               ),
               child: child,
             );
           },
           child: switch (state) {
             OfflineState() => _BannerTile(
-                key: const ValueKey('offline'),
-                icon: Icons.cloud_off_rounded,
-                message: LocaleKeys.noInternetConnection.tr(),
-                color: context.colors.stateError,
-                onColor: context.colors.onErrorContainer,
-              ),
+              key: const ValueKey('offline'),
+              icon: Icons.cloud_off_rounded,
+              message: LocaleKeys.noInternetConnection.tr(),
+              color: context.colors.stateError,
+              onColor: context.colors.onErrorContainer,
+            ),
             PendingChangesState(:final pendingCount) => _BannerTile(
-                key: const ValueKey('pending'),
-                icon: Icons.sync_rounded,
-                message: '$pendingCount pending changes — will sync when online',
-                color: context.colors.statusWarningFg,
-                onColor: context.colors.textPrimary,
-              ),
+              key: const ValueKey('pending'),
+              icon: Icons.sync_rounded,
+              message: '$pendingCount pending changes — will sync when online',
+              color: context.colors.statusWarningFg,
+              onColor: context.colors.textPrimary,
+            ),
             _ => const SizedBox.shrink(key: ValueKey('hidden')),
           },
         );
@@ -86,26 +84,25 @@ class _BannerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-        color: color.withValues(alpha: 0.15),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  message,
-                  style: context.textTheme.labelMedium?.copyWith(
-                        color: color,
-                        fontWeight: FontWeight.w600,
-                      ),
+      color: color.withValues(alpha: 0.15),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                message,
+                style: context.textTheme.labelMedium?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }
-

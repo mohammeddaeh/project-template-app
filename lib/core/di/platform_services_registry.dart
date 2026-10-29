@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:app_template/core/infra/network/security/certificate_pinning_config.dart';
 import 'package:app_template/core/platform/biometrics/biometrics_service.dart';
 import 'package:app_template/core/platform/biometrics/biometrics_service_impl.dart';
@@ -79,9 +79,7 @@ abstract final class PlatformServicesRegistry {
 
   static void _registerShare(GetIt getIt) {
     if (!AppFeatures.shareSheet) return;
-    getIt.registerLazySingleton<ShareService>(
-      () => const ShareServiceImpl(),
-    );
+    getIt.registerLazySingleton<ShareService>(() => const ShareServiceImpl());
   }
 
   // ── P9 — File operations ───────────────────────────────────────────────────

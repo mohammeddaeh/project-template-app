@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
@@ -134,11 +134,17 @@ class _AppSearchBarState extends State<AppSearchBar> {
         ),
         filled: true,
         fillColor: bg,
-        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 16,
+        ),
         border: _border(context.colors.borderSubtle),
         enabledBorder: _border(context.colors.borderSubtle),
         focusedBorder: _border(context.colors.primary),
-        prefixIcon: Icon(Icons.search_rounded, color: context.colors.iconSubtle),
+        prefixIcon: Icon(
+          Icons.search_rounded,
+          color: context.colors.iconSubtle,
+        ),
         suffixIcon: _buildSuffix(context),
       ),
     );
@@ -165,7 +171,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
   }
 
   OutlineInputBorder _border(Color color) => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: color, width: 1),
-      );
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide(color: color, width: 1),
+  );
 }

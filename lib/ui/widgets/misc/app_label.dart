@@ -1,16 +1,9 @@
-﻿import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 /// أنواع الـ labels الدلالية.
-enum AppLabelVariant {
-  success,
-  warning,
-  error,
-  info,
-  neutral,
-  primary,
-}
+enum AppLabelVariant { success, warning, error, info, neutral, primary }
 
 /// شارة نصية صغيرة تعبّر عن حالة دلالية (نجاح / تحذير / خطأ / ...).
 ///
@@ -50,9 +43,9 @@ class AppLabel extends StatelessWidget {
     this.onTap,
     this.compact = false,
   }) : assert(
-          labelKey != null || labelText != null,
-          'AppLabel: provide labelKey or labelText',
-        );
+         labelKey != null || labelText != null,
+         'AppLabel: provide labelKey or labelText',
+       );
 
   final String? labelKey;
   final String? labelText;
@@ -72,12 +65,24 @@ class AppLabel extends StatelessWidget {
     final textTheme = context.textTheme;
 
     final (bg, fg) = switch (variant) {
-      AppLabelVariant.success => (colors.statusSuccessBg, colors.statusSuccessFg),
-      AppLabelVariant.warning => (colors.statusWarningBg, colors.statusWarningFg),
-      AppLabelVariant.error   => (colors.statusErrorBg,   colors.statusErrorFg),
-      AppLabelVariant.info    => (colors.statusInfoBg,    colors.statusInfoFg),
-      AppLabelVariant.neutral => (colors.statusNeutralBg, colors.statusNeutralFg),
-      AppLabelVariant.primary => (colors.primaryContainer, colors.onPrimaryContainer),
+      AppLabelVariant.success => (
+        colors.statusSuccessBg,
+        colors.statusSuccessFg,
+      ),
+      AppLabelVariant.warning => (
+        colors.statusWarningBg,
+        colors.statusWarningFg,
+      ),
+      AppLabelVariant.error => (colors.statusErrorBg, colors.statusErrorFg),
+      AppLabelVariant.info => (colors.statusInfoBg, colors.statusInfoFg),
+      AppLabelVariant.neutral => (
+        colors.statusNeutralBg,
+        colors.statusNeutralFg,
+      ),
+      AppLabelVariant.primary => (
+        colors.primaryContainer,
+        colors.onPrimaryContainer,
+      ),
     };
 
     final label = labelKey != null ? labelKey!.tr() : labelText!;

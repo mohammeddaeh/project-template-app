@@ -44,10 +44,10 @@ class VerifiedAccountModel {
   /// carries only what verification changed — overwriting the cached user with
   /// it would blank out their name, phone and requested role.
   AuthUser applyTo(AuthUser user) => user.copyWith(
-        status: authUserStatusFromWire(status),
-        emailVerified: emailVerified,
-        emailVerifiedAt: emailVerifiedAt != null
-            ? DateTime.tryParse(emailVerifiedAt!)
-            : null,
-      );
+    status: authUserStatusFromWire(status),
+    emailVerified: emailVerified,
+    emailVerifiedAt: emailVerifiedAt != null
+        ? DateTime.tryParse(emailVerifiedAt!)
+        : null,
+  );
 }

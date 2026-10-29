@@ -7,5 +7,4 @@ class AppFontFamilies {
 
   /// Weights: 400, 500, 700
   static const String itfQomraArabic = 'itfQomraArabic';
-
 }

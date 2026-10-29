@@ -24,7 +24,11 @@ class SqlSyncEntityStore implements SyncEntityStore {
   Future<void> upsertRecord(SyncEntityRecord record) async {
     final db = await _database.database;
     await db.transaction((txn) async {
-      await txn.insert('synced_entities', _toMap(record), conflictAlgorithm: ConflictAlgorithm.replace);
+      await txn.insert(
+        'synced_entities',
+        _toMap(record),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     });
     // After the commit, never before: a listener that refreshes on the
     // announcement would otherwise read the state that existed before it.
@@ -100,7 +104,10 @@ class SqlSyncEntityStore implements SyncEntityStore {
       // The second clause is what makes rows sharing a millisecond resumable:
       // without it a page boundary inside such a group skips the rest of it.
       where.write(' AND (updated_at < ? OR (updated_at = ? AND local_id < ?))');
-      args..add(cursor.updatedAt)..add(cursor.updatedAt)..add(cursor.localId);
+      args
+        ..add(cursor.updatedAt)
+        ..add(cursor.updatedAt)
+        ..add(cursor.localId);
     }
 
     final rows = await db.query(
@@ -132,7 +139,9 @@ class SqlSyncEntityStore implements SyncEntityStore {
     for (final record in records) {
       try {
         parsed.add(
-          contract.fromJson(jsonDecode(record.dataJson) as Map<String, dynamic>),
+          contract.fromJson(
+            jsonDecode(record.dataJson) as Map<String, dynamic>,
+          ),
         );
       } catch (e) {
         // Skipped, not fatal — one unreadable row must not blank a list. And
@@ -179,7 +188,9 @@ class SqlSyncEntityStore implements SyncEntityStore {
     for (var start = 0; start < localIds.length; start += chunkSize) {
       final chunk = localIds.sublist(
         start,
-        start + chunkSize > localIds.length ? localIds.length : start + chunkSize,
+        start + chunkSize > localIds.length
+            ? localIds.length
+            : start + chunkSize,
       );
       final placeholders = List.filled(chunk.length, '?').join(', ');
       final rows = await db.query(

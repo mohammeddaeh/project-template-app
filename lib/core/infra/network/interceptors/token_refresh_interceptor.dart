@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
@@ -31,11 +31,7 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 /// Wired manually in [InjectableModule.dioInstance] only when
 /// [TokenRefreshGateway] is registered.
 class TokenRefreshInterceptor extends Interceptor {
-  TokenRefreshInterceptor(
-    this._dio,
-    this._refreshGateway,
-    this._authGateway,
-  );
+  TokenRefreshInterceptor(this._dio, this._refreshGateway, this._authGateway);
 
   final Dio _dio;
   final TokenRefreshGateway _refreshGateway;
@@ -54,14 +50,20 @@ class TokenRefreshInterceptor extends Interceptor {
     // If THIS request is the refresh call itself — the server answered 401 to
     // the credential's own renewal, which is as terminal as an answer gets.
     if (err.requestOptions.extra['_isRefreshRequest'] == true) {
-      LogService.error('Token refresh request returned 401', tag: 'TOKEN-REFRESH');
+      LogService.error(
+        'Token refresh request returned 401',
+        tag: 'TOKEN-REFRESH',
+      );
       return _handleRefreshFailure(err, handler, cause: err);
     }
 
     try {
       if (_refreshCompleter != null) {
         // Another request is already refreshing — wait for it to complete
-        LogService.info('Waiting for in-progress token refresh…', tag: 'TOKEN-REFRESH');
+        LogService.info(
+          'Waiting for in-progress token refresh…',
+          tag: 'TOKEN-REFRESH',
+        );
         await _refreshCompleter!.future;
       } else {
         // Start the refresh

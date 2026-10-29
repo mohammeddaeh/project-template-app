@@ -66,8 +66,17 @@ class TransferResource extends Equatable {
   String label({required bool isArabic}) => isArabic ? labelAr : labelEn;
 
   @override
-  List<Object?> get props => [name, labelAr, labelEn, exportFormats,
-        importFormats, maxExportRows, supportsImport, columns, filters];
+  List<Object?> get props => [
+    name,
+    labelAr,
+    labelEn,
+    exportFormats,
+    importFormats,
+    maxExportRows,
+    supportsImport,
+    columns,
+    filters,
+  ];
 }
 
 /// One filter control on the export screen.
@@ -96,8 +105,15 @@ class TransferFilter extends Equatable {
       isArabic ? placeholderAr : placeholderEn;
 
   @override
-  List<Object?> get props =>
-      [key, labelAr, labelEn, type, placeholderAr, placeholderEn, options];
+  List<Object?> get props => [
+    key,
+    labelAr,
+    labelEn,
+    type,
+    placeholderAr,
+    placeholderEn,
+    options,
+  ];
 }
 
 class TransferFilterOption extends Equatable {
@@ -129,11 +145,11 @@ enum TransferFilterType {
   unknown;
 
   static TransferFilterType fromWire(String? value) => switch (value) {
-        'text' => TransferFilterType.text,
-        'select' => TransferFilterType.select,
-        'boolean' => TransferFilterType.boolean,
-        _ => TransferFilterType.unknown,
-      };
+    'text' => TransferFilterType.text,
+    'select' => TransferFilterType.select,
+    'boolean' => TransferFilterType.boolean,
+    _ => TransferFilterType.unknown,
+  };
 }
 
 class TransferColumn extends Equatable {
@@ -178,8 +194,17 @@ class TransferColumn extends Equatable {
   String? hint({required bool isArabic}) => isArabic ? hintAr : hintEn;
 
   @override
-  List<Object?> get props =>
-      [key, labelAr, labelEn, type, required, importable, example, hintAr, hintEn];
+  List<Object?> get props => [
+    key,
+    labelAr,
+    labelEn,
+    type,
+    required,
+    importable,
+    example,
+    hintAr,
+    hintEn,
+  ];
 }
 
 /// Closed set, matching the server's `ColumnType`.

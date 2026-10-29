@@ -15,14 +15,16 @@ class SettingsState extends Equatable {
     bool? notificationsEnabled,
     String? appVersion,
     bool? isClearingCache,
-  }) =>
-      SettingsState(
-        notificationsEnabled:
-            notificationsEnabled ?? this.notificationsEnabled,
-        appVersion: appVersion ?? this.appVersion,
-        isClearingCache: isClearingCache ?? this.isClearingCache,
-      );
+  }) => SettingsState(
+    notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+    appVersion: appVersion ?? this.appVersion,
+    isClearingCache: isClearingCache ?? this.isClearingCache,
+  );
 
   @override
-  List<Object?> get props => [notificationsEnabled, appVersion, isClearingCache];
+  List<Object?> get props => [
+    notificationsEnabled,
+    appVersion,
+    isClearingCache,
+  ];
 }

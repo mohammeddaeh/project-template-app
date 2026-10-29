@@ -18,12 +18,11 @@ class LoginRequestDto {
   final String? deviceInfo;
 
   Map<String, dynamic> toJson() => {
-        'email': email,
-        'password': password,
-        // Omitted rather than sent as null: zod's `.optional()` accepts an
-        // absent key and rejects an explicit null, so sending one would fail
-        // validation on a field nobody asked for.
-        if (deviceInfo != null && deviceInfo!.isNotEmpty)
-          'device_info': deviceInfo,
-      };
+    'email': email,
+    'password': password,
+    // Omitted rather than sent as null: zod's `.optional()` accepts an
+    // absent key and rejects an explicit null, so sending one would fail
+    // validation on a field nobody asked for.
+    if (deviceInfo != null && deviceInfo!.isNotEmpty) 'device_info': deviceInfo,
+  };
 }

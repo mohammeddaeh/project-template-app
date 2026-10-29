@@ -1,4 +1,4 @@
-﻿import 'package:app_template/core/foundation/errors/failure.dart';
+import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/platform/storage/secure_storage_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -17,8 +17,11 @@ class FlutterSecureStorageAdapter implements SecureStorageService {
   final FlutterSecureStorage _storage;
 
   @override
-  Future<void> write(String key, String value) =>
-      _wrap(() => _storage.write(key: key, value: value), key, StorageOperation.write);
+  Future<void> write(String key, String value) => _wrap(
+    () => _storage.write(key: key, value: value),
+    key,
+    StorageOperation.write,
+  );
 
   @override
   Future<String?> read(String key) async {
@@ -74,11 +77,7 @@ class FlutterSecureStorageAdapter implements SecureStorageService {
     try {
       await call();
     } catch (e) {
-      throw StorageFailure(
-        operation: op,
-        key: key,
-        message: e.toString(),
-      );
+      throw StorageFailure(operation: op, key: key, message: e.toString());
     }
   }
 }

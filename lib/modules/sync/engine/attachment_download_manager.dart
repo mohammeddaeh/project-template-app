@@ -107,7 +107,8 @@ class AttachmentDownloadManager {
 
     return _inFlight.putIfAbsent(
       attachmentId,
-      () => _download(record).whenComplete(() => _inFlight.remove(attachmentId)),
+      () =>
+          _download(record).whenComplete(() => _inFlight.remove(attachmentId)),
     );
   }
 
@@ -117,10 +118,12 @@ class AttachmentDownloadManager {
       return const AttachmentUnavailable(AttachmentUnavailability.fetchFailed);
     }
 
-    await _store.upsert(record.copyWith(
-      downloadStatus: AttachmentDownloadStatus.downloading,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await _store.upsert(
+      record.copyWith(
+        downloadStatus: AttachmentDownloadStatus.downloading,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
 
     try {
       final alreadyHave = await _files.partialLength(record.attachmentId);
@@ -164,7 +167,11 @@ class AttachmentDownloadManager {
           tag: _tag,
         );
         await _files.discardPartial(record.attachmentId);
-        return await _fail(record, AttachmentUnavailability.corrupt, 'no checksum');
+        return await _fail(
+          record,
+          AttachmentUnavailability.corrupt,
+          'no checksum',
+        );
       }
 
       final published = await _files.verifyAndPublish(
@@ -173,20 +180,26 @@ class AttachmentDownloadManager {
       );
 
       if (published == null) {
-        return await _fail(record, AttachmentUnavailability.corrupt, 'checksum mismatch');
+        return await _fail(
+          record,
+          AttachmentUnavailability.corrupt,
+          'checksum mismatch',
+        );
       }
 
       final now = DateTime.now().millisecondsSinceEpoch;
-      await _store.upsert(record.copyWith(
-        localPath: published.path,
-        sizeBytes: published.lengthSync(),
-        bytesReceived: received,
-        downloadStatus: AttachmentDownloadStatus.downloaded,
-        lastAccessedAt: now,
-        retryCount: 0,
-        clearLastError: true,
-        updatedAt: now,
-      ));
+      await _store.upsert(
+        record.copyWith(
+          localPath: published.path,
+          sizeBytes: published.lengthSync(),
+          bytesReceived: received,
+          downloadStatus: AttachmentDownloadStatus.downloaded,
+          lastAccessedAt: now,
+          retryCount: 0,
+          clearLastError: true,
+          updatedAt: now,
+        ),
+      );
 
       return AttachmentReady(published);
     } catch (e) {
@@ -207,12 +220,14 @@ class AttachmentDownloadManager {
     AttachmentUnavailability reason,
     String error,
   ) async {
-    await _store.upsert(record.copyWith(
-      downloadStatus: AttachmentDownloadStatus.failed,
-      retryCount: record.retryCount + 1,
-      lastError: error,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    ));
+    await _store.upsert(
+      record.copyWith(
+        downloadStatus: AttachmentDownloadStatus.failed,
+        retryCount: record.retryCount + 1,
+        lastError: error,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
     return AttachmentUnavailable(reason);
   }
 }

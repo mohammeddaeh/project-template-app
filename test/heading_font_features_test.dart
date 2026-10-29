@@ -30,13 +30,11 @@ import 'package:app_template/ui/theme/app_theme.dart';
 void main() {
   const ss01 = FontFeature('ss01');
 
-  bool carries(TextStyle? style) => style?.fontFeatures?.contains(ss01) ?? false;
+  bool carries(TextStyle? style) =>
+      style?.fontFeatures?.contains(ss01) ?? false;
 
   // Arabic locale so both options resolve to their Arabic family.
-  final qomra = AppThemeData.light(
-    const Locale('ar'),
-    AppFonts.byKey('qomra'),
-  );
+  final qomra = AppThemeData.light(const Locale('ar'), AppFonts.byKey('qomra'));
   final sans = AppThemeData.light(const Locale('ar'), AppFonts.byKey('sans'));
 
   group('Qomra — headings at 18px and above', () {

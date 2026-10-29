@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,7 +35,8 @@ class PendingChangesChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!AppFeatures.offlineSync || !getIt.isRegistered<SyncQueueRepository>()) {
+    if (!AppFeatures.offlineSync ||
+        !getIt.isRegistered<SyncQueueRepository>()) {
       return const SizedBox.shrink();
     }
 
@@ -71,11 +72,17 @@ class _PendingChangesBadge extends StatelessWidget {
                     : () => context.read<SyncManagerCubit>().triggerSync(),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: context.colors.statusWarningBg,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: context.colors.statusWarningFg, width: 1),
+                    border: Border.all(
+                      color: context.colors.statusWarningFg,
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -96,9 +103,9 @@ class _PendingChangesBadge extends StatelessWidget {
                       Text(
                         '$pendingCount',
                         style: context.textTheme.labelSmall?.copyWith(
-                              color: context.colors.statusWarningFg,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          color: context.colors.statusWarningFg,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
@@ -111,4 +118,3 @@ class _PendingChangesBadge extends StatelessWidget {
     );
   }
 }
-

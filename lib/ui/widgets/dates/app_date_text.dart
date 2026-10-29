@@ -113,10 +113,7 @@ class AppDateText extends StatelessWidget {
         : _buildGregorian(languageCode, resolvedArabic);
 
     if (calendar != AppDateCalendar.both) {
-      return Text(
-        hijriText ?? gregorianText ?? '',
-        style: effectiveStyle,
-      );
+      return Text(hijriText ?? gregorianText ?? '', style: effectiveStyle);
     }
 
     if (layout == AppDateLayout.inline) {

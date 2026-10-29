@@ -13,7 +13,7 @@ abstract class PersistenceKeys {
 
   // ── Settings ───────────────────────────────────────────────────────────────
   static const String notificationsEnabled = 'notifications_enabled';
-  static const String selectedFontKey      = 'selected_font_key';
+  static const String selectedFontKey = 'selected_font_key';
 
   // ── Multi-Device module ────────────────────────────────────────────────────
   /// Stable UUID identifying this device. Generated once on first launch.

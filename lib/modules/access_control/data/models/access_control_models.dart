@@ -54,13 +54,14 @@ Map<String, dynamic> abilitySetToJson(AbilitySet set) => {
 };
 
 /// `GET /authz/catalog` → `data`.
-PermissionCatalog catalogFromJson(Map<String, dynamic> json) => PermissionCatalog(
-  enforced: json['enabled'] == true,
-  groups: (json['groups'] as List<dynamic>? ?? const [])
-      .whereType<Map<String, dynamic>>()
-      .map(_groupFromJson)
-      .toList(),
-);
+PermissionCatalog catalogFromJson(Map<String, dynamic> json) =>
+    PermissionCatalog(
+      enforced: json['enabled'] == true,
+      groups: (json['groups'] as List<dynamic>? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map(_groupFromJson)
+          .toList(),
+    );
 
 PermissionGroup _groupFromJson(Map<String, dynamic> json) => PermissionGroup(
   resource: json['resource'] as String? ?? '',

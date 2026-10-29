@@ -45,15 +45,18 @@ class UserAccessScreen extends StatelessWidget {
               }
             },
             builder: (context, state) => switch (state) {
-              UserAccessInitial() || UserAccessLoading() => const LoadingWidget(),
+              UserAccessInitial() ||
+              UserAccessLoading() => const LoadingWidget(),
               UserAccessFailed(:final message) => ErrorStateWidget(
                 messageKey: message,
                 onRetry: () => context.read<UserAccessCubit>().load(userId),
               ),
               UserAccessReady() => _Body(state: state, busy: false),
               UserAccessSaving(:final ready) => _Body(state: ready, busy: true),
-              UserAccessActionFailed(:final ready) =>
-                _Body(state: ready, busy: false),
+              UserAccessActionFailed(:final ready) => _Body(
+                state: ready,
+                busy: false,
+              ),
             },
           ),
         ),
@@ -165,7 +168,9 @@ class _OverrideGroup extends StatelessWidget {
         // later" is a role's job, not an exception's.
         ...group.permissions.where((p) => !p.synthetic).map((permission) {
           final effect = access.effectFor(permission.key);
-          final effective = access.effectivePermissions.contains(permission.key);
+          final effective = access.effectivePermissions.contains(
+            permission.key,
+          );
 
           return ListTile(
             dense: true,
@@ -199,7 +204,10 @@ class _EffectChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (effect) {
-      null => (LocaleKeys.overrideInherit.tr(), context.colors.secondaryContainer),
+      null => (
+        LocaleKeys.overrideInherit.tr(),
+        context.colors.secondaryContainer,
+      ),
       OverrideEffect.allow => (
         LocaleKeys.overrideAllow.tr(),
         context.colors.primaryContainer,

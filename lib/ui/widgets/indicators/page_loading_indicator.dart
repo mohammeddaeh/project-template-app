@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/placeholders/shimmer_loading_widget.dart';
@@ -63,7 +63,9 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
     }
     for (int i = 0; i < _dotCtrl.length; i++) {
       Future.delayed(Duration(milliseconds: i * 160), () {
-        if (mounted) { _dotCtrl[i].repeat(reverse: true); }
+        if (mounted) {
+          _dotCtrl[i].repeat(reverse: true);
+        }
       });
     }
   }
@@ -83,7 +85,9 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
   @override
   void dispose() {
     _entryCtrl.dispose();
-    for (final c in _dotCtrl) { c.dispose(); }
+    for (final c in _dotCtrl) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -96,12 +100,12 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
   }
 
   Widget _buildStyle(BuildContext context) => switch (widget.style) {
-    PageLoadingStyle.spinner     => _buildSpinner(context),
-    PageLoadingStyle.linearBar   => _buildLinearBar(context),
-    PageLoadingStyle.shimmerBar  => _buildShimmerBar(context),
-    PageLoadingStyle.dotsWave    => _buildDotsWave(context),
+    PageLoadingStyle.spinner => _buildSpinner(context),
+    PageLoadingStyle.linearBar => _buildLinearBar(context),
+    PageLoadingStyle.shimmerBar => _buildShimmerBar(context),
+    PageLoadingStyle.dotsWave => _buildDotsWave(context),
     PageLoadingStyle.textSpinner => _buildTextSpinner(context),
-    PageLoadingStyle.pulseDots   => _buildPulseDots(context),
+    PageLoadingStyle.pulseDots => _buildPulseDots(context),
   };
 
   // ── Spinner ─────────────────────────────────────────────────────────────────

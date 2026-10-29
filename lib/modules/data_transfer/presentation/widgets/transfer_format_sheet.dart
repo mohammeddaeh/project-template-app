@@ -37,7 +37,8 @@ class TransferFormatSheet extends StatelessWidget {
     return showModalBottomSheet<TransferFormat>(
       context: context,
       showDragHandle: true,
-      builder: (_) => TransferFormatSheet._(formats: formats, titleKey: titleKey),
+      builder: (_) =>
+          TransferFormatSheet._(formats: formats, titleKey: titleKey),
     );
   }
 
@@ -63,7 +64,10 @@ class TransferFormatSheet extends StatelessWidget {
                       : Icons.grid_on_outlined,
                   color: context.colorScheme.primary,
                 ),
-                title: Text(format.label, style: context.textTheme.headlineSmall),
+                title: Text(
+                  format.label,
+                  style: context.textTheme.headlineSmall,
+                ),
                 // The trade-off in one line, so the choice is informed rather
                 // than a coin toss between two acronyms.
                 subtitle: Text(

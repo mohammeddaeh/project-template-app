@@ -9,12 +9,10 @@ class UrlLauncherServiceImpl implements UrlLauncherService {
   Future<bool> launch(String url) => _tryLaunch(url);
 
   @override
-  Future<bool> phone(String phoneNumber) =>
-      _tryLaunch('tel:$phoneNumber');
+  Future<bool> phone(String phoneNumber) => _tryLaunch('tel:$phoneNumber');
 
   @override
-  Future<bool> email(String emailAddress) =>
-      _tryLaunch('mailto:$emailAddress');
+  Future<bool> email(String emailAddress) => _tryLaunch('mailto:$emailAddress');
 
   @override
   Future<bool> whatsapp(String phoneNumber) =>

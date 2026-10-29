@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/states/app_state_widget.dart';
 
 /// حالة الصيانة.
@@ -18,9 +18,9 @@ class MaintenanceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateWidget(
-        type: AppStateType.maintenance,
-        titleKey: titleKey,
-        descriptionKey: descriptionKey,
-        icon: icon,
-      );
+    type: AppStateType.maintenance,
+    titleKey: titleKey,
+    descriptionKey: descriptionKey,
+    icon: icon,
+  );
 }

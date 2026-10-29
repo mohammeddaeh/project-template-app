@@ -27,16 +27,19 @@ void main() {
     expect(settings.mediaWifiOnly, isTrue, reason: 'downloading may wait');
   });
 
-  test('mobile-data permission starts withheld, and is the user\'s to give', () {
-    const settings = SyncSettings(
-      mode: SyncMode.active,
-      syncEnabled: true,
-      wifiOnly: false,
-      periodicIntervalSeconds: null,
-    );
+  test(
+    'mobile-data permission starts withheld, and is the user\'s to give',
+    () {
+      const settings = SyncSettings(
+        mode: SyncMode.active,
+        syncEnabled: true,
+        wifiOnly: false,
+        periodicIntervalSeconds: null,
+      );
 
-    expect(settings.mediaOverMobileApproved, isFalse);
-  });
+      expect(settings.mediaOverMobileApproved, isFalse);
+    },
+  );
 
   test('stopping is a state that is broadcast, not an empty screen', () {
     // «هل نزلت الصور؟» سؤالٌ يُسأل قبل الخروج إلى الميدان، وشاشةٌ تسكت عنه
@@ -48,22 +51,25 @@ void main() {
     );
   });
 
-  test('a snapshot on mobile data says so — a dead button is worse than none', () {
-    const onMobile = MediaPrefetchSnapshot(
-      phase: MediaPrefetchPhase.waitingForWifi,
-      remaining: 80,
-      onMobileData: true,
-    );
-    const noNetwork = MediaPrefetchSnapshot(
-      phase: MediaPrefetchPhase.waitingForWifi,
-      remaining: 80,
-    );
+  test(
+    'a snapshot on mobile data says so — a dead button is worse than none',
+    () {
+      const onMobile = MediaPrefetchSnapshot(
+        phase: MediaPrefetchPhase.waitingForWifi,
+        remaining: 80,
+        onMobileData: true,
+      );
+      const noNetwork = MediaPrefetchSnapshot(
+        phase: MediaPrefetchPhase.waitingForWifi,
+        remaining: 80,
+      );
 
-    // `onMobileData` هي الحَكَمُ على رسم الزرّ لا لونُ الحالة: من لا شبكةَ له
-    // يُعطى خبراً بلا فعل، ومن على بيانات الجوّال يُعطى سؤالاً بجوابين.
-    expect(onMobile.onMobileData, isTrue);
-    expect(noNetwork.onMobileData, isFalse);
-  });
+      // `onMobileData` هي الحَكَمُ على رسم الزرّ لا لونُ الحالة: من لا شبكةَ له
+      // يُعطى خبراً بلا فعل، ومن على بيانات الجوّال يُعطى سؤالاً بجوابين.
+      expect(onMobile.onMobileData, isTrue);
+      expect(noNetwork.onMobileData, isFalse);
+    },
+  );
 
   test('the catalogue belongs to the feature, the manager only downloads', () {
     // `modules → features ❌`: الموديول لا يعرف أين تسكن مساراتُ الشريحة.

@@ -23,8 +23,9 @@ import 'package:app_template/routes/router.gr.dart';
 /// matching registration fails; the reverse is allowed, because a route can
 /// legitimately exist before anything links to it.
 void main() {
-  late final List<String> registered =
-      AppRouter().routes.map((r) => r.name).toList();
+  late final List<String> registered = AppRouter().routes
+      .map((r) => r.name)
+      .toList();
 
   /// Every destination reachable from a `context.router` call in `lib/`.
   const navigatedTo = <String>[
@@ -47,7 +48,8 @@ void main() {
       expect(
         registered,
         contains(name),
-        reason: '$name is navigated to in lib/ but missing from '
+        reason:
+            '$name is navigated to in lib/ but missing from '
             'AppRouter.routes — this throws at runtime, not at compile time.',
       );
     }
@@ -65,7 +67,8 @@ void main() {
     expect(
       initials,
       isEmpty,
-      reason: 'the first destination comes from deepLinkBuilder, not from '
+      reason:
+          'the first destination comes from deepLinkBuilder, not from '
           '`initial: true` — see StartupResolver',
     );
   });
@@ -84,7 +87,8 @@ void main() {
     expect(
       paths.toSet().length,
       paths.length,
-      reason: 'Two routes on one path: auto_route resolves the first and the '
+      reason:
+          'Two routes on one path: auto_route resolves the first and the '
           'second becomes unreachable by URL without any warning.',
     );
   });
