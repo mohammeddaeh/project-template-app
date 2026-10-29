@@ -37,56 +37,52 @@ void main() {
   final qomra = AppThemeData.light(const Locale('ar'), AppFonts.byKey('qomra'));
   final sans = AppThemeData.light(const Locale('ar'), AppFonts.byKey('sans'));
 
-  group('Qomra — headings at 18px and above', () {
-    final headings = <String, TextStyle?>{
-      'displayLarge (24)': qomra.textTheme.displayLarge,
-      'displayMedium (18)': qomra.textTheme.displayMedium,
-      'headlineLarge (26)': qomra.textTheme.headlineLarge,
-      'headlineMedium (20)': qomra.textTheme.headlineMedium,
-      // The two hand-written title styles that live outside `_textTheme` — the
-      // ones that were missed the first time, and the AppBar is the heading
-      // this app shows most often.
-      'appBarTheme.titleTextStyle (18)': qomra.appBarTheme.titleTextStyle,
-      'dialogTheme.titleTextStyle (20)': qomra.dialogTheme.titleTextStyle,
-    };
+  // The threshold is read from the resolved size, never from a number in a
+  // style's name: a project that resizes `headlineSmall` to 19 must give it
+  // the set too, and a list of names would keep passing with the old sizes.
+  final everyQomraStyle = <String, TextStyle?>{
+    'displayLarge': qomra.textTheme.displayLarge,
+    'displayMedium': qomra.textTheme.displayMedium,
+    'displaySmall': qomra.textTheme.displaySmall,
+    'headlineLarge': qomra.textTheme.headlineLarge,
+    'headlineMedium': qomra.textTheme.headlineMedium,
+    'headlineSmall': qomra.textTheme.headlineSmall,
+    'titleLarge': qomra.textTheme.titleLarge,
+    'titleMedium': qomra.textTheme.titleMedium,
+    'titleSmall': qomra.textTheme.titleSmall,
+    'bodyLarge': qomra.textTheme.bodyLarge,
+    'bodyMedium': qomra.textTheme.bodyMedium,
+    'bodySmall': qomra.textTheme.bodySmall,
+    'labelLarge': qomra.textTheme.labelLarge,
+    'labelMedium': qomra.textTheme.labelMedium,
+    'labelSmall': qomra.textTheme.labelSmall,
+    // The two hand-written title styles that live outside `_textTheme` — the
+    // AppBar is the heading this app shows most often.
+    'appBarTheme.titleTextStyle': qomra.appBarTheme.titleTextStyle,
+    'dialogTheme.titleTextStyle': qomra.dialogTheme.titleTextStyle,
+    'dialogTheme.contentTextStyle': qomra.dialogTheme.contentTextStyle,
+  };
 
-    headings.forEach((name, style) {
-      test('$name carries ss01', () {
-        expect(
-          carries(style),
-          isTrue,
-          reason:
-              '$name is a heading at 18px or above and must request the font\'s '
-              'stylistic set. Nothing will fail if this regresses — the text '
-              'just renders in its plain forms, and the screen looks subtly '
-              'unlike every other heading with no error to trace.',
-        );
-      });
-    });
-  });
-
-  group('Qomra — everything below the threshold does not', () {
-    final plain = <String, TextStyle?>{
-      'displaySmall (16)': qomra.textTheme.displaySmall,
-      'headlineSmall (14)': qomra.textTheme.headlineSmall,
-      'titleLarge (16)': qomra.textTheme.titleLarge,
-      'bodyMedium (14)': qomra.textTheme.bodyMedium,
-      'labelLarge (14)': qomra.textTheme.labelLarge,
-      'dialogTheme.contentTextStyle (14)': qomra.dialogTheme.contentTextStyle,
-    };
-
-    plain.forEach((name, style) {
-      test('$name stays plain', () {
-        expect(
-          carries(style),
-          isFalse,
-          reason:
-              '$name is body-sized text. `headlineSmall` in particular is this '
-              'app\'s card title, repeated down a whole list — display '
-              'alternates there read as noise and their wider advances push '
-              'against rows that already ellipsize.',
-        );
-      });
+  group('Qomra — ss01 exactly on the styles at 18px and above', () {
+    everyQomraStyle.forEach((name, style) {
+      final size = style?.fontSize ?? 14;
+      final heading = size >= 18;
+      test(
+        '$name (${size.toStringAsFixed(0)}px) ${heading ? 'carries' : 'stays without'} ss01',
+        () {
+          expect(
+            carries(style),
+            heading,
+            reason: heading
+                ? '$name is a heading at 18px or above and must request the '
+                      "font's stylistic set. Nothing will fail if this regresses "
+                      '— the text just renders in its plain forms.'
+                : '$name is body-sized text. Display alternates repeated down a '
+                      'list read as noise, and their wider advances push against '
+                      'rows that already ellipsize.',
+          );
+        },
+      );
     });
   });
 
