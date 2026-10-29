@@ -93,17 +93,11 @@ jobs:
       # `dart run scripts/gen_permission_keys.dart --verify --from ../perms.json`.
       # See readme/31_MODULE_PERMISSIONS.md §"توصيات مستقبلية" #2.
 
-      # Advisory, not a gate — and measured, not guessed: it reports a large
-      # share of files as unformatted, because the repo predates the
-      # current `dart format`. Blocking on that would make every PR red on
-      # arrival, and a build that is always red is a build nobody reads.
-      #
-      # To promote it to a gate: run `dart format .` once, commit the result on
-      # its own (so the noise never mixes with a real change), then delete the
-      # `continue-on-error` line below.
+      # A gate: the whole tree is formatted, and gen_code.dart formats the two
+      # generated files whose generator does not. Format before pushing:
+      # `dart format lib test scripts`.
       - name: Format check
-        run: dart format --output=none --set-exit-if-changed lib test
-        continue-on-error: true
+        run: dart format --output=none --set-exit-if-changed lib test scripts
 
   build-android:
     needs: analyze-and-test

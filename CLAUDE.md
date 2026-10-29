@@ -191,7 +191,7 @@ modules     → Features      ❌ NEVER
 ## Modification Rules
 
 - تغيير minimal ومعزول — لا refactors واسعة بدون موافقة صريحة
-- بعد أي DI · router · API · freezed · ترجمة · أو ملفٍّ بـ`assets/`: `dart run scripts/gen_code.dart` — **خمسُ خطواتٍ بأمرٍ واحد**، وتشغيلُ `build_runner` وحده يترك `codegen_loader.g.dart` و`assets.gen.dart` متقادمين
+- بعد أي DI · router · API · freezed · ترجمة · أو ملفٍّ بـ`assets/`: `dart run scripts/gen_code.dart` — **كلُّ خطوات التوليد بأمرٍ واحد**، وتشغيلُ `build_runner` وحده يترك `codegen_loader.g.dart` و`assets.gen.dart` متقادمين
 - تحقق دائماً: `dart analyze lib` **و`flutter test`**
 - **وقبل أي تسليم: `dart run scripts/check_structure.dart` بلا مخالفة _جديدة_**
 

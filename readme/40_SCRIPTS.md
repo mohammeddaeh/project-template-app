@@ -37,13 +37,14 @@ dart run scripts/<script_name>.dart
 dart run scripts/gen_code.dart
 ```
 
-يُشغّل **5 خطوات** بالتسلسل:
+يُشغّل **6 خطوات** بالتسلسل:
 
 1. `build_runner` — Retrofit · Freezed · Injectable · AutoRoute
 2. `easy_localization:generate` → `locale_keys.g.dart`
 3. `easy_localization:generate` → `codegen_loader.g.dart` (القارئ وقت التشغيل)
 4. `gen_assets.dart` → `assets.gen.dart` (+ مسارات `pubspec.yaml` الناقصة)
 5. `gen_permission_keys.dart` → `permission_keys.g.dart` — يُتخطّى بصمت إن لم يوجد `permissions.lock.json`
+6. `dart format` على `locale_keys.g.dart` و`codegen_loader.g.dart` — مولّدُهما لا يُنسّقهما، وفحصُ التنسيق بالـCI حاجب
 
 > **ملاحظة:** التطبيق يقرأ `assetLoader: const CodegenLoader()` — فتنفيذ الخطوة 2
 > بلا 3 يجعل المفاتيح الجديدة **تظهر نصّاً خاماً** بالواجهة.
