@@ -1,6 +1,10 @@
 // ignore_for_file: avoid_print
 
-/// **يولّد موردَي شاشة الإقلاع لأندرويد من `logo_MOW.svg` — ويطبع ثوابت فلاتر.**
+/// **يولّد موردَي شاشة الإقلاع لأندرويد من `assets/images/brand/app_logo.svg` — ويطبع ثوابت فلاتر.**
+///
+/// **الشعار ملفٌّ يُستبدل**: ضع شعار مشروعك بنفس الاسم ثم شغّل هذا السكربت. والشكلُ
+/// المدعوم `<path d="…" fill="…">` بأوامر مطلقة (`M L H V C Z`)، ولونُ كل مسارٍ
+/// يُنقل كما هو (`white` ⇐ `#FFFFFF`) — فوق خلفية `splash_background`.
 ///
 /// ```
 /// dart run scripts/gen_splash_assets.dart
@@ -19,9 +23,8 @@ library;
 import 'dart:io';
 import 'dart:math';
 
-const _svgPath = 'assets/images/ministry_logo/logo_MOW.svg';
+const _svgPath = 'assets/images/brand/app_logo.svg';
 const _resDir = 'android/app/src/main/res';
-const _goldFill = '#B9A779';
 
 /// نسبةُ قطر القناع الدائري إلى ضلع لوحة الرمز بأندرويد 12+.
 ///
@@ -37,7 +40,7 @@ void main() {
   final svg = File(_svgPath).readAsStringSync();
   final paths = RegExp(
     r'<path d="([^"]*)" fill="([^"]*)"',
-  ).allMatches(svg).map((m) => (d: m[1]!, gold: m[2] == _goldFill)).toList();
+  ).allMatches(svg).map((m) => (d: m[1]!, fill: _androidColor(m[2]!))).toList();
 
   final pts = paths.expand((p) => _points(p.d)).toList();
   final box = _bounds(pts);
@@ -56,7 +59,7 @@ void main() {
         (p) =>
             '        <path\n'
             '            android:pathData="${p.d}"\n'
-            '            android:fillColor="${p.gold ? _goldFill : '#FFFFFF'}" />',
+            '            android:fillColor="${p.fill}" />',
       )
       .join('\n');
 
@@ -112,6 +115,13 @@ void main() {
     '    static const _logoAnchorRatio = ${_fmt(ay - box.y)} / ${_fmt(box.h)};',
   );
 }
+
+/// لونُ SVG إلى لون أندرويد: `white` · `black` بالاسم، وإلا الـhex كما هو.
+String _androidColor(String fill) => switch (fill.toLowerCase()) {
+  'white' => '#FFFFFF',
+  'black' => '#000000',
+  final hex => hex.toUpperCase(),
+};
 
 String _fmt(num v) => v == v.roundToDouble()
     ? v.toStringAsFixed(0)

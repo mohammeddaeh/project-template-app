@@ -162,9 +162,9 @@ flutter:
   # on the next generation cycle.
   # ======================================================
   assets:
+    - assets/images/brand/
     - assets/lottie/
     - assets/images/vectors/
-    - assets/images/ministry_logo/
     - assets/app_icons/
     - assets/fonts/
     - assets/translations/

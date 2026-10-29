@@ -432,8 +432,8 @@ Theme.of(context).textTheme.bodyMedium   context.textTheme.bodyMedium
 | صورة نقطية | PNG → `assets/images/` |
 
 بعد إضافة أي أصل: `dart run scripts/gen_code.dart` ثم استعمله من `Assets.*` —
-لا بمسار نصّي. والأصول الموجودة: `assets/images/ministry_logo/` (شعار الوزارة
-PNG وSVG) · `assets/images/vectors/`.
+لا بمسار نصّي. والأصول الموجودة: `assets/images/brand/` (شعار التطبيق — ملفٌّ يُستبدل، راجع
+`README.md` فيه) · `assets/images/vectors/`.
 
 ### F15 · الأصل يُعرض بغلاف المكتبة — والغلافان ليسا واحداً 🔒
 
@@ -448,7 +448,7 @@ PNG وSVG) · `assets/images/vectors/`.
 
 > ⚠️ **`SvgImageWidget` يصبغ دائماً.** بلا `color` يقع على `colorScheme.onSurface`
 > — أي `ColorFilter.mode(..., BlendMode.srcIn)` **على كل مسار بالملف**. مرِّر عليه
-> شعار الوزارة (نسر ذهبي `#B9A779` + نصّ أبيض) فيخرج كتلةً واحدةً بلون واحد.
+> شعاراً بلونين (رمزٌ ذهبيّ + نصٌّ أبيض) فيخرج كتلةً واحدةً بلون واحد.
 > **ولا شيء يفشل**: يُصرَّف، ويُرسم، ويبدو أصلاً أحادي اللون قُصد أن يكون كذلك.
 >
 > وهذا ليس عيباً بالودجة بل عقدها: مصمَّمة للأيقونات. الخطأ هو تمرير شعار إليها.

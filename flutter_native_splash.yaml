@@ -1,17 +1,17 @@
 flutter_native_splash:
-  # خلفية السبلاش — أبيض لجميع الـ flavors
-  color: "#FFFFFF"
-  color_dark: "#121212"
+  # خلفية السبلاش — نفس splash_background بأندرويد (AppColors.bgBrand)
+  color: "#0D3A2F"
+  color_dark: "#0D3A2F"
 
-  # لوغو الوزارة — يظهر في المنتصف
-  image: assets/images/ministry_logo/logo_MOW.png
-  image_dark: assets/images/ministry_logo/logo_MOW.png
+  # شعار التطبيق — يُستبدل الملف وحده (راجع assets/images/brand/README.md)
+  image: assets/images/brand/app_logo.png
+  image_dark: assets/images/brand/app_logo.png
 
   # Android 12+ (Splash API الجديد)
   android_12:
-    image: assets/images/ministry_logo/logo_MOW.png
+    image: assets/images/brand/app_logo.png
     icon_background_color: "#FFFFFF"
-    image_dark: assets/images/ministry_logo/logo_MOW.png
+    image_dark: assets/images/brand/app_logo.png
     icon_background_color_dark: "#121212"
 
   # ⛔ **أندرويد لا يُولَّد — بقرار.** موردا أندرويد (`splash_logo_full.xml` و

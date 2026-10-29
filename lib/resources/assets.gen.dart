@@ -9,19 +9,18 @@ abstract final class Assets {
 
 final class _AssetsImages {
   const _AssetsImages();
-  _AssetsImagesMinistryLogo get ministryLogo =>
-      const _AssetsImagesMinistryLogo();
+  _AssetsImagesBrand get brand => const _AssetsImagesBrand();
   _AssetsImagesVectors get vectors => const _AssetsImagesVectors();
 }
 
-final class _AssetsImagesMinistryLogo {
-  const _AssetsImagesMinistryLogo();
+final class _AssetsImagesBrand {
+  const _AssetsImagesBrand();
 
-  /// `assets/images/ministry_logo/logo_MOW.png`
-  String get logoMOWPng => 'assets/images/ministry_logo/logo_MOW.png';
+  /// `assets/images/brand/app_logo.png`
+  String get appLogoPng => 'assets/images/brand/app_logo.png';
 
-  /// `assets/images/ministry_logo/logo_MOW.svg`
-  String get logoMOWSvg => 'assets/images/ministry_logo/logo_MOW.svg';
+  /// `assets/images/brand/app_logo.svg`
+  String get appLogoSvg => 'assets/images/brand/app_logo.svg';
 }
 
 final class _AssetsImagesVectors {

@@ -387,7 +387,7 @@ dart run scripts/pull_figma.dart --all             # كل الإطارات ال�
 dart run scripts/gen_splash_assets.dart
 ```
 
-يقرأ `assets/images/ministry_logo/logo_MOW.svg` ويكتب متجهتين:
+يقرأ `assets/images/brand/app_logo.svg` (ملفٌّ يُستبدل) ويكتب متجهتين:
 `res/drawable/splash_logo_full.xml` (ما دون أندرويد 12) و`splash_icon_v31.xml`
 (أندرويد 12+، بلوحةٍ تسع القناع الدائري). ويطبع ثوابتَ المقاس والمرساة.
 
