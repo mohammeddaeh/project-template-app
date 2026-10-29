@@ -1,0 +1,7 @@
+# Line endings: LF in the repository and the working tree on every OS, so a
+# diff shows content, not the machine it was edited on. Windows-only scripts
+# keep CRLF; binary files are detected and left alone.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
