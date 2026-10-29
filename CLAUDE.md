@@ -31,16 +31,13 @@
 
 ### Features الموجودة
 
-> **القالب نُظِّف من كل feature تطبيقية (2026-09-08).** ما تبقى هو البنية التحتية
-> وحدها. **لا مثال CRUD ولا شاشات demo** — أول feature يكتبها المشروع هي أول
-> feature تطبيقية بالمستودع، وتُبنى من `readme/00_START_HERE.md` لا بالنسخ من
-> شريحة قائمة. والمحذوف: `features/notes/` (٢٣ ملفاً) · `features/test/` (٢٢ شاشة
-> demo) · معرض الودجات · ٢٦٣ مفتاح ترجمة · ٥ مفاتيح صلاحيات · ٣ اختبارات مزامنة.
+> **لا feature تطبيقية بالقالب** — البنية التحتية وحدها، بلا مثال CRUD ولا شاشات
+> demo. أول feature يكتبها المشروع تُبنى من `readme/00_START_HERE.md`، لا بالنسخ من
+> شريحة قائمة.
 >
-> ⚠️ **ومفاتيح `notes.*` الخمسة قد تعود بـ`permissions.lock.json`** رغم هذا
-> الحذف — لأن `backend_template` لا يزال يستخدمها كمثالٍ مرجعي بـwire-contract
-> تخصّ `authz` (`test/wire_contract_test.dart` يستشهد بـ`notes.update` صراحةً).
-> **هذا توليدٌ صحيح لا انحرافاً**: الملف مولَّدٌ من الباك، لا مصدر حقيقة مستقلاً.
+> ⚠️ **ومفاتيح `notes.*` بـ`permissions.lock.json` ليست feature هنا** —
+> `backend_template` يستخدمها مثالاً مرجعياً بعقد `authz` (`test/wire_contract_test.dart`
+> يستشهد بـ`notes.update`). الملف مولَّدٌ من الباك، فوجودها صحيح.
 
 
 | المسار | ما تفعله |
@@ -135,27 +132,15 @@ modules     → Features      ❌ NEVER
 | `lib/modules/sync/RULES.md` | **أي رقم يخرج من تجريب `LOAD_TEST_PLAN.md`** — لا يُملأ من تقدير |
 | **`loadtest/README.md`** | **إضافة/تعديل أي سيناريو k6 بـ`loadtest/k6/`** — سطرٌ بجدول «السيناريوهات الموجودة» لكل ملف جديد، بنفس الـcommit |
 
-> **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت.** أربعةُ ملفاتٍ كانت خارجه حتى
-> 2026-08-17 (منها `21_WIDGETS_USAGE.md` و`realtime_design.md`)، واثنان منها انحرفا فعلاً. الفهرس بـ[`readme/README.md`](readme/README.md)
-> يحمل عمود «الحالة الحقيقية للكود» لكل ملف — أضف الصفّ هناك وهنا معاً.
+> **⚠️ ملفٌ خارج هذا الجدول = ملفٌ يتقادم بصمت** — لا شيء يذكّر به حين يتغيّر
+> الكود الذي يصفه. الفهرس بـ[`readme/README.md`](readme/README.md) يحمل عمود «الحالة
+> الحقيقية للكود» لكل ملف — أضف الصفّ هناك وهنا معاً.
 
 ### صيانة القالب نفسه — `_template/`
 
-> **`_template/` لا يُنسخ إلى أي مشروع** (`new_project.ps1` يستثنيه). فيه ما يخصّ
-> القالبَ كمنتج: خطّته وأرشيفه وما تعلّمناه من المشاريع. ولذلك **كلُّ رابط Markdown
-> إليه من خارجه رابطُ GitHub كامل** (`github.com/mohammeddaeh/project-template-app/blob/master/_template/…`)
-> لا مسارٌ نسبيّ، فيعمل من أي مشروع. والإشارةُ النصّية بتعليقات الكود (`_template/roadmap.md` بند #08) تبقى نصّاً.
-
-| الملف | متى يُحدَّث |
-|---|---|
-| `_template/README.md` | فهرس المجلد — يُحدَّث عند إضافة/حذف/نقل أي ملف فيه، بنفس التغيير |
-| **`_template/roadmap.md`** | **إضافة اقتراح تطويري جديد أو تغيير حالة اقتراح موجود** — حلّ محلّ `_template/archive/template_enhancements.md` المؤرشَف (2026-09-13) لهذا الغرض |
-| `_template/archive/integration_audit.md` | أي تغيير في عقد الـwire بين الفرونت والباك |
-| `_template/archive/sync_design_spec.md` | ⛔ **لا يُصان** — أرشيف. حالةُ الموديول بـ`lib/modules/sync/STATUS.md` |
-| `_template/archive/**` | ⛔ **لا يُصان** — سجلّات مؤرَّخة. الانحراف يُعلَّق عليه بلافتة، لا يُمحى |
-| `_template/archive/realtime_design.md` | أي خطوة نحو بناء `modules/realtime/` (غير موجود اليوم) |
-| `_template/sync/PLAN.md` | **إنهاء أي مرحلة P0–P9** — المرحلة والتاريخ ومعيار القبول، **ومعه `lib/modules/sync/STATUS.md`**. ويُحدَّث معه سجلّ النقل بـ`Qirtas/qirtas_app/lib/modules/sync/PORT_STATUS.md` |
-| **`_template/feedback/<مشروع>.md`** | **تطبيق بندٍ من ملاحظات مشروعٍ على القالب** — حالة البند (✅ بالتاريخ والـcommit، أو ✖️ بالسبب)، وملفُّ المشروع الجديد يُضاف لجدول [`_template/feedback/README.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/feedback/README.md) |
+**بمستودع القالب وحده**: قبل إنهاء أي مهمة تمسّ القالبَ كمنتج (خطّته · أرشيفه ·
+ملاحظات المشاريع · مراحل المزامنة)، طبّق جدول [`_template/CLAUDE.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/CLAUDE.md).
+المشروع المبنيّ لا يملك المجلد، فيتجاهل هذا السطر.
 
 ## 🕰️ قاعدة صارمة — الوثيقة تصف الحاضر
 
@@ -179,8 +164,8 @@ modules     → Features      ❌ NEVER
 | القاعدة | التفصيل |
 |---|---|
 | كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `10_ARCHITECTURE.md` |
-| `✅` بجدول `_template/archive/template_enhancements.md` تعني **«له مستهلك هنا»** | لا «الملف وصل». البند #19 كان `✅` بلا مستورِد واحد — صُحِّح إلى `◐` (2026-08-17) |
-| ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد، أو يُحذف. `modules/in_app_updates/` كان المثال الحيّ لهذا حتى 2026-09-09 — وصله علَمه وسطرُ `ModulesBootstrap` وحارسُه (`AppUpdateGate`)، فراجع الجرد الحالّ بـ[`readme/10_ARCHITECTURE.md`](readme/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك» لما هو معلَّق اليوم فعلاً |
+| `✅` بأي جدول حالة تعني **«له مستهلك هنا»** | لا «الملف وصل» |
+| ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد بـ[`readme/10_ARCHITECTURE.md`](readme/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك»، أو يُحذف |
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 
