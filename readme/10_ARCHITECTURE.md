@@ -211,7 +211,6 @@ core/
 | `platform/storage/offline_snapshot.dart` | **لقطةُ آخرِ ردٍّ ناجح، لا تنتهي** — نُقلت من مشروعٍ بلغ فيه المستهلكون ثلاثة. تُغلق حين تريد شاشةٌ جواباً خارج التغطية بعد انقضاء TTL المخبّئ |
 | `platform/storage/adapters/shared_prefs_storage_adapter.dart` | محوِّل بديل — المُسجَّل فعلاً هو `HiveStorageAdapter` |
 | `resources/fonts.dart` (`AppFontFamilies`) | مولَّد بـ`sync_fonts.dart` ولا يقرأه شيء — مصدر الحقيقة المستعمَل `core/infra/config/app_fonts.dart` |
-| `modules/sync/sync_plugin.dart` | **مدخل ثانٍ ميت** — `ModulesBootstrap` يستدعي `SyncSDK.initialize` من `sdk/sync_sdk.dart` |
 | barrels `modules/{analytics,crash_reporting,in_app_updates,push_notifications,remote_config}/<name>.dart` | ملفات `export` لا يستوردها أحد — `ModulesBootstrap` يستورد `*_module.dart` مباشرةً |
 
 > **أي شيء تُنهي وصله: احذف صفّه من الجرد بنفس التغيير.** جردٌ يذكر موصولاً يُدرّب
