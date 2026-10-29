@@ -52,8 +52,10 @@ app.*.map.json
 # Generated flavor icon yamls — recreated by sync_flavors.dart
 flutter_launcher_icons-*.yaml
 
-# Claude Code — memory, settings, scratchpad (personal, not project code)
-.claude/
+# Claude Code — personal settings stay local; skills ship with the template,
+# because they name its files and must change in the same commit as them.
+.claude/*
+!.claude/skills/
 
 # Figma pull — .figma/token is a real credential, .figma/cache is regenerable.
 # The whole folder is ignored: a token committed once stays in history forever,
