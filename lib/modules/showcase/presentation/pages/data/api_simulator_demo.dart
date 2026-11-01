@@ -320,7 +320,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
                   _StepState.stopped,
                 ),
               );
-              return fail(_failureFor(answer), _End.deferred);
+              return fail(_failureFor(_Outcome.offline), _End.deferred);
           }
         case _Outcome.forbidden:
           steps.add(

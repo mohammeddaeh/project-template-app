@@ -51,6 +51,23 @@ void main() {
       expect(events, isNot(contains(AuthEvent.sessionExpired)));
     });
 
+    test('the request fails as a network error, not as a 401', () async {
+      // Passed on as the original 401 it maps to UnauthorizedFailure, and a
+      // screen turning that into «sign in again» signs the user out anyway.
+      final gateway = _RecordingRefreshGateway(
+        throws: DioException.connectionError(
+          requestOptions: RequestOptions(path: '/auth/refresh'),
+          reason: 'Network is unreachable',
+        ),
+      );
+
+      final passedOn = await _fireUnauthorised(gateway);
+
+      expect(passedOn?.type, DioExceptionType.connectionError);
+      expect(passedOn?.response, isNull);
+      expect(passedOn?.requestOptions.path, '/notes');
+    });
+
     test('a cancelled request is not a refusal either', () async {
       // Leaving a screen mid-request must never end a session — and a cancel
       // carries no response, so it takes the same path.
@@ -140,7 +157,9 @@ void main() {
 }
 
 /// Drives the interceptor's 401 path with a gateway whose refresh fails.
-Future<void> _fireUnauthorised(_RecordingRefreshGateway gateway) async {
+Future<DioException?> _fireUnauthorised(
+  _RecordingRefreshGateway gateway,
+) async {
   final interceptor = TokenRefreshInterceptor(Dio(), gateway, _TokenHolder());
 
   final completer = _CapturingHandler();
@@ -156,6 +175,7 @@ Future<void> _fireUnauthorised(_RecordingRefreshGateway gateway) async {
     completer,
   );
   await completer.done;
+  return completer.passedOn;
 }
 
 class _RecordingRefreshGateway implements TokenRefreshGateway {
@@ -190,8 +210,13 @@ class _CapturingHandler implements ErrorInterceptorHandler {
     if (!_completer.isCompleted) _completer.complete();
   }
 
+  DioException? passedOn;
+
   @override
-  void next(DioException err) => _finish();
+  void next(DioException err) {
+    passedOn = err;
+    _finish();
+  }
 
   @override
   void reject(DioException error) => _finish();

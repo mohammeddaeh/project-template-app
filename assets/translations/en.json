@@ -702,7 +702,7 @@
   "showcaseApiRetryWait": "Waits {} s (1, then 2, then 4), then replays the request through the chain",
   "showcaseApiRetryWaitServer": "Waits {} s as the server's Retry-After asked — its number beats the back-off curve",
   "showcaseApiUiFromCache": "The screen draws from the device — no request, no wait",
-  "showcaseApiUiDeferred": "The session is kept; the screen receives UnauthorizedFailure",
+  "showcaseApiUiDeferred": "The session is kept; the request fails as a network error (NoInternetFailure) — the next attempt retries",
   "showcaseApiRetried": "Retried",
   "showcaseApiNotRetried": "Not retried",
   "showcaseApiRetryRulesNote": "A rule in the code, not an option: a 500 is a defect that repeats, and retrying it multiplies the load on a failing server. A request the network guard blocked never left the device.",

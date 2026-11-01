@@ -132,7 +132,20 @@ class TokenRefreshInterceptor extends Interceptor {
         tag: 'TOKEN-REFRESH',
       );
       AuthEventBus.instance.emit(AuthEvent.sessionRefreshDeferred);
-      return handler.next(err);
+      // The request ends as what it actually is — a request that could not be
+      // completed over the network — not as the 401 the server sent before
+      // the renewal. Passed on as a 401 it becomes an `UnauthorizedFailure`,
+      // and every screen that turns that into «sign in again» undoes the
+      // decision just made above.
+      final transport = cause as DioException;
+      return handler.next(
+        DioException(
+          requestOptions: err.requestOptions,
+          type: transport.type,
+          error: transport.error,
+          message: transport.message,
+        ),
+      );
     }
 
     LogService.error(

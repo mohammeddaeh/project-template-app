@@ -140,7 +140,7 @@ options.headers['Accept-language'] = _localeProvider.languageCode;
 
 | الحالة | الاختبار | النتيجة |
 |---|---|---|
-| انقطاع · مهلة · طلبٌ ملغى | `DioException` بلا `response` | `sessionRefreshDeferred` · الجلسة كما هي · لا تنقّل |
+| انقطاع · مهلة · طلبٌ ملغى | `DioException` بلا `response` | `sessionRefreshDeferred` · الجلسة كما هي · لا تنقّل · **والطلبُ يفشل بخطأ النقل لا بالـ401** |
 | 401 على نداء التجديد نفسه | ثمّة `response` | `sessionExpired` — كما كان |
 | `StateError` (لا توكن أصلاً) | ليس `DioException` | `sessionExpired` — العميل يحمل اعتماداً لا يستطيع تجديده |
 
@@ -149,6 +149,11 @@ options.headers['Accept-language'] = _localeProvider.languageCode;
 
 ومعه: الحدث **لا يُلغى تكراره** خلافاً للاثنين قبله — كلّ محاولة فاشلة حقيقةٌ عن
 اللحظة الحالية، وطيّها يترك واجهةً تقول «يزامن» بعد أن يتوقف.
+
+**والطلبُ الأصليّ يُمرَّر بخطأ النقل** (`connectionError` · مهلة · إلغاء) لا بالـ401 الذي
+سبق التجديد: الـ401 يصير `UnauthorizedFailure`، وكلُّ شاشةٍ تقرؤه «ادخل ثانيةً»
+(`PaginationCubit` · `FailureUiMapper`) كانت ستُخرج المستخدم رغم أن الجلسة بقيت. فيصل
+الشاشةَ `NoInternetFailure`/`TimeoutFailure` — «لا اتصال» وإعادة محاولة.
 
 مثبَّت بـ`test/sync/offline_session_test.dart`.
 

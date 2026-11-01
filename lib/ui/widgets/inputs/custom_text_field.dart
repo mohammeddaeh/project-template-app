@@ -93,7 +93,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
   FocusNode get _node => widget.focusNode ?? (_ownNode ??= InputFocusNode());
 
   /// Enter يُدخل سطراً بحقلٍ متعدّد الأسطر — و«التالي» تجعل فقرةً لا تُكتب.
-  bool get _isMultiline => widget.expands || (widget.maxLines ?? 1) != 1;
+  /// A password is one line: Flutter asserts on an obscured multi-line field,
+  /// so [CustomTextField.isFieldObscure] wins over `maxLines` and `expands`.
+  bool get _isMultiline =>
+      !widget.isFieldObscure && (widget.expands || (widget.maxLines ?? 1) != 1);
 
   TextInputAction? get _action =>
       widget.textInputAction ??
@@ -117,6 +120,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
   void initState() {
     super.initState();
     _obscure = widget.isFieldObscure;
+  }
+
+  @override
+  void didUpdateWidget(CustomTextField old) {
+    super.didUpdateWidget(old);
+    // A field that becomes (or stops being) a password field follows it.
+    if (old.isFieldObscure != widget.isFieldObscure) {
+      _obscure = widget.isFieldObscure;
+    }
   }
 
   @override
@@ -231,7 +243,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         maxLength: widget.maxLength,
                         controller: widget.controller,
                         obscureText: _obscure,
-                        expands: widget.expands,
+                        expands: widget.expands && !widget.isFieldObscure,
                         onTapOutside: widget.onTapOutsideDismissTheKeyboard
                             ? (event) =>
                                   FocusManager.instance.primaryFocus?.unfocus()
@@ -244,7 +256,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
-                        maxLines: widget.expands ? null : widget.maxLines ?? 1,
+                        maxLines: widget.isFieldObscure
+                            ? 1
+                            : widget.expands
+                            ? null
+                            : widget.maxLines ?? 1,
                         onSaved: (newValue) {
                           state.didChange(newValue);
                         },

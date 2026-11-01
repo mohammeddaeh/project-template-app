@@ -702,7 +702,7 @@
   "showcaseApiRetryWait": "ينتظر {} ث (1 ثم 2 ثم 4) ثم يعيد الطلب عبر السلسلة",
   "showcaseApiRetryWaitServer": "ينتظر {} ث كما طلب الخادم في Retry-After — رقمه يغلب منحنى التراجع",
   "showcaseApiUiFromCache": "الشاشة ترسم من الجهاز — بلا طلب ولا انتظار",
-  "showcaseApiUiDeferred": "الجلسة باقية، والشاشة تتلقّى UnauthorizedFailure",
+  "showcaseApiUiDeferred": "الجلسة باقية، والطلب يفشل كخطأ شبكة (NoInternetFailure) — يُعاد بالمحاولة التالية",
   "showcaseApiRetried": "يُعاد",
   "showcaseApiNotRetried": "لا يُعاد",
   "showcaseApiRetryRulesNote": "قاعدةٌ ثابتة في الكود لا خيار: 500 عطلٌ يتكرّر، وإعادته تضاعف الحمل على خادمٍ يتعثّر. وطلبٌ منعه حارس الشبكة لم يغادر الجهاز أصلاً.",

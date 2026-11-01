@@ -11,6 +11,11 @@
 
 ## غير مُصدَر
 
+- **تجديدُ توكنٍ لم يصل لا يُخرج المستخدم**: الطلب يفشل بخطأ النقل لا بالـ401، فلا تقرؤه
+  `PaginationCubit`/`FailureUiMapper` «ادخل ثانيةً». ورسالةٌ بإجراء («تراجع») تُعرض سناك
+  بار بالمحوّل الافتراضي بدل أن يُسقط زرّها · `CustomTextField` يتبع `isFieldObscure`
+  بعد البناء ولا ينهار مع `maxLines` · `KeyValueRow(copyable)` بلا زرّ نسخٍ حين لا خدمة.
+
 - **الشريط السفلي** `AppBottomBar`: أربعة طوابع (`material` · `floating` · `expanding` ·
   `minimal`) و`AppTabSwitcher` بأربعة انتقالات، يُختاران بـ`ShellAppearance` ويتبدّلان
   والتطبيق يعمل. **والقشرة بلا `extendBody`**: جسدُ كل تبويبٍ ينتهي عند الشريط لا خلفه

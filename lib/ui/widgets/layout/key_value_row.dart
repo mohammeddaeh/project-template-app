@@ -141,7 +141,11 @@ class _KeyValueRowState extends State<KeyValueRow> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Flexible(child: valueContent),
-                    if (widget.copyable && widget.value != null) ...[
+                    // No copy button where the clipboard service is off
+                    // (`AppFeatures.clipboard`) — it would do nothing.
+                    if (widget.copyable &&
+                        widget.value != null &&
+                        getIt.isRegistered<ClipboardService>()) ...[
                       const SizedBox(width: 6),
                       GestureDetector(
                         onTap: _handleCopy,

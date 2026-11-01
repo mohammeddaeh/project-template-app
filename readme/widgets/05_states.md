@@ -314,8 +314,8 @@ AppSwipeActions(
 onTriggered: () {
   final index = notes.indexOf(note);
   setState(() => notes.removeAt(index));
-  // زرّ الإجراء يرسمه محوّلُ السناك بار؛ محوّلُ التوست الافتراضي لا يرسمه.
-  SnackbarAdapter().show(context, FeedbackConfig(
+  // رسالةٌ بإجراء تُعرض سناك بار — التوست بلا زرّ.
+  context.feedback.show(FeedbackConfig(
     type: FeedbackType.info,
     message: LocaleKeys.noteDeleted.tr(),
     action: FeedbackAction(

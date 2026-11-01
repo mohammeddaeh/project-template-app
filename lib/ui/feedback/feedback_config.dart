@@ -43,6 +43,7 @@ class FeedbackConfig {
 
   final Duration? duration;
 
-  /// Optional action — only used by adapters that support it (e.g. SnackbarAdapter).
+  /// Optional action. The default toast has no button, so a message with an
+  /// action is shown as a snackbar.
   final FeedbackAction? action;
 }

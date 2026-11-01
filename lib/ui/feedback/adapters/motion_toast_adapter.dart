@@ -23,6 +23,12 @@ class MotionToastAdapter implements AppFeedbackService {
 
   @override
   void show(BuildContext context, FeedbackConfig config) {
+    // A toast has no button to press, so a message carrying an action («Undo»,
+    // «Retry») is shown as a snackbar — never shown with its action dropped.
+    if (config.action != null) {
+      SnackbarAdapter().show(context, config);
+      return;
+    }
     final type = config.type;
     final duration = config.duration ?? _defaultDuration;
     final title = config.title ?? type.defaultTitle(context);

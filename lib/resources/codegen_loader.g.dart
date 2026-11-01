@@ -794,7 +794,8 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiRetryWaitServer":
         "ينتظر {} ث كما طلب الخادم في Retry-After — رقمه يغلب منحنى التراجع",
     "showcaseApiUiFromCache": "الشاشة ترسم من الجهاز — بلا طلب ولا انتظار",
-    "showcaseApiUiDeferred": "الجلسة باقية، والشاشة تتلقّى UnauthorizedFailure",
+    "showcaseApiUiDeferred":
+        "الجلسة باقية، والطلب يفشل كخطأ شبكة (NoInternetFailure) — يُعاد بالمحاولة التالية",
     "showcaseApiRetried": "يُعاد",
     "showcaseApiNotRetried": "لا يُعاد",
     "showcaseApiRetryRulesNote":
@@ -1627,7 +1628,7 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiUiFromCache":
         "The screen draws from the device — no request, no wait",
     "showcaseApiUiDeferred":
-        "The session is kept; the screen receives UnauthorizedFailure",
+        "The session is kept; the request fails as a network error (NoInternetFailure) — the next attempt retries",
     "showcaseApiRetried": "Retried",
     "showcaseApiNotRetried": "Not retried",
     "showcaseApiRetryRulesNote":

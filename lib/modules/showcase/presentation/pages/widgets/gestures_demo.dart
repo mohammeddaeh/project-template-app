@@ -241,11 +241,8 @@ class _SwipePreviewState extends State<_SwipePreview> {
       _items.removeAt(index);
       _removed = (item: n, index: index, message: message);
     });
-    // Undo needs an action button: the snackbar adapter draws one, the
-    // default toast adapter does not — so it is asked for by name here.
     if (getIt.isRegistered<AppFeedbackService>()) {
-      SnackbarAdapter().show(
-        context,
+      context.feedback.show(
         FeedbackConfig(
           type: FeedbackType.info,
           message: message,
