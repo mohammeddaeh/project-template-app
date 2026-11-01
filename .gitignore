@@ -67,3 +67,4 @@ flutter_launcher_icons-*.yaml
 
 # Device kits resolve against the app; their own lockfiles are noise.
 packages/*/pubspec.lock
+packages/*/build/
