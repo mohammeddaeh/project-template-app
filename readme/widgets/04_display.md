@@ -222,7 +222,7 @@ extension on OrderStatus {
 ```dart
 // ── BadgeWidget — عدد فوق widget (لا يُستبدَل) ──
 BadgeWidget(
-  count: notifications.length,
+  count: notifications.length,   // 0 ⇐ لا شارة أصلاً، لا «0» حمراء
   child: IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: _open),
 )
 

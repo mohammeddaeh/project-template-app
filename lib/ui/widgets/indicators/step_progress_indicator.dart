@@ -245,8 +245,10 @@ class _Numbered extends StatelessWidget {
   final String? Function(int)? stepLabelResolver;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => LayoutBuilder(
+    // Each label gets an equal share of the row (at most 72): labels wider
+    // than their share would push the row past the screen on a phone.
+    builder: (context, box) => Row(
       children: [
         for (int i = 1; i <= totalSteps; i++) ...[
           _StepCircle(
@@ -256,6 +258,7 @@ class _Numbered extends StatelessWidget {
             activeColor: activeColor,
             inactiveColor: inactiveColor,
             label: stepLabelResolver?.call(i),
+            labelWidth: (box.maxWidth / totalSteps).clamp(28, 72),
           ),
           if (i < totalSteps)
             Expanded(
@@ -267,8 +270,8 @@ class _Numbered extends StatelessWidget {
             ),
         ],
       ],
-    );
-  }
+    ),
+  );
 }
 
 class _StepCircle extends StatelessWidget {
@@ -278,9 +281,11 @@ class _StepCircle extends StatelessWidget {
     required this.isCompleted,
     required this.activeColor,
     required this.inactiveColor,
+    required this.labelWidth,
     this.label,
   });
 
+  final double labelWidth;
   final int step;
   final bool isActive;
   final bool isCompleted;
@@ -326,13 +331,18 @@ class _StepCircle extends StatelessWidget {
         ),
         if (label != null) ...[
           const SizedBox(height: 4),
-          Text(
-            label!,
-            style: textTheme.labelSmall?.copyWith(
-              color: isActive ? activeColor : colors.textMuted,
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+          SizedBox(
+            width: labelWidth,
+            child: Text(
+              label!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme.labelSmall?.copyWith(
+                color: isActive ? activeColor : colors.textMuted,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ],

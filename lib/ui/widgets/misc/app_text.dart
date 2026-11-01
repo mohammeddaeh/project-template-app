@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/theme/theme_extensions.dart';
+
 class AppText extends StatelessWidget {
   const AppText(
     this.translationKey, {
@@ -33,9 +35,8 @@ class AppText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
+    final scheme = context.colorScheme;
+    final textTheme = context.textTheme;
 
     Color resolvedColor;
     if (color != null) {

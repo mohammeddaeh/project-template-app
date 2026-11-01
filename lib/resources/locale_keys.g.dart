@@ -514,8 +514,6 @@ abstract class LocaleKeys {
   static const showcaseServicesCopied = 'showcaseServicesCopied';
   static const showcaseServicesPasted = 'showcaseServicesPasted';
   static const showcaseServicesEmpty = 'showcaseServicesEmpty';
-  static const showcaseConnectivityLive = 'showcaseConnectivityLive';
-  static const showcaseConnectivityNoDi = 'showcaseConnectivityNoDi';
   static const showcaseConnectivitySimulate = 'showcaseConnectivitySimulate';
   static const showcaseConnectivityOverlayHint =
       'showcaseConnectivityOverlayHint';

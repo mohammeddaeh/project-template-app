@@ -506,8 +506,6 @@
   "showcaseServicesCopied": "Copied to the clipboard",
   "showcaseServicesPasted": "On the clipboard: {}",
   "showcaseServicesEmpty": "The clipboard is empty",
-  "showcaseConnectivityLive": "Live state from the app's ConnectivityCubit.",
-  "showcaseConnectivityNoDi": "ConnectivityDot reads the app's ConnectivityCubit from DI, which is not registered here.",
   "showcaseConnectivitySimulate": "Simulate offline",
   "showcaseConnectivityOverlayHint": "Go offline: a dot appears after 1.5 s, then the banner and the countdown 4 s later.",
   "showcaseFlagsHint": "Flags are compile-time constants in AppFeatures — change one and rebuild.",

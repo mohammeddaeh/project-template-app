@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -56,17 +58,26 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
     _startDots();
   }
 
+  /// The staggered starts — cancelled with the widget, so none fires after it
+  /// is gone (a pending `Future.delayed` cannot be cancelled).
+  final _dotStarts = <Timer>[];
+
   void _startDots() {
+    for (final t in _dotStarts) {
+      t.cancel();
+    }
+    _dotStarts.clear();
     if (widget.style != PageLoadingStyle.dotsWave &&
         widget.style != PageLoadingStyle.pulseDots) {
       return;
     }
     for (int i = 0; i < _dotCtrl.length; i++) {
-      Future.delayed(Duration(milliseconds: i * 160), () {
-        if (mounted) {
-          _dotCtrl[i].repeat(reverse: true);
-        }
-      });
+      _dotStarts.add(
+        Timer(
+          Duration(milliseconds: i * 160),
+          () => _dotCtrl[i].repeat(reverse: true),
+        ),
+      );
     }
   }
 
@@ -84,6 +95,9 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
 
   @override
   void dispose() {
+    for (final t in _dotStarts) {
+      t.cancel();
+    }
     _entryCtrl.dispose();
     for (final c in _dotCtrl) {
       c.dispose();

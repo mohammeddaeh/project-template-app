@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/connectivity/network_state_monitor.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -39,7 +38,6 @@ class _ConnectivityDemoState extends State<ConnectivityDemo> {
   Widget build(BuildContext context) {
     // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
     context.locale;
-    final hasLive = getIt.isRegistered<ConnectivityCubit>();
 
     Widget hint(String text) => Text(
       text,
@@ -51,28 +49,15 @@ class _ConnectivityDemoState extends State<ConnectivityDemo> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // The dots follow the simulation switch below — the same cubit.
         DemoBlock(
-          code: 'ConnectivityDot(size: …)',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          code: 'ConnectivityDot(size: …, bloc: …)',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              hint(
-                hasLive
-                    ? LocaleKeys.showcaseConnectivityLive.tr()
-                    : LocaleKeys.showcaseConnectivityNoDi.tr(),
-              ),
-              if (hasLive) ...[
-                16.heightBox,
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ConnectivityDot(),
-                    ConnectivityDot(size: 12),
-                    ConnectivityDot(size: 16),
-                  ],
-                ),
-                8.heightBox,
-              ],
+              ConnectivityDot(bloc: _cubit),
+              ConnectivityDot(size: 12, bloc: _cubit),
+              ConnectivityDot(size: 16, bloc: _cubit),
             ],
           ),
         ),

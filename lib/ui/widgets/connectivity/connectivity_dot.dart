@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/state/connectivity/connectivity_cubit.dart';
+import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 /// **نقطةُ الاتصال** — كلُّ ما يقوله التطبيق عن الشبكة.
@@ -15,19 +16,15 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 ///
 /// ## ولماذا نقطةٌ لا شريط
 ///
-/// سبقها `ConnectivityOverlay`: نقطةٌ بعد ثانيةٍ ونصف، ثم شريطٌ أحمر عريض بعد
-/// أربع، ثم رقاقةٌ بعدّادٍ تنازليّ ثلاثين ثانية. وذلك منطقُ تطبيقٍ **يحتاج
-/// الشبكة** — وهذا لا يحتاجها: الانقطاع هنا **الحالةُ الطبيعية** لا العطل،
-/// والجولة الميدانية كلُّها تجري بلا تغطية عمداً.
-///
-/// فكان الشريط يعترض الشاشة ليعلن أمراً واقعاً ومقصوداً، والعدّادُ يَعِد
-/// بإعادة محاولةٍ لا يفعلها أحد.
+/// `ConnectivityOverlay` يعترض الشاشة بشريطٍ ثم بعدّادٍ تنازليّ — منطقُ تطبيقٍ
+/// **لا يعمل بلا شبكة**. أمّا تطبيقٌ يعمل دون اتصال فالانقطاع فيه حالةٌ عاديّة لا
+/// عطل، والنقطة تقولها بلا أن تعترض شيئاً.
 ///
 /// ## وتقول الحالتين لا الانقطاع وحده
 ///
 /// «لا شيء حين الاتصال» كان سيجعل النقطةَ إنذاراً، وهي ليست كذلك. والسؤال الذي
-/// يسأله الموظّف ميدانياً هو العكس: **«هل أنا متصلٌ الآن كي أُزامن؟»** — وجوابُه
-/// لا يُقرأ من غياب علامة.
+/// يسأله المستخدم هو العكس: **«هل أنا متصلٌ الآن كي أُزامن؟»** — وجوابُه لا يُقرأ
+/// من غياب علامة.
 ///
 /// | الحالة | اللون | `semanticsLabel` |
 /// |---|---|---|
@@ -37,20 +34,23 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 ///
 /// ## وتُقرأ من `getIt` لا من السياق
 ///
-/// نفسُ اختيار `LoginConnectivityStrip`: الكيوبت مفردٌ بالـDI، وقراءتُه مباشرةً
-/// تجعل الودجة تعمل بأي موضعٍ بالشجرة — بما فيه ما هو خارج مُوفِّر `app.dart`.
+/// الكيوبت مفردٌ بالـDI، وقراءتُه مباشرةً تجعل الودجة تعمل بأي موضعٍ بالشجرة —
+/// بما فيه ما هو خارج مُوفِّر `app.dart`. و[bloc] يمرّر غيرَه لاختبارٍ أو معاينة.
 class ConnectivityDot extends StatelessWidget {
-  const ConnectivityDot({super.key, this.size = 8});
+  const ConnectivityDot({super.key, this.size = 8, this.bloc});
 
   /// قطرُ النقطة. الافتراضي ٨ — نفسُ مقاس شريط شاشة الدخول.
   final double size;
+
+  /// كيوبتٌ غيرُ المسجَّل بالـDI — لاختبارٍ أو معاينة. `null` ⇐ `getIt`.
+  final ConnectivityCubit? bloc;
 
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_statements — registers this element with EasyLocalization
     context.locale;
     return BlocBuilder<ConnectivityCubit, NetworkState>(
-      bloc: getIt<ConnectivityCubit>(),
+      bloc: bloc ?? getIt<ConnectivityCubit>(),
       builder: (context, state) {
         final colors = context.colors;
         final (color, labelKey) = switch (state) {
@@ -73,7 +73,7 @@ class ConnectivityDot extends StatelessWidget {
           // من الأخضر.** والنصُّ هنا هو النسخة الوحيدة الباقية منه.
           label: labelKey.tr(),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
+            duration: AppMotion.of(context).base,
             width: size,
             height: size,
             decoration: BoxDecoration(

@@ -16,6 +16,11 @@
   الحقيقية، والخادم محاكىً محلّياً، وفوق كل مثالٍ اسمُه بالكود. **R42**: كل ودجةٍ بالمكتبة
   لها مثالٌ بالجولة، واختبارٌ يُفشل الناقص. تُطفأ وتُحذف بخطوات `SETUP.md` الموديول.
 - `AppOpenContainer`: زرّ الرجوع بالنظام يُغلق الصفحة المفتوحة (كان لا يفعل شيئاً).
+- إصلاحات بالمكتبة كشفتها المرآة: `AppButton` يختصر النصّ الطويل بدل أن يفيض ·
+  `AppOpenContainer` يمرّ الرجوعُ فيه بـ`PopScope` · `BadgeWidget` لا يرسم شارةً لعددٍ صفر ·
+  `StepProgressIndicator` المرقّم لا يفيض بلافتاتٍ طويلة · `PageLoadingIndicator` يلغي
+  مؤقّتاته · `ConnectivityDot(bloc:)` لكيوبتٍ غير المسجَّل · `DashedDivider` مرئيٌّ افتراضاً
+  (`borderSubtle`) · لا `Theme.of` بـ`DividerWidget`/`AppText`/`DashedDivider`/`BadgeWidget`.
 
 - **الحركة**: انتقال الصفحات `PredictiveBack` على أندرويد (كان Cupertino) · صفوف
   `PaginationBuilderWdg`/`PaginatedListView` تظهر متتالية (`itemAppear`) · تبويبات

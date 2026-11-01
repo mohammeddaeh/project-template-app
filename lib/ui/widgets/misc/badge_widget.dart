@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/theme/theme_extensions.dart';
+
 class BadgeWidget extends StatelessWidget {
   const BadgeWidget({
     super.key,
@@ -18,11 +20,13 @@ class BadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final scheme = context.colorScheme;
     final bg = backgroundColor ?? scheme.error;
     final fg = textColor ?? scheme.onError;
 
     return Badge(
+      // A zero count is nothing to report: no badge, not a red «0».
+      isLabelVisible: count != 0,
       backgroundColor: bg,
       textColor: fg,
       label: count != null

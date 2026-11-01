@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/theme/theme_extensions.dart';
+
 class DashedDivider extends StatelessWidget {
   const DashedDivider({
     super.key,
@@ -18,9 +20,7 @@ class DashedDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lineColor =
-        color ??
-        Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.2);
+    final lineColor = color ?? context.colors.borderSubtle;
 
     return SizedBox(
       height: height,

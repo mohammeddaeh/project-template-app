@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/theme/theme_extensions.dart';
+
 class DividerWidget extends StatelessWidget {
   const DividerWidget({
     super.key,
@@ -18,7 +20,7 @@ class DividerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final scheme = context.colorScheme;
     final color = scheme.outlineVariant;
 
     if (vertical) {

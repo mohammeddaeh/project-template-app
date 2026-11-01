@@ -561,10 +561,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseServicesCopied": "نُسخ إلى الحافظة",
     "showcaseServicesPasted": "في الحافظة: {}",
     "showcaseServicesEmpty": "الحافظة فارغة",
-    "showcaseConnectivityLive":
-        "الحالة الحيّة من ConnectivityCubit في التطبيق.",
-    "showcaseConnectivityNoDi":
-        "ConnectivityDot يقرأ ConnectivityCubit من الـDI، وهو غير مسجَّلٍ هنا.",
     "showcaseConnectivitySimulate": "محاكاة انقطاع الاتصال",
     "showcaseConnectivityOverlayHint":
         "اقطع الاتصال: تظهر نقطةٌ بعد ثانيةٍ ونصف، ثم الشريط والعدّ التنازليّ بعد أربع ثوانٍ أخرى.",
@@ -1209,9 +1205,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseServicesCopied": "Copied to the clipboard",
     "showcaseServicesPasted": "On the clipboard: {}",
     "showcaseServicesEmpty": "The clipboard is empty",
-    "showcaseConnectivityLive": "Live state from the app's ConnectivityCubit.",
-    "showcaseConnectivityNoDi":
-        "ConnectivityDot reads the app's ConnectivityCubit from DI, which is not registered here.",
     "showcaseConnectivitySimulate": "Simulate offline",
     "showcaseConnectivityOverlayHint":
         "Go offline: a dot appears after 1.5 s, then the banner and the countdown 4 s later.",
