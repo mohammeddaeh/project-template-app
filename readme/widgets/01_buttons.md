@@ -33,6 +33,7 @@
 | `outlined` | بديل محايد |
 | `text` | رابط أو إجراء خفيف |
 | `danger` | حذف / إجراء تدميري |
+| `onBrand` | فوق سطح العلامة (`bgBrand`) — شاشة الترحيب. خلفيةٌ `onBrandAccent` ونصٌّ بلون السطح |
 
 **Sizes** — `AppButtonSize.small` (36dp) · `medium` (44dp) · `large` (52dp)
 

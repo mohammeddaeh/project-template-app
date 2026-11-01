@@ -18,6 +18,10 @@ enum AppButtonVariant {
 
   /// زر أحمر — للحذف والإجراءات التدميرية
   danger,
+
+  /// زرٌّ فوق **سطح العلامة** (`bgBrand` — الترحيب): خلفيةٌ `onBrandAccent`
+  /// ونصٌّ بلون السطح. `filled` و`tonal` يبهتان هناك فيُقرآن معطَّلَين.
+  onBrand,
 }
 
 /// حجم زر موحَّد يحدد الـ padding والارتفاع.
@@ -126,6 +130,11 @@ class AppButton extends StatelessWidget {
         Colors.transparent,
       ),
       AppButtonVariant.danger => (colors.error, colors.onError, colors.error),
+      AppButtonVariant.onBrand => (
+        colors.onBrandAccent,
+        colors.bgBrand,
+        colors.onBrandAccent,
+      ),
     };
 
     final vPad = switch (size) {

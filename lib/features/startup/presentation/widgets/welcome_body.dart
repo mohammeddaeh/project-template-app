@@ -45,7 +45,7 @@ class WelcomeBody extends StatelessWidget {
         const Spacer(),
         AppButton(
           text: LocaleKeys.welcomeStart.tr(),
-          variant: AppButtonVariant.tonal,
+          variant: AppButtonVariant.onBrand,
           width: double.infinity,
           onTap: onStart,
         ),

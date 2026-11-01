@@ -20,6 +20,7 @@
   - `AppColors`: `feedbackSuccess` · `feedbackError` · `feedbackWarning` · `feedbackInfo`.
   - `AppLocale`: `nativeName` · `shortName` (أسماء اللغات بلغتها).
   - `flavor_banner.dart` يُصدَّر من `widgets.dart`.
+  - `AppButtonVariant.onBrand` — زرٌّ فوق سطح العلامة (الترحيب)؛ `tonal` كان يُقرأ معطَّلاً هناك.
   - شريط «لا اتصال» بالوضع الداكن: النصّ `onError` (رماديٌّ داكن) بدل الأبيض — تباينٌ أعلى.
 
 - **أوضاع الدخول** `AppFeatures.authMode` (`none` افتراضاً · `required` · `optional`)،
