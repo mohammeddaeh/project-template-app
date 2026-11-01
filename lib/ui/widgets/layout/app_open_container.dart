@@ -61,10 +61,23 @@ class AppOpenContainer<T> extends StatelessWidget {
       ),
       onClosed: onClosed,
       closedBuilder: closedBuilder,
-      openBuilder: (context, close) => openBuilder(
-        context,
-        ({T? returnValue}) => close(returnValue: returnValue),
-      ),
+      openBuilder: (context, close) {
+        final page = openBuilder(
+          context,
+          ({T? returnValue}) => close(returnValue: returnValue),
+        );
+        // The page is a route the router does not own, so the system back
+        // button (and the predictive-back swipe) never reaches it: the
+        // router's dispatcher answers instead, and nothing closes.
+        if (Router.maybeOf(context) == null) return page;
+        return BackButtonListener(
+          onBackButtonPressed: () async {
+            close();
+            return true;
+          },
+          child: page,
+        );
+      },
     );
   }
 }
