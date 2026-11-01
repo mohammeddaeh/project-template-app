@@ -16,6 +16,10 @@ dependencies:
 
   cupertino_icons: ^1.0.6
 
+  #=== DEVICE KITS — dart run scripts/kit.dart (packages/) ===#
+  kit_contracts:
+    path: packages/kit_contracts
+
   #=== STATE MANAGEMENT ===#
   # `bloc` is declared directly, not left as a transitive dependency of
   # flutter_bloc: `SafeCubit` lives in core/foundation/, which is Pure Dart by

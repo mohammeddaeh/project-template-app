@@ -31,10 +31,14 @@
 /// `--template-ref` يُكتب ببيان المشروع حين لا `.git` يُسأل عن نسخة القالب.
 /// `--auth none|required|optional` يكتب `AppFeatures.authMode` (افتراضاً `none`
 /// مع `--yes`، وإلا يُسأل).
+/// `--kits voice,scan` حِزَمُ الأجهزة التي تبقى مركَّبة — وغيرُها يُزال
+/// (افتراضاً لا شيء مع `--yes`، وإلا يُسأل). `readme/24_DEVICE_KITS.md`.
 library;
 
 import 'dart:convert';
 import 'dart:io';
+
+import 'src/kits.dart';
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
@@ -62,6 +66,17 @@ Future<void> main(List<String> args) async {
               ]).split(' ').first),
   );
 
+  final installed = installedKits(File('pubspec.yaml').readAsStringSync());
+  final kits = _kitsOrDie(
+    opts['kits'] ??
+        (opts.containsKey('yes') || installed.isEmpty
+            ? ''
+            : _askOptional(
+                'حِزَم الأجهزة التي تبقى (${installed.join(',')}) — فاصلة، Enter لا شيء',
+              )),
+    installed,
+  );
+
   final baseUrls = <String, String>{
     'dev':
         opts['base-url'] ??
@@ -81,6 +96,7 @@ Future<void> main(List<String> args) async {
     print('  BASE_URL ${entry.key.padRight(8)}: ${entry.value}');
   }
   print('  ${'authMode'.padRight(17)}: $authMode');
+  print('  ${'kits'.padRight(17)}: ${kits.isEmpty ? '—' : kits.join(' · ')}');
   for (final entry in flags.entries) {
     print('  ${entry.key.padRight(17)}: ${entry.value ? 'true' : 'false'}');
   }
@@ -100,6 +116,15 @@ Future<void> main(List<String> args) async {
   _section('🚩  كتابة الأعلام');
   _applyFeatureFlags(flags);
   _applyAuthMode(authMode);
+
+  for (final kit in installed.where((k) => !kits.contains(k))) {
+    await _stream('🧩  إزالة kit $kit', 'dart', [
+      'run',
+      'scripts/kit.dart',
+      'remove',
+      kit,
+    ]);
+  }
 
   _section('📄  كتابة بيان المشروع');
   _writeManifest(
@@ -140,6 +165,21 @@ Future<void> main(List<String> args) async {
   if (!healthy) exit(1);
 }
 
+/// `voice,scan` ⇐ `[voice, scan]` — وكلُّ اسمٍ ليس مركَّباً بالقالب يُفشل:
+/// خطأٌ إملائيّ يعني مشروعاً بلا الـkit التي طُلبت، ويُكتشف بعد أيام.
+List<String> _kitsOrDie(String value, List<String> installed) {
+  final names = [
+    for (final n in value.split(','))
+      if (n.trim().isNotEmpty) n.trim(),
+  ];
+  for (final n in names) {
+    if (!installed.contains(n)) {
+      _die('--kits: لا kit مركَّبة باسم "$n" (${installed.join(' · ')})');
+    }
+  }
+  return names;
+}
+
 // ── Arguments ────────────────────────────────────────────────────────────────
 
 const _valueOptions = {
@@ -152,6 +192,7 @@ const _valueOptions = {
   'base-url-prod',
   'template-ref',
   'auth',
+  'kits',
 };
 
 /// `--key value` أو `--key=value`، و`--yes` علَمٌ بلا قيمة. وسيطٌ مجهول يُفشل

@@ -9,6 +9,10 @@ void main() {
     expect(isTemplateOwned('lib/core/infra/env.dart'), isTrue);
     expect(isTemplateOwned('lib/ui/widgets/widgets.dart'), isTrue);
     expect(isTemplateOwned('scripts/gen_code.dart'), isTrue);
+    expect(
+      isTemplateOwned('packages/kit_contracts/lib/kit_contracts.dart'),
+      isTrue,
+    );
     expect(isTemplateOwned('CLAUDE.md'), isTrue);
 
     expect(isTemplateOwned('lib/features/orders/orders.dart'), isFalse);

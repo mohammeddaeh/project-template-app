@@ -241,7 +241,14 @@ core          → presentation  NEVER (except di/)
 core          → routes        NEVER (except di/)
 modules       → Features      NEVER
 modules       → presentation  NEVER
+
+packages/kit_contracts → nothing
+packages/kit_<name>    → kit_contracts + its platform packages (NOT app_template, NOT another kit)
+lib/ (all of it)       → kit_contracts only — kit_<name> from lib/core/di/kits.g.dart alone (C18 · C19)
 ```
+
+حِزَم الأجهزة خارج `lib/` بقصد: تُركَّب وتُزال بـ`scripts/kit.dart` ولا يتغيّر سطرٌ
+بالتطبيق — [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
 
 ---
 

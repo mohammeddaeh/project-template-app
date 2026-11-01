@@ -26,6 +26,7 @@ dart run scripts/<script_name>.dart
 | `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
 | `gen_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
 | `sync_platform_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
+| **`kit.dart`** | **حِزَم الأجهزة** — `list` · `add <name>` · `remove <name>` · `test`. التركيب والإزالة بأمرٍ واحد، والجولة لا تترك فرقاً بـgit. راجع [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) |
 | **`check_structure.dart`** | **فاحصٌ آليّ لقواعد بنية الواجهة** (`F04` · `F10` · `F13` · `F19`…`F23` · `F35` · `F36` · `F37`) — يفشل بمخالفة **جديدة** ويتسامح مع الدَّين المسجَّل |
 | **`check_docs.dart`** | **روابط التوثيق المعطوبة** — كل رابط Markdown نسبيّ يصل ملفاً موجوداً، ورابطُ GitHub إلى `_template/` حين يوجد المجلد. حاجبٌ بالـCI. راجع §8‑ح |
 | **`template_drift.dart`** | **ما غيّره المشروع بملفات القالب ولم يُسجَّل** — يقارن بنسخة القالب حين بدأ المشروع. راجع §8‑ط |
@@ -238,7 +239,7 @@ dart run scripts/sync_platform_permissions.dart
 - `android/app/src/main/AndroidManifest.xml` (بين `<!-- SYNC:PERMISSIONS:START/END -->`)
 - `ios/Runner/Info.plist` (بين نفس العلامتين)
 
-يدعم حالياً: `camera`, `microphone`, `location`, `locationAlways`, `photos`, `fileStorage`, `contacts`, `bluetooth`, `pushNotifications`, `localNotifications`. الكتل مُدارة بعلامات sync آمنة — لا تلمس أي إدخال يدوي خارجها، وتُحذف/تُضاف تلقائياً في كل تشغيل حسب الأعلام الحالية.
+يدعم حالياً: `camera`, `microphone`, `location`, `locationAlways`, `photos`, `fileStorage`, `contacts`, `bluetooth`, `pushNotifications`, `localNotifications`. الكتل مُدارة بعلامات sync آمنة — لا تلمس أي إدخال يدوي خارجها، وتُحذف/تُضاف تلقائياً في كل تشغيل حسب الأعلام الحالية. والكتلة تأخذ إزاحةَ العلامة بالملف (tabs بـ`Info.plist`)، فتشغيلٌ لم يغيّر إذناً لا يترك فرقاً بـgit — `kit.dart` يناديه مع كل تركيب وإزالة.
 
 ---
 
@@ -489,6 +490,9 @@ dart run scripts/setup_project.dart --name "Inventory" --app-id com.example.inve
    الدخول إلزاميّ · `optional` زائرٌ والدخول من تبويب الحساب ⇐ `AppFeatures.authMode`
    و`authMode` بالبيان. وبـ`new_project.ps1` الوسيط `-Auth`. المعنى كاملاً بـ
    [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) §٤‑ب.
+1‑ج. **حِزَم الأجهزة** (`--kits voice,scan`): ما يبقى مركَّباً، والباقي يُزال بـ`kit.dart remove`
+   — **الافتراضي لا شيء** (ومع `--yes`). مجلداتُها تبقى بـ`packages/` فتُركَّب لاحقاً
+   بأمرٍ واحد — [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
 2. **الوحدات الاختيارية ذات الكلفة الخارجية فقط** — `accessControl` ·
    `dataTransfer` · `offlineSync` · `multiDevice` · `inAppUpdates` ·
    `crashReporting` · `analytics` · `remoteConfig` — عبر نمط جاهز (بسيط/مؤسسي)

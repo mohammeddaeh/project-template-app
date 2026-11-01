@@ -24,6 +24,7 @@
 | **كيف** يُستعمل كل widget بالمكتبة | [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) — فهرسٌ برقم كل قسم، والشرح بملف فئته تحت [`widgets/`](widgets/) |
 | **مقاسُ شاشة · لوح · كيبورد · تكبير خط** | [`22_RESPONSIVE.md`](22_RESPONSIVE.md) — `context.screen`، ولا نسبةَ من ارتفاع الشاشة |
 | **إقلاع التطبيق · شاشة البدء · شعارُها** | [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) — شاشةٌ واحدة لا شاشتان · ⛔ **و`android: false` بقرار** |
+| **صوت · فيديو · مسح · كتابة يدوية · أوامر النظام** | [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) — حزمةٌ تحت `packages/` تُركَّب بـ`kit.dart add`، والتطبيق يعرف عقدها وحده |
 | **ما يخدمه الباك فعلاً** | [`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) — جردُ النقاط وحالاتُها الأربع · ودَينُ الباك بلغة المستخدم |
 | الصلاحيات — `modules/access_control/` + `core/authz/` | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) |
 | الاستيراد/التصدير — `modules/data_transfer/` | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |

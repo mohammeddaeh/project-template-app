@@ -11,6 +11,12 @@
 
 ## غير مُصدَر
 
+- **حِزَم الأجهزة — البنية (K0)**: `packages/kit_contracts` · `scripts/kit.dart`
+  (`list` · `add` · `remove` · `test`) · `lib/core/di/kits.g.dart` مولَّد ويُنادى من
+  `configureInjection` · `setup_project --kits` (الافتراضي لا شيء) · `C18`/`C19` · R43 ·
+  `readme/24_DEVICE_KITS.md`. لا kit بعد. **ويمسّ كل مشروع**: `kit_contracts` تبعيةُ
+  `path` جديدة، و`packages/` صار مملوكاً للقالب · `sync_platform_permissions` يحفظ
+  إزاحة `Info.plist` فلا يترك فرقاً بلا تغيير إذن.
 - **الشريط السفلي والتباين**: نمط `expanding` يُظهر لافتة التبويب المختار (كانت الحصص المتساوية
   تعصرها إلى لا شيء) · الوضع الداكن: `onPrimaryContainer`/`onSecondaryContainer` صارا داكنين
   فوق حاويتهما الفاتحة (كانا ١٫٩٥ و١٫٩٨:١) — يمسّ الزرّ tonal والتبويب المختار، وبوابة التباين

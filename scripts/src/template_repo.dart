@@ -23,6 +23,7 @@ const templateOwned = <String>[
   'lib/core/',
   'lib/ui/',
   'lib/modules/',
+  'packages/',
   'scripts/',
   'readme/',
   '.claude/skills/',

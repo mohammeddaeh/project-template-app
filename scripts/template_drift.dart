@@ -10,7 +10,7 @@
 /// | **معدَّل** | المشروع غيّر ملفاً من القالب — تحسينٌ يعود، أو تخصيصٌ يُوثَّق |
 /// | **محذوف** | المشروع أزال ملفاً من القالب (موديولٌ مطفأ حُذف عادةً) |
 /// | **متوقَّع** | ملفٌّ يُنتظر أن يعدّله كل مشروع (`projectEdited`) — يُعرض ولا يُعدّ |
-/// | **مضاف** | ملفٌّ جديد بمسارٍ يملكه القالب (`lib/core/` · `lib/ui/` · `lib/modules/` · `scripts/`) — قدرةٌ عامّة على الأرجح |
+/// | **مضاف** | ملفٌّ جديد بمسارٍ يملكه القالب (`lib/core/` · `lib/ui/` · `lib/modules/` · `packages/` · `scripts/`) — قدرةٌ عامّة على الأرجح |
 ///
 /// والتغيير **مسجَّل** حين يُذكر مسارُه بـ`docs/TEMPLATE_FEEDBACK.md`. اسم الحزمة
 /// الذي بدّله `setup_project.dart` ونهاياتُ الأسطر لا تُعدّ تغييراً.
@@ -28,7 +28,13 @@ import 'dart:io';
 import 'src/template_repo.dart';
 
 const _feedbackFile = 'docs/TEMPLATE_FEEDBACK.md';
-const _addedRoots = ['lib/core/', 'lib/ui/', 'lib/modules/', 'scripts/'];
+const _addedRoots = [
+  'lib/core/',
+  'lib/ui/',
+  'lib/modules/',
+  'packages/',
+  'scripts/',
+];
 
 void main(List<String> args) {
   String? option(String name) {

@@ -18,6 +18,7 @@
 | **نقل تطبيقٍ قائم إلى القالب** | skill `port-to-template` — الجرد (`port_inventory.dart`) ثم المطابقة بـ`06_CAPABILITIES.md` **قبل أي سطر**، ثم `docs/PORT_PLAN.md` |
 | **صفحة من الفيغما** (سحبٌ أو لصق) | [`readme/05_FIGMA_TO_PAGE.md`](readme/05_FIGMA_TO_PAGE.md) — إلزامي قبل أي سطر |
 | **مقاسُ شاشة · لوح · كيبورد · تكبير خط** | [`readme/22_RESPONSIVE.md`](readme/22_RESPONSIVE.md) — `context.screen`، ولا نسبةَ من ارتفاع الشاشة |
+| **صوت · فيديو · مسح · كتابة يدوية · أوامر النظام** (أي حزمة بكودٍ أصليٍّ ثقيل) | [`readme/24_DEVICE_KITS.md`](readme/24_DEVICE_KITS.md) — kit تحت `packages/` بـ`scripts/kit.dart`، و`lib/` يعرف `kit_contracts` وحده (`C18` · `C19`) |
 | **إقلاع التطبيق · شاشة البدء · شعارُها** | [`readme/23_STARTUP_SPLASH.md`](readme/23_STARTUP_SPLASH.md) — ⛔ **و`android: false` بـ`flutter_native_splash.yaml` بقرار**: موردا أندرويد متجهان باليد، وإعادةُ التوليد تمحوهما |
 
 **وللمرجع البشري** — تفتحه حين تحتاج «لماذا» أو أمراً نسيته:
@@ -99,6 +100,7 @@ core        → Features      ❌ NEVER (except di/)
 core        → presentation  ❌ NEVER (except di/)
 Features    → Features      ❌ NEVER
 modules     → Features      ❌ NEVER
+lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is generated)
 ```
 
 ---
@@ -127,6 +129,7 @@ modules     → Features      ❌ NEVER
 | `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
 | `readme/21_WIDGETS_USAGE.md` + `readme/widgets/*.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود — القسم بملف فئته تحت `widgets/`، وصفُّه بجدول الفهرس |
 | `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
+| **`readme/24_DEVICE_KITS.md`** | **أي تغيير بـ`packages/` · `scripts/kit.dart` · `kit.json` · `lib/core/di/kits.g.dart` · أو `C18`/`C19`** |
 | **`readme/23_STARTUP_SPLASH.md`** | **أي سطر بـ`main()` · `ModulesBootstrap.start`/`ready` · `StartupResolver` · `deepLinkBuilder` بـ`app.dart` · أيُّ مورد أندرويد بـ`res/drawable/splash_*` أو `values*/styles.xml` · علَم `android` بـ`flutter_native_splash.yaml`** |
 | **`readme/17_SERVED_CONTRACT.md`** | **إضافة/حذف ثابت بـ`ApiUrls` · صيرورةُ نقطةٍ مخدومة · كشفُ عقدٍ يخالف المُعلَن · إعادةُ أي شريحة محذوفة** |
 | `lib/modules/sync/STATUS.md` | **أي تغيير بما يعمل أو المفتوح أو غير الموفَّر بالموديول** — يُصان قبل `ARCHITECTURE.md`، فهو ما يُقرأ قبل البناء عليه |

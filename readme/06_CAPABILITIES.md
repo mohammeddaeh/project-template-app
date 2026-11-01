@@ -113,6 +113,11 @@
 | إذن نظام | `PermissionsService.request(AppPermission.x)` | `Permission.camera.request()` | 👁 |
 | حالة الشبكة | `NetworkStateMonitor` · `ConnectivityDot` | `Connectivity()` | 👁 |
 
+**والطرفيات الثقيلة — صوت · فيديو · مسح · كتابة يدوية · أوامر النظام — ليست هنا**:
+kit تحت `packages/` تُركَّب بـ`dart run scripts/kit.dart add <name>`، والشاشة تسأل
+`getIt.isRegistered<Contract>()`. حزمُ منصّتها لا تُستورد بـ`lib/` (`C19`)، ولا الـkit
+نفسُها (`C18`) — [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
+
 ## الشبكة والبيانات والموديولات
 
 | الحاجة | استعمل | لا تكتب | الحارس |

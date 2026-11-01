@@ -68,6 +68,11 @@ jobs:
       - name: Test
         run: flutter test
 
+      # Each device kit under packages/ carries its own tests, which the root
+      # `flutter test` never sees: kit_contracts and every installed kit.
+      - name: Device kit tests
+        run: dart run scripts/kit.dart test
+
       # Neither of these is seen by `analyze` or `test`: a widget built against
       # the design system's rules, and a doc link that leads nowhere.
       - name: Structure check
@@ -108,9 +113,9 @@ jobs:
 
       # A gate: the whole tree is formatted, and gen_code.dart formats the
       # generated lib/resources/ its generators leave unformatted. Format before pushing:
-      # `dart format lib test scripts`.
+      # `dart format lib test scripts packages`.
       - name: Format check
-        run: dart format --output=none --set-exit-if-changed lib test scripts
+        run: dart format --output=none --set-exit-if-changed lib test scripts packages
 
   build-android:
     needs: analyze-and-test

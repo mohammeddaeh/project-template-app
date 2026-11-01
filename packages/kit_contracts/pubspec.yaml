@@ -1,0 +1,11 @@
+name: kit_contracts
+description: What the app knows of a device kit — contracts and result types, no platform code.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.9.0
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.25.0

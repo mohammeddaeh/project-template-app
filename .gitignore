@@ -64,3 +64,6 @@ flutter_launcher_icons-*.yaml
 
 # template_update.dart — template copies of conflicting files, merged by hand then deleted
 .template_update/
+
+# Device kits resolve against the app; their own lockfiles are noise.
+packages/*/pubspec.lock

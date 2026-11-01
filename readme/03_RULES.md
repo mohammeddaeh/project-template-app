@@ -427,6 +427,20 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 الاختبار: `test/modules/showcase_test.dart` — «every public class of the widget library…».
 والمشروعُ الذي يحذف الجولة يحذف اختبارها معها ([`SETUP.md`](../lib/modules/showcase/SETUP.md)).
 
+### R43 · حِزَم الأجهزة منفصلة — التطبيق يعرف العقد وحده 🔒
+
+ما يجرّ كوداً أصلياً ثقيلاً (صوت · كاميرا حيّة · تعرّف) kit تحت `packages/`.
+`lib/` يستورد `kit_contracts` وحده، و`lib/core/di/kits.g.dart` المولَّد هو الملف
+الوحيد الذي يستورد kit. والـkit لا تستورد التطبيق ولا kit أخرى، وحزمُ منصّتها لا
+تُستورد خارجها.
+
+> **لماذا**: العلَمُ يُطفئ التسجيل لا الحزمة — حزمةٌ ثقيلة بـ`pubspec.yaml` تُشحن في كل
+> مشروع وتُسأل عنها مراجعةُ iOS. وkit يستوردها ملفٌّ بشاشة تكسر البناء بعشرة أماكن
+> لحظةَ تُزال، بدل سطرٍ واحد يكتبه السكربت.
+
+الفاحص: `check_structure.dart` — `C18` (الاستيراد) · `C19` (حزم المنصّة). التفصيل:
+[`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
+
 ### R39 · كل رابطٍ بوثيقة يصل ملفاً موجوداً 🔒
 
 نقلُ ملفٍّ أو حذفُه يكسر كل رابطٍ إليه، ولا شيء آخر يفشل. ورابطٌ إلى `_template/`
@@ -533,6 +547,7 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R40  بحثتُ بـ06_CAPABILITIES قبل كتابة أداة — والناقص وُسِّع بمكانه
 [ ] R41  كل حركةٍ مدّتها من AppMotion.of(context) — صفرٌ مع «تقليل الحركة»
 [ ] R42  ودجةٌ جديدة بالمكتبة لها مثالٌ بصفحةٍ من lib/modules/showcase/
+[ ] R43  حزمةٌ بكودٍ أصليٍّ ثقيل kit بـpackages/ — و lib/ يعرف kit_contracts وحده
 [ ] R36  صفر TextField/TextFormField خام — CustomTextField وحده
 [ ] R37  صفر رقمِ مقاسٍ خام — context.screen · وجُرِّبت على هاتف ولوح
 [ ] R16  اتجاه التبعية سليم

@@ -1,5 +1,5 @@
 // ignore_for_file: avoid_print
-/// يفحص قواعد بنية الواجهة آلياً — `F04` · `F10` · `F13` · `F19`…`F23`.
+/// يفحص قواعد بنية الواجهة آلياً — `F04` · `F10` · `F13` · `F19`…`F23` · وحدود حِزَم الأجهزة `C18`/`C19`.
 ///
 /// وُجد لأن قاعدةً بلا فاحص اقتراحٌ لا قاعدة (R30). كل ما يفحصه هنا **لا يراه**
 /// `dart analyze` ولا `flutter test`: صفحةٌ بألف سطر تُصرَّف، و`Color(0xFF...)`
@@ -40,6 +40,8 @@
 library;
 
 import 'dart:io';
+
+import 'src/kits.dart';
 
 // ── الحدود ────────────────────────────────────────────────────────────────────
 
@@ -108,6 +110,8 @@ void main(List<String> args) {
     if (_isPage(path)) _checkPage(path, code);
     if (_isSharedWidget(path)) _checkSharedWidget(path, code, barrelExports);
   }
+
+  _checkKitBoundaries(files);
 
   if (writeBaseline) {
     _writeBaseline();
@@ -380,6 +384,81 @@ void _checkCapabilities(String path, List<String?> code) {
       if (pattern.hasMatch(line)) {
         _flag(capability.rule, path, i + 1, capability.message);
       }
+    }
+  }
+}
+
+/// C18 · C19 — حِزَم الأجهزة منفصلة (`readme/24_DEVICE_KITS.md`).
+///
+/// | القاعدة | تُفشل |
+/// |---|---|
+/// | C18 | ملفٌّ بـ`lib/` يستورد `kit_<x>` (العقد وحده بـ`kit_contracts`، والتسجيل بـ`kits.g.dart` المولَّد) · kit تستورد التطبيق أو kit أخرى |
+/// | C19 | حزمةُ منصّةٍ يعلنها `kit.json` تُستورد خارج حزمتها |
+///
+/// **تُفحص `lib/modules/` أيضاً** خلافاً لباقي القواعد: موديولٌ يستورد kit
+/// يكسر البناء لحظةَ تُزال، تماماً كما تفعل الشاشة.
+void _checkKitBoundaries(List<File> appFiles) {
+  final root = Directory(kitsDir);
+  final kitDirs = root.existsSync()
+      ? root.listSync().whereType<Directory>().toList()
+      : <Directory>[];
+  final owner = <String, String>{};
+  for (final d in kitDirs) {
+    final f = File('${d.path}/kit.json');
+    if (!f.existsSync()) continue;
+    final kit = KitManifest.fromJson(f.readAsStringSync());
+    for (final p in kit.platformPackages) {
+      owner[p] = kit.package;
+    }
+  }
+  final import = RegExp(r"^\s*(?:import|export)\s+'package:(\w+)/");
+
+  void scan(String path, List<String?> code, String? self) {
+    for (var i = 0; i < code.length; i++) {
+      final m = import.firstMatch(code[i] ?? '');
+      if (m == null) continue;
+      final pkg = m[1]!;
+      final otherKit = pkg.startsWith('kit_') && pkg != 'kit_contracts';
+      if (self == null && otherKit) {
+        _flag(
+          'C18',
+          path,
+          i + 1,
+          'استيرادُ $pkg بالتطبيق — اعتمد على عقدها بـkit_contracts، والتسجيلُ بـkits.g.dart وحده',
+        );
+      } else if (self != null &&
+          (pkg == 'app_template' || (otherKit && pkg != self))) {
+        _flag(
+          'C18',
+          path,
+          i + 1,
+          '$self تستورد $pkg — الـkit لا تعرف التطبيق ولا kit أخرى',
+        );
+      }
+      final home = owner[pkg];
+      if (home != null && home != self) {
+        _flag(
+          'C19',
+          path,
+          i + 1,
+          'حزمةُ المنصّة $pkg خارج $home — مكانها داخل الـkit وحدها',
+        );
+      }
+    }
+  }
+
+  for (final file in appFiles) {
+    final path = _rel(file.path);
+    if (_isGenerated(path)) continue;
+    scan(path, _stripComments(file.readAsLinesSync()), null);
+  }
+  for (final d in kitDirs) {
+    final self = _rel(d.path).split('/').last;
+    final lib = Directory('${d.path}/lib');
+    if (!lib.existsSync()) continue;
+    for (final file in lib.listSync(recursive: true).whereType<File>()) {
+      if (!file.path.endsWith('.dart')) continue;
+      scan(_rel(file.path), _stripComments(file.readAsLinesSync()), self);
     }
   }
 }

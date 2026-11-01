@@ -1,4 +1,5 @@
 ﻿import 'package:app_template/core/di/injection.config.dart';
+import 'package:app_template/core/di/kits.g.dart';
 import 'package:app_template/core/di/platform_services_registry.dart';
 import 'package:app_template/core/infra/errors/failure_mapper_registry.dart';
 import 'package:app_template/core/platform/connectivity/network_state_monitor.dart';
@@ -14,6 +15,10 @@ Future<void> configureInjection(String env) async {
   // Register optional platform services based on AppFeatures flags.
   // To enable/disable a service → change the flag in app_features.dart only.
   PlatformServicesRegistry.configure(getIt);
+
+  // Device kits installed with `dart run scripts/kit.dart add <name>` — each
+  // registers its contracts; an absent kit leaves them unregistered.
+  registerKits(getIt);
 
   // Lets the error layer tell "this device is offline" apart from "the server
   // is closed" — Dio reports both as the same exception, and answering "no

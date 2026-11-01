@@ -229,11 +229,19 @@ String _replaceBlock(
     // ابتلاع المسافة البادئة لسطر اللافتة: الكتلة الجديدة تحمل إزاحتها بنفسها،
     // وبلا هذا تبقى مسافاتٌ يتيمة قبلها تتراكم مع كل تشغيل.
     final lineStart = content.lastIndexOf('\n', start);
+    var block = newBlock;
     if (lineStart != -1 &&
         content.substring(lineStart + 1, start).trim().isEmpty) {
+      // والكتلة تأخذ إزاحةَ الملف لا إزاحةَ الثابت: tabs بـ`Info.plist` تبقى
+      // tabs، فلا يترك تشغيلٌ لم يغيّر إذناً فرقاً بـgit.
+      final indent = content.substring(lineStart + 1, start);
+      block = newBlock
+          .split('\n')
+          .map((l) => '$indent${l.trimLeft()}')
+          .join('\n');
       start = lineStart + 1;
     }
-    return content.replaceRange(start, end + endText.length, newBlock);
+    return content.replaceRange(start, end + endText.length, block);
   }
 
   // First run — insert before closing tag

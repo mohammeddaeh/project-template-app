@@ -1,6 +1,6 @@
 # حِزَم الأجهزة (Device Kits) — الخطة
 
-> **الحالة: ⬜ مخطَّط — القرارات محسومة (§٦)، لا سطر كود بعد.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
+> **الحالة: ◐ K0 ✅ (2026-11-01) — البنية جاهزة بلا kit بعد. التالي K1 voice.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
 > الهدف: الصوت والفيديو والمسح والكتابة اليدوية وأوامر النظام — **كلٌّ في حزمةٍ
 > منفصلة يركّبها المشروع حين يحتاجها**، لا تبعياتٌ تُشحن مع كل مشروع.
 
@@ -146,7 +146,7 @@ dart run scripts/kit.dart remove voice    # يزيل
 
 | # | المرحلة | المحتوى | يعتمد على |
 |---|---|---|---|
-| **K0** | البنية | `packages/` · `kit_contracts` · `kit.dart` · `kits.g.dart` · `C18`/`C19` · فصلُ «الطرفيات» بالمرآة بلافتة «غير مركَّبة» · ملف `readme/24_DEVICE_KITS.md` · وعيُ `new_project.ps1` و`template_drift`/`template_update` بـ`packages/` | — |
+| **K0** ✅ | البنية | `packages/` · `kit_contracts` · `kit.dart` (`list`/`add`/`remove`/`test`) · `kits.g.dart` · `C18`/`C19` · `setup_project --kits` · `readme/24_DEVICE_KITS.md` + R43 · `packages/` يملكه القالب بـ`template_drift`/`template_update` · خطوةٌ بالـCI. **فصلُ «الطرفيات» بالمرآة نُقل إلى K1** — بلا kit لا شيء يُعرض | — |
 | **K1** | voice | `SpeechInput` · `SpeechOutput` · `CustomTextField(dictation:)` · `SpeakButton` | K0 |
 | **K2** | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات | K0 |
 | **K3** | scan | `CodeScanner` (QR/باركود) · `DocumentScanner` · `TextRecognizer` · `ScanSheet.show` | K0 |
@@ -178,3 +178,21 @@ K1…K6 مستقلّةٌ عن بعضها — **أيُّ ترتيبٍ بعد K0 �
 | D3 | الافتراضي بمشروعٍ جديد | **لا kit** — يُختار بـ`--kits` أو بـ`kit.dart add` لاحقاً |
 | D4 | pub workspace أم `path` | **`path` وحده** — لا يتغيّر `pubspec.lock` القائم |
 | D5 | أول kit بعد K0 | **K1 voice** |
+
+---
+
+## ٧. سجلّ المراحل
+
+### K0 — البنية ✅ (2026-11-01)
+
+- **جولةُ `add` ثم `remove` جُرِّبت بـkit تجريبية حقيقية** (`kit_probe`، حُذفت بعدها):
+  `pubspec.yaml` · `kits.g.dart` · علَمُ `microphone` · `AndroidManifest.xml` ·
+  `Info.plist` — `git diff` فارغ بعدها.
+- **وكشفت عطلاً سابقاً بـ`sync_platform_permissions.dart`**: كان يعيد كتابة علامتي
+  `Info.plist` بأربع مسافات بدل tabs، فكلُّ تشغيلٍ يترك فرقاً بلا تغيير إذن. أُصلح:
+  الكتلة تأخذ إزاحة العلامة بالملف.
+- `C18`/`C19` جُرِّبا بمخالفاتٍ متعمَّدة (استيرادُ kit من `lib/` · kit تستورد التطبيق ·
+  حزمةُ منصّةٍ خارج حزمتها) — الثلاث تُفشل.
+- ⚠️ **حزمةُ منصّةٍ يعلنها `kit.json` ويستعملها التطبيق أصلاً تُفشل `C19` بكل
+  موضع** (جُرِّب بـ`uuid`) — فاختيارُ حزم الـkit يمرّ بفحص `lib/` أولاً.
+
