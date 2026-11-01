@@ -61,14 +61,20 @@ class DemoPlayground extends StatefulWidget {
 }
 
 class _DemoPlaygroundState extends State<DemoPlayground> {
+  /// What each control holds — a [ChoiceKnob] holds its option's code, so a
+  /// value rebuilt on every frame (a theme colour, a widget) still matches.
   late final Map<String, Object?> _values = {
-    for (final k in widget.knobs) k.name: k.initial,
+    for (final k in widget.knobs) k.name: k.storedInitial,
   };
 
   String get _code {
     final args = [
       for (final k in widget.knobs)
-        if (k.required || _values[k.name] != k.apiDefault)
+        if (k.inCall && k.positional) k.codeOf(_values[k.name]),
+      for (final k in widget.knobs)
+        if (k.inCall &&
+            !k.positional &&
+            (k.required || _values[k.name] != k.storedApiDefault))
           '${k.name}: ${k.codeOf(_values[k.name])}',
       ...widget.trailingCode,
     ];
@@ -88,7 +94,9 @@ class _DemoPlaygroundState extends State<DemoPlayground> {
     // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
     context.locale;
     final colors = context.colors;
-    final values = KnobValues._(_values);
+    final values = KnobValues._({
+      for (final k in widget.knobs) k.name: k.resolve(_values[k.name]),
+    });
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -184,6 +192,8 @@ abstract class Knob<T> {
     this.apiDefault,
     this.required = false,
     this.control = true,
+    this.positional = false,
+    this.inCall = true,
   });
 
   /// The argument's name in code.
@@ -200,7 +210,22 @@ abstract class Knob<T> {
   /// Shown as a control; `false` keeps a fixed argument in the written call.
   final bool control;
 
-  /// How [value] is written in Dart.
+  /// Written first and without its name — `success('Saved')`.
+  final bool positional;
+
+  /// `false` for a control of the preview only (how many tabs to draw) —
+  /// never written in the call.
+  final bool inCall;
+
+  /// What the control holds at first, and at the widget's default — the
+  /// value itself for every knob but [ChoiceKnob].
+  Object? get storedInitial => initial;
+  Object? get storedApiDefault => apiDefault;
+
+  /// The value the builder reads, from what the control holds.
+  Object? resolve(Object? stored) => stored;
+
+  /// How the held [value] is written in Dart.
   String codeOf(Object? value);
 
   Widget buildControl(
@@ -219,6 +244,7 @@ class EnumKnob<T extends Enum> extends Knob<T> {
     T? apiDefault,
     String? typeName,
     super.required,
+    super.positional,
   }) : typeName = typeName ?? values.first.runtimeType.toString(),
        super(initial: initial, apiDefault: apiDefault ?? initial);
 
@@ -258,6 +284,7 @@ class ChoiceKnob<T> extends Knob<T> {
     String? initialCode,
     this.apiDefaultCode,
     super.required,
+    super.positional,
   }) : initialCode = initialCode ?? options.keys.first,
        super(initial: options[initialCode ?? options.keys.first] as T);
 
@@ -271,8 +298,16 @@ class ChoiceKnob<T> extends Knob<T> {
   T? get apiDefault => apiDefaultCode == null ? null : options[apiDefaultCode];
 
   @override
-  String codeOf(Object? value) =>
-      options.entries.firstWhere((e) => e.value == value).key;
+  Object? get storedInitial => initialCode;
+
+  @override
+  Object? get storedApiDefault => apiDefaultCode;
+
+  @override
+  Object? resolve(Object? stored) => options[stored];
+
+  @override
+  String codeOf(Object? value) => value! as String;
 
   @override
   Widget buildControl(
@@ -284,9 +319,9 @@ class ChoiceKnob<T> extends Knob<T> {
     child: ChipRow<String>(
       items: options.keys.toList(),
       labelResolver: (c) => c,
-      selectedValue: codeOf(value),
+      selectedValue: value! as String,
       onSelected: (c) {
-        if (c != null) onChanged(options[c]);
+        if (c != null) onChanged(c);
       },
     ),
   );
@@ -299,6 +334,7 @@ class BoolKnob extends Knob<bool> {
     super.initial = false,
     bool super.apiDefault = false,
     super.required,
+    super.positional,
   });
 
   @override
@@ -324,6 +360,7 @@ class TextKnob extends Knob<String> {
     required super.initial,
     super.apiDefault,
     super.required,
+    super.positional,
   });
 
   @override
@@ -348,6 +385,8 @@ class NumberKnob extends Knob<double> {
     this.integer = false,
     super.apiDefault,
     super.required,
+    super.positional,
+    super.inCall,
   });
 
   final double min;

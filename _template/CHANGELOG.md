@@ -11,6 +11,11 @@
 
 ## غير مُصدَر
 
+- **الشريط السفلي** `AppBottomBar`: أربعة طوابع (`material` · `floating` · `expanding` ·
+  `minimal`) و`AppTabSwitcher` بأربعة انتقالات، يُختاران بـ`ShellAppearance` ويتبدّلان
+  والتطبيق يعمل. **والقشرة بلا `extendBody`**: جسدُ كل تبويبٍ ينتهي عند الشريط لا خلفه
+  (R15 — يُفحص لكل طابع).
+
 - **المرآة — جولة المطوّر** `modules/showcase/` (علَم `showcase`، مُشعَل افتراضاً): تبويب
   الرئيسية يعرض ستّة فصول — أساسات · ودجات · حركة · بيانات · موديولات · منصّة — بالودجات
   الحقيقية، والخادم محاكىً محلّياً، وفوق كل مثالٍ اسمُه بالكود. **R42**: كل ودجةٍ بالمكتبة
@@ -21,6 +26,8 @@
   `StepProgressIndicator` المرقّم لا يفيض بلافتاتٍ طويلة · `PageLoadingIndicator` يلغي
   مؤقّتاته · `ConnectivityDot(bloc:)` لكيوبتٍ غير المسجَّل · `DashedDivider` مرئيٌّ افتراضاً
   (`borderSubtle`) · لا `Theme.of` بـ`DividerWidget`/`AppText`/`DashedDivider`/`BadgeWidget`.
+- ودجتان بالمكتبة: `AppReorderableList` (ترتيبٌ بالسحب، `onReorder` بالموضع النهائيّ) ·
+  `AppSwipeActions` + `SwipeAction` (سحبُ صفٍّ لإجراء، بداية/نهاية مع RTL · تأكيد · تراجعٌ بيد المستدعي) — §39 · §40.
 
 - **الحركة**: انتقال الصفحات `PredictiveBack` على أندرويد (كان Cupertino) · صفوف
   `PaginationBuilderWdg`/`PaginatedListView` تظهر متتالية (`itemAppear`) · تبويبات

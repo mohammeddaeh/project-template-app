@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
+import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
+import 'package:app_template/modules/showcase/presentation/pages/widgets/playground_tokens.dart';
 import 'package:app_template/resources/assets.gen.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -22,7 +23,13 @@ class MediaDemo extends StatefulWidget {
 
 class _MediaDemoState extends State<MediaDemo> {
   CapturedPhoto? _photo;
-  bool _removed = false;
+
+  static const _fits = <String, BoxFit>{
+    'BoxFit.contain': BoxFit.contain,
+    'BoxFit.cover': BoxFit.cover,
+    'BoxFit.fill': BoxFit.fill,
+    'BoxFit.scaleDown': BoxFit.scaleDown,
+  };
 
   @override
   void initState() {
@@ -48,61 +55,135 @@ class _MediaDemoState extends State<MediaDemo> {
     );
   }
 
-  void _remove() {
-    setState(() => _removed = true);
-    context.feedback.info(LocaleKeys.showcaseMediaRemoved.tr());
-  }
+  void _remove() => context.feedback.info(LocaleKeys.showcaseMediaRemoved.tr());
+
+  void _tapped() => context.feedback.info(LocaleKeys.showcaseMediaTapped.tr());
 
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
     context.locale;
     final photo = _photo;
+    final png = Assets.images.brand.appLogoPng;
+    final svg = Assets.images.brand.appLogoSvg;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        DemoBlock(
-          code: 'AvatarWidget(initial: … | imageUrl: …, radius: …)',
-          child: Wrap(
-            spacing: 16,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              AvatarWidget(initial: LocaleKeys.showcaseName.tr(), radius: 16),
-              AvatarWidget(initial: LocaleKeys.showcaseItem.tr()),
-              AvatarWidget(
-                initial: LocaleKeys.showcaseName.tr(),
-                radius: 32,
-                backgroundColor: context.colors.bgBrand,
-                foregroundColor: context.colors.onBrand,
-              ),
-              // An empty url falls back to the initial.
-              const AvatarWidget(imageUrl: '', radius: 32),
-            ],
+        // ── AvatarWidget ────────────────────────────────────────────────────
+        DemoPlayground(
+          call: 'AvatarWidget',
+          knobs: [
+            TextKnob('initial', initial: LocaleKeys.showcaseName.tr()),
+            // An empty url falls back to the initial — no request here.
+            ChoiceKnob<String?>('imageUrl', const {
+              'null': null,
+              "''": '',
+            }, apiDefaultCode: 'null'),
+            const NumberKnob(
+              'radius',
+              initial: 24,
+              min: 12,
+              max: 56,
+              integer: true,
+              apiDefault: 24,
+            ),
+            colorKnob('backgroundColor', const ['bgBrand', 'primary']),
+            colorKnob('foregroundColor', const ['onBrand', 'textOnPrimary']),
+          ],
+          builder: (context, k) => AvatarWidget(
+            initial: k('initial'),
+            imageUrl: k('imageUrl'),
+            radius: k('radius'),
+            backgroundColor: tokenColor(context, k('backgroundColor')),
+            foregroundColor: tokenColor(context, k('foregroundColor')),
+          ),
+        ),
+        // ── AppAssetImage ───────────────────────────────────────────────────
+        DemoPlayground(
+          call: 'AppAssetImage',
+          knobs: [
+            const NumberKnob(
+              'width',
+              initial: 160,
+              min: 48,
+              max: 240,
+              integer: true,
+            ),
+            const NumberKnob(
+              'height',
+              initial: 80,
+              min: 32,
+              max: 160,
+              integer: true,
+            ),
+            ChoiceKnob<BoxFit>('fit', _fits, apiDefaultCode: 'BoxFit.contain'),
+            colorKnob('color', const ['primary', 'error']),
+            ChoiceKnob<BlendMode>('colorBlendMode', const {
+              'BlendMode.srcIn': BlendMode.srcIn,
+              'BlendMode.modulate': BlendMode.modulate,
+              'BlendMode.srcATop': BlendMode.srcATop,
+              'BlendMode.multiply': BlendMode.multiply,
+            }, apiDefaultCode: 'BlendMode.srcIn'),
+          ],
+          // A named argument may come before the positional path.
+          trailingCode: const ['Assets.images.brand.appLogoPng'],
+          builder: (context, k) => _Outlined(
+            child: AppAssetImage(
+              png,
+              width: k('width'),
+              height: k('height'),
+              fit: k('fit'),
+              color: tokenColor(context, k('color')),
+              colorBlendMode: k('colorBlendMode'),
+            ),
+          ),
+        ),
+        // ── SvgImageWidget ──────────────────────────────────────────────────
+        DemoPlayground(
+          call: 'SvgImageWidget',
+          knobs: [
+            ChoiceKnob<String>('assetPath', {
+              'Assets.images.brand.appLogoSvg': svg,
+              'Assets.images.vectors.logoSvg': Assets.images.vectors.logoSvg,
+            }, required: true),
+            const NumberKnob(
+              'width',
+              initial: 160,
+              min: 32,
+              max: 240,
+              integer: true,
+            ),
+            const NumberKnob(
+              'height',
+              initial: 64,
+              min: 32,
+              max: 160,
+              integer: true,
+            ),
+            ChoiceKnob<BoxFit>('fit', _fits, apiDefaultCode: 'BoxFit.contain'),
+            colorKnob('color', const ['primary', 'error'], initial: 'primary'),
+          ],
+          builder: (context, k) => _Outlined(
+            child: SvgImageWidget(
+              assetPath: k('assetPath'),
+              width: k('width'),
+              height: k('height'),
+              fit: k('fit'),
+              color: tokenColor(context, k('color')),
+            ),
           ),
         ),
         DemoBlock(
-          code: 'AppAssetImage(path) · SvgImageWidget(assetPath: …)',
+          code:
+              'AppAssetImage(svg) · SvgImageWidget.icon(path, size: …, '
+              'color: …)',
           child: Wrap(
             spacing: 16,
             runSpacing: 16,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              AppAssetImage(
-                Assets.images.brand.appLogoPng,
-                width: 64,
-                height: 64,
-              ),
-              AppAssetImage(
-                Assets.images.brand.appLogoSvg,
-                width: 64,
-                height: 64,
-              ),
-              SvgImageWidget(
-                assetPath: Assets.images.brand.appLogoSvg,
-                width: 64,
-                height: 64,
-              ),
+              AppAssetImage(svg, width: 64, height: 64),
               SvgImageWidget.icon(
                 Assets.images.vectors.logoSvg,
                 size: 32,
@@ -123,17 +204,27 @@ class _MediaDemoState extends State<MediaDemo> {
             ],
           ),
         ),
-        const DemoBlock(
-          code: 'ImagePlaceholderWidget(icon: …, size: …)',
-          child: Wrap(
-            spacing: 16,
-            children: [
-              ImagePlaceholderWidget(size: 48),
-              ImagePlaceholderWidget(),
-              ImagePlaceholderWidget(icon: Icons.videocam_outlined, size: 80),
-            ],
-          ),
+        DemoPlayground(
+          call: 'ImagePlaceholderWidget',
+          knobs: [
+            ChoiceKnob<IconData>('icon', const {
+              'Icons.image_outlined': Icons.image_outlined,
+              'Icons.videocam_outlined': Icons.videocam_outlined,
+              'Icons.description_outlined': Icons.description_outlined,
+            }, apiDefaultCode: 'Icons.image_outlined'),
+            const NumberKnob(
+              'size',
+              initial: 64,
+              min: 32,
+              max: 120,
+              integer: true,
+              apiDefault: 64,
+            ),
+          ],
+          builder: (context, k) =>
+              ImagePlaceholderWidget(icon: k('icon'), size: k('size')),
         ),
+        // ── The captured-photo family ───────────────────────────────────────
         DemoBlock(
           code: 'CapturedPhotoImage(photo: CapturedPhoto(bytes: …))',
           child: photo == null
@@ -143,38 +234,39 @@ class _MediaDemoState extends State<MediaDemo> {
                   child: CapturedPhotoImage(photo: photo, fit: BoxFit.contain),
                 ),
         ),
-        DemoBlock(
-          code: 'CapturedPhotoTile(photo: …, onRemove: …, showMeta: …)',
-          child: photo == null
-              ? const AppProgress.circular(centered: true)
-              : _removed
-              ? Center(
-                  child: TextButton.icon(
-                    onPressed: () => setState(() => _removed = false),
-                    icon: const Icon(Icons.undo),
-                    label: Text(LocaleKeys.showcaseReplay.tr()),
-                  ),
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: CapturedPhotoTile(
-                        photo: photo,
-                        height: 160,
-                        onRemove: _remove,
-                      ),
-                    ),
-                    12.widthBox,
-                    Expanded(
-                      child: CapturedPhotoTile(
-                        photo: photo,
-                        height: 160,
-                        showMeta: false,
-                      ),
-                    ),
-                  ],
-                ),
-        ),
+        if (photo == null)
+          const DemoBlock(
+            code: 'CapturedPhotoTile(photo: …)',
+            child: AppProgress.circular(centered: true),
+          )
+        else
+          DemoPlayground(
+            call: 'CapturedPhotoTile',
+            knobs: [
+              callbackKnob('onRemove', code: '() => toast(…)'),
+              // Without one, a tap opens AttachmentPreview by itself.
+              callbackKnob('onTap', code: '() => toast(…)', initial: false),
+              const NumberKnob(
+                'height',
+                initial: 160,
+                min: 100,
+                max: 240,
+                integer: true,
+              ),
+              const BoolKnob('showMeta', initial: true, apiDefault: true),
+            ],
+            trailingCode: const ['photo: photo'],
+            builder: (context, k) => SizedBox(
+              width: 220,
+              child: CapturedPhotoTile(
+                photo: photo,
+                onRemove: k('onRemove') ? _remove : null,
+                onTap: k('onTap') ? _tapped : null,
+                height: k('height'),
+                showMeta: k('showMeta'),
+              ),
+            ),
+          ),
         DemoBlock(
           code:
               'CapturedPhotoViewer.show(context, photo: …) · '
@@ -205,4 +297,19 @@ class _MediaDemoState extends State<MediaDemo> {
       ],
     );
   }
+}
+
+/// A hairline around the image's box, so `fit` has an edge to be read against.
+class _Outlined extends StatelessWidget {
+  const _Outlined({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      border: Border.all(color: context.colors.borderSubtle),
+    ),
+    child: child,
+  );
 }

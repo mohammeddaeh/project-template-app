@@ -413,8 +413,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseConnectivity": "الاتصال",
     "showcaseFlags": "أعلام التطبيق",
     "showcaseSimulated": "محاكاة محلية — لا طلب يخرج للخادم",
-    "showcaseDialogsNormal": "عادي",
-    "showcaseDialogsDestructive": "خطِر",
     "showcaseDialogsLeaveTitle": "مغادرة الصفحة؟",
     "showcaseDialogsLeaveMessage":
         "ما كتبتَه محفوظ، ويمكنك العودة إليه لاحقاً.",
@@ -424,10 +422,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseDialogsResult": "النتيجة: {}",
     "showcaseDialogsNoResult": "لا شيء بعد",
     "showcaseDialogsPickTitle": "اختر عنصراً",
-    "showcaseDialogsScrollable": "قائمة طويلة",
-    "showcaseDialogsFixed": "ارتفاع ثابت",
-    "showcaseDialogsFixedBody":
-        "ورقة لا تُغلق بالنقر خارجها — أغلقها بالسحب أو بالزر.",
     "showcaseDialogsDismissed": "أُغلقت بلا اختيار",
     "showcaseDialogsOpenFilter": "فتح الفلاتر",
     "showcaseDialogsStatus": "الحالة",
@@ -439,19 +433,13 @@ class CodegenLoader extends AssetLoader {
     "showcaseDialogsDate": "التاريخ",
     "showcaseDialogsFilterReset": "أُعيد ضبط الفلاتر",
     "showcaseFeedbackSaved": "حُفظت التغييرات",
-    "showcaseFeedbackFailed": "تعذّر الوصول إلى الخادم",
-    "showcaseFeedbackSlow": "الاتصال بطيء",
     "showcaseFeedbackSoon": "تبدأ المزامنة بعد قليل",
-    "showcaseFeedbackCopied": "نُسخ الرابط",
-    "showcaseFeedbackToast": "رسالة عابرة",
-    "showcaseFeedbackWithAction": "مع زر إجراء",
     "showcaseFeedbackNoService":
         "خدمة الرسائل غير مسجّلة هنا، فالأزرار معطّلة.",
     "showcaseFeedbackWhen":
         "الرسالة العابرة لنتيجة إجراءٍ قام به المستخدم. أمّا شاشةٌ لا تجد ما تعرضه فتعرض ودجة حالة داخل الصفحة (فارغ · خطأ) تبقى حتى يتغيّر الوضع.",
     "showcaseIndicators": "التقدّم والمؤشرات",
     "showcaseIndicatorsCount": "{} من {} عنصراً — {}٪",
-    "showcaseIndicatorsLoading": "تحميل",
     "showcaseInputsSearchHint": "ابحث في العناصر…",
     "showcaseInputsSearched": "بُحث عن: {}",
     "showcaseInputsTitle": "العنوان",
@@ -472,7 +460,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseDisplayTitle": "التقرير الربعي",
     "showcaseDisplaySubtitle": "حُدِّث قبل ساعتين",
     "showcaseDisplayReference": "المرجع",
-    "showcaseDisplayStatus": "الحالة",
     "showcaseDisplayOwner": "المسؤول",
     "showcaseDisplayDetails": "التفاصيل",
     "showcaseDisplayFolded": "محتوى يبقى مطويّاً حتى يُطلب",
@@ -539,7 +526,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseTypographySample": "نصٌّ تجريبيّ 123",
     "showcaseTypographyGlyphHint":
         "الرقم داخل دائرةٍ ثابتة لا يتوسّط بصرياً إلا بـGlyphCenter.",
-    "showcaseTypographyTapped": "تمّ الضغط",
     "showcaseScreenGapHint": "تكبر المسافة مع معامل الشاشة.",
     "showcaseScreenSafeHint":
         "الشريطان المظلَّلان حافّتا نظامٍ محاكاتان، وSafeAreaWrapper يُبقي المحتوى خارجهما.",
@@ -599,13 +585,8 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiSend": "أرسل",
     "showcaseApiStepOrigin":
         "يتأكّد أن الطلب خرج من منفذ مسمّى (في وضع التطوير)",
-    "showcaseApiStepCache": "طلبات GET المختارة تُجاب من الجهاز ما دامت صالحة",
     "showcaseApiStepGuard": "يرفض الطلب قبل خروجه إن لم تكن بالجهاز شبكة",
     "showcaseApiStepAuth": "يضيف رمز الدخول ولغة الواجهة",
-    "showcaseApiStepRefresh":
-        "عند 401 يجدّد الرمز مرّة بصمت ويعيد الطلب — حين يُسجَّل منفذ التجديد",
-    "showcaseApiStepRetry":
-        "يعيد المهلات وانقطاع الاتصال و502/503/504 — بعد ١ ثم ٢ ثم ٤ ثوانٍ",
     "showcaseApiStepBody": "يفكّ المغلّف إلى الكائن المطلوب",
     "showcaseApiStepMapper":
         "يحوّل الاستثناء إلى Failure — بيانات خام بلا ترجمة",
@@ -621,10 +602,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiServer500": "يجيب 500 — عطل داخل الخادم",
     "showcaseApiServerTimeout": "لا جواب خلال المهلة",
     "showcaseApiServerNone": "لم يصل الطلب إليه",
-    "showcaseApiBackRefresh":
-        "يحاول تجديداً واحداً؛ إن فشل يُطلق AuthEvent.sessionExpired",
-    "showcaseApiBackRetryTimeout":
-        "يعيد ٣ مرّات — ١ ثم ٢ ثم ٤ ثوانٍ — ثم يستسلم",
     "showcaseApiBackRetry500": "500 عطلٌ لا يزول بالتكرار: لا إعادة",
     "showcaseApiBackRetryOffline": "رُفض على الجهاز نفسه: لا إعادة",
     "showcaseApiGuardBlocked": "لا شبكة: الطلب لا يغادر الجهاز",
@@ -649,6 +626,202 @@ class CodegenLoader extends AssetLoader {
     "showcaseTools": "أدوات الأساس",
     "showcaseCubits": "الكيوبتات وحالاتها",
     "showcaseStorage": "التخزين والإعدادات",
+    "showcaseTypographyParagraph":
+        "كل سطرٍ في التطبيق يأخذ حجمه ووزنه من الثيم، فتغييرٌ في مكانٍ واحد يصل إلى كل الشاشات دفعةً واحدة.",
+    "showcaseTypographyLabel": "جديد",
+    "showcaseTypographyTapCount": "عدد النقرات: {}",
+    "showcaseScreenBoxHint":
+        "على عرض الهاتف لا حدّ للعرضين، ولا يُطبَّق إلا الهامش الجانبي. حرّك العرض المحاكى لترى أين تبدأ الحدود.",
+    "showcaseScreenSimWidth": "العرض المحاكى",
+    "showcaseScreenThisScreen": "هذه الشاشة",
+    "showcaseScreenBase": "القيمة الأساسية",
+    "showcaseFormatsPick": "اختر تاريخاً",
+    "showcaseFormatsPrevDay": "اليوم السابق",
+    "showcaseFormatsNextDay": "اليوم التالي",
+    "showcaseFormatsNumber": "رقم",
+    "showcaseFormatsMeters": "{} م",
+    "showcaseFormatsKm": "{} كم",
+    "showcaseFormatsNothing": "null — لا يُعرض شيء",
+    "showcaseFormatsCurrent": "باللغة الحالية",
+    "showcaseToolsEmail": "البريد الإلكتروني",
+    "showcaseToolsPhone": "رقم الهاتف",
+    "showcaseToolsText": "نص",
+    "showcaseToolsNumber": "رقم",
+    "showcaseToolsValid": "صالح",
+    "showcaseToolsInvalid": "غير صالح",
+    "showcaseToolsShuffle": "خلط",
+    "showcaseToolsFrom": "البداية (أيام من اليوم)",
+    "showcaseToolsTo": "النهاية (أيام من اليوم)",
+    "showcaseToolsAdjustment": "تعديل اليوم الهجري",
+    "showcaseToolsSampleText": "الطلب رقم 2048 بتاريخ 15/3",
+    "showcaseMotionItems": "عدد العناصر",
+    "showcaseMotionSteps": "عدد الخطوات",
+    "showcaseMotionPressHint": "اضغط مطوّلاً",
+    "showcaseMotionShake": "أطلق خطأً",
+    "showcaseMotionShakeError": "الرمز غير صحيح (المحاولة {})",
+    "showcaseMotionReduce": "محاكاة تقليل الحركة",
+    "showcaseMotionReduceHint":
+        "عند تقليل الحركة تصير كل المدد صفراً فتثبت الحركة في مكانها.",
+    "showcaseDisplayTaps": "عدد النقرات: {}",
+    "showcaseDisplayLongPress": "ضغطة مطوّلة",
+    "showcaseDisplayNoClipboard":
+        "النسخ يحتاج ClipboardService، وهي غير مسجّلة هنا",
+    "showcaseDisplayToggled": "نُقر العنوان — والأب يقرّر الفتح",
+    "showcaseDisplayFooter": "سجلٌّ محميّ — تعديله يحتاج موافقة",
+    "showcaseDisplaySelected": "التحديد: {}",
+    "showcaseDisplayDeleted": "أُزيل",
+    "showcaseGesturesHintHandle": "اسحب الصفّ من مقبضه",
+    "showcaseGesturesHintLongPress": "اضغط مطوّلاً على صفّ ثم اسحبه",
+    "showcaseGesturesOrder": "الترتيب: {}",
+    "showcaseGesturesSwipeHint": "اسحب صفّاً جانباً من أيّ طرفٍ له إجراء",
+    "showcaseGesturesArchive": "أرشفة",
+    "showcaseGesturesUndo": "تراجع",
+    "showcaseGesturesDone": "{} — {}",
+    "showcaseBottomBar": "الشريط السفلي",
+    "showcaseBottomBarApplyHint":
+        "طبّق على شريط التطبيق نفسه، ثم انتقل بين التبويبات",
+    "showcaseBottomBarExplore": "استكشاف",
+    "showcaseBottomBarSaved": "المحفوظ",
+    "showcaseInputsHint": "اكتب هنا…",
+    "showcaseInputsObscureOneLine":
+        "الحقل المخفيّ سطرٌ واحد دائماً — يُتجاهَل maxLines معه.",
+    "showcaseInputsValidate": "تحقّق",
+    "showcaseInputsShook": "الحقل غير صالح — اهتزّ ليلفت النظر.",
+    "showcaseInputsFootnote": "يمكن تغيير الاختيار لاحقاً.",
+    "showcaseInputsOptionDescription": "وصفٌ قصير للخيار {}",
+    "showcaseDialogsOpen": "افتح",
+    "showcaseFeedbackShow": "اعرض الرسالة",
+    "showcaseFeedbackIgnored": "لا يستعملها هذا الاستدعاء: {}",
+    "showcaseCubitsLog": "سجلّ الحالات",
+    "showcaseCubitsLogEmpty": "اضغط زرّاً — كلُّ حالةٍ تُبثّ تظهر هنا بوقتها",
+    "showcaseCubitsClear": "مسح",
+    "showcaseCubitsCurrent": "الحالة الآن",
+    "showcaseCubitsSafeIntro":
+        "جوابٌ يصل بعد أن أُغلقت الشاشة. مع SafeCubit يُسقَط بهدوء، ومع Cubit العادي ترمي emit خطأً — وهو انهيارٌ حقيقي في نسخة الإصدار.",
+    "showcaseCubitsSucceed": "ينجح",
+    "showcaseCubitsFail": "يُخفق",
+    "showcaseCubitsSlow": "بطيء (3 ث)",
+    "showcaseCubitsLeave": "غادر الشاشة",
+    "showcaseCubitsReopen": "افتحها من جديد",
+    "showcaseCubitsClosed": "مُغلق",
+    "showcaseCubitsOpen": "مفتوح",
+    "showcaseCubitsLeaveHint":
+        "جرّب: «بطيء» ثم «غادر الشاشة» قبل أن يصل الجواب — مرّةً بكل أساس.",
+    "showcaseCubitsDropped": "أسقطه SafeCubit — لا أحد يستمع أصلاً",
+    "showcaseCubitsCrash": "التُقط هنا للعرض، وفي التطبيق لا شيء يلتقطه",
+    "showcaseCubitsMutationIntro":
+        "الكتابة تُعيد ما يُقال للقارئ ولا تبثّه حالةً. اضغط «يُخفق» مرّتين: تُقال الرسالة مرّتين، والحالة لا تحمل إلا «جارٍ الحفظ».",
+    "showcaseCubitsSaveRefused": "رفض الخادم التعديل",
+    "showcaseCubitsAskAnyway": "الخادم يسأل: أتمضي رغم ذلك؟",
+    "showcaseCubitsSaveAnyway": "احفظ رغم ذلك",
+    "showcaseCubitsSaid": "رسائل قيلت: {}",
+    "showcaseCubitsRefreshIntro":
+        "كلُّ refresh() تبثّ RefreshState جديدة لا تساوي سابقتها، فيُعاد رسمُ كل مستمع.",
+    "showcaseCubitsRebuilds": "مرّات إعادة الرسم: {}",
+    "showcaseCubitsPagingIntro":
+        "PaginationCubit الحقيقي يُغذّى من الجهاز. راقب أيّ نداءٍ يبثّ حالة — وأيّها لا يبثّ شيئاً، كـnextPage() بعد آخر صفحة.",
+    "showcaseCubitsFailNext": "الطلب التالي يُخفق",
+    "showcaseCubitsEmptySource": "المصدر فارغ",
+    "showcaseMediaTapped": "نُقرت الصورة — بدل فتح المعاينة",
+    "showcaseNavigationSearch": "بحث",
+    "showcaseNavigationTabChanged": "التبويب: {}",
+    "showcaseNavigationStepRange":
+        "currentStep يجب أن يقع بين 1 وtotalSteps — الودجة تتحقّق من ذلك بـassert",
+    "showcaseStorageAdapterNote":
+        "محوِّلُ StorageService حقيقيّ من القالب يعمل بالذاكرة — مخزنُ التطبيق نفسه لا يُلمس.",
+    "showcaseStorageKey": "المفتاح",
+    "showcaseStorageCustomKey": "مفتاح آخر",
+    "showcaseStorageType": "النوع",
+    "showcaseStorageValue": "القيمة",
+    "showcaseStorageWrite": "اكتب",
+    "showcaseStorageRead": "اقرأ",
+    "showcaseStorageDelete": "احذف",
+    "showcaseStorageBadValue": "هذه القيمة ليست {}",
+    "showcaseStorageContents": "ما في المخزن الآن",
+    "showcaseStorageEmpty": "المخزن فارغ",
+    "showcaseStorageSettingsIntro":
+        "شاشةُ إعداداتٍ تحفظ ما يُختار: كلُّ تغييرٍ يُكتب عبر StorageService، و«أعد تشغيل التطبيق» يبدأ من القيم الافتراضية ثم يقرؤها من جديد.",
+    "showcaseStorageWelcomeSeen": "شاشة الترحيب عُرضت",
+    "showcaseStorageFont": "الخط",
+    "showcaseStorageLastTab": "آخر تبويب",
+    "showcaseStorageRestart": "أعد تشغيل التطبيق",
+    "showcaseStorageCacheIntro":
+        "امسح ما تملكه وحده: مخبّأ الطلبات يمسح مفاتيحه ذات البادئة بـkeys() ثم delete. أما clear() فتمسح الإعدادات معها — جرّبها بعد ضبط الإعدادات أعلاه.",
+    "showcaseStorageCacheAdd": "خبّئ 3 أجوبة",
+    "showcaseStorageContentsAbove": "الأثر يظهر في جدول المخزن بالأعلى.",
+    "showcaseStorageFlagsIntro":
+        "مفاتيحُ وقتِ البناء — ثوابت لا تُخزَّن ولا تتغيّر أثناء التشغيل.",
+    "showcaseApiServer503": "يجيب 503 — مثقلٌ أو مغلقٌ مؤقتاً",
+    "showcaseApiServerAnswers": "بمَ يجيب الخادم",
+    "showcaseApiKnobs": "خيارات المشروع",
+    "showcaseApiKnobCache":
+        "هذا الطلب يقبل التخبئة — والافتراضي ألّا يُخبّأ شيء",
+    "showcaseApiKnobCacheEntry": "ما في المخبّأ لهذا الطلب",
+    "showcaseApiEntryNone": "لا شيء",
+    "showcaseApiEntryFresh": "جوابٌ حديث",
+    "showcaseApiEntryStale": "جوابٌ منتهي الصلاحية",
+    "showcaseApiKnobRecover": "يتعافى الخادم عند المحاولة",
+    "showcaseApiRecoverNever": "أبداً",
+    "showcaseApiKnobRetryAfter": "ترويسة Retry-After مع 503",
+    "showcaseApiKnobRefresh": "طبقة تجديد التوكن مسجّلة — القالب يسجّلها",
+    "showcaseApiKnobRefreshAnswer": "جواب طلب التجديد",
+    "showcaseApiRefreshAnswerOk": "ينجح",
+    "showcaseApiRefreshAnswerRefused": "يرفضه الخادم",
+    "showcaseApiRefreshAnswerUnreachable": "لا يصل الخادم",
+    "showcaseApiCacheOff": "لم يطلب التخبئة — يذهب إلى الشبكة",
+    "showcaseApiCacheHit":
+        "جوابٌ حديث على الجهاز: يُعاد فوراً بـx-from-cache، ولا يُسأل الحارس ولا الخادم — حتى بلا شبكة",
+    "showcaseApiCacheStale":
+        "انتهت صلاحيته (5 دقائق افتراضاً) — يذهب إلى الشبكة",
+    "showcaseApiCacheMiss": "لا جواب مخبّأ — يذهب إلى الشبكة",
+    "showcaseApiCacheWrite": "طلبٌ مختار و200: يُخزَّن حتى تنتهي صلاحيته",
+    "showcaseApiAuthExpire":
+        "لا طبقة تجديد: يمسح الجلسة ويطلق AuthEvent.sessionExpired",
+    "showcaseApiAuthForbidden":
+        "لا يُخرج المستخدم. وإن حمل الجواب message_key = permission_missing أطلق AuthEvent.permissionsStale فتُقرأ الصلاحيات من جديد",
+    "showcaseApiRefreshOk":
+        "جُدّد التوكن مرّةً بصمت، ويُعاد الطلب الأصلي عبر السلسلة كلها. والطلبات المتزامنة تنتظر التجديد نفسه",
+    "showcaseApiRefreshRefused":
+        "رفضٌ صريح: onRefreshFailed() يمسح الجلسة، ثم AuthEvent.sessionExpired",
+    "showcaseApiRefreshDeferred":
+        "لم يصل التجديد إلى خادم: الجلسة تبقى، ويُطلق AuthEvent.sessionRefreshDeferred — لا يُخرج المستخدم بسبب حزمةٍ ضاعت",
+    "showcaseApiRetryAfterLong":
+        "طلب الخادم انتظاراً أطول من 10 ثوانٍ: لا يُحبس الطلب، يظهر الخطأ الآن ويقرّر المستخدم",
+    "showcaseApiRetryNone": "maxRetries: 0 — لا إعادة",
+    "showcaseApiRetryUsedUp": "استُنفدت المحاولات ({}) — يمضي الخطأ",
+    "showcaseApiRetryWait":
+        "ينتظر {} ث (1 ثم 2 ثم 4) ثم يعيد الطلب عبر السلسلة",
+    "showcaseApiRetryWaitServer":
+        "ينتظر {} ث كما طلب الخادم في Retry-After — رقمه يغلب منحنى التراجع",
+    "showcaseApiUiFromCache": "الشاشة ترسم من الجهاز — بلا طلب ولا انتظار",
+    "showcaseApiUiDeferred": "الجلسة باقية، والشاشة تتلقّى UnauthorizedFailure",
+    "showcaseApiRetried": "يُعاد",
+    "showcaseApiNotRetried": "لا يُعاد",
+    "showcaseApiRetryRulesNote":
+        "قاعدةٌ ثابتة في الكود لا خيار: 500 عطلٌ يتكرّر، وإعادته تضاعف الحمل على خادمٍ يتعثّر. وطلبٌ منعه حارس الشبكة لم يغادر الجهاز أصلاً.",
+    "showcaseApiOriginIntro":
+        "أوّل سؤال عند الإقلاع، قبل قراءة أي توكن: هل جاءت بيانات هذا الجهاز من الخادم الحالي؟",
+    "showcaseApiOriginFirstRun": "أوّل تشغيل",
+    "showcaseApiOriginSameServer": "الخادم نفسه",
+    "showcaseApiOriginNewServer": "تغيّر BASE_URL",
+    "showcaseApiOriginNoUrl": "BASE_URL فارغ",
+    "showcaseApiOriginLaunch": "شغّل التطبيق",
+    "showcaseApiOriginStart": "قبل أوّل إطار، وقبل استعادة الجلسة",
+    "showcaseApiOriginEmpty":
+        "إعدادٌ ناقص لا تبدّل خادم: يُترك كل شيء ويُسجَّل تحذير — لا مسح لأن ملف البيئة لم يُمرَّر",
+    "showcaseApiOriginFirst": "لا أصل مخزَّن بعد",
+    "showcaseApiOriginWrite": "يُكتب الأصل الحالي",
+    "showcaseApiOriginSame": "الأصل نفسه: قراءة مفتاحٍ واحد ولا شيء يُمسح",
+    "showcaseApiOriginChanged": "خادمٌ آخر: ما على الجهاز يخصّه هو",
+    "showcaseApiOriginSession":
+        "التوكن وتوكن التجديد — توكن الخادم القديم لا يصلح هنا",
+    "showcaseApiOriginAccount":
+        "كل مفاتيح الحساب وصفوف الموديولات — وتفضيلات الجهاز باقية",
+    "showcaseApiOriginRemembered":
+        "الحسابات المحفوظة عناوينُ على الخادم القديم",
+    "showcaseApiOriginKept": "لا مسح — يمضي الإقلاع",
+    "showcaseApiOriginWiped":
+        "مُسح الجهاز — لا جلسة باقية، فيمضي الإقلاع بلا دخول",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -1063,8 +1236,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseConnectivity": "Connectivity",
     "showcaseFlags": "App flags",
     "showcaseSimulated": "Local simulation — no request leaves the device",
-    "showcaseDialogsNormal": "Normal",
-    "showcaseDialogsDestructive": "Destructive",
     "showcaseDialogsLeaveTitle": "Leave this page?",
     "showcaseDialogsLeaveMessage":
         "What you wrote is saved; you can come back to it later.",
@@ -1074,10 +1245,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseDialogsResult": "Result: {}",
     "showcaseDialogsNoResult": "Nothing yet",
     "showcaseDialogsPickTitle": "Pick an item",
-    "showcaseDialogsScrollable": "Long list",
-    "showcaseDialogsFixed": "Fixed height",
-    "showcaseDialogsFixedBody":
-        "This sheet ignores taps outside — drag it down or use the button.",
     "showcaseDialogsDismissed": "Closed without a choice",
     "showcaseDialogsOpenFilter": "Open filters",
     "showcaseDialogsStatus": "Status",
@@ -1089,19 +1256,13 @@ class CodegenLoader extends AssetLoader {
     "showcaseDialogsDate": "Date",
     "showcaseDialogsFilterReset": "Filters were reset",
     "showcaseFeedbackSaved": "Changes saved",
-    "showcaseFeedbackFailed": "Couldn't reach the server",
-    "showcaseFeedbackSlow": "The connection is slow",
     "showcaseFeedbackSoon": "Sync starts in a moment",
-    "showcaseFeedbackCopied": "Link copied",
-    "showcaseFeedbackToast": "Toast",
-    "showcaseFeedbackWithAction": "With an action",
     "showcaseFeedbackNoService":
         "The feedback service isn't registered here, so the buttons are off.",
     "showcaseFeedbackWhen":
         "A toast reports the outcome of something the user just did. A screen with nothing to show uses an inline state widget (empty · error) that stays until things change.",
     "showcaseIndicators": "Progress & indicators",
     "showcaseIndicatorsCount": "{} of {} items — {}%",
-    "showcaseIndicatorsLoading": "Loading",
     "showcaseInputsSearchHint": "Search items…",
     "showcaseInputsSearched": "Searched for: {}",
     "showcaseInputsTitle": "Title",
@@ -1122,7 +1283,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseDisplayTitle": "Quarterly report",
     "showcaseDisplaySubtitle": "Updated two hours ago",
     "showcaseDisplayReference": "Reference",
-    "showcaseDisplayStatus": "Status",
     "showcaseDisplayOwner": "Owner",
     "showcaseDisplayDetails": "Details",
     "showcaseDisplayFolded": "Content that stays folded until asked for",
@@ -1189,7 +1349,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseTypographySample": "Sample text 123",
     "showcaseTypographyGlyphHint":
         "A number inside a fixed circle sits optically centred only with GlyphCenter.",
-    "showcaseTypographyTapped": "Tapped",
     "showcaseScreenGapHint": "The gap grows with the screen scale.",
     "showcaseScreenSafeHint":
         "The shaded bands are simulated system insets; SafeAreaWrapper keeps content out of them.",
@@ -1249,15 +1408,9 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiSend": "Send",
     "showcaseApiStepOrigin":
         "Checks the request comes from a named port (debug builds)",
-    "showcaseApiStepCache":
-        "Opt-in GETs are answered from the device while still fresh",
     "showcaseApiStepGuard":
         "Rejects the request before it leaves when the device has no network",
     "showcaseApiStepAuth": "Adds the access token and the app language",
-    "showcaseApiStepRefresh":
-        "On 401 refreshes the token once, silently, and replays — when a refresh gateway is registered",
-    "showcaseApiStepRetry":
-        "Retries timeouts, dropped connections and 502/503/504 — after 1, 2, then 4 seconds",
     "showcaseApiStepBody": "Unwraps the envelope into the model",
     "showcaseApiStepMapper":
         "Turns the exception into a Failure — raw data, no translation",
@@ -1273,10 +1426,6 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiServer500": "Answers 500 — a defect inside the server",
     "showcaseApiServerTimeout": "No answer within the time limit",
     "showcaseApiServerNone": "The request never reached it",
-    "showcaseApiBackRefresh":
-        "Tries one refresh; when it fails, fires AuthEvent.sessionExpired",
-    "showcaseApiBackRetryTimeout":
-        "Retries 3 times — 1, 2, 4 seconds — then gives up",
     "showcaseApiBackRetry500": "A 500 is a defect, not a hiccup: not retried",
     "showcaseApiBackRetryOffline": "Blocked on the device itself: not retried",
     "showcaseApiGuardBlocked":
@@ -1302,6 +1451,212 @@ class CodegenLoader extends AssetLoader {
     "showcaseTools": "Foundation tools",
     "showcaseCubits": "Cubits & states",
     "showcaseStorage": "Storage & settings",
+    "showcaseTypographyParagraph":
+        "Every line of text in the app takes its size and weight from the theme, so a change in one place reaches every screen at once.",
+    "showcaseTypographyLabel": "New",
+    "showcaseTypographyTapCount": "Taps: {}",
+    "showcaseScreenBoxHint":
+        "At phone width neither width is bounded — only the side padding applies. Move the simulated width to see where the limits begin.",
+    "showcaseScreenSimWidth": "Simulated width",
+    "showcaseScreenThisScreen": "This screen",
+    "showcaseScreenBase": "Base value",
+    "showcaseFormatsPick": "Pick a date",
+    "showcaseFormatsPrevDay": "Previous day",
+    "showcaseFormatsNextDay": "Next day",
+    "showcaseFormatsNumber": "Number",
+    "showcaseFormatsMeters": "{} m",
+    "showcaseFormatsKm": "{} km",
+    "showcaseFormatsNothing": "null — nothing is shown",
+    "showcaseFormatsCurrent": "In the current language",
+    "showcaseToolsEmail": "Email",
+    "showcaseToolsPhone": "Phone number",
+    "showcaseToolsText": "Text",
+    "showcaseToolsNumber": "Number",
+    "showcaseToolsValid": "Valid",
+    "showcaseToolsInvalid": "Invalid",
+    "showcaseToolsShuffle": "Shuffle",
+    "showcaseToolsFrom": "From (days from today)",
+    "showcaseToolsTo": "To (days from today)",
+    "showcaseToolsAdjustment": "Hijri day adjustment",
+    "showcaseToolsSampleText": "Order 2048 on 15/3",
+    "showcaseMotionItems": "Items",
+    "showcaseMotionSteps": "Steps",
+    "showcaseMotionPressHint": "Press and hold",
+    "showcaseMotionShake": "Trigger an error",
+    "showcaseMotionShakeError": "Wrong code (attempt {})",
+    "showcaseMotionReduce": "Simulate reduce motion",
+    "showcaseMotionReduceHint":
+        "With reduce motion on, every duration becomes zero and the motion stands still.",
+    "showcaseDisplayTaps": "Taps: {}",
+    "showcaseDisplayLongPress": "Long press",
+    "showcaseDisplayNoClipboard":
+        "Copying needs ClipboardService, which is not registered here",
+    "showcaseDisplayToggled": "Header tapped — the parent decides",
+    "showcaseDisplayFooter": "Protected record — changes need approval",
+    "showcaseDisplaySelected": "Selected: {}",
+    "showcaseDisplayDeleted": "Removed",
+    "showcaseGesturesHintHandle": "Drag a row by its handle",
+    "showcaseGesturesHintLongPress": "Long-press a row, then drag it",
+    "showcaseGesturesOrder": "Order: {}",
+    "showcaseGesturesSwipeHint":
+        "Swipe a row sideways from a side that has an action",
+    "showcaseGesturesArchive": "Archive",
+    "showcaseGesturesUndo": "Undo",
+    "showcaseGesturesDone": "{} — {}",
+    "showcaseBottomBar": "Bottom bar",
+    "showcaseBottomBarApplyHint":
+        "Apply to the app's own bar, then switch tabs",
+    "showcaseBottomBarExplore": "Explore",
+    "showcaseBottomBarSaved": "Saved",
+    "showcaseInputsHint": "Type here…",
+    "showcaseInputsObscureOneLine":
+        "An obscured field is always one line — maxLines is ignored with it.",
+    "showcaseInputsValidate": "Validate",
+    "showcaseInputsShook": "The field is invalid — it shook to draw the eye.",
+    "showcaseInputsFootnote": "You can change the choice later.",
+    "showcaseInputsOptionDescription": "A short description of option {}",
+    "showcaseDialogsOpen": "Open",
+    "showcaseFeedbackShow": "Show the message",
+    "showcaseFeedbackIgnored": "Not used by this call: {}",
+    "showcaseCubitsLog": "State log",
+    "showcaseCubitsLogEmpty":
+        "Press a button — every emitted state lands here with its time",
+    "showcaseCubitsClear": "Clear",
+    "showcaseCubitsCurrent": "State now",
+    "showcaseCubitsSafeIntro":
+        "An answer that lands after the screen has closed. With SafeCubit it is dropped quietly; with a plain Cubit, emit throws — a real crash in release builds.",
+    "showcaseCubitsSucceed": "Succeed",
+    "showcaseCubitsFail": "Fail",
+    "showcaseCubitsSlow": "Slow (3 s)",
+    "showcaseCubitsLeave": "Leave the screen",
+    "showcaseCubitsReopen": "Open it again",
+    "showcaseCubitsClosed": "Closed",
+    "showcaseCubitsOpen": "Open",
+    "showcaseCubitsLeaveHint":
+        "Try it: Slow, then Leave the screen before the answer lands — once with each base.",
+    "showcaseCubitsDropped":
+        "dropped by SafeCubit — nothing is listening anyway",
+    "showcaseCubitsCrash":
+        "caught here for the demo; in an app nothing catches it",
+    "showcaseCubitsMutationIntro":
+        "A write returns what to tell the reader — it never emits it as state. Press save with failed twice: the message is said twice, and the state only ever holds \"saving\".",
+    "showcaseCubitsSaveRefused": "The server refused the change",
+    "showcaseCubitsAskAnyway": "The server asks: go ahead anyway?",
+    "showcaseCubitsSaveAnyway": "Save anyway",
+    "showcaseCubitsSaid": "Messages said: {}",
+    "showcaseCubitsRefreshIntro":
+        "Each refresh() emits a new RefreshState that never equals the last, so every listener rebuilds.",
+    "showcaseCubitsRebuilds": "Rebuilds: {}",
+    "showcaseCubitsPagingIntro":
+        "The real PaginationCubit, fed from the device. Watch which calls emit a state — and which emit nothing, like nextPage() after the last page.",
+    "showcaseCubitsFailNext": "Next request fails",
+    "showcaseCubitsEmptySource": "Empty source",
+    "showcaseMediaTapped": "Photo tapped — instead of opening the preview",
+    "showcaseNavigationSearch": "Search",
+    "showcaseNavigationTabChanged": "Tab: {}",
+    "showcaseNavigationStepRange":
+        "currentStep must be between 1 and totalSteps — the widget asserts it",
+    "showcaseStorageAdapterNote":
+        "A real StorageService adapter from the template, running in memory — the app's own store is never touched.",
+    "showcaseStorageKey": "Key",
+    "showcaseStorageCustomKey": "Custom",
+    "showcaseStorageType": "Type",
+    "showcaseStorageValue": "Value",
+    "showcaseStorageWrite": "Write",
+    "showcaseStorageRead": "Read",
+    "showcaseStorageDelete": "Delete",
+    "showcaseStorageBadValue": "That value is not a {}",
+    "showcaseStorageContents": "What the store holds now",
+    "showcaseStorageEmpty": "The store is empty",
+    "showcaseStorageSettingsIntro":
+        "A settings screen that keeps its choices: every change writes through StorageService, and Restart starts from the defaults, then reads them back.",
+    "showcaseStorageWelcomeSeen": "Welcome screen seen",
+    "showcaseStorageFont": "Font",
+    "showcaseStorageLastTab": "Last tab",
+    "showcaseStorageRestart": "Restart the app",
+    "showcaseStorageCacheIntro":
+        "Clear only what you own: the request cache removes its prefixed keys with keys() and delete. clear() takes the settings with it — try it after setting some above.",
+    "showcaseStorageCacheAdd": "Cache 3 responses",
+    "showcaseStorageContentsAbove":
+        "The effect shows in the store table above.",
+    "showcaseStorageFlagsIntro":
+        "Build-time switches — constants, never stored, never changed at runtime.",
+    "showcaseApiServer503": "Answers 503 — overloaded or briefly down",
+    "showcaseApiServerAnswers": "What the server answers",
+    "showcaseApiKnobs": "Project choices",
+    "showcaseApiKnobCache":
+        "This request opts into the cache — by default nothing is cached",
+    "showcaseApiKnobCacheEntry": "What the cache holds for this request",
+    "showcaseApiEntryNone": "Nothing",
+    "showcaseApiEntryFresh": "A fresh answer",
+    "showcaseApiEntryStale": "An expired answer",
+    "showcaseApiKnobRecover": "The server recovers on retry",
+    "showcaseApiRecoverNever": "Never",
+    "showcaseApiKnobRetryAfter": "Retry-After header on a 503",
+    "showcaseApiKnobRefresh":
+        "A token refresh layer is registered — the template registers one",
+    "showcaseApiKnobRefreshAnswer": "What the refresh call gets",
+    "showcaseApiRefreshAnswerOk": "Succeeds",
+    "showcaseApiRefreshAnswerRefused": "Refused by the server",
+    "showcaseApiRefreshAnswerUnreachable": "Never reaches the server",
+    "showcaseApiCacheOff": "Not opted in — goes to the network",
+    "showcaseApiCacheHit":
+        "A fresh answer on the device: returned at once with x-from-cache; the guard and the server are never asked — even offline",
+    "showcaseApiCacheStale":
+        "Past its TTL (5 minutes by default) — goes to the network",
+    "showcaseApiCacheMiss": "Nothing cached — goes to the network",
+    "showcaseApiCacheWrite": "Opted in and 200: stored until its TTL runs out",
+    "showcaseApiAuthExpire":
+        "No refresh layer: clears the session and fires AuthEvent.sessionExpired",
+    "showcaseApiAuthForbidden":
+        "Never signs out. When the body says message_key = permission_missing it fires AuthEvent.permissionsStale and permissions are re-read",
+    "showcaseApiRefreshOk":
+        "The token is refreshed once, silently, and the original request is replayed through the whole chain. Concurrent requests wait on the same refresh",
+    "showcaseApiRefreshRefused":
+        "A real refusal: onRefreshFailed() clears the session, then AuthEvent.sessionExpired",
+    "showcaseApiRefreshDeferred":
+        "The refresh never reached a server: the session is kept and AuthEvent.sessionRefreshDeferred fires — nobody is signed out over a dropped packet",
+    "showcaseApiRetryAfterLong":
+        "The server asked for more than 10 seconds: the request is not held — the failure surfaces now and the user decides",
+    "showcaseApiRetryNone": "maxRetries: 0 — no retry",
+    "showcaseApiRetryUsedUp": "Retries used up ({}) — the failure goes on",
+    "showcaseApiRetryWait":
+        "Waits {} s (1, then 2, then 4), then replays the request through the chain",
+    "showcaseApiRetryWaitServer":
+        "Waits {} s as the server's Retry-After asked — its number beats the back-off curve",
+    "showcaseApiUiFromCache":
+        "The screen draws from the device — no request, no wait",
+    "showcaseApiUiDeferred":
+        "The session is kept; the screen receives UnauthorizedFailure",
+    "showcaseApiRetried": "Retried",
+    "showcaseApiNotRetried": "Not retried",
+    "showcaseApiRetryRulesNote":
+        "A rule in the code, not an option: a 500 is a defect that repeats, and retrying it multiplies the load on a failing server. A request the network guard blocked never left the device.",
+    "showcaseApiOriginIntro":
+        "The first question at startup, before any token is read: did the data on this device come from the current server?",
+    "showcaseApiOriginFirstRun": "First launch",
+    "showcaseApiOriginSameServer": "Same server",
+    "showcaseApiOriginNewServer": "BASE_URL changed",
+    "showcaseApiOriginNoUrl": "BASE_URL empty",
+    "showcaseApiOriginLaunch": "Launch the app",
+    "showcaseApiOriginStart":
+        "Before the first frame, before the session is restored",
+    "showcaseApiOriginEmpty":
+        "A missing setting, not a new server: everything is kept and a warning logged — no wipe because an env file was not passed",
+    "showcaseApiOriginFirst": "No origin stored yet",
+    "showcaseApiOriginWrite": "The current origin is written",
+    "showcaseApiOriginSame": "Same origin: one key read, nothing wiped",
+    "showcaseApiOriginChanged":
+        "A different server: what is on this device belongs to it",
+    "showcaseApiOriginSession":
+        "Token and refresh token — the old server's token is useless here",
+    "showcaseApiOriginAccount":
+        "Every account key and module row — device preferences stay",
+    "showcaseApiOriginRemembered":
+        "Saved accounts were addresses on the old server",
+    "showcaseApiOriginKept": "Nothing wiped — startup goes on",
+    "showcaseApiOriginWiped":
+        "The device was wiped — no session is left, so startup goes on signed out",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

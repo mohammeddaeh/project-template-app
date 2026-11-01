@@ -33,6 +33,7 @@ import 'package:app_template/modules/showcase/presentation/pages/foundations/too
 import 'package:app_template/modules/showcase/presentation/pages/widgets/gestures_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/data/cubits_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/platform/storage_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/widgets/bottom_bar_demo.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 
@@ -151,6 +152,12 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcaseNavigation,
       Icons.tab_outlined,
       NavigationDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.widgets,
+      LocaleKeys.showcaseBottomBar,
+      Icons.space_dashboard_outlined,
+      BottomBarDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.widgets,

@@ -79,6 +79,8 @@
 | رقمٌ يتغيّر | `AnimatedCount` — §37 | `TweenAnimationBuilder` بالشاشة | 👁 |
 | حقلٌ رُفض | `ShakeOnError` — §38 (و`CustomTextField` يهتزّ وحده) | هزّةٌ بـ`Transform` يدوياً | 👁 |
 | ضغطةٌ لها ردّ | `PressableScale` | `GestureDetector` + `AnimatedScale` | 👁 |
+| ترتيبُ قائمةٍ بالسحب | `AppReorderableList` — §39 (`onReorder` بالموضع النهائيّ) | `ReorderableListView` + `if (newIndex > oldIndex) newIndex--` | 👁 |
+| سحبُ صفٍّ لحذفٍ أو أرشفة | `AppSwipeActions` + `SwipeAction` — §40 (بداية/نهاية · تأكيد · قارئ شاشة) | `Dismissible` بخلفيةٍ يدوية | 👁 |
 
 ## السجلّ
 

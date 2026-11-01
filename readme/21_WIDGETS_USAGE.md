@@ -65,6 +65,9 @@
 | `AppStepSwitcher` | حركة · خطوات | [§36](widgets/03_layout.md) |
 | `AnimatedCount` | حركة · أرقام | [§37](widgets/04_display.md) |
 | `ShakeOnError` | حركة · تحقّق | [§38](widgets/01_buttons.md) |
+| `AppReorderableList<T>` | قوائم · سحب | [§39](widgets/05_states.md) |
+| `AppSwipeActions` / `SwipeAction` | قوائم · سحب | [§40](widgets/05_states.md) |
+| `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` | تنقّل · قشرة | [§41](widgets/06_navigation.md) |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 

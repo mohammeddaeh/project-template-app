@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_template/core/infra/config/env.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
+import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
@@ -89,21 +90,62 @@ class _ScreenDemoState extends State<ScreenDemo> {
             ),
           ),
         ),
-        DemoBlock(
-          code: 'ResponsiveGap(24)',
-          child: Column(
+        DemoPlayground(
+          call: 'ResponsiveContentBox',
+          knobs: [
+            EnumKnob(
+              'width',
+              ContentWidth.values,
+              ContentWidth.content,
+              typeName: 'ContentWidth',
+            ),
+            const BoolKnob(
+              'horizontalPadding',
+              initial: true,
+              apiDefault: true,
+            ),
+          ],
+          trailingCode: const ['child: …'],
+          builder: (context, k) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              hint(LocaleKeys.showcaseScreenGapHint.tr()),
-              _Bar(color: colors.primaryContainer),
+              // The shaded frame is the available width; the box sits in it.
               ColoredBox(
-                color: colors.feedbackWarning,
-                child: const ResponsiveGap(24),
+                color: colors.feedbackWarning.withValues(alpha: 0.3),
+                child: ResponsiveContentBox(
+                  width: k('width'),
+                  horizontalPadding: k('horizontalPadding'),
+                  child: Container(
+                    height: 56,
+                    alignment: Alignment.center,
+                    color: colors.primaryContainer,
+                    child: Text(
+                      LocaleKeys.showcaseScreenContent.tr(),
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: colors.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              _Bar(color: colors.primaryContainer),
+              12.heightBox,
+              hint(LocaleKeys.showcaseScreenBoxHint.tr()),
+              _BoxLimits(
+                title: LocaleKeys.showcaseScreenThisScreen.tr(),
+                metrics: s,
+              ),
+              12.heightBox,
+              _SimulatedWidth(
+                builder: (metrics) => _BoxLimits(
+                  title:
+                      'ScreenMetrics.fromSize(Size(${_fmt(metrics.width)}, 900))',
+                  metrics: metrics,
+                ),
+              ),
             ],
           ),
         ),
+        const _GapPlayground(),
         DemoBlock(
           code: 'SafeAreaWrapper(top:, bottom:, child:)',
           child: Column(
@@ -268,6 +310,182 @@ class _InsetFrame extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+String _fmt(double v) => v.isInfinite
+    ? '∞'
+    : v == v.roundToDouble()
+    ? v.toStringAsFixed(0)
+    : v.toStringAsFixed(2);
+
+/// What [ResponsiveContentBox] reads from a [ScreenMetrics]: the width
+/// limits and the side padding.
+class _BoxLimits extends StatelessWidget {
+  const _BoxLimits({required this.title, required this.metrics});
+
+  final String title;
+  final ScreenMetrics metrics;
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = context.textTheme.bodySmall?.copyWith(
+      color: context.colors.textMuted,
+    );
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(title, style: context.textTheme.labelMedium),
+          4.heightBox,
+          for (final (name, value) in [
+            ('screenClass', metrics.screenClass.name),
+            ('formMaxWidth  (ContentWidth.form)', _fmt(metrics.formMaxWidth)),
+            (
+              'contentMaxWidth  (ContentWidth.content)',
+              _fmt(metrics.contentMaxWidth),
+            ),
+            ('gutter  (horizontalPadding)', _fmt(metrics.gutter)),
+          ])
+            Row(
+              children: [
+                Expanded(child: Text(name, style: muted)),
+                Text(value, style: context.textTheme.bodySmall),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A width slider and the metrics a screen of that width would report —
+/// computed, not applied, so the real screen stays as it is.
+class _SimulatedWidth extends StatefulWidget {
+  const _SimulatedWidth({required this.builder});
+
+  final Widget Function(ScreenMetrics metrics) builder;
+
+  @override
+  State<_SimulatedWidth> createState() => _SimulatedWidthState();
+}
+
+class _SimulatedWidthState extends State<_SimulatedWidth> {
+  double _width = 390;
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
+    context.locale;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Text(
+              LocaleKeys.showcaseScreenSimWidth.tr(),
+              style: context.textTheme.bodySmall,
+            ),
+            Expanded(
+              child: Slider.adaptive(
+                value: _width,
+                min: 320,
+                max: 1280,
+                divisions: 24,
+                label: _fmt(_width),
+                onChanged: (v) => setState(() => _width = v),
+              ),
+            ),
+          ],
+        ),
+        widget.builder(ScreenMetrics.fromSize(Size(_width, 900))),
+      ],
+    );
+  }
+}
+
+/// [ResponsiveGap] and the two scalers behind it, `space` and `size`, for a
+/// base value of one's choosing.
+class _GapPlayground extends StatefulWidget {
+  const _GapPlayground();
+
+  @override
+  State<_GapPlayground> createState() => _GapPlaygroundState();
+}
+
+class _GapPlaygroundState extends State<_GapPlayground> {
+  double _base = 24;
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
+    context.locale;
+    final s = context.screen;
+    final colors = context.colors;
+    final b = _base.toStringAsFixed(0);
+    final muted = context.textTheme.bodySmall?.copyWith(
+      color: colors.textMuted,
+    );
+
+    return DemoBlock(
+      code: 'ResponsiveGap($b)',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            LocaleKeys.showcaseScreenGapHint.tr(),
+            style: context.textTheme.bodySmall?.copyWith(
+              color: colors.textSecondary,
+            ),
+          ),
+          12.heightBox,
+          _Bar(color: colors.primaryContainer),
+          ColoredBox(
+            color: colors.feedbackWarning,
+            child: ResponsiveGap(_base),
+          ),
+          _Bar(color: colors.primaryContainer),
+          12.heightBox,
+          Row(
+            children: [
+              Text(
+                LocaleKeys.showcaseScreenBase.tr(),
+                style: context.textTheme.bodySmall,
+              ),
+              Expanded(
+                child: Slider.adaptive(
+                  value: _base,
+                  max: 96,
+                  divisions: 24,
+                  label: b,
+                  onChanged: (v) => setState(() => _base = v),
+                ),
+              ),
+            ],
+          ),
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final (name, value) in [
+                  ('context.screen.scale', _fmt(s.scale)),
+                  ('context.screen.space($b)', _fmt(s.space(_base))),
+                  ('context.screen.size($b)', _fmt(s.size(_base))),
+                ])
+                  Row(
+                    children: [
+                      Expanded(child: Text(name, style: muted)),
+                      Text(value, style: context.textTheme.titleMedium),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
