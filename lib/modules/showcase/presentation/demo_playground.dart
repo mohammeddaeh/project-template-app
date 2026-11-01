@@ -1,0 +1,453 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:flutter/material.dart';
+
+import 'package:app_template/core/di/injection.dart';
+import 'package:app_template/core/platform/clipboard/clipboard_service.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/feedback/feedback_extension.dart';
+import 'package:app_template/ui/theme/app_radius.dart';
+import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
+
+/// **A widget with its options as controls** — change a control and both the
+/// widget and the call written above it change with it, so the call can be
+/// copied exactly as chosen.
+///
+/// ```dart
+/// DemoPlayground(
+///   call: 'AppButton',
+///   knobs: [
+///     const TextKnob('text', initial: 'Save', required: true),
+///     EnumKnob('variant', AppButtonVariant.values, AppButtonVariant.filled),
+///     const BoolKnob('isLoading', apiDefault: false),
+///   ],
+///   builder: (context, k) => AppButton(
+///     text: k('text'),
+///     variant: k('variant'),
+///     isLoading: k('isLoading'),
+///     onTap: () {},
+///   ),
+/// )
+/// ```
+///
+/// The call shows the required arguments and every argument whose value
+/// differs from the widget's own default ([Knob.apiDefault]) — what one would
+/// actually write.
+class DemoPlayground extends StatefulWidget {
+  const DemoPlayground({
+    required this.call,
+    required this.knobs,
+    required this.builder,
+    this.trailingCode = const [],
+    this.previewAlignment = Alignment.center,
+    super.key,
+  });
+
+  /// The constructor, e.g. `AppButton` or `AppButton.icon`.
+  final String call;
+
+  final List<Knob<Object?>> knobs;
+
+  final Widget Function(BuildContext context, KnobValues k) builder;
+
+  /// Arguments the controls do not cover, always written, e.g. `onTap: …`.
+  final List<String> trailingCode;
+
+  final AlignmentGeometry previewAlignment;
+
+  @override
+  State<DemoPlayground> createState() => _DemoPlaygroundState();
+}
+
+class _DemoPlaygroundState extends State<DemoPlayground> {
+  late final Map<String, Object?> _values = {
+    for (final k in widget.knobs) k.name: k.initial,
+  };
+
+  String get _code {
+    final args = [
+      for (final k in widget.knobs)
+        if (k.required || _values[k.name] != k.apiDefault)
+          '${k.name}: ${k.codeOf(_values[k.name])}',
+      ...widget.trailingCode,
+    ];
+    if (args.isEmpty) return '${widget.call}()';
+    return '${widget.call}(\n${args.map((a) => '  $a,').join('\n')}\n)';
+  }
+
+  Future<void> _copy() async {
+    if (!getIt.isRegistered<ClipboardService>()) return;
+    await getIt<ClipboardService>().copy(_code);
+    if (!mounted) return;
+    context.feedback.toast(LocaleKeys.showcasePlaygroundCopied.tr());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
+    context.locale;
+    final colors = context.colors;
+    final values = KnobValues._(_values);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: AppCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Code reads left to right in either language.
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colors.bgNeutral,
+                  borderRadius: AppRadius.smRadius,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: 12.allPadding,
+                        child: Text(
+                          _code,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: colors.textSecondary,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (getIt.isRegistered<ClipboardService>())
+                      IconButton(
+                        tooltip: LocaleKeys.showcasePlaygroundCopy.tr(),
+                        icon: Icon(
+                          Icons.copy_rounded,
+                          size: 18,
+                          color: colors.textMuted,
+                        ),
+                        onPressed: _copy,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            16.heightBox,
+            Align(
+              alignment: widget.previewAlignment,
+              child: widget.builder(context, values),
+            ),
+            16.heightBox,
+            const DividerWidget(),
+            8.heightBox,
+            // The controls name code arguments — laid out as code reads.
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final k in widget.knobs)
+                    if (k.control)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: k.buildControl(
+                          context,
+                          _values[k.name],
+                          (v) => setState(() => _values[k.name] = v),
+                        ),
+                      ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The chosen values, read by name in [DemoPlayground.builder]: `k('variant')`.
+class KnobValues {
+  KnobValues._(this._values);
+
+  final Map<String, Object?> _values;
+
+  T call<T>(String name) => _values[name] as T;
+}
+
+/// One option of the widget under test, and the control that changes it.
+abstract class Knob<T> {
+  const Knob(
+    this.name, {
+    required this.initial,
+    this.apiDefault,
+    this.required = false,
+    this.control = true,
+  });
+
+  /// The argument's name in code.
+  final String name;
+  final T initial;
+
+  /// The widget's own default — an argument at this value is left out of the
+  /// written call.
+  final T? apiDefault;
+
+  /// Always written, whatever its value.
+  final bool required;
+
+  /// Shown as a control; `false` keeps a fixed argument in the written call.
+  final bool control;
+
+  /// How [value] is written in Dart.
+  String codeOf(Object? value);
+
+  Widget buildControl(
+    BuildContext context,
+    Object? value,
+    ValueChanged<Object?> onChanged,
+  );
+}
+
+/// One value of an enum, picked from chips.
+class EnumKnob<T extends Enum> extends Knob<T> {
+  EnumKnob(
+    super.name,
+    this.values,
+    T initial, {
+    T? apiDefault,
+    String? typeName,
+    super.required,
+  }) : typeName = typeName ?? values.first.runtimeType.toString(),
+       super(initial: initial, apiDefault: apiDefault ?? initial);
+
+  final List<T> values;
+
+  /// The enum's name in code — given explicitly where obfuscation could
+  /// rename the runtime type.
+  final String typeName;
+
+  @override
+  String codeOf(Object? value) => '$typeName.${(value as T).name}';
+
+  @override
+  Widget buildControl(
+    BuildContext context,
+    Object? value,
+    ValueChanged<Object?> onChanged,
+  ) => _Labelled(
+    name: name,
+    child: ChipRow<T>(
+      items: values,
+      labelResolver: (v) => v.name,
+      selectedValue: value as T,
+      onSelected: (v) {
+        if (v != null) onChanged(v);
+      },
+    ),
+  );
+}
+
+/// One of a few named values that are not an enum — a colour token, an icon,
+/// a sample text. [options] maps the code written to the value used.
+class ChoiceKnob<T> extends Knob<T> {
+  ChoiceKnob(
+    super.name,
+    this.options, {
+    String? initialCode,
+    this.apiDefaultCode,
+    super.required,
+  }) : initialCode = initialCode ?? options.keys.first,
+       super(initial: options[initialCode ?? options.keys.first] as T);
+
+  final Map<String, T> options;
+  final String initialCode;
+
+  /// The code of the widget's own default — left out of the written call.
+  final String? apiDefaultCode;
+
+  @override
+  T? get apiDefault => apiDefaultCode == null ? null : options[apiDefaultCode];
+
+  @override
+  String codeOf(Object? value) =>
+      options.entries.firstWhere((e) => e.value == value).key;
+
+  @override
+  Widget buildControl(
+    BuildContext context,
+    Object? value,
+    ValueChanged<Object?> onChanged,
+  ) => _Labelled(
+    name: name,
+    child: ChipRow<String>(
+      items: options.keys.toList(),
+      labelResolver: (c) => c,
+      selectedValue: codeOf(value),
+      onSelected: (c) {
+        if (c != null) onChanged(options[c]);
+      },
+    ),
+  );
+}
+
+/// A `bool` argument as a switch.
+class BoolKnob extends Knob<bool> {
+  const BoolKnob(
+    super.name, {
+    super.initial = false,
+    bool super.apiDefault = false,
+    super.required,
+  });
+
+  @override
+  String codeOf(Object? value) => '$value';
+
+  @override
+  Widget buildControl(
+    BuildContext context,
+    Object? value,
+    ValueChanged<Object?> onChanged,
+  ) => Row(
+    children: [
+      Expanded(child: _KnobName(name)),
+      Switch.adaptive(value: value! as bool, onChanged: onChanged),
+    ],
+  );
+}
+
+/// A `String` argument as a text field.
+class TextKnob extends Knob<String> {
+  const TextKnob(
+    super.name, {
+    required super.initial,
+    super.apiDefault,
+    super.required,
+  });
+
+  @override
+  String codeOf(Object? value) => "'$value'";
+
+  @override
+  Widget buildControl(
+    BuildContext context,
+    Object? value,
+    ValueChanged<Object?> onChanged,
+  ) => _TextControl(name: name, value: value! as String, onChanged: onChanged);
+}
+
+/// A number argument as a slider.
+class NumberKnob extends Knob<double> {
+  const NumberKnob(
+    super.name, {
+    required super.initial,
+    required this.min,
+    required this.max,
+    this.divisions,
+    this.integer = false,
+    super.apiDefault,
+    super.required,
+  });
+
+  final double min;
+  final double max;
+  final int? divisions;
+
+  /// Written as an `int` (`3`, not `3.0`).
+  final bool integer;
+
+  @override
+  String codeOf(Object? value) {
+    final v = value! as double;
+    return integer ? '${v.round()}' : v.toStringAsFixed(v % 1 == 0 ? 0 : 1);
+  }
+
+  @override
+  Widget buildControl(
+    BuildContext context,
+    Object? value,
+    ValueChanged<Object?> onChanged,
+  ) => Row(
+    children: [
+      _KnobName(name),
+      Expanded(
+        child: Slider.adaptive(
+          value: value! as double,
+          min: min,
+          max: max,
+          divisions: divisions ?? (integer ? (max - min).round() : null),
+          label: codeOf(value),
+          onChanged: (v) => onChanged(integer ? v.roundToDouble() : v),
+        ),
+      ),
+      SizedBox(
+        width: 40,
+        child: Text(codeOf(value), style: context.textTheme.bodySmall),
+      ),
+    ],
+  );
+}
+
+class _Labelled extends StatelessWidget {
+  const _Labelled({required this.name, required this.child});
+
+  final String name;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [_KnobName(name), 4.heightBox, child],
+  );
+}
+
+class _KnobName extends StatelessWidget {
+  const _KnobName(this.name);
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) => Directionality(
+    textDirection: TextDirection.ltr,
+    child: Text(
+      name,
+      style: context.textTheme.labelSmall?.copyWith(
+        color: context.colors.textMuted,
+      ),
+    ),
+  );
+}
+
+class _TextControl extends StatefulWidget {
+  const _TextControl({
+    required this.name,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String name;
+  final String value;
+  final ValueChanged<Object?> onChanged;
+
+  @override
+  State<_TextControl> createState() => _TextControlState();
+}
+
+class _TextControlState extends State<_TextControl> {
+  late final _c = TextEditingController(text: widget.value);
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => CustomTextField(
+    controller: _c,
+    labelText: widget.name,
+    ltr: true,
+    onChanged: widget.onChanged,
+  );
+}

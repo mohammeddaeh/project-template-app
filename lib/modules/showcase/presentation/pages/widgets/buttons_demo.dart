@@ -1,94 +1,136 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
+import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
-/// Every [AppButtonVariant] and size, the loading and disabled states, and the
-/// status chips — each labelled with the name to write in code.
+/// The buttons as playgrounds — every option of [AppButton], [PrimaryButton]
+/// and [StatusChip] as a control — then every variant at a glance.
 class ButtonsDemo extends StatelessWidget {
   const ButtonsDemo({super.key});
 
   static void _noop() {}
 
+  static const _icons = {
+    'null': null,
+    'Icons.add': Icons.add,
+    'Icons.save_outlined': Icons.save_outlined,
+    'Icons.send': Icons.send,
+  };
+
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      DemoBlock(
-        code: 'AppButton(variant: AppButtonVariant.…)',
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final v in AppButtonVariant.values)
-              if (v != AppButtonVariant.onBrand)
-                AppButton(text: v.name, variant: v, onTap: _noop),
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
+    context.locale;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DemoPlayground(
+          call: 'AppButton',
+          knobs: [
+            TextKnob('text', initial: LocaleKeys.save.tr(), required: true),
+            EnumKnob(
+              'variant',
+              AppButtonVariant.values,
+              AppButtonVariant.filled,
+            ),
+            EnumKnob('size', AppButtonSize.values, AppButtonSize.medium),
+            ChoiceKnob<IconData?>(
+              'leadingIcon',
+              _icons,
+              apiDefaultCode: 'null',
+            ),
+            const BoolKnob('isLoading'),
+            const BoolKnob('isEnabled', initial: true, apiDefault: true),
           ],
-        ),
-      ),
-      DemoBlock(
-        code: 'AppButtonVariant.onBrand',
-        child: ColoredBox(
-          color: context.colors.bgBrand,
-          child: Padding(
-            padding: 16.allPadding,
-            child: AppButton(
-              text: AppButtonVariant.onBrand.name,
-              variant: AppButtonVariant.onBrand,
-              onTap: _noop,
+          trailingCode: const ['onTap: () {}'],
+          // onBrand is drawn for a brand surface — show it on one.
+          builder: (context, k) => ColoredBox(
+            color: k<AppButtonVariant>('variant') == AppButtonVariant.onBrand
+                ? context.colors.bgBrand
+                : Colors.transparent,
+            child: Padding(
+              padding: 12.allPadding,
+              child: AppButton(
+                text: k('text'),
+                variant: k('variant'),
+                size: k('size'),
+                leadingIcon: k('leadingIcon'),
+                isLoading: k('isLoading'),
+                isEnabled: k('isEnabled'),
+                onTap: _noop,
+              ),
             ),
           ),
         ),
-      ),
-      DemoBlock(
-        code: 'AppButton(size: AppButtonSize.…)',
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            for (final s in AppButtonSize.values)
-              AppButton(text: s.name, size: s, onTap: _noop),
+        DemoPlayground(
+          call: 'PrimaryButton',
+          knobs: [
+            TextKnob(
+              'text',
+              initial: LocaleKeys.continueLabel.tr(),
+              required: true,
+            ),
+            const BoolKnob('isLoading'),
+            const BoolKnob('isEnabled', initial: true, apiDefault: true),
+            const BoolKnob('isTextOnly'),
           ],
+          trailingCode: const ['onTap: () {}'],
+          builder: (context, k) => PrimaryButton(
+            text: k('text'),
+            isLoading: k('isLoading'),
+            isEnabled: k('isEnabled'),
+            isTextOnly: k('isTextOnly'),
+            onTap: _noop,
+          ),
         ),
-      ),
-      const DemoBlock(
-        code: 'isLoading: true · isEnabled: false',
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            AppButton(text: 'isLoading', isLoading: true, onTap: _noop),
-            AppButton(text: 'isEnabled', isEnabled: false, onTap: _noop),
+        DemoPlayground(
+          call: 'StatusChip',
+          knobs: [
+            TextKnob(
+              'labelText',
+              initial: LocaleKeys.showcaseSyncPending.tr(args: ['3']),
+              required: true,
+            ),
+            EnumKnob(
+              'tone',
+              StatusTone.values,
+              StatusTone.info,
+              required: true,
+            ),
           ],
+          builder: (context, k) =>
+              StatusChip(labelText: k('labelText'), tone: k('tone')),
         ),
-      ),
-      const DemoBlock(
-        code: 'PrimaryButton(isLoading · isEnabled · isTextOnly)',
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            PrimaryButton(text: 'PrimaryButton', onTap: _noop),
-            PrimaryButton(text: 'isLoading', isLoading: true, onTap: _noop),
-            PrimaryButton(text: 'isEnabled', isEnabled: false, onTap: _noop),
-            PrimaryButton(text: 'isTextOnly', isTextOnly: true, onTap: _noop),
-          ],
+        DemoBlock(
+          code: 'AppButtonVariant.values',
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final v in AppButtonVariant.values)
+                if (v != AppButtonVariant.onBrand)
+                  AppButton(text: v.name, variant: v, onTap: _noop),
+            ],
+          ),
         ),
-      ),
-      DemoBlock(
-        code: 'StatusChip(tone: StatusTone.…)',
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final t in StatusTone.values)
-              StatusChip(labelText: t.name, tone: t),
-          ],
+        DemoBlock(
+          code: 'AppButtonSize.values',
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              for (final s in AppButtonSize.values)
+                AppButton(text: s.name, size: s, onTap: _noop),
+            ],
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

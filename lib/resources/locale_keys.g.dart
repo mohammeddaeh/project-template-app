@@ -583,4 +583,10 @@ abstract class LocaleKeys {
       'showcaseBackGuardDiscardMessage';
   static const showcaseBackGuardDiscard = 'showcaseBackGuardDiscard';
   static const showcaseBackGuardPredictive = 'showcaseBackGuardPredictive';
+  static const showcasePlaygroundCopy = 'showcasePlaygroundCopy';
+  static const showcasePlaygroundCopied = 'showcasePlaygroundCopied';
+  static const showcaseGestures = 'showcaseGestures';
+  static const showcaseTools = 'showcaseTools';
+  static const showcaseCubits = 'showcaseCubits';
+  static const showcaseStorage = 'showcaseStorage';
 }

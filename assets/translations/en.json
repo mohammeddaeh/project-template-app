@@ -572,5 +572,11 @@
   "showcaseBackGuardDiscardTitle": "Discard changes?",
   "showcaseBackGuardDiscardMessage": "What you typed is not saved yet.",
   "showcaseBackGuardDiscard": "Discard",
-  "showcaseBackGuardPredictive": "canPop: false also turns off the predictive back preview (Android 14+): the swipe cannot reveal the screen behind before you decide"
+  "showcaseBackGuardPredictive": "canPop: false also turns off the predictive back preview (Android 14+): the swipe cannot reveal the screen behind before you decide",
+  "showcasePlaygroundCopy": "Copy code",
+  "showcasePlaygroundCopied": "Code copied",
+  "showcaseGestures": "Drag & swipe",
+  "showcaseTools": "Foundation tools",
+  "showcaseCubits": "Cubits & states",
+  "showcaseStorage": "Storage & settings"
 }

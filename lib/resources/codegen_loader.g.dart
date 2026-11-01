@@ -643,6 +643,12 @@ class CodegenLoader extends AssetLoader {
     "showcaseBackGuardDiscard": "تجاهل",
     "showcaseBackGuardPredictive":
         "canPop: false يوقف أيضاً معاينة الرجوع التنبّؤي (أندرويد ١٤ فأحدث): لا تكشف السحبة الشاشة السابقة قبل أن تقرّر",
+    "showcasePlaygroundCopy": "انسخ الكود",
+    "showcasePlaygroundCopied": "نُسخ الكود",
+    "showcaseGestures": "السحب والترتيب",
+    "showcaseTools": "أدوات الأساس",
+    "showcaseCubits": "الكيوبتات وحالاتها",
+    "showcaseStorage": "التخزين والإعدادات",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -1290,6 +1296,12 @@ class CodegenLoader extends AssetLoader {
     "showcaseBackGuardDiscard": "Discard",
     "showcaseBackGuardPredictive":
         "canPop: false also turns off the predictive back preview (Android 14+): the swipe cannot reveal the screen behind before you decide",
+    "showcasePlaygroundCopy": "Copy code",
+    "showcasePlaygroundCopied": "Code copied",
+    "showcaseGestures": "Drag & swipe",
+    "showcaseTools": "Foundation tools",
+    "showcaseCubits": "Cubits & states",
+    "showcaseStorage": "Storage & settings",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

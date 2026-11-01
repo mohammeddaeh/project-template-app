@@ -572,5 +572,11 @@
   "showcaseBackGuardDiscardTitle": "تجاهل التغييرات؟",
   "showcaseBackGuardDiscardMessage": "ما كتبته لم يُحفظ بعد.",
   "showcaseBackGuardDiscard": "تجاهل",
-  "showcaseBackGuardPredictive": "canPop: false يوقف أيضاً معاينة الرجوع التنبّؤي (أندرويد ١٤ فأحدث): لا تكشف السحبة الشاشة السابقة قبل أن تقرّر"
+  "showcaseBackGuardPredictive": "canPop: false يوقف أيضاً معاينة الرجوع التنبّؤي (أندرويد ١٤ فأحدث): لا تكشف السحبة الشاشة السابقة قبل أن تقرّر",
+  "showcasePlaygroundCopy": "انسخ الكود",
+  "showcasePlaygroundCopied": "نُسخ الكود",
+  "showcaseGestures": "السحب والترتيب",
+  "showcaseTools": "أدوات الأساس",
+  "showcaseCubits": "الكيوبتات وحالاتها",
+  "showcaseStorage": "التخزين والإعدادات"
 }

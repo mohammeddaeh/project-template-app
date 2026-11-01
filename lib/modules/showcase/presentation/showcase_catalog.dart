@@ -29,6 +29,10 @@ import 'package:app_template/modules/showcase/presentation/pages/widgets/inputs_
 import 'package:app_template/modules/showcase/presentation/pages/widgets/media_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/navigation_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/states_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/foundations/tools_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/widgets/gestures_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/data/cubits_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/platform/storage_demo.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 
@@ -107,6 +111,12 @@ abstract final class ShowcaseCatalog {
       FormatsDemo.new,
     ),
     ShowcasePage(
+      ShowcaseGroup.foundations,
+      LocaleKeys.showcaseTools,
+      Icons.build_outlined,
+      ToolsDemo.new,
+    ),
+    ShowcasePage(
       ShowcaseGroup.widgets,
       LocaleKeys.showcaseButtons,
       Icons.smart_button_outlined,
@@ -123,6 +133,12 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcaseDisplay,
       Icons.view_agenda_outlined,
       DisplayDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.widgets,
+      LocaleKeys.showcaseGestures,
+      Icons.swipe,
+      GesturesDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.widgets,
@@ -171,6 +187,12 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcasePagination,
       Icons.format_list_numbered,
       PaginationDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.data,
+      LocaleKeys.showcaseCubits,
+      Icons.account_tree_outlined,
+      CubitsDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.data,
@@ -237,6 +259,12 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcaseFlags,
       Icons.flag_outlined,
       FlagsDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.platform,
+      LocaleKeys.showcaseStorage,
+      Icons.sd_storage_outlined,
+      StorageDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.platform,
