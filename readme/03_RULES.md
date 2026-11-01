@@ -412,6 +412,17 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 
 الاختبار: `test/motion_test.dart`.
 
+### R42 · كل ودجةٍ بالمكتبة لها مثالٌ بالجولة 🔒
+
+ما دام `lib/modules/showcase/` موجوداً، كلُّ صنفٍ عامّ بملفٍّ يصدّره `widgets.dart` يظهر
+بمثالٍ حيّ بصفحةٍ من صفحات الجولة — أو بسطرٍ مسبَّبٍ بـ`_exempt` في الاختبار.
+
+> **لماذا**: الجولة مرآةُ القالب. ودجةٌ تُضاف للمكتبة بلا مثال تجعل المرآة تعرض أقلَّ
+> مما يملكه القالب، ولا يلاحظ أحد — فيكتبها المطوّر ثانيةً لأنه لم يرها.
+
+الاختبار: `test/modules/showcase_test.dart` — «every public class of the widget library…».
+والمشروعُ الذي يحذف الجولة يحذف اختبارها معها ([`SETUP.md`](../lib/modules/showcase/SETUP.md)).
+
 ### R39 · كل رابطٍ بوثيقة يصل ملفاً موجوداً 🔒
 
 نقلُ ملفٍّ أو حذفُه يكسر كل رابطٍ إليه، ولا شيء آخر يفشل. ورابطٌ إلى `_template/`
@@ -517,6 +528,7 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R39  check_docs بلا رابطٍ معطوب
 [ ] R40  بحثتُ بـ06_CAPABILITIES قبل كتابة أداة — والناقص وُسِّع بمكانه
 [ ] R41  كل حركةٍ مدّتها من AppMotion.of(context) — صفرٌ مع «تقليل الحركة»
+[ ] R42  ودجةٌ جديدة بالمكتبة لها مثالٌ بصفحةٍ من lib/modules/showcase/
 [ ] R36  صفر TextField/TextFormField خام — CustomTextField وحده
 [ ] R37  صفر رقمِ مقاسٍ خام — context.screen · وجُرِّبت على هاتف ولوح
 [ ] R16  اتجاه التبعية سليم

@@ -176,7 +176,8 @@ class _ProfileHeader extends StatelessWidget { ... }
 ```
 
 **أين تسكن الودجة:** يستعملها feature ثانية (أو ستفعل) ⇒ `lib/ui/widgets/<group>/`
-+ تصدير بـ`widgets.dart` + صفّ بـ`readme/21_WIDGETS_USAGE.md` — **الثلاثة معاً**.
++ تصدير بـ`widgets.dart` + صفّ بـ`readme/21_WIDGETS_USAGE.md` + مثالٌ بصفحةٍ من
+`lib/modules/showcase/presentation/pages/` — **الأربعة معاً** (R42: الاختبار يُفشل الناقص).
 وإلا ⇒ `lib/features/<f>/presentation/widgets/`.
 
 **والودجة العامة لا تستورد `features/…` أبداً** — تُمرَّر إليها البيانات وسائطَ.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:app_template/core/foundation/formatting/app_formats.dart';
-import 'package:app_template/modules/showcase/presentation/sections/demo_block.dart';
+import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 

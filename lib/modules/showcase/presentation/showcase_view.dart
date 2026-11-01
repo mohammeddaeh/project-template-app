@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_template/modules/showcase/presentation/showcase_section.dart';
+import 'package:app_template/modules/showcase/presentation/showcase_catalog.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
@@ -9,7 +9,8 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
 /// **What the template provides, on the home tab of a fresh project** — one
-/// card per area; each card expands into a page that uses the real widgets.
+/// chapter per area, one card per page; each card expands into a page that
+/// uses the real widgets.
 ///
 /// Nothing here needs a server: every demo runs on the device alone, so the
 /// tour works the moment the project is created. Turn it off with
@@ -38,35 +39,38 @@ class ShowcaseView extends StatelessWidget {
               color: context.colors.textSecondary,
             ),
           ),
-          16.heightBox,
-          for (final (i, section) in ShowcaseSection.values.indexed)
-            ListItemAppearWdg(
-              staggerIndex: i,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _SectionCard(section),
+          for (final group in ShowcaseGroup.values) ...[
+            16.heightBox,
+            SectionTitle(titleKey: group.titleKey),
+            for (final (i, page) in group.pages.indexed)
+              ListItemAppearWdg(
+                staggerIndex: i,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: _PageCard(page),
+                ),
               ),
-            ),
+          ],
         ],
       ),
     );
   }
 }
 
-class _SectionCard extends StatelessWidget {
-  const _SectionCard(this.section);
+class _PageCard extends StatelessWidget {
+  const _PageCard(this.page);
 
-  final ShowcaseSection section;
+  final ShowcasePage page;
 
   @override
   Widget build(BuildContext context) => AppOpenContainer<void>(
     closedBuilder: (context, open) => AppListTile(
-      titleKey: section.titleKey,
-      leadingIcon: section.icon,
+      titleKey: page.titleKey,
+      leadingIcon: page.icon,
       // Mirrors itself in right-to-left text.
       trailing: Icon(Icons.chevron_right, color: context.colors.textMuted),
       onTap: open,
     ),
-    openBuilder: (context, close) => ShowcaseSectionPage(section: section),
+    openBuilder: (context, close) => ShowcasePageScreen(page: page),
   );
 }

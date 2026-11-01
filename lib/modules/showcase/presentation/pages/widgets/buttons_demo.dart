@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:app_template/modules/showcase/presentation/sections/demo_block.dart';
+import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -62,6 +62,19 @@ class ButtonsDemo extends StatelessWidget {
           children: [
             AppButton(text: 'isLoading', isLoading: true, onTap: _noop),
             AppButton(text: 'isEnabled', isEnabled: false, onTap: _noop),
+          ],
+        ),
+      ),
+      const DemoBlock(
+        code: 'PrimaryButton(isLoading · isEnabled · isTextOnly)',
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            PrimaryButton(text: 'PrimaryButton', onTap: _noop),
+            PrimaryButton(text: 'isLoading', isLoading: true, onTap: _noop),
+            PrimaryButton(text: 'isEnabled', isEnabled: false, onTap: _noop),
+            PrimaryButton(text: 'isTextOnly', isTextOnly: true, onTap: _noop),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:app_template/modules/showcase/presentation/sections/demo_block.dart';
+import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/ui/locale/locale_switcher.dart';
 import 'package:app_template/ui/theme/theme_switcher.dart';
 
