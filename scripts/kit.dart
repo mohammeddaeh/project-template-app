@@ -144,6 +144,9 @@ void _write(
   File(_pubspec).writeAsStringSync(pubspec);
   File(_appFeatures).writeAsStringSync(features);
   File(kitsFile).writeAsStringSync(renderKitsFile(installed, enabled));
+  if (Directory('android/app').existsSync()) {
+    File(kitsProguardFile).writeAsStringSync(renderProguardFile(installed));
+  }
 }
 
 String _readKitsFile() {

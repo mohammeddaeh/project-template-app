@@ -180,7 +180,13 @@ class _AppBottomSheetContent extends StatelessWidget {
             ),
           )
         else
-          Padding(padding: effectivePadding, child: child),
+          // Loose too: the content keeps its own height, and still learns the
+          // sheet's ceiling — a camera square or an image can shrink to fit a
+          // short screen instead of overflowing it.
+          Flexible(
+            fit: FlexFit.loose,
+            child: Padding(padding: effectivePadding, child: child),
+          ),
       ],
     );
 

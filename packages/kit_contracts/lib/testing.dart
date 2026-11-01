@@ -4,6 +4,8 @@ library;
 
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
+
 import 'kit_contracts.dart';
 
 /// Plays back the [script] it is given on [listen].
@@ -144,5 +146,80 @@ class FakeAudioPlayback implements AudioPlayback {
   Future<void> dispose() async {
     disposed = true;
     await _states.close();
+  }
+}
+
+/// A camera that reads what [FakeScanSession.read] is given.
+class FakeCodeScanner implements CodeScanner {
+  FakeCodeScanner({this.answer = const KitReady()});
+
+  KitAvailability answer;
+  FakeScanSession? session;
+
+  @override
+  Future<KitAvailability> availability() async => answer;
+
+  @override
+  ScanSession open() => session = FakeScanSession();
+}
+
+class FakeScanSession implements ScanSession {
+  final _codes = StreamController<ScannedCode>.broadcast();
+  bool torch = false;
+  bool disposed = false;
+
+  void read(String value, [CodeFormat format = CodeFormat.qr]) =>
+      _codes.add(ScannedCode(value, format));
+
+  @override
+  Widget get preview => const SizedBox.expand(key: Key('fake-camera'));
+
+  @override
+  Stream<ScannedCode> get codes => _codes.stream;
+
+  @override
+  Future<void> setTorch(bool on) async => torch = on;
+
+  @override
+  Future<void> dispose() async {
+    disposed = true;
+    await _codes.close();
+  }
+}
+
+class FakeDocumentScanner implements DocumentScanner {
+  FakeDocumentScanner({
+    this.answer = const KitReady(),
+    this.result = const DocumentScanCancelled(),
+  });
+
+  KitAvailability answer;
+  DocumentScanResult result;
+  int? askedFor;
+
+  @override
+  Future<KitAvailability> availability() async => answer;
+
+  @override
+  Future<DocumentScanResult> scan({int maxPages = 5}) async {
+    askedFor = maxPages;
+    return result;
+  }
+}
+
+class FakeTextRecognizer implements TextRecognizer {
+  FakeTextRecognizer({this.answer = const KitReady(), this.text = ''});
+
+  KitAvailability answer;
+  String? text;
+  String? readFrom;
+
+  @override
+  Future<KitAvailability> availability() async => answer;
+
+  @override
+  Future<String?> read(String imagePath) async {
+    readFrom = imagePath;
+    return text;
   }
 }

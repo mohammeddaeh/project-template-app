@@ -26,7 +26,7 @@ dart run scripts/<script_name>.dart
 | `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
 | `gen_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
 | `sync_platform_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
-| **`kit.dart`** | **حِزَم الأجهزة** — `list` · `add <name>` · `remove <name>` · `test`. التركيب والإزالة بأمرٍ واحد، والجولة لا تترك فرقاً بـgit. راجع [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) |
+| **`kit.dart`** | **حِزَم الأجهزة** — `list` · `add <name>` · `remove <name>` · `test`. التركيب والإزالة بأمرٍ واحد (تبعية · تسجيل · أذونات · قواعد R8)، والجولة لا تترك فرقاً بـgit. راجع [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) |
 | **`check_structure.dart`** | **فاحصٌ آليّ لقواعد بنية الواجهة** (`F04` · `F10` · `F13` · `F19`…`F23` · `F35` · `F36` · `F37`) — يفشل بمخالفة **جديدة** ويتسامح مع الدَّين المسجَّل |
 | **`check_docs.dart`** | **روابط التوثيق المعطوبة** — كل رابط Markdown نسبيّ يصل ملفاً موجوداً، ورابطُ GitHub إلى `_template/` حين يوجد المجلد. حاجبٌ بالـCI. راجع §8‑ح |
 | **`template_drift.dart`** | **ما غيّره المشروع بملفات القالب ولم يُسجَّل** — يقارن بنسخة القالب حين بدأ المشروع. راجع §8‑ط |

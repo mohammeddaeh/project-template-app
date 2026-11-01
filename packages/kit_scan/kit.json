@@ -1,0 +1,11 @@
+{
+  "name": "scan",
+  "register": "registerScanKit",
+  "permissions": [
+    "camera"
+  ],
+  "platformPackages": [
+    "mobile_scanner",
+    "google_mlkit_document_scanner"
+  ]
+}

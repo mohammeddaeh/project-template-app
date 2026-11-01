@@ -1,0 +1,15 @@
+{
+  "name": "ocr",
+  "register": "registerOcrKit",
+  "permissions": [],
+  "platformPackages": [
+    "google_mlkit_text_recognition"
+  ],
+  "proguard": [
+    "# ML Kit text recognition refers to the other scripts' options, not shipped.",
+    "-dontwarn com.google.mlkit.vision.text.chinese.**",
+    "-dontwarn com.google.mlkit.vision.text.devanagari.**",
+    "-dontwarn com.google.mlkit.vision.text.japanese.**",
+    "-dontwarn com.google.mlkit.vision.text.korean.**"
+  ]
+}

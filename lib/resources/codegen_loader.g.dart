@@ -1044,6 +1044,22 @@ class CodegenLoader extends AssetLoader {
     "showcaseAudioNone": "سجّل ملاحظة لتظهر هنا",
     "showcaseKnobSource": "المصدر",
     "showcaseAudioOpenAttachment": "افتحه كمرفق",
+    "scanCodeTitle": "امسح الرمز",
+    "scanCodeHint": "وجّه الكاميرا إلى رمز QR أو باركود",
+    "scanTorchOn": "تشغيل الإضاءة",
+    "scanTorchOff": "إطفاء الإضاءة",
+    "scanCameraDenied": "المسح يحتاج إذن الكاميرا",
+    "scanCameraBlocked": "الكاميرا ممنوعة لهذا التطبيق — اسمح بها من الإعدادات",
+    "scanUnsupported": "المسح غير متاح على هذا الجهاز",
+    "scanDocumentUnsupported": "ماسح المستندات يحتاج أندرويد بخدمات Google",
+    "scanDocumentFailed": "تعذّر فتح ماسح المستندات",
+    "scanTextFailed": "تعذّرت قراءة الصورة",
+    "scanTextEmpty": "لم يُعثر على نص — القراءة بالحروف اللاتينية وحدها",
+    "showcaseScan": "المسح",
+    "showcaseScanCode": "امسح رمزاً",
+    "showcaseScanDocument": "امسح مستنداً",
+    "showcaseScanText": "اقرأ النص من أول صفحة",
+    "showcaseScanNothing": "لا شيء بعد",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -2104,6 +2120,24 @@ class CodegenLoader extends AssetLoader {
     "showcaseAudioNone": "Record a note and it appears here",
     "showcaseKnobSource": "source",
     "showcaseAudioOpenAttachment": "Open as an attachment",
+    "scanCodeTitle": "Scan a code",
+    "scanCodeHint": "Point the camera at a QR code or barcode",
+    "scanTorchOn": "Turn the light on",
+    "scanTorchOff": "Turn the light off",
+    "scanCameraDenied": "Scanning needs the camera",
+    "scanCameraBlocked":
+        "The camera is off for this app — allow it in Settings",
+    "scanUnsupported": "Scanning is not available on this device",
+    "scanDocumentUnsupported":
+        "The document scanner needs Android with Google services",
+    "scanDocumentFailed": "Couldn't open the document scanner",
+    "scanTextFailed": "Couldn't read the image",
+    "scanTextEmpty": "No text found — only Latin script is read",
+    "showcaseScan": "Scanning",
+    "showcaseScanCode": "Scan a code",
+    "showcaseScanDocument": "Scan a document",
+    "showcaseScanText": "Read the text of the first page",
+    "showcaseScanNothing": "Nothing yet",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

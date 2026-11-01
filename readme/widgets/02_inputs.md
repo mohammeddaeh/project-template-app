@@ -252,3 +252,30 @@ SpeakButton(text: quote, languageCode: 'en')
 يُثبَّت بـ`test/voice_kit_test.dart` — بالـkit وبدونها، عبر `FakeSpeechInput`/`FakeSpeechOutput`
 من `package:kit_contracts/testing.dart`، فلا يلمس اختبارٌ حزمة منصّة.
 
+---
+
+## §44 · DeviceScan — الكاميرا مدخلاً (`kit_scan` · `kit_ocr`)
+
+> **نداءاتٌ لا ودجات**: كلٌّ يطلب إذن الكاميرا بنفسه ويقول لماذا توقّف. والزرُّ يُرسم حين
+> تكون الـkit مركّبة — `DeviceScan.canScanCodes` · `canScanDocuments` · `canReadText`.
+> البنية بـ[`24_DEVICE_KITS.md`](../24_DEVICE_KITS.md).
+
+```dart
+// ── رمز QR أو باركود — ورقةٌ بالكاميرا تُغلق بأوّل رمز ──
+final code = await DeviceScan.code(context);          // ScannedCode? (value · format)
+
+// ── صفحاتٌ ورقية — شاشة الماسح من النظام ──
+final pages = await DeviceScan.document(context, maxPages: 3);   // مساراتٌ مؤقّتة — انسخها فوراً
+
+// ── نصٌّ مطبوع من صورة (kit_ocr) — لاتينيّ وحده ──
+final text = await DeviceScan.text(context, pages!.first);
+```
+
+| القرار | لماذا |
+|---|---|
+| **أوّلُ رمزٍ يُغلق الورقة** | المسح فعلٌ واحد؛ ورقةٌ تبقى بعد القراءة تُعيد الرمزَ نفسه والمستدعي يريد واحداً |
+| **المربّع يصغر ليناسب** | شاشةٌ قصيرة أو أفقية لا تتّسع لمربّعٍ بعرض الورقة — والورقة تعطي المحتوى غير القابل للتمرير سقفَها |
+| **الإلغاء بلا رسالة** | من أغلق الماسح يعرف أنه أغلقه |
+| **النص بالحروف اللاتينية وحدها** | النموذج على الجهاز لا يقرأ العربية — يصلح للأرقام التسلسلية واللوحات والمستندات الإنجليزية |
+
+يُثبَّت بـ`test/scan_kit_test.dart`.

@@ -917,6 +917,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
+  google_mlkit_commons:
+    dependency: transitive
+    description:
+      name: google_mlkit_commons
+      sha256: c7fc384bdb66c3b83e24e3a41818e61d7a378d900f65f5e775344fbca95a0917
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.12.0"
+  google_mlkit_document_scanner:
+    dependency: transitive
+    description:
+      name: google_mlkit_document_scanner
+      sha256: d60c2b8bd73e7d4fb6c255f82ebcdca68101378a86080d945e7bafb7456af7f0
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
+  google_mlkit_text_recognition:
+    dependency: transitive
+    description:
+      name: google_mlkit_text_recognition
+      sha256: "8324fdc2628ebeb63568ad06437b984b716d938d87e4ce63ab24dfd3eeebf08a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.16.0"
   graphs:
     dependency: transitive
     description:
@@ -1179,6 +1203,20 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  kit_ocr:
+    dependency: "direct main"
+    description:
+      path: "packages/kit_ocr"
+      relative: true
+    source: path
+    version: "1.0.0"
+  kit_scan:
+    dependency: "direct main"
+    description:
+      path: "packages/kit_scan"
+      relative: true
+    source: path
+    version: "1.0.0"
   kit_voice:
     dependency: "direct main"
     description:
@@ -1330,6 +1368,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  mobile_scanner:
+    dependency: transitive
+    description:
+      name: mobile_scanner
+      sha256: "5ef343479ba26829aa72c13094a690518c81e1f7b3d6133b64971dabbf650050"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.4.3"
   mockito:
     dependency: "direct dev"
     description:

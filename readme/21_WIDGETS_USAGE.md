@@ -70,6 +70,7 @@
 | `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` | تنقّل · قشرة | [§41](widgets/06_navigation.md) |
 | `DictationButton` · `SpeakButton` · `CustomTextField(dictation:)` | صوت · kit | [§42](widgets/02_inputs.md) |
 | `VoiceNoteRecorder` · `AudioPlayerTile` | تسجيل · تشغيل · kit | [§43](widgets/04_display.md) |
+| `DeviceScan` | مسح · kit | [§44](widgets/02_inputs.md) |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 

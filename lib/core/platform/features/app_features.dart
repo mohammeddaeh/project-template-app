@@ -70,7 +70,7 @@ abstract final class AppFeatures {
   static const verboseNetworkLog = false;
 
   // ── Platform permissions ───────────────────────────────────────────────────
-  static const camera = false;
+  static const camera = true;
   static const microphone = true;
 
   /// The platform speech recogniser (iOS asks for it apart from the microphone;

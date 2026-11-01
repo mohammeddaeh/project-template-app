@@ -1,6 +1,6 @@
 # حِزَم الأجهزة (Device Kits) — الخطة
 
-> **الحالة: ◐ K0 ✅ · K1 ✅ · K2 ✅ (2026-11-01) — `voice` و`audio` مركّبتان بالقالب. التالي K3 scan.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
+> **الحالة: ◐ K0 · K1 · K2 · K3 ✅ (2026-11-01) — `voice` · `audio` · `scan` · `ocr` مركّبة بالقالب. التالي K4 video.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
 > الهدف: الصوت والفيديو والمسح والكتابة اليدوية وأوامر النظام — **كلٌّ في حزمةٍ
 > منفصلة يركّبها المشروع حين يحتاجها**، لا تبعياتٌ تُشحن مع كل مشروع.
 
@@ -32,7 +32,7 @@
 ```
 app_template/
 ├── packages/
-│   ├── kit_contracts/          ← Dart صرف: العقود + أنواع النتائج + Fakes للاختبار
+│   ├── kit_contracts/          ← العقود + أنواع النتائج + Fakes — Flutter بلا plugin (`Widget` وحده)
 │   ├── kit_voice/              ← speech_to_text · flutter_tts
 │   ├── kit_audio/              ← record · just_audio
 │   ├── kit_scan/               ← mobile_scanner · ML Kit (مستند · نصّ)
@@ -49,7 +49,7 @@ app_template/
 ### اتجاه التبعية — صارم
 
 ```
-kit_contracts   → لا شيء (Dart صرف، بلا Flutter plugin)
+kit_contracts   → Flutter وحده (بلا أي plugin)
 kit_<x>         → kit_contracts + حزم المنصّة
 lib/ (التطبيق)  → kit_contracts دائماً
 lib/core/di/kits.g.dart → kit_<x>   ← الملف الوحيد الذي يستورد kit
@@ -149,7 +149,7 @@ dart run scripts/kit.dart remove voice    # يزيل
 | **K0** ✅ | البنية | `packages/` · `kit_contracts` · `kit.dart` (`list`/`add`/`remove`/`test`) · `kits.g.dart` · `C18`/`C19` · `setup_project --kits` · `readme/24_DEVICE_KITS.md` + R43 · `packages/` يملكه القالب بـ`template_drift`/`template_update` · خطوةٌ بالـCI. **فصلُ «الطرفيات» بالمرآة نُقل إلى K1** — بلا kit لا شيء يُعرض | — |
 | **K1** ✅ | voice | `SpeechInput` · `SpeechOutput` · `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` · `ensureKitReady` · فصلُ «الطرفيات» بالمرآة | K0 |
 | **K2** ✅ | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات (`AttachmentPreview` · `CapturedPhoto.isAudio`) | K0 |
-| **K3** | scan | `CodeScanner` (QR/باركود) · `DocumentScanner` · `TextRecognizer` · `ScanSheet.show` | K0 |
+| **K3** ✅ | scan · ocr | `CodeScanner` · `DocumentScanner` (kit `scan`) · `TextRecognizer` (kit `ocr` — انفصلت للحجم) · `DeviceScan` | K0 |
 | **K4** | video | `VideoPlayback` · `AppVideoPlayer` · المعاينة | K0 |
 | **K5** | system | `AppShortcuts` · `HomeWidgetBridge` · `ReviewPrompt` | K0 · deep links |
 | **K6** | ink | `InkRecognizer` · `SignaturePad` | K0 |
@@ -232,3 +232,20 @@ K1…K6 مستقلّةٌ عن بعضها — **أيُّ ترتيبٍ بعد K0 �
   `kitOpenSettings`.
 - **حجم APK debug: +337KB** (201,338,551 ⇐ 201,675,928).
 
+### K3 — scan · ocr ✅ (2026-11-01)
+
+- `mobile_scanner` 7.4.3 · `google_mlkit_document_scanner` 0.5.0 · `google_mlkit_text_recognition` 0.16.0.
+- **`kit_contracts` صار Flutter** (بلا plugin): سطحُ الكاميرا `Widget` يرسمه النظام والتطبيق يضعه.
+- **`mobile_scanner` لا يملك فحص إذنٍ بلا طلب** — فـ`kit_scan` يقرأ حالة الإذن بـ`permission_handler`
+  (نفسُ إصدار التطبيق) ولا يطلب.
+- **نسخة release فشلت بـR8** (ML Kit يشير لأصناف خطوطٍ أخرى لا يشحنها) و debug سليم —
+  فصار لـ`kit.json` حقلُ `proguard`، و`kit.dart` يولّد `android/app/proguard-kits.pro`.
+- **الحجم قسَمَ الـkit**: release arm64 — بلا kit 30.3MB · voice+audio +0.4 · scan +6.5 ·
+  **ocr +12MB** ⇐ `ocr` kit وحدها بقرار المستخدم. والنماذج **مضمَّنة** لا من Play services:
+  تعمل على جهازٍ بلا خدمات Google وعلى شبكةٍ تحجبها.
+- **وكشفت الاختبارات عطلاً بالمكتبة**: `AppBottomSheet(isScrollable: false)` لم يكن يعطي المحتوى
+  سقفاً، فمربّعُ الكاميرا يفيض على شاشةٍ قصيرة. صار `Flexible(loose)` كالقابل للتمرير.
+- **على الجهاز**: مسحُ الرمز ✅ (قرأ DataMatrix وأغلق الورقة). ⬜ **ماسح المستندات** — Play services
+  فشل بتنزيل وحدته على شبكة الجهاز («حدث خطأ ما»)، والتطبيق عاد بلا انهيار. ⬜ **قراءة النص**
+  على الجهاز تنتظر صفحةً من الماسح. ⬜ **ربطُ رمز QR بـ`resolveDeepLink`** — `ui/` لا تستورد
+  `routes/`؛ مكانه شاشةُ المشروع لا المكتبة.

@@ -942,5 +942,21 @@
   "showcaseAudioRecorded": "سُجّل {} — شغّله:",
   "showcaseAudioNone": "سجّل ملاحظة لتظهر هنا",
   "showcaseKnobSource": "المصدر",
-  "showcaseAudioOpenAttachment": "افتحه كمرفق"
+  "showcaseAudioOpenAttachment": "افتحه كمرفق",
+  "scanCodeTitle": "امسح الرمز",
+  "scanCodeHint": "وجّه الكاميرا إلى رمز QR أو باركود",
+  "scanTorchOn": "تشغيل الإضاءة",
+  "scanTorchOff": "إطفاء الإضاءة",
+  "scanCameraDenied": "المسح يحتاج إذن الكاميرا",
+  "scanCameraBlocked": "الكاميرا ممنوعة لهذا التطبيق — اسمح بها من الإعدادات",
+  "scanUnsupported": "المسح غير متاح على هذا الجهاز",
+  "scanDocumentUnsupported": "ماسح المستندات يحتاج أندرويد بخدمات Google",
+  "scanDocumentFailed": "تعذّر فتح ماسح المستندات",
+  "scanTextFailed": "تعذّرت قراءة الصورة",
+  "scanTextEmpty": "لم يُعثر على نص — القراءة بالحروف اللاتينية وحدها",
+  "showcaseScan": "المسح",
+  "showcaseScanCode": "امسح رمزاً",
+  "showcaseScanDocument": "امسح مستنداً",
+  "showcaseScanText": "اقرأ النص من أول صفحة",
+  "showcaseScanNothing": "لا شيء بعد"
 }

@@ -958,4 +958,20 @@ abstract class LocaleKeys {
   static const showcaseAudioNone = 'showcaseAudioNone';
   static const showcaseKnobSource = 'showcaseKnobSource';
   static const showcaseAudioOpenAttachment = 'showcaseAudioOpenAttachment';
+  static const scanCodeTitle = 'scanCodeTitle';
+  static const scanCodeHint = 'scanCodeHint';
+  static const scanTorchOn = 'scanTorchOn';
+  static const scanTorchOff = 'scanTorchOff';
+  static const scanCameraDenied = 'scanCameraDenied';
+  static const scanCameraBlocked = 'scanCameraBlocked';
+  static const scanUnsupported = 'scanUnsupported';
+  static const scanDocumentUnsupported = 'scanDocumentUnsupported';
+  static const scanDocumentFailed = 'scanDocumentFailed';
+  static const scanTextFailed = 'scanTextFailed';
+  static const scanTextEmpty = 'scanTextEmpty';
+  static const showcaseScan = 'showcaseScan';
+  static const showcaseScanCode = 'showcaseScanCode';
+  static const showcaseScanDocument = 'showcaseScanDocument';
+  static const showcaseScanText = 'showcaseScanText';
+  static const showcaseScanNothing = 'showcaseScanNothing';
 }

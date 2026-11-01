@@ -11,6 +11,11 @@
 
 ## غير مُصدَر
 
+- **kits `scan` · `ocr` (K3)**: `DeviceScan.code` (ورقةٌ بالكاميرا) · `DeviceScan.document` (ماسح
+  النظام، أندرويد بخدمات Google) · `DeviceScan.text` (لاتيني وحده، kit مستقلّة لأنها +12MB).
+  ⚠️ `kit_contracts` صار حزمة Flutter. ⚠️ `kit.json` يحمل `proguard`، و`build.gradle.kts` يضمّ
+  `proguard-kits.pro` المولَّد — بلاه تفشل نسخة release.
+- **`AppBottomSheet(isScrollable: false)`** يعطي المحتوى سقف الورقة — كان يفيض على شاشةٍ قصيرة.
 - **kit `audio` (K2)**: `VoiceNoteRecorder` (ملفٌّ مؤقّت يُنسخ للتخزين الخاص) · `AudioPlayerTile` ·
   `AttachmentPreview` يشغّل المرفق الصوتيّ بورقةٍ داخل التطبيق · `CapturedPhoto.isAudio` ·
   `AppNumberFormats.elapsed` (`03:41`) · `showKitReadiness` مشتركٌ للودجات. ⚠️ مفتاح

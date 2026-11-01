@@ -9,5 +9,8 @@ library;
 export 'src/audio/audio_playback.dart';
 export 'src/audio/audio_recorder.dart';
 export 'src/kit_availability.dart';
+export 'src/scan/code_scanner.dart';
+export 'src/scan/document_scanner.dart';
+export 'src/scan/text_recognizer.dart';
 export 'src/voice/speech_input.dart';
 export 'src/voice/speech_output.dart';
