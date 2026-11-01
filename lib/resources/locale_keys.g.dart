@@ -342,4 +342,20 @@ abstract class LocaleKeys {
   static const welcomeStart = 'welcomeStart';
   static const guestTitle = 'guestTitle';
   static const guestBody = 'guestBody';
+  static const showcaseTitle = 'showcaseTitle';
+  static const showcaseHint = 'showcaseHint';
+  static const showcaseButtons = 'showcaseButtons';
+  static const showcaseInputs = 'showcaseInputs';
+  static const showcaseStates = 'showcaseStates';
+  static const showcaseMotion = 'showcaseMotion';
+  static const showcaseFormats = 'showcaseFormats';
+  static const showcaseTheme = 'showcaseTheme';
+  static const showcaseItem = 'showcaseItem';
+  static const showcaseStep = 'showcaseStep';
+  static const showcaseName = 'showcaseName';
+  static const showcaseAdd = 'showcaseAdd';
+  static const showcaseReplay = 'showcaseReplay';
+  static const showcaseNext = 'showcaseNext';
+  static const showcaseBack = 'showcaseBack';
+  static const showcaseOpenCard = 'showcaseOpenCard';
 }

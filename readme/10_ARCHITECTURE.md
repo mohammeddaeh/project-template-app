@@ -151,6 +151,7 @@ core/
 | `in_app_updates/` | `inAppUpdates` | ⬜ OFF | `InAppUpdatesModule.initialize(di)` بـ`ModulesBootstrap` + `AppUpdateGate` بالقشرة | in_app_update · package_info_plus · url_launcher |
 | `session_guard/` | `sessionGuard` | ⬜ OFF | `SessionGuardPlugin.initialize(di)` بـ`ModulesBootstrap` + `SessionGuardGate` بالقشرة (الأعلى بين المعلِنَين — راجع `main_shell_page.dart`) | crypto (بصمة الرقم — لا تبعية خارجية أخرى) |
 | `notification_center/` | `notificationCenter` | ⬜ OFF | `NotificationCenterPlugin.initialize(di)` بـ`ModulesBootstrap` — يستهلك بثّ `push_notifications` (`pushNotifications` يجب أن يكون مُشعلاً أيضاً)، ولا يستدعي FCM بذاته | لا تبعية خارجية إضافية |
+| `showcase/` | `showcase` | ✅ ON | `ShowcasePlugin.initialize(di)` بـ`ModulesBootstrap` (لا تسجيل) + `ShowcaseView` بجسد `HomeScreen` — جولة المطوّر، تُطفأ مع رئيسية المشروع | animations (عبر `AppOpenContainer`) — لا تبعية خاصّة |
 
 > **العَلَم هو العمود المهم.** جدولٌ بلا علَم يقرأ الجميعَ موصولين، بينما معظمها
 > **مطفأ** ويُستدعى من `ModulesBootstrap` تحت شرط.

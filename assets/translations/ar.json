@@ -334,5 +334,21 @@
   "welcomeBody": "كل ما تحتاجه في مكانٍ واحد. ابدأ الآن.",
   "welcomeStart": "ابدأ",
   "guestTitle": "أنت تتصفّح كزائر",
-  "guestBody": "سجّل الدخول لترى حسابك وتحفظ ما تعمله."
+  "guestBody": "سجّل الدخول لترى حسابك وتحفظ ما تعمله.",
+  "showcaseTitle": "ما يوفّره القالب",
+  "showcaseHint": "جولةٌ للمطوّر — تُطفأ بـ AppFeatures.showcase",
+  "showcaseButtons": "الأزرار والشارات",
+  "showcaseInputs": "الإدخال",
+  "showcaseStates": "الحالات والتحميل",
+  "showcaseMotion": "الحركة",
+  "showcaseFormats": "التاريخ والأرقام",
+  "showcaseTheme": "المظهر واللغة",
+  "showcaseItem": "عنصر {}",
+  "showcaseStep": "الخطوة {}",
+  "showcaseName": "الاسم",
+  "showcaseAdd": "أضف",
+  "showcaseReplay": "أعد العرض",
+  "showcaseNext": "التالي",
+  "showcaseBack": "السابق",
+  "showcaseOpenCard": "اضغط لتتمدّد البطاقة"
 }

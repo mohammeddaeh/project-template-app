@@ -334,5 +334,21 @@
   "welcomeBody": "Everything you need, in one place. Get started.",
   "welcomeStart": "Get started",
   "guestTitle": "You are browsing as a guest",
-  "guestBody": "Sign in to see your account and keep your work."
+  "guestBody": "Sign in to see your account and keep your work.",
+  "showcaseTitle": "What the template provides",
+  "showcaseHint": "A developer tour — turn off with AppFeatures.showcase",
+  "showcaseButtons": "Buttons & chips",
+  "showcaseInputs": "Inputs",
+  "showcaseStates": "States & loading",
+  "showcaseMotion": "Motion",
+  "showcaseFormats": "Dates & numbers",
+  "showcaseTheme": "Theme & language",
+  "showcaseItem": "Item {}",
+  "showcaseStep": "Step {}",
+  "showcaseName": "Name",
+  "showcaseAdd": "Add",
+  "showcaseReplay": "Replay",
+  "showcaseNext": "Next",
+  "showcaseBack": "Back",
+  "showcaseOpenCard": "Tap to expand the card"
 }

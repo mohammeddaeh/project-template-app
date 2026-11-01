@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/core/platform/features/app_features.dart';
+import 'package:app_template/modules/showcase/presentation/showcase_view.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
@@ -20,6 +22,9 @@ import 'package:app_template/resources/locale_keys.g.dart';
 /// widget barrel, and pointing at the reference feature rather than at nothing.
 ///
 /// **Replace the body wholesale** when this project has a real home.
+///
+/// While [AppFeatures.showcase] is on, the tab shows the template's tour
+/// ([ShowcaseView]) instead — turn the flag off with the real home.
 @RoutePage(name: 'HomeRoute')
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -31,33 +36,45 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(LocaleKeys.tabHome.tr())),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.widgets_outlined,
-                size: 56,
-                color: context.colors.textMuted,
+      body: AppFeatures.showcase ? const ShowcaseView() : const _Placeholder(),
+    );
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  const _Placeholder();
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — registers this element for locale changes
+    context.locale;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.widgets_outlined,
+              size: 56,
+              color: context.colors.textMuted,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              LocaleKeys.welcomeBack.tr(),
+              style: context.textTheme.headlineMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              LocaleKeys.homeSubtitle.tr(),
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colors.textSecondary,
               ),
-              const SizedBox(height: 16),
-              Text(
-                LocaleKeys.welcomeBack.tr(),
-                style: context.textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                LocaleKeys.homeSubtitle.tr(),
-                style: context.textTheme.bodySmall?.copyWith(
-                  color: context.colors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

@@ -186,6 +186,17 @@ abstract final class AppFeatures {
   /// this file; this one made a reader hunt.
   static const inAppUpdates = false;
 
+  /// A developer tour on the home tab: the template's widgets, motion,
+  /// formats and switches, each on the page that uses it — no server needed.
+  ///
+  /// **When true**: `HomeScreen` shows `ShowcaseView` instead of its
+  /// placeholder. **On in a fresh project on purpose** — the first run shows
+  /// what is already built before anything is written twice.
+  ///
+  /// **Turn it off** when the project's own home arrives, and delete
+  /// `lib/modules/showcase/` with it — see that folder's `SETUP.md`.
+  static const showcase = true;
+
   /// Offer to remember an account on this device after a successful sign-in,
   /// and show saved accounts as a compact row above the login form.
   ///

@@ -1,4 +1,4 @@
-﻿import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -14,6 +14,7 @@ import 'package:app_template/modules/push_notifications/push_notifications_modul
 import 'package:app_template/modules/remote_config/remote_config_module.dart';
 import 'package:app_template/modules/session_guard/session_guard_plugin.dart';
 import 'package:app_template/modules/sync/sync_plugin.dart';
+import 'package:app_template/modules/showcase/showcase_plugin.dart';
 
 /// Single, ordered activation point for ALL optional modules.
 ///
@@ -128,6 +129,9 @@ abstract final class ModulesBootstrap {
     // factories over the already-configured Dio, and nothing else waits on it.
     if (AppFeatures.dataTransfer) {
       await DataTransferPlugin.initialize(di);
+    }
+    if (AppFeatures.showcase) {
+      await ShowcasePlugin.initialize(di);
     }
   }
 
