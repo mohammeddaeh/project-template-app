@@ -13,6 +13,9 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/widgets/media/captured_photo.dart';
 import 'package:app_template/ui/widgets/media/captured_photo_viewer.dart';
+import 'package:app_template/ui/widgets/audio/audio_player_tile.dart';
+import 'package:app_template/ui/widgets/dialogs/app_bottom_sheet.dart';
+import 'package:kit_contracts/kit_contracts.dart';
 
 /// **ضغطةٌ على مرفَق ⇒ ماذا يقع** — قرارٌ واحد لكلّ صورةٍ وملفٍّ بالتطبيق.
 ///
@@ -20,6 +23,7 @@ import 'package:app_template/ui/widgets/media/captured_photo_viewer.dart';
 /// |---|---|
 /// | صورةٌ لها بايتات (قرصٌ أو base64) | [CapturedPhotoViewer] — تكبيرٌ وبياناتُها أسفلها |
 /// | صورةٌ يملكها الخادم | نفسُ الحوار، **والبايتاتُ تنزل داخله** — راجع `CapturedPhotoImage.download` |
+/// | تسجيلٌ صوتيّ وkit `audio` مركّبة | ورقةٌ فيها [AudioPlayerTile] — يُشغَّل بالتطبيق |
 /// | مستندٌ له بايتات (PDF · DWG · …) | يُفتح بتطبيق النظام — [FileService.open] |
 /// | مستندٌ يملكه الخادم | **يُنزَّل ثم يُفتح** — [ServerFileCache]، ومرّةً واحدة |
 /// | بلا بايتاتٍ على الجهاز | **رسالةٌ تقول لماذا** — لا حوارٌ فارغ ولا صمت |
@@ -84,6 +88,16 @@ abstract final class AttachmentPreview {
                   LocaleKeys.attachmentMissingLocally.tr(),
                 );
       }
+      return;
+    }
+
+    if (photo.isAudio && getIt.isRegistered<AudioPlayback>()) {
+      await AppBottomSheet.show<void>(
+        context,
+        title: photo.label,
+        isScrollable: false,
+        child: AudioPlayerTile(source: file.path),
+      );
       return;
     }
 
@@ -180,6 +194,10 @@ abstract final class AttachmentPreview {
   static String _extensionFor(CapturedPhoto photo) =>
       switch (photo.mimeType?.toLowerCase().trim()) {
         'application/pdf' => '.pdf',
+        'audio/mp4' || 'audio/m4a' || 'audio/x-m4a' => '.m4a',
+        'audio/mpeg' => '.mp3',
+        'audio/aac' => '.aac',
+        'audio/wav' || 'audio/x-wav' => '.wav',
         'image/jpeg' || 'image/jpg' => '.jpg',
         'image/png' => '.png',
         'image/webp' => '.webp',

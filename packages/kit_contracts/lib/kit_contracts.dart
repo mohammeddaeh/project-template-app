@@ -6,6 +6,8 @@
 /// draws nothing when the kit is absent.
 library;
 
+export 'src/audio/audio_playback.dart';
+export 'src/audio/audio_recorder.dart';
 export 'src/kit_availability.dart';
 export 'src/voice/speech_input.dart';
 export 'src/voice/speech_output.dart';

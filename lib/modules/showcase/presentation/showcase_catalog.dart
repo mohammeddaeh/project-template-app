@@ -5,6 +5,7 @@ import 'package:app_template/modules/showcase/presentation/pages/data/api_simula
 import 'package:app_template/modules/showcase/presentation/pages/data/crud_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/data/failures_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/data/pagination_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/devices/audio_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/voice_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/foundations/colors_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/foundations/formats_demo.dart';
@@ -280,6 +281,12 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcaseVoice,
       Icons.record_voice_over_outlined,
       VoiceDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.devices,
+      LocaleKeys.showcaseAudio,
+      Icons.graphic_eq,
+      AudioDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.platform,

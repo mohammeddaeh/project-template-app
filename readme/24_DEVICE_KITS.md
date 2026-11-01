@@ -111,10 +111,15 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 | الـkit | العقود | بالتطبيق | الأعلام |
 |---|---|---|---|
 | `voice` | `SpeechInput` · `SpeechOutput` | `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` — [§42](widgets/02_inputs.md) | `microphone` · `speechRecognition` · `textToSpeech` |
+| `audio` | `AudioRecorder` · `AudioPlayback` (مصنع: مشغّلٌ لكل طالب) | `VoiceNoteRecorder` · `AudioPlayerTile` · `AttachmentPreview` يشغّل المرفق الصوتيّ بالتطبيق — [§43](widgets/04_display.md) | `microphone` |
 
 **وأعلامٌ بلا إذن**: `textToSpeech` لا يطلب شيئاً من المستخدم، لكن أندرويد 11+ لا
 يُري التطبيقَ محرّكاً لم يُعلَن بـ`<queries>` — فيُقال «لا محرّك» والمحرّك مثبَّت.
 `sync_platform_permissions.dart` يكتب `<queries>` بنفس الكتلة المُدارة.
+
+**وحزمةٌ تطلب AGP لا يُحمَّل من شبكتك** — `record_android` يثبّت إصداراً بعينه بـ`buildscript`
+الخاص به، و`dl.google.com` محجوبٌ ببعض الشبكات (حتى لإصداراتٍ موجودة). الحلّ بناءٌ واحد
+عبر VPN فيُحفظ بـ`~/.gradle` ثم يعمل بلا شبكة. ⚠️ لا تثبيتَ لإصدارٍ أقدم من الحزمة لتفاديه.
 
 ## ٧. kit جديدة
 

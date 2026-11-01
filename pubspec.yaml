@@ -19,6 +19,8 @@ dependencies:
   #=== DEVICE KITS — dart run scripts/kit.dart (packages/) ===#
   kit_contracts:
     path: packages/kit_contracts
+  kit_audio:
+    path: packages/kit_audio
   kit_voice:
     path: packages/kit_voice
 

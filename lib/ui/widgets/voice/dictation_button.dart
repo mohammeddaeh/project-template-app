@@ -8,9 +8,8 @@ import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/permissions/kit_readiness.dart';
 import 'package:app_template/core/platform/permissions/permissions_service.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/feedback/feedback_config.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
-import 'package:app_template/ui/feedback/feedback_type.dart';
+import 'package:app_template/ui/feedback/kit_readiness_feedback.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -60,7 +59,15 @@ class _DictationButtonState extends State<DictationButton> {
     );
     if (!mounted) return;
     setState(() => _preparing = false);
-    if (readiness != KitReadiness.ready) return _explain(readiness);
+    if (readiness != KitReadiness.ready) {
+      return showKitReadiness(
+        context,
+        readiness,
+        deniedKey: LocaleKeys.voiceMicDenied,
+        blockedKey: LocaleKeys.voiceMicBlocked,
+        unsupportedKey: LocaleKeys.voiceUnsupported,
+      );
+    }
 
     final base = widget.controller.text.trimRight();
     _session = input
@@ -97,28 +104,6 @@ class _DictationButtonState extends State<DictationButton> {
         SpeechFailure.unknown => LocaleKeys.voiceFailed,
       }.tr(),
     );
-  }
-
-  void _explain(KitReadiness readiness) {
-    switch (readiness) {
-      case KitReadiness.blocked:
-        context.feedback.show(
-          FeedbackConfig(
-            type: FeedbackType.warning,
-            message: LocaleKeys.voiceMicBlocked.tr(),
-            action: FeedbackAction(
-              label: LocaleKeys.voiceOpenSettings.tr(),
-              onTap: () => getIt<PermissionsService>().openSettings(),
-            ),
-          ),
-        );
-      case KitReadiness.denied:
-        context.feedback.warning(LocaleKeys.voiceMicDenied.tr());
-      case KitReadiness.unsupported:
-        context.feedback.warning(LocaleKeys.voiceUnsupported.tr());
-      case KitReadiness.ready:
-        break;
-    }
   }
 
   @override

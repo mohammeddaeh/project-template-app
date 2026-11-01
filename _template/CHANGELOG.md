@@ -11,6 +11,10 @@
 
 ## غير مُصدَر
 
+- **kit `audio` (K2)**: `VoiceNoteRecorder` (ملفٌّ مؤقّت يُنسخ للتخزين الخاص) · `AudioPlayerTile` ·
+  `AttachmentPreview` يشغّل المرفق الصوتيّ بورقةٍ داخل التطبيق · `CapturedPhoto.isAudio` ·
+  `AppNumberFormats.elapsed` (`03:41`) · `showKitReadiness` مشتركٌ للودجات. ⚠️ مفتاح
+  `voiceOpenSettings` صار `kitOpenSettings`. ⚠️ أوّلُ بناء يحتاج الوصول لـ`dl.google.com`.
 - **`CustomTextField`**: `onChanged`/`onFieldSubmitted` يصلان الدالّة بوسيطٍ أو بدونه —
   كانا يُناديان بلا وسيط، فالدالّة `(String v) {…}` ترمي ولا تُنادى أبداً.
 - **kit `voice` (K1)**: إملاءٌ بالصوت `CustomTextField(dictation: true)` · `DictationButton` ·

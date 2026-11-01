@@ -926,7 +926,7 @@ abstract class LocaleKeys {
   static const voiceStopReading = 'voiceStopReading';
   static const voiceMicDenied = 'voiceMicDenied';
   static const voiceMicBlocked = 'voiceMicBlocked';
-  static const voiceOpenSettings = 'voiceOpenSettings';
+  static const kitOpenSettings = 'kitOpenSettings';
   static const voiceUnsupported = 'voiceUnsupported';
   static const voiceNoMatch = 'voiceNoMatch';
   static const voiceNetwork = 'voiceNetwork';
@@ -942,4 +942,20 @@ abstract class LocaleKeys {
   static const showcaseVoiceSample = 'showcaseVoiceSample';
   static const showcaseKnobDictation = 'showcaseKnobDictation';
   static const showcaseKnobLanguageCode = 'showcaseKnobLanguageCode';
+  static const audioRecord = 'audioRecord';
+  static const audioStopRecording = 'audioStopRecording';
+  static const audioDiscard = 'audioDiscard';
+  static const audioPlay = 'audioPlay';
+  static const audioPause = 'audioPause';
+  static const audioMicDenied = 'audioMicDenied';
+  static const audioMicBlocked = 'audioMicBlocked';
+  static const audioUnsupported = 'audioUnsupported';
+  static const audioStartFailed = 'audioStartFailed';
+  static const audioEmpty = 'audioEmpty';
+  static const audioCannotPlay = 'audioCannotPlay';
+  static const showcaseAudio = 'showcaseAudio';
+  static const showcaseAudioRecorded = 'showcaseAudioRecorded';
+  static const showcaseAudioNone = 'showcaseAudioNone';
+  static const showcaseKnobSource = 'showcaseKnobSource';
+  static const showcaseAudioOpenAttachment = 'showcaseAudioOpenAttachment';
 }

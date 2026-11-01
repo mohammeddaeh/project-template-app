@@ -1,0 +1,6 @@
+{
+  "name": "audio",
+  "register": "registerAudioKit",
+  "permissions": ["microphone"],
+  "platformPackages": ["record", "just_audio"]
+}

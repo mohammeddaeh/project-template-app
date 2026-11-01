@@ -50,4 +50,7 @@ abstract final class AppNumberFormats {
 
   /// A countdown: `01:05:12`.
   static const countdown = AppDurationFormat();
+
+  /// A recording or playback position: `03:41` — minutes run past 59.
+  static const elapsed = AppDurationFormat(hours: false);
 }

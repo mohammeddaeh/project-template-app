@@ -64,3 +64,85 @@ class FakeSpeechOutput implements SpeechOutput {
     if (c != null && !c.isCompleted) c.complete(SpeakOutcome.stopped);
   }
 }
+
+/// Records nothing: [stop] answers [result], and [levels] plays [levelScript].
+class FakeAudioRecorder implements AudioRecorder {
+  FakeAudioRecorder({
+    this.answer = const KitReady(),
+    this.result,
+    this.levelScript = const [],
+  });
+
+  KitAvailability answer;
+  Recording? result;
+  List<double> levelScript;
+  String? startedAt;
+  bool cancelled = false;
+
+  @override
+  Future<KitAvailability> availability() async => answer;
+
+  @override
+  Future<bool> start(String path) async {
+    startedAt = path;
+    return true;
+  }
+
+  @override
+  Stream<double> get levels => Stream.fromIterable(levelScript);
+
+  @override
+  Future<Recording?> stop() async => result;
+
+  @override
+  Future<void> cancel() async => cancelled = true;
+}
+
+/// A player that moves only when told: [emit] pushes a state, [length] is
+/// what [open] answers.
+class FakeAudioPlayback implements AudioPlayback {
+  FakeAudioPlayback({this.length = const Duration(seconds: 30)});
+
+  Duration? length;
+  String? opened;
+  bool playing = false;
+  bool disposed = false;
+  Duration? seekedTo;
+  final _states = StreamController<PlaybackState>.broadcast();
+
+  void emit(PlaybackState state) => _states.add(state);
+
+  @override
+  Future<Duration?> open(String source) async {
+    opened = source;
+    return length;
+  }
+
+  @override
+  Future<void> play() async {
+    playing = true;
+    emit(
+      PlaybackState(position: Duration.zero, duration: length, playing: true),
+    );
+  }
+
+  @override
+  Future<void> pause() async {
+    playing = false;
+    emit(
+      PlaybackState(position: Duration.zero, duration: length, playing: false),
+    );
+  }
+
+  @override
+  Future<void> seek(Duration position) async => seekedTo = position;
+
+  @override
+  Stream<PlaybackState> get states => _states.stream;
+
+  @override
+  Future<void> dispose() async {
+    disposed = true;
+    await _states.close();
+  }
+}

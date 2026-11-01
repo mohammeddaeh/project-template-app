@@ -103,6 +103,17 @@ class CapturedPhoto {
         looksLikeImage(remotePath);
   }
 
+  /// تسجيلٌ صوتيّ — يُشغَّل داخل التطبيق حين تكون kit `audio` مركّبة
+  /// (`AttachmentPreview.open`)، وبتطبيق النظام بدونها. والحكمُ كـ[isImage]:
+  /// نوعُ المحتوى أولاً، ثم الاسم.
+  bool get isAudio {
+    final mime = mimeType?.toLowerCase().trim() ?? '';
+    if (mime.isNotEmpty) return mime.startsWith('audio/');
+    return looksLikeAudio(label) ||
+        looksLikeAudio(localPath) ||
+        looksLikeAudio(remotePath);
+  }
+
   /// خمس منازل ≈ متر واحد — أدقّ من ذلك أرقامٌ تُزحم السطر ولا تُقرأ.
   String get coordinatesLabel => hasCoordinates
       ? '${latitude!.toStringAsFixed(5)}, ${longitude!.toStringAsFixed(5)}'
@@ -120,6 +131,20 @@ class CapturedPhoto {
       '.heic',
       '.gif',
       '.bmp',
+    ].any(value.endsWith);
+  }
+
+  /// امتدادُ تسجيلٍ صوتيّ معروف بالاسم أو المسار.
+  static bool looksLikeAudio(String? name) {
+    final value = name?.toLowerCase().trim() ?? '';
+    if (value.isEmpty) return false;
+    return const [
+      '.m4a',
+      '.aac',
+      '.mp3',
+      '.wav',
+      '.ogg',
+      '.opus',
     ].any(value.endsWith);
   }
 }

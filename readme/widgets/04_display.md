@@ -391,3 +391,37 @@ AnimatedCount(value: n, format: AppNumberFormats.count)   // الشكل من ا�
 
 يعدّ من القيمة السابقة إلى الجديدة بدل أن يقفز — «تغيّر الرقم» يُرى ولو فاتت لحظتُه.
 الشكل من `AppNumberFormats` (افتراضاً `count`)، ومع «تقليل الحركة» يظهر الرقم فوراً.
+
+---
+
+## §43 · VoiceNoteRecorder · AudioPlayerTile — التسجيل والتشغيل (`kit_audio`)
+
+> **ودجتا kit**: تعملان حين تكون `kit_audio` مركّبة (`dart run scripts/kit.dart add audio`)،
+> **ولا ترسمان شيئاً بدونها**. البنية بـ[`24_DEVICE_KITS.md`](../24_DEVICE_KITS.md).
+
+```dart
+// ── ملاحظةٌ صوتية تُرفق ──
+VoiceNoteRecorder(
+  onRecorded: (r) async {
+    final kept = await getIt<PrivateFileIngestService>().ingest(File(r.path));
+    cubit.attach(CapturedPhoto(localPath: kept.file.path, mimeType: Recording.mimeType));
+  },
+)
+
+// ── تشغيلُ ملفٍّ أو رابط https ──
+AudioPlayerTile(source: note.localPath)
+
+// ── مرفقٌ صوتيّ بقائمة مرفقات — يُشغَّل بورقةٍ داخل التطبيق ──
+AttachmentPreview.open(context, photo: attachment)
+```
+
+| القرار | لماذا |
+|---|---|
+| **`onRecorded` يستلم ملفّاً مؤقّتاً** | كالصورة الخاصة: النظام يفرّغ المؤقّت حين تضيق المساحة، والتقريرُ المنطوق لا يُعاد بنفس الكلمات — انسخه فوراً |
+| **مشغّلٌ لكل بلاطة** | `AudioPlayback` مصنعٌ بـget_it: كلُّ بلاطةٍ تملك مشغّلها وتحرّره حين تغادر الشجرة، فقائمةُ ملاحظات لا تحمل مشغّلاتٍ أكثر مما تعرض |
+| **طولٌ مجهول ⇐ الموضع وحده** | تسجيلٌ حديث قد لا يذكر طوله بترويسته فيعرفه المشغّل أثناء التشغيل — فلا «/ 00:00» تُوهم أن الملاحظة فارغة، والتقديم معطَّل حتى يصل |
+| **الوقت يُقرأ من اليسار** | «الموضع / الطول» — الاتجاه العربي يقلب الرقمين حول الشرطة |
+| **`CapturedPhoto.isAudio`** | نوعُ المحتوى أولاً ثم الاسم (`.m4a` · `.mp3` · …)، كـ`isImage` |
+
+يُثبَّت بـ`test/audio_kit_test.dart` عبر `FakeAudioRecorder`/`FakeAudioPlayback`.
+

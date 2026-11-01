@@ -5,11 +5,13 @@
 // kit:voice enabled speechRecognition
 // kit:voice enabled textToSpeech
 import 'package:get_it/get_it.dart';
+import 'package:kit_audio/kit_audio.dart';
 import 'package:kit_voice/kit_voice.dart';
 
 /// The device kits this app is built with.
-const installedKits = <String>['voice'];
+const installedKits = <String>['audio', 'voice'];
 
 void registerKits(GetIt getIt) {
+  registerAudioKit(getIt);
   registerVoiceKit(getIt);
 }

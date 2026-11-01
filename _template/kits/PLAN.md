@@ -1,6 +1,6 @@
 # حِزَم الأجهزة (Device Kits) — الخطة
 
-> **الحالة: ◐ K0 ✅ · K1 ✅ (2026-11-01) — `voice` مركّبة بالقالب. التالي K2 audio.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
+> **الحالة: ◐ K0 ✅ · K1 ✅ · K2 ✅ (2026-11-01) — `voice` و`audio` مركّبتان بالقالب. التالي K3 scan.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
 > الهدف: الصوت والفيديو والمسح والكتابة اليدوية وأوامر النظام — **كلٌّ في حزمةٍ
 > منفصلة يركّبها المشروع حين يحتاجها**، لا تبعياتٌ تُشحن مع كل مشروع.
 
@@ -148,7 +148,7 @@ dart run scripts/kit.dart remove voice    # يزيل
 |---|---|---|---|
 | **K0** ✅ | البنية | `packages/` · `kit_contracts` · `kit.dart` (`list`/`add`/`remove`/`test`) · `kits.g.dart` · `C18`/`C19` · `setup_project --kits` · `readme/24_DEVICE_KITS.md` + R43 · `packages/` يملكه القالب بـ`template_drift`/`template_update` · خطوةٌ بالـCI. **فصلُ «الطرفيات» بالمرآة نُقل إلى K1** — بلا kit لا شيء يُعرض | — |
 | **K1** ✅ | voice | `SpeechInput` · `SpeechOutput` · `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` · `ensureKitReady` · فصلُ «الطرفيات» بالمرآة | K0 |
-| **K2** | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات | K0 |
+| **K2** ✅ | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات (`AttachmentPreview` · `CapturedPhoto.isAudio`) | K0 |
 | **K3** | scan | `CodeScanner` (QR/باركود) · `DocumentScanner` · `TextRecognizer` · `ScanSheet.show` | K0 |
 | **K4** | video | `VideoPlayback` · `AppVideoPlayer` · المعاينة | K0 |
 | **K5** | system | `AppShortcuts` · `HomeWidgetBridge` · `ReviewPrompt` | K0 · deep links |
@@ -216,4 +216,19 @@ K1…K6 مستقلّةٌ عن بعضها — **أيُّ ترتيبٍ بعد K0 �
   و`onFieldSubmitted` **بلا وسيط** وهما `Function` — فكلُّ دالّةٍ بوسيط ترمي داخل معالج
   الحقل، ويتغيّر النصّ على الشاشة ولا يسمع به أحد (ملعبُ `TextKnob` بالمرآة كلُّه كان
   معطّلاً بصمت). صار ينادي كلَّ شكلٍ بما يأخذه، وعليه اختبار.
+
+### K2 — audio ✅ (2026-11-01)
+
+- `record` 6.2.1 (`record_android` 1.5.2) · `just_audio` 0.10.6. `record` 7 يطلب Flutter 3.44.
+- **`record_android` يثبّت AGP `8.12.3` بـ`buildscript` الخاص به**، و`dl.google.com` يردّ 404
+  من شبكة التطوير لكل إصدار — حتى المحفوظة. بُني مرّةً عبر VPN فحُفظ. موثَّقٌ بـ`24_DEVICE_KITS.md`.
+- **جُرِّب على الجهاز**: التسجيلُ يعدّ الوقت ومؤشّرُ المستوى يتحرّك · الإيقافُ يُخرج ملفّاً
+  يُشغَّل بالبلاطة وبورقة المرفق.
+- **وكشفت التجربة ثلاثة**: ① التسجيلُ الحديث قد لا يذكر طوله بترويسته (ExoPlayer يعرفه
+  أثناء التشغيل) — فكان `open()` يردّ طولاً صفراً وكاد يُقرأ «لا يُشغَّل»؛ صار العقد يميّز
+  «طولٌ مجهول» (`Duration.zero`) من «لا يُشغَّل» (`null`). ② «الموضع / الطول» انقلب
+  بالاتجاه العربي فقرئ «3 من 0». ③ نصّ ترجمةٍ بـ`%s` لا `{}` — easy_localization لا يعرف `%s`.
+- `showKitReadiness` استُخرج لكل الودجات بدل نسخةٍ بكل واحدة، ومفتاح «الإعدادات» صار
+  `kitOpenSettings`.
+- **حجم APK debug: +337KB** (201,338,551 ⇐ 201,675,928).
 
