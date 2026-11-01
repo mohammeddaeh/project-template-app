@@ -246,3 +246,84 @@ StatusFeedbackIndicator(
 
 ⬜ **بالمكتبة بلا مستهلكٍ بعد** — مرشَّحٌ لأول شاشة إجراءٍ غير متزامن (حفظ،
 رفع، تحقّق) تحتاج ردّاً بصرياً واحداً بدل نصٍّ/toast فقط.
+
+---
+
+## §39 · `AppReorderableList<T>` — ترتيبٌ بالسحب
+
+```dart
+AppReorderableList<Task>(
+  items: tasks,
+  itemKey: (t) => t.id,
+  itemBuilder: (context, task, index) => AppListTile(titleText: task.title),
+  onReorder: (from, to) => setState(() => tasks.insert(to, tasks.removeAt(from))),
+  handle: true,          // مقبضٌ بنهاية الصفّ — false ⇐ ضغطةٌ مطوّلة على الصفّ كلّه
+)
+```
+
+- **`onReorder` يستلم الموضعَ النهائيّ**: `ReorderableListView` يعطي، حين يُسحب
+  صفٌّ إلى الأسفل، موضعاً يزيد واحداً. الغلاف يطرحه، فـ`insert(to, removeAt(from))`
+  صحيحٌ كما هو — ولا يُنادى حين يعود الصفّ لمكانه.
+- **`itemKey` إلزاميّ** — معرّفُ العنصر لا موضعُه؛ به يتبع الإطارُ الصفَّ أثناء السحب.
+- **الصفّ المرفوع** بظلّ `AppElevation.md` وتكبيرٍ طفيف بمنحنى `AppMotion.baseCurve`،
+  ومع «تقليل الحركة» يظهر مرفوعاً بلا انتقال. واهتزازٌ خفيف عند الالتقاط حين تكون
+  `HapticService` مسجَّلة (`AppFeatures.haptics`).
+- **داخل صفحةٍ تتمرّر**: `shrinkWrap: true` و`physics: const NeverScrollableScrollPhysics()`.
+- قارئ الشاشة يجد «نقل لأعلى/لأسفل» على كل صفّ من الإطار نفسه.
+
+---
+
+## §40 · `AppSwipeActions` — سحبُ صفٍّ لإجراء
+
+```dart
+AppSwipeActions(
+  key: ValueKey(note.id),
+  id: note.id,
+  startAction: SwipeAction(
+    icon: Icons.archive_outlined,
+    label: LocaleKeys.archive.tr(),
+    tone: StatusTone.info,
+    onTriggered: () => cubit.archive(note),
+  ),
+  endAction: SwipeAction(
+    icon: Icons.delete_outline_rounded,
+    label: LocaleKeys.delete.tr(),      // tone افتراضاً StatusTone.error
+    confirm: () => AppConfirmDialog.show(
+      context,
+      titleKey: LocaleKeys.deleteConfirmTitle,
+      messageKey: LocaleKeys.deleteConfirmMessage,
+      isDestructive: true,
+    ),
+    onTriggered: () => cubit.remove(note),
+  ),
+  child: AppListTile(titleText: note.title),
+)
+```
+
+- **البداية والنهاية لا اليسار واليمين**: `startAction` يُكشف بجانب بداية السطر —
+  يمينٌ بالعربية — و`endAction` بنهايته. طرفٌ بلا إجراء لا يتحرّك.
+- **الخلفية** بلون `tone` من ألوان `StatusChip` (`statusXBg`/`statusXFg`)، فيها الأيقونة والنصّ.
+- **`confirm`** يُسأل قبل التنفيذ؛ `false` يُعيد الصفّ مكانه ولا يُنادي `onTriggered`.
+  (وإجراءٌ لا يُخرج الصفّ — «تثبيت» مثلاً — يُكتب بـ`confirm` ينفّذه ثم يردّ `false`.)
+- **`onTriggered` يحذف العنصر من القائمة بنفس الإطار** — `Dismissible` المسحوب لا يبقى بالشجرة.
+- **قارئ الشاشة** لا يسحب: كل إجراءٍ إجراءٌ مسمّى على الصفّ، يمرّ بنفس `confirm`.
+
+**التراجع** بيد المستدعي — يحفظ العنصر وموضعه، يحذفه، ويعرض رسالةً بزرّ يعيده:
+
+```dart
+onTriggered: () {
+  final index = notes.indexOf(note);
+  setState(() => notes.removeAt(index));
+  // زرّ الإجراء يرسمه محوّلُ السناك بار؛ محوّلُ التوست الافتراضي لا يرسمه.
+  SnackbarAdapter().show(context, FeedbackConfig(
+    type: FeedbackType.info,
+    message: LocaleKeys.noteDeleted.tr(),
+    action: FeedbackAction(
+      label: LocaleKeys.undo.tr(),
+      onTap: () => setState(() => notes.insert(index, note)),
+    ),
+  )),
+}
+```
+
+وحذفٌ يصل الخادم يُؤجَّل حتى تنقضي الرسالة، أو يُرسل ثم يُعاد بالتراجع — قرار الشاشة.

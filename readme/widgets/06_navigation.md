@@ -105,3 +105,31 @@ await GuideOverlay.show(
 لا نصّ خامٍ افتراضي بالودجة نفسها (يخالف قاعدة الترجمة بـ`lib/CLAUDE.md`).
 
 ⬜ **بالمكتبة بلا مستهلكٍ بعد** — مرشَّحٌ لأوّل جولة تعريفٍ بميزةٍ جديدة.
+
+---
+
+## §41 · `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` — الشريط السفلي
+
+```dart
+// القشرة تقرؤهما — الافتراضُ سطرٌ واحد بـShellAppearance:
+const ShellAppearance(
+  style: AppBottomBarStyle.floating,      // material · floating · expanding · minimal
+  transition: AppTabTransition.sharedAxis, // fadeThrough · sharedAxis · fade · none
+)
+
+// وتبديلُهما والتطبيق يعمل (شاشة إعدادات · المرآة):
+ShellAppearance.notifier.value = ShellAppearance.notifier.value
+    .copyWith(style: AppBottomBarStyle.expanding);
+```
+
+| الطابع | يرسم |
+|---|---|
+| `material` | `NavigationBar` بكل اللافتات وحبّةٍ خلف الأيقونة النشطة |
+| `floating` | شريطٌ مستديرٌ مرفوعٌ عن الحافّة، والحبّة تنزلق بين التبويبات |
+| `expanding` | أيقوناتٌ وحدها، والنشطُ يتمدّد حبّةً بلافتته |
+| `minimal` | أيقوناتٌ وحدها ونقطةٌ تحت النشط — واللافتة لقارئ الشاشة |
+
+كلُّ طابعٍ يحشو شريطَ إيماءات النظام تحته، ويُظهر `NavItem.badgeCount` (`0` نقطة)،
+وكلُّ تبويبٍ زرٌّ مسمّى لقارئ الشاشة ولو لم تُرسم لافتته. و`AppTabSwitcher` يلفّ
+`IndexedStack` فلا يفقد تبويبٌ حالته، والاتجاه بـ`sharedAxis` يتبع لغة الواجهة.
+**والجسدُ ينتهي عند الشريط لا خلفه** (R15).

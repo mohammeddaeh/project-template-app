@@ -1,10 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/dialogs/app_confirm_dialog.dart';
+import 'package:app_template/ui/widgets/navigation/app_bottom_bar.dart';
 import 'package:app_template/ui/widgets/navigation/nav_item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -83,40 +82,27 @@ class _MainShellScreenState extends State<MainShellScreen> {
           return PopScope(
             canPop: false,
             onPopInvokedWithResult: (didPop, result) => cubit.onBackPressed(),
-            child: Scaffold(
-              // extendBody: الـ body يمتد خلف NavigationBar في وضع edge-to-edge.
-              //
-              // ⚠️ والمحتوى **غير** محميّ تلقائياً — لا بـ`SafeArea` ولا بغيرها.
-              // الشريط يجلس **فوق** الـbody لا تحته، فآخر عنصر بأي قائمة قابلة
-              // للتمرير يقع خلفه ولا يُرى مهما نزلت. كل قائمة تنتهي بحشوة تشمل
-              // `context.bottomContentInset` — راجع توثيقها بـ
-              // `presentation/extensions/screen_sizes_extensions.dart`.
-              //
-              // (كان هنا سطر يقول إن الشاشات الفرعية «محميّة بـSafeArea»، ولم
-              // يكن صحيحاً لأيٍّ منها بمشروع حقيقي بُني على القالب — والعطل صامت،
-              // فبقي شهوراً.)
-              extendBody: true,
-              // IndexedStack يحفظ حالة كل شاشة عند التبديل بين التبويبات
-              // و`_TabFadeThrough` يُدخل التبويب الجديد بتلاشٍ وتكبيرٍ خفيف
-              // (Material «fade through») **بلا** هدم الـIndexedStack — فلا
-              // تضيع حالة تبويب.
-              body: _TabFadeThrough(
-                index: state.currentIndex,
-                child: IndexedStack(
+            child: ValueListenableBuilder<ShellAppearance>(
+              valueListenable: ShellAppearance.notifier,
+              builder: (context, look, _) => Scaffold(
+                // The body ends at the bar's top edge — every tab screen sees
+                // all of its content without a bottom inset of its own.
+                // IndexedStack keeps each tab's state; AppTabSwitcher animates
+                // the switch around it.
+                body: AppTabSwitcher(
                   index: state.currentIndex,
-                  children: items.map((e) => e.screenBuilder()).toList(),
+                  transition: look.transition,
+                  child: IndexedStack(
+                    index: state.currentIndex,
+                    children: items.map((e) => e.screenBuilder()).toList(),
+                  ),
                 ),
-              ),
-              bottomNavigationBar: NavigationBar(
-                selectedIndex: state.currentIndex,
-                onDestinationSelected: cubit.onItemTapped,
-                destinations: items.map((item) {
-                  return NavigationDestination(
-                    icon: _NavIcon(item: item, isSelected: false),
-                    selectedIcon: _NavIcon(item: item, isSelected: true),
-                    label: item.labelKey.tr(),
-                  );
-                }).toList(),
+                bottomNavigationBar: AppBottomBar(
+                  items: items,
+                  currentIndex: state.currentIndex,
+                  onTap: cubit.onItemTapped,
+                  style: look.style,
+                ),
               ),
             ),
           );
@@ -124,66 +110,4 @@ class _MainShellScreenState extends State<MainShellScreen> {
       ),
     );
   }
-}
-
-/// أيقونة التبويب — بشارة عدٍّ حين يحمل العنصر [NavItem.badgeCount].
-class _NavIcon extends StatelessWidget {
-  const _NavIcon({required this.item, required this.isSelected});
-
-  final NavItem item;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(isSelected ? item.activeIcon : item.icon);
-    if (item.badgeCount == null) return icon;
-
-    return Badge(
-      label: item.badgeCount! > 0 ? Text(item.badgeCount!.toString()) : null,
-      child: icon,
-    );
-  }
-}
-
-/// يُشغّل دخول «fade through» كلّما تبدّل [index] — على الـ`IndexedStack`
-/// كلّه، فالتبويب الجديد يظهر متلاشياً والقديم يختفي فوراً، وتبقى الحالات.
-class _TabFadeThrough extends StatefulWidget {
-  const _TabFadeThrough({required this.index, required this.child});
-
-  final int index;
-  final Widget child;
-
-  @override
-  State<_TabFadeThrough> createState() => _TabFadeThroughState();
-}
-
-class _TabFadeThroughState extends State<_TabFadeThrough>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl = AnimationController(
-    vsync: this,
-    duration: AppMotion.base,
-    value: 1,
-  );
-
-  @override
-  void didUpdateWidget(_TabFadeThrough old) {
-    super.didUpdateWidget(old);
-    if (old.index == widget.index) return;
-    _ctrl.duration = AppMotion.of(context).base;
-    _ctrl.forward(from: 0);
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => FadeThroughTransition(
-    animation: _ctrl,
-    secondaryAnimation: kAlwaysDismissedAnimation,
-    fillColor: Colors.transparent,
-    child: widget.child,
-  );
 }

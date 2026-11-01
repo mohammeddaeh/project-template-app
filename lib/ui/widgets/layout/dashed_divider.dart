@@ -68,6 +68,7 @@ class _DashedLinePainter extends CustomPainter {
   bool shouldRepaint(covariant _DashedLinePainter oldDelegate) {
     return oldDelegate.color != color ||
         oldDelegate.dashWidth != dashWidth ||
-        oldDelegate.dashSpace != dashSpace;
+        oldDelegate.dashSpace != dashSpace ||
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }

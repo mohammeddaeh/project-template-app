@@ -1,80 +1,122 @@
+import 'dart:io';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:app_template/core/infra/config/app_fonts.dart';
+import 'package:app_template/resources/codegen_loader.g.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
+import 'package:app_template/ui/theme/app_theme.dart';
+import 'package:app_template/ui/widgets/navigation/app_bottom_bar.dart';
+import 'package:app_template/ui/widgets/navigation/nav_item.dart';
 
-/// The one fact every tab screen depends on and none of them can check.
+/// R15 — a tab's content ends at the bottom bar, never behind it.
 ///
-/// `MainShellScreen` uses `extendBody: true`, so its `NavigationBar` sits ON TOP
-/// of the body. The only thing that knows the bar is there is the `padding`
-/// Flutter injects into the body's `MediaQuery` — `viewPadding` does not change,
-/// and a hard-coded number cannot know the bar's height.
-///
-/// This is asserted rather than read because the failure is silent: the screen
-/// renders, scrolls, and simply never reveals its last widget. That is exactly
-/// how `LogoutSection` stayed unreachable on the profile tab.
+/// The failure this guards is silent: a bar drawn over the body hides the last
+/// item of every list, and the screen still builds, scrolls and throws nothing.
 void main() {
-  testWidgets(
-    'bottomContentInset sees the navigation bar, viewPadding does not',
-    (tester) async {
-      const systemInset = 24.0;
-      late double contentInset;
-      late double viewPaddingInset;
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+  });
 
+  test('the shell does not extend its body behind the bar', () {
+    final src = File(
+      'lib/features/home/presentation/pages/main_shell_screen.dart',
+    ).readAsStringSync();
+    expect(src.contains('extendBody: true'), isFalse);
+  });
+
+  final items = [
+    for (final key in [
+      LocaleKeys.tabHome,
+      LocaleKeys.tabSettings,
+      LocaleKeys.tabProfile,
+      LocaleKeys.showcaseBottomBarExplore,
+      LocaleKeys.showcaseBottomBarSaved,
+    ])
+      NavItem(
+        icon: Icons.circle_outlined,
+        activeIcon: Icons.circle,
+        labelKey: key,
+        screenBuilder: () => const SizedBox(),
+      ),
+  ];
+
+  for (final style in AppBottomBarStyle.values) {
+    testWidgets('${style.name}: the body ends where the bar begins', (
+      tester,
+    ) async {
+      late double contentInset;
       await tester.pumpWidget(
         MediaQuery(
           data: const MediaQueryData(
-            padding: EdgeInsets.only(bottom: systemInset),
-            viewPadding: EdgeInsets.only(bottom: systemInset),
+            size: Size(320, 800),
+            padding: EdgeInsets.only(bottom: 24),
+            viewPadding: EdgeInsets.only(bottom: 24),
           ),
-          child: MaterialApp(
-            home: Scaffold(
-              extendBody: true,
-              body: Builder(
-                builder: (context) {
-                  contentInset = context.bottomContentInset;
-                  viewPaddingInset = context.bottomPadding;
-                  return const SizedBox.expand();
-                },
+          child: EasyLocalization(
+            supportedLocales: const [Locale('en')],
+            fallbackLocale: const Locale('en'),
+            path: 'assets/translations',
+            assetLoader: const CodegenLoader(),
+            child: Builder(
+              builder: (context) => MaterialApp(
+                theme: AppThemeData.light(
+                  const Locale('en'),
+                  AppFonts.available.first,
+                ),
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                home: Scaffold(
+                  body: Builder(
+                    key: const Key('body'),
+                    builder: (context) {
+                      contentInset = context.bottomContentInset;
+                      return const SizedBox.expand();
+                    },
+                  ),
+                  bottomNavigationBar: AppBottomBar(
+                    key: const Key('bar'),
+                    items: items,
+                    currentIndex: 0,
+                    onTap: (_) {},
+                    style: style,
+                  ),
+                ),
               ),
-              bottomNavigationBar: const SizedBox(height: 80),
             ),
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
+      // Five tabs on a narrow phone: no style overflows its bar.
+      expect(tester.takeException(), isNull);
+      final body = tester.getRect(find.byKey(const Key('body')));
+      final bar = tester.getRect(find.byKey(const Key('bar')));
+      expect(body.bottom, lessThanOrEqualTo(bar.top));
       expect(
         contentInset,
-        greaterThanOrEqualTo(80),
-        reason:
-            'bottomContentInset must cover the navigation bar. Anything less '
-            'and a scrollable ends underneath it, with its last item '
-            'permanently unreachable.',
-      );
-
-      // Measured, not assumed: the bar consumes the system inset, so the body
-      // is told there is NO bottom view padding at all. `bottomPadding` is
-      // therefore not merely short inside a tab — it is zero, and a screen
-      // padded with it gets nothing whatsoever.
-      expect(
-        viewPaddingInset,
         0,
-        reason:
-            'viewPadding is fully blind inside a shell — this is the trap. A '
-            'screen using it believes it has padded for the system and has in '
-            'fact padded for nothing.',
+        reason: 'nothing covers the body inside the shell — no padding owed',
       );
-    },
-  );
+    });
+  }
 
-  testWidgets('outside a shell the two agree — no phantom gap', (tester) async {
-    const systemInset = 24.0;
+  testWidgets('a screen outside the shell pads for the system bar', (
+    tester,
+  ) async {
     late double contentInset;
-
     await tester.pumpWidget(
       MediaQuery(
         data: const MediaQueryData(
-          padding: EdgeInsets.only(bottom: systemInset),
-          viewPadding: EdgeInsets.only(bottom: systemInset),
+          padding: EdgeInsets.only(bottom: 24),
+          viewPadding: EdgeInsets.only(bottom: 24),
         ),
         child: MaterialApp(
           home: Scaffold(
@@ -88,9 +130,6 @@ void main() {
         ),
       ),
     );
-
-    // A pushed route has no navigation bar, so the padding must collapse back
-    // to the system inset. A fixed filler would leave dead space here instead.
-    expect(contentInset, systemInset);
+    expect(contentInset, 24);
   });
 }
