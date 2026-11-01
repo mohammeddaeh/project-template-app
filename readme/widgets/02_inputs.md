@@ -72,6 +72,11 @@ CustomTextField(
 
 ---
 
+> **`onChanged` · `onFieldSubmitted`** يقبلان `(String v) {…}` أو `() {…}` — والحقل ينادي
+> كلّاً بما يأخذه (`test/library_guards_test.dart`).
+
+---
+
 ## §6 · AppSearchBar — شريط بحث
 
 > مصمم للـ AppBar أو أعلى الشاشة — بصرياً مستقل عن `CustomTextField`.

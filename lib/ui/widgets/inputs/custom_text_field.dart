@@ -71,7 +71,11 @@ class CustomTextField extends StatefulWidget {
   final bool dictation;
   final Widget? prefixIcon;
   final bool onTapOutsideDismissTheKeyboard;
+
+  /// `(String value) {…}` or `() {…}` — both are called with what they take.
   final Function? onChanged;
+
+  /// `(String value) {…}` or `() {…}`, as [onChanged].
   final Function? onFieldSubmitted;
   final int? maxLines;
   final int? maxLength;
@@ -92,6 +96,15 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
+  /// The callbacks are typed `Function` and screens pass both shapes. Calling
+  /// a one-argument callback with none throws inside the field's own handler —
+  /// the text changes on screen and the screen never hears of it.
+  void _call(Function? callback, String value) => switch (callback) {
+    void Function(String) f => f(value),
+    void Function() f => f(),
+    _ => null,
+  };
+
   bool get _dictates =>
       widget.dictation &&
       widget.controller != null &&
@@ -280,16 +293,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         },
                         onFieldSubmitted: (newValue) {
                           state.didChange(newValue);
-                          if (widget.onFieldSubmitted != null) {
-                            widget.onFieldSubmitted!();
-                          }
+                          _call(widget.onFieldSubmitted, newValue);
                           if (_action == TextInputAction.next) _advance();
                         },
                         onChanged: (value) {
                           state.didChange(value);
-                          if (widget.onChanged != null) {
-                            widget.onChanged!();
-                          }
+                          _call(widget.onChanged, value);
                         },
                         enabled: widget.enabled,
                         cursorColor: context.colors.primary,
@@ -370,7 +379,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                                         DictationButton(
                                           controller: widget.controller!,
                                           onChanged: (text) =>
-                                              widget.onChanged?.call(text),
+                                              _call(widget.onChanged, text),
                                         ),
                                     ],
                                   ),

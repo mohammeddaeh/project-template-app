@@ -11,6 +11,8 @@
 
 ## غير مُصدَر
 
+- **`CustomTextField`**: `onChanged`/`onFieldSubmitted` يصلان الدالّة بوسيطٍ أو بدونه —
+  كانا يُناديان بلا وسيط، فالدالّة `(String v) {…}` ترمي ولا تُنادى أبداً.
 - **kit `voice` (K1)**: إملاءٌ بالصوت `CustomTextField(dictation: true)` · `DictationButton` ·
   قراءةٌ بصوت `SpeakButton` — لا ترسم شيئاً بلا الـkit. `ensureKitReady` يطلب أذونات أي kit
   بـ`PermissionsService`. أعلامٌ جديدة `speechRecognition` · `textToSpeech`، و

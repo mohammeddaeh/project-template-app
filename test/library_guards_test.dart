@@ -55,6 +55,36 @@ void main() {
     expect(field.obscureText, isTrue);
   });
 
+  testWidgets('onChanged reaches both callback shapes a screen passes', (
+    tester,
+  ) async {
+    // Typed `Function`: a one-argument callback called with none threw inside
+    // the field's handler — the text changed on screen and nothing heard of it.
+    String? withValue;
+    var bare = 0;
+    await tester.pumpWidget(
+      host(
+        SizedBox(
+          width: 300,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomTextField(onChanged: (String v) => withValue = v),
+              CustomTextField(onChanged: () => bare++),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'abc');
+    await tester.enterText(find.byType(TextField).last, 'x');
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    expect(withValue, 'abc');
+    expect(bare, 1);
+  });
+
   testWidgets('copyable shows no copy button without a clipboard service', (
     tester,
   ) async {
