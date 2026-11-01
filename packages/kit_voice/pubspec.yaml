@@ -1,0 +1,22 @@
+name: kit_voice
+description: Speech to text and text to speech behind kit_contracts.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.35.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_tts: ^4.2.5
+  get_it: ^9.2.0
+  kit_contracts:
+    path: ../kit_contracts
+  speech_to_text: ^7.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

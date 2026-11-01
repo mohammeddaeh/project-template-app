@@ -11,6 +11,11 @@
 
 ## غير مُصدَر
 
+- **kit `voice` (K1)**: إملاءٌ بالصوت `CustomTextField(dictation: true)` · `DictationButton` ·
+  قراءةٌ بصوت `SpeakButton` — لا ترسم شيئاً بلا الـkit. `ensureKitReady` يطلب أذونات أي kit
+  بـ`PermissionsService`. أعلامٌ جديدة `speechRecognition` · `textToSpeech`، و
+  `sync_platform_permissions` يكتب `<queries>` بأندرويد. فصلُ «الطرفيات» بالمرآة.
+  ⚠️ `KitNeedsPermission` صار يحمل قائمة أذونات.
 - **حِزَم الأجهزة — البنية (K0)**: `packages/kit_contracts` · `scripts/kit.dart`
   (`list` · `add` · `remove` · `test`) · `lib/core/di/kits.g.dart` مولَّد ويُنادى من
   `configureInjection` · `setup_project --kits` (الافتراضي لا شيء) · `C18`/`C19` · R43 ·

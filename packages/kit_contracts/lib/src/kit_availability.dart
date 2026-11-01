@@ -12,14 +12,16 @@ final class KitReady extends KitAvailability {
   const KitReady();
 }
 
-/// The capability needs a permission the user has not granted.
+/// The capability needs permissions the user has not granted — all of
+/// [permissions], requested together (speech on iOS needs the microphone and
+/// the recogniser at once).
 ///
-/// The kit does not ask for it: the app asks through its own permission
+/// The kit does not ask for them: the app asks through its own permission
 /// service, so a permission has one path to the user whichever kit needs it.
 final class KitNeedsPermission extends KitAvailability {
-  const KitNeedsPermission(this.permission);
+  const KitNeedsPermission(this.permissions);
 
-  final KitPermission permission;
+  final List<KitPermission> permissions;
 }
 
 /// The device or platform cannot run the capability at all.
@@ -28,4 +30,4 @@ final class KitUnsupported extends KitAvailability {
 }
 
 /// The permissions a kit may need, named as the app's permission flags are.
-enum KitPermission { microphone, camera }
+enum KitPermission { microphone, speechRecognition, camera }

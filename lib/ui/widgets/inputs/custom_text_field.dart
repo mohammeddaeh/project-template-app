@@ -6,6 +6,7 @@ import 'package:app_template/ui/widgets/wrappers/shake_on_error.dart';
 import 'package:flutter/services.dart';
 import '../../../resources/assets.dart';
 import '../images/app_asset_image.dart';
+import '../voice/dictation_button.dart';
 
 /// عقدةُ تركيزٍ **موسومة** — بها وحدها يعرف الحقلُ من هو الحقلُ التالي.
 ///
@@ -33,6 +34,7 @@ class CustomTextField extends StatefulWidget {
     this.enabled = true,
     this.ltr,
     this.suffix,
+    this.dictation = false,
     this.prefixIcon,
     this.onTapOutsideDismissTheKeyboard = true,
     super.key,
@@ -61,6 +63,12 @@ class CustomTextField extends StatefulWidget {
   final TextStyle? labelTextStyle;
   final bool enabled;
   final Widget? suffix;
+
+  /// A microphone after [suffix] that writes speech into [controller] — shown
+  /// only when `kit_voice` is installed, so the field asks for it freely.
+  /// Needs [controller]; ignored with [isFieldObscure] (no one dictates a
+  /// password aloud) and [isFieldSearch].
+  final bool dictation;
   final Widget? prefixIcon;
   final bool onTapOutsideDismissTheKeyboard;
   final Function? onChanged;
@@ -84,6 +92,12 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
+  bool get _dictates =>
+      widget.dictation &&
+      widget.controller != null &&
+      !widget.isFieldObscure &&
+      !widget.isFieldSearch;
+
   final _borderRadius = 12.0;
   final _borderWidth = 1.0;
   var _obscure = false;
@@ -343,14 +357,22 @@ class _CustomTextFieldState extends State<CustomTextField> {
                                       ),
                                   ],
                                 )
-                              : widget.suffix != null
+                              : widget.suffix != null || _dictates
                               ? Padding(
-                                  padding: const EdgeInsetsDirectional.only(
-                                    end: 16,
+                                  padding: EdgeInsetsDirectional.only(
+                                    end: _dictates ? 4 : 16,
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [widget.suffix!],
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (widget.suffix != null) widget.suffix!,
+                                      if (_dictates)
+                                        DictationButton(
+                                          controller: widget.controller!,
+                                          onChanged: (text) =>
+                                              widget.onChanged?.call(text),
+                                        ),
+                                    ],
                                   ),
                                 )
                               : null,

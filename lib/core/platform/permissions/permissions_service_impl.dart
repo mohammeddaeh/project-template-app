@@ -47,6 +47,7 @@ class PermissionsServiceImpl implements PermissionsService {
   Permission _toNative(AppPermission p) => switch (p) {
     AppPermission.camera => Permission.camera,
     AppPermission.microphone => Permission.microphone,
+    AppPermission.speechRecognition => Permission.speech,
     AppPermission.location => Permission.location,
     AppPermission.locationAlways => Permission.locationAlways,
     AppPermission.photos => Permission.photos,
@@ -59,6 +60,7 @@ class PermissionsServiceImpl implements PermissionsService {
   AppPermission _fromNativePermission(Permission p) => switch (p) {
     Permission.camera => AppPermission.camera,
     Permission.microphone => AppPermission.microphone,
+    Permission.speech => AppPermission.speechRecognition,
     Permission.location => AppPermission.location,
     Permission.locationAlways => AppPermission.locationAlways,
     Permission.photos => AppPermission.photos,

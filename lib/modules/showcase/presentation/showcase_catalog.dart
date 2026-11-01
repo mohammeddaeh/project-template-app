@@ -5,6 +5,7 @@ import 'package:app_template/modules/showcase/presentation/pages/data/api_simula
 import 'package:app_template/modules/showcase/presentation/pages/data/crud_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/data/failures_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/data/pagination_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/devices/voice_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/foundations/colors_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/foundations/formats_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/foundations/screen_demo.dart';
@@ -44,7 +45,8 @@ enum ShowcaseGroup {
   motion(LocaleKeys.showcaseGroupMotion, Icons.animation),
   data(LocaleKeys.showcaseGroupData, Icons.storage_outlined),
   modules(LocaleKeys.showcaseGroupModules, Icons.extension_outlined),
-  platform(LocaleKeys.showcaseGroupPlatform, Icons.phone_android);
+  platform(LocaleKeys.showcaseGroupPlatform, Icons.phone_android),
+  devices(LocaleKeys.showcaseGroupDevices, Icons.settings_input_component);
 
   const ShowcaseGroup(this.titleKey, this.icon);
 
@@ -272,6 +274,12 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcaseStorage,
       Icons.sd_storage_outlined,
       StorageDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.devices,
+      LocaleKeys.showcaseVoice,
+      Icons.record_voice_over_outlined,
+      VoiceDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.platform,

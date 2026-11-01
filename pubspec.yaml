@@ -19,6 +19,8 @@ dependencies:
   #=== DEVICE KITS — dart run scripts/kit.dart (packages/) ===#
   kit_contracts:
     path: packages/kit_contracts
+  kit_voice:
+    path: packages/kit_voice
 
   #=== STATE MANAGEMENT ===#
   # `bloc` is declared directly, not left as a transitive dependency of

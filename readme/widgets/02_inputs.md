@@ -215,3 +215,35 @@ if (!_formKey.validateAndReveal()) return;
 يحمرّ، والشاشة وحدها لا تتحرك.
 
 المستهلكون: شاشات `features/auth/` الست (الدخول · التسجيل · التحقق · نسيان/إعادة/تغيير كلمة المرور).
+
+---
+
+## §42 · DictationButton · SpeakButton — الصوت (`kit_voice`)
+
+> **ودجتا kit**: تعملان حين تكون `kit_voice` مركّبة (`dart run scripts/kit.dart add voice`)،
+> **ولا ترسمان شيئاً بدونها** — فالشاشة تطلبهما بلا شرط، وتبقى سليمةً بمشروعٍ لم يركّبها.
+> البنية بـ[`24_DEVICE_KITS.md`](../24_DEVICE_KITS.md).
+
+```dart
+// ── إملاءٌ بحقل — الطريق المعتاد ──
+CustomTextField(controller: _notes, labelText: LocaleKeys.notes.tr(), dictation: true)
+
+// ── الزرّ وحده — لحقلٍ ليس CustomTextField ──
+DictationButton(controller: _query, onChanged: (v) => cubit.search(v))
+
+// ── قراءةٌ بصوت — بلغة النصّ لا لغة التطبيق إن اختلفتا ──
+SpeakButton(text: article.body)
+SpeakButton(text: quote, languageCode: 'en')
+```
+
+| القرار | لماذا |
+|---|---|
+| **الكلام يُضاف لما بالحقل** | من يُملي جملةً ثانية لا يريد أن تمحو الأولى |
+| **بلغة التطبيق** | `context.locale` — والمحرّك يختار لهجة الجهاز إن كانت من نفس اللغة |
+| **الإذن بـ`PermissionsService`** | `ensureKitReady` يطلب الميكروفون ومُعرِّف الكلام معاً مرّةً واحدة؛ الرفضُ الدائم يعرض زرّ «الإعدادات» |
+| **لا إملاء بحقل كلمة مرور ولا بحقل بحث** | لا أحد يقول كلمة مروره بصوتٍ مسموع؛ والبحث له `DictationButton` وحده إن أراده |
+| **`onChanged` للإملاء صراحةً** | التغيير البرمجيّ لا يمرّ بـ`onChanged` الحقل — فـ`CustomTextField` يمرّره بنفسه |
+
+يُثبَّت بـ`test/voice_kit_test.dart` — بالـkit وبدونها، عبر `FakeSpeechInput`/`FakeSpeechOutput`
+من `package:kit_contracts/testing.dart`، فلا يلمس اختبارٌ حزمة منصّة.
+

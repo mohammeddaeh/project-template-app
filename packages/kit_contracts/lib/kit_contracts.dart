@@ -7,3 +7,5 @@
 library;
 
 export 'src/kit_availability.dart';
+export 'src/voice/speech_input.dart';
+export 'src/voice/speech_output.dart';

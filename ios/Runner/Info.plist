@@ -48,6 +48,10 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<!-- SYNC:PERMISSIONS:START -->
+		<key>NSMicrophoneUsageDescription</key>
+		<string>This app uses the microphone for audio recording.</string>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>This app turns your speech into text.</string>
 		<!-- SYNC:PERMISSIONS:END -->
 	</dict>
 </plist>

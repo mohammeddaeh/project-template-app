@@ -40,6 +40,7 @@ const _androidPermissions = <String, List<String>>{
   // إسقاطٌ فوري لا حوارٌ مرفوض. الفرق بين المنصّتين حقيقي، لا سهو.
   'camera': [],
   'microphone': ['android.permission.RECORD_AUDIO'],
+  'speechRecognition': ['android.permission.RECORD_AUDIO'],
   'location': [
     'android.permission.ACCESS_FINE_LOCATION',
     'android.permission.ACCESS_COARSE_LOCATION',
@@ -72,6 +73,14 @@ const _androidPermissions = <String, List<String>>{
 };
 
 // ── iOS plist keys per feature ───────────────────────────────────────────────
+/// Services the app must see on Android 11+ (package visibility) — a
+/// `<queries>` element each, written in the same managed block. Without it the
+/// engine is installed and the app is told there is none.
+const _androidQueries = <String, List<String>>{
+  'speechRecognition': ['android.speech.RecognitionService'],
+  'textToSpeech': ['android.intent.action.TTS_SERVICE'],
+};
+
 const _iosPlistKeys = <String, Map<String, String>>{
   'camera': {
     'NSCameraUsageDescription':
@@ -80,6 +89,10 @@ const _iosPlistKeys = <String, Map<String, String>>{
   'microphone': {
     'NSMicrophoneUsageDescription':
         'This app uses the microphone for audio recording.',
+  },
+  'speechRecognition': {
+    'NSSpeechRecognitionUsageDescription':
+        'This app turns your speech into text.',
   },
   'location': {
     'NSLocationWhenInUseUsageDescription':
@@ -157,9 +170,14 @@ void _syncAndroid(List<String> enabled) {
     permissions.addAll(_androidPermissions[feature] ?? []);
   }
 
-  final lines = permissions.map(
-    (p) => '    <uses-permission android:name="$p"/>',
-  );
+  final actions = <String>{
+    for (final feature in enabled) ...?_androidQueries[feature],
+  };
+  final lines = [
+    for (final p in permissions) '    <uses-permission android:name="$p"/>',
+    for (final a in actions)
+      '    <queries><intent><action android:name="$a"/></intent></queries>',
+  ];
 
   final block = [_androidStart, ...lines, _androidEnd].join('\n');
 
@@ -168,7 +186,7 @@ void _syncAndroid(List<String> enabled) {
   manifest.writeAsStringSync(content);
 
   print(
-    '🤖 Android: ${permissions.length} permission(s) written to AndroidManifest.xml',
+    '🤖 Android: ${permissions.length} permission(s) · ${actions.length} query(ies) written to AndroidManifest.xml',
   );
 }
 

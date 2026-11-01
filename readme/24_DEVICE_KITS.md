@@ -106,7 +106,17 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
   `PermissionsService` — فلا يصير للإذن مساران.
 - **اختباراتُ التطبيق لا تلمس حزمة منصّة**: تسجّل تنفيذاً مزيَّفاً للعقد.
 
-## ٦. kit جديدة
+## ٦. المتاح
+
+| الـkit | العقود | بالتطبيق | الأعلام |
+|---|---|---|---|
+| `voice` | `SpeechInput` · `SpeechOutput` | `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` — [§42](widgets/02_inputs.md) | `microphone` · `speechRecognition` · `textToSpeech` |
+
+**وأعلامٌ بلا إذن**: `textToSpeech` لا يطلب شيئاً من المستخدم، لكن أندرويد 11+ لا
+يُري التطبيقَ محرّكاً لم يُعلَن بـ`<queries>` — فيُقال «لا محرّك» والمحرّك مثبَّت.
+`sync_platform_permissions.dart` يكتب `<queries>` بنفس الكتلة المُدارة.
+
+## ٧. kit جديدة
 
 1. `packages/kit_<name>/` بـ`pubspec.yaml` (`publish_to: none` · `kit_contracts: {path: ../kit_contracts}` · `get_it`) و`kit.json` و`analysis_options.yaml` خاصٍّ بها — وإلا ورثت ملفَّ الجذر وهو يطلب `flutter_lints` الذي لا تملكه.
 2. العقد بـ`kit_contracts/lib/src/<name>/` ويُصدَّر من `kit_contracts.dart`.

@@ -68,6 +68,7 @@
 | `AppReorderableList<T>` | قوائم · سحب | [§39](widgets/05_states.md) |
 | `AppSwipeActions` / `SwipeAction` | قوائم · سحب | [§40](widgets/05_states.md) |
 | `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` | تنقّل · قشرة | [§41](widgets/06_navigation.md) |
+| `DictationButton` · `SpeakButton` · `CustomTextField(dictation:)` | صوت · kit | [§42](widgets/02_inputs.md) |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 

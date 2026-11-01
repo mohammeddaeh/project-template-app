@@ -920,4 +920,26 @@ abstract class LocaleKeys {
   static const showcaseKnobWeekdayJoin = 'showcaseKnobWeekdayJoin';
   static const showcaseKnobWidth = 'showcaseKnobWidth';
   static const showcaseKnobYear = 'showcaseKnobYear';
+  static const voiceDictate = 'voiceDictate';
+  static const voiceStopListening = 'voiceStopListening';
+  static const voiceRead = 'voiceRead';
+  static const voiceStopReading = 'voiceStopReading';
+  static const voiceMicDenied = 'voiceMicDenied';
+  static const voiceMicBlocked = 'voiceMicBlocked';
+  static const voiceOpenSettings = 'voiceOpenSettings';
+  static const voiceUnsupported = 'voiceUnsupported';
+  static const voiceNoMatch = 'voiceNoMatch';
+  static const voiceNetwork = 'voiceNetwork';
+  static const voiceBusy = 'voiceBusy';
+  static const voiceLanguage = 'voiceLanguage';
+  static const voiceFailed = 'voiceFailed';
+  static const voiceNoVoice = 'voiceNoVoice';
+  static const voiceReadFailed = 'voiceReadFailed';
+  static const showcaseGroupDevices = 'showcaseGroupDevices';
+  static const showcaseVoice = 'showcaseVoice';
+  static const showcaseKitMissing = 'showcaseKitMissing';
+  static const showcaseVoiceFieldLabel = 'showcaseVoiceFieldLabel';
+  static const showcaseVoiceSample = 'showcaseVoiceSample';
+  static const showcaseKnobDictation = 'showcaseKnobDictation';
+  static const showcaseKnobLanguageCode = 'showcaseKnobLanguageCode';
 }

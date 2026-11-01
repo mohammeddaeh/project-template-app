@@ -1,6 +1,6 @@
 # حِزَم الأجهزة (Device Kits) — الخطة
 
-> **الحالة: ◐ K0 ✅ (2026-11-01) — البنية جاهزة بلا kit بعد. التالي K1 voice.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
+> **الحالة: ◐ K0 ✅ · K1 ✅ (2026-11-01) — `voice` مركّبة بالقالب. التالي K2 audio.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
 > الهدف: الصوت والفيديو والمسح والكتابة اليدوية وأوامر النظام — **كلٌّ في حزمةٍ
 > منفصلة يركّبها المشروع حين يحتاجها**، لا تبعياتٌ تُشحن مع كل مشروع.
 
@@ -147,7 +147,7 @@ dart run scripts/kit.dart remove voice    # يزيل
 | # | المرحلة | المحتوى | يعتمد على |
 |---|---|---|---|
 | **K0** ✅ | البنية | `packages/` · `kit_contracts` · `kit.dart` (`list`/`add`/`remove`/`test`) · `kits.g.dart` · `C18`/`C19` · `setup_project --kits` · `readme/24_DEVICE_KITS.md` + R43 · `packages/` يملكه القالب بـ`template_drift`/`template_update` · خطوةٌ بالـCI. **فصلُ «الطرفيات» بالمرآة نُقل إلى K1** — بلا kit لا شيء يُعرض | — |
-| **K1** | voice | `SpeechInput` · `SpeechOutput` · `CustomTextField(dictation:)` · `SpeakButton` | K0 |
+| **K1** ✅ | voice | `SpeechInput` · `SpeechOutput` · `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` · `ensureKitReady` · فصلُ «الطرفيات» بالمرآة | K0 |
 | **K2** | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات | K0 |
 | **K3** | scan | `CodeScanner` (QR/باركود) · `DocumentScanner` · `TextRecognizer` · `ScanSheet.show` | K0 |
 | **K4** | video | `VideoPlayback` · `AppVideoPlayer` · المعاينة | K0 |
@@ -195,4 +195,19 @@ K1…K6 مستقلّةٌ عن بعضها — **أيُّ ترتيبٍ بعد K0 �
   حزمةُ منصّةٍ خارج حزمتها) — الثلاث تُفشل.
 - ⚠️ **حزمةُ منصّةٍ يعلنها `kit.json` ويستعملها التطبيق أصلاً تُفشل `C19` بكل
   موضع** (جُرِّب بـ`uuid`) — فاختيارُ حزم الـkit يمرّ بفحص `lib/` أولاً.
+
+### K1 — voice ✅ (2026-11-01)
+
+- `speech_to_text` 7.4.0 · `flutter_tts` 4.2.5. الإذن بالتطبيق: `availability()` تُرجع
+  `KitNeedsPermission([microphone, speechRecognition])` قبل `initialize` — لأن
+  `initialize` يطلب الإذن بنفسه لو سُبق.
+- **العقد تغيّر**: `KitNeedsPermission` صار يحمل قائمة — iOS يطلب الميكروفون
+  ومُعرِّف الكلام معاً.
+- **أعلامٌ جديدة بالتطبيق**: `speechRecognition` (`AppPermission` + `Permission.speech`
+  + `NSSpeechRecognitionUsageDescription`) و`textToSpeech` (بلا إذن). و**`<queries>`
+  صار يُكتب بـ`sync_platform_permissions`** — الحزمتان تطلبانه بأندرويد 11+ ولا
+  تعلنانه بملفّهما.
+- `flutter_tts` يرفع `minSdk` إلى 24 — يطابق `flutter.minSdkVersion` اليوم.
+- **حجم APK debug: +99KB** (201,239,247 ⇐ 201,338,551). نسخة release لم تُقَس بعد.
+- ⬜ **التجربة على الجهاز** — لم تُجرَ بعد: الجهاز كان قيد الاستعمال.
 

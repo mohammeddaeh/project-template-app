@@ -44,5 +44,8 @@
         </intent>
     </queries>
     <!-- SYNC:PERMISSIONS:START -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <queries><intent><action android:name="android.speech.RecognitionService"/></intent></queries>
+    <queries><intent><action android:name="android.intent.action.TTS_SERVICE"/></intent></queries>
     <!-- SYNC:PERMISSIONS:END -->
 </manifest>

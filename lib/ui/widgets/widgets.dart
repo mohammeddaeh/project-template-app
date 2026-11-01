@@ -38,6 +38,8 @@ export 'media/captured_photo_image.dart';
 export 'media/captured_photo_tile.dart';
 export 'media/captured_photo_viewer.dart';
 export 'media/attachment_preview.dart';
+export 'voice/dictation_button.dart';
+export 'voice/speak_button.dart';
 export 'images/app_asset_image.dart';
 export 'images/network_image_widget.dart';
 export 'images/cached_image_widget.dart';

@@ -6,6 +6,7 @@
 enum AppPermission {
   camera,
   microphone,
+  speechRecognition,
   location,
   locationAlways,
   photos,

@@ -233,6 +233,9 @@ CustomTextField(controller: _c, labelText: LocaleKeys.x.tr())
 
 **ممنوع ❌:** `TextField(` · `TextFormField(` مباشرةً.
 
+والإملاء بالصوت وسيطٌ لا ودجة: `CustomTextField(dictation: true)` — يظهر الميكروفون
+حين تكون kit `voice` مركّبة، ولا شيء بدونها ([`readme/24_DEVICE_KITS.md`](../readme/24_DEVICE_KITS.md)).
+
 ولا تغلّف الشاشة بـ`KeyboardDismissWidget` لإغلاق الكيبورد: الحقل يُغلقه بنفسه
 (`onTapOutsideDismissTheKeyboard` افتراضُها `true`). Flutter لا يفعلها على
 أندرويد وiOS عند لمسة إصبع — **قرارٌ متعمَّد بالإطار لا سهو**.

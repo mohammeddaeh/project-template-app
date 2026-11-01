@@ -71,7 +71,15 @@ abstract final class AppFeatures {
 
   // ── Platform permissions ───────────────────────────────────────────────────
   static const camera = false;
-  static const microphone = false;
+  static const microphone = true;
+
+  /// The platform speech recogniser (iOS asks for it apart from the microphone;
+  /// Android needs it visible to the app). Turned on by `kit.dart add voice`.
+  static const speechRecognition = true;
+
+  /// The platform text-to-speech engine — no permission, but Android needs it
+  /// visible to the app. Turned on by `kit.dart add voice`.
+  static const textToSpeech = true;
   static const location = false;
   static const locationAlways = false;
   static const photos = false;
@@ -296,6 +304,7 @@ abstract final class AppFeatures {
   static bool isEnabled(AppPermission permission) => switch (permission) {
     AppPermission.camera => camera,
     AppPermission.microphone => microphone,
+    AppPermission.speechRecognition => speechRecognition,
     AppPermission.location => location,
     AppPermission.locationAlways => locationAlways,
     AppPermission.photos => photos,

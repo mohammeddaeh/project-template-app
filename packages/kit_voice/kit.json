@@ -1,0 +1,6 @@
+{
+  "name": "voice",
+  "register": "registerVoiceKit",
+  "permissions": ["microphone", "speechRecognition", "textToSpeech"],
+  "platformPackages": ["speech_to_text", "flutter_tts"]
+}

@@ -239,7 +239,7 @@ dart run scripts/sync_platform_permissions.dart
 - `android/app/src/main/AndroidManifest.xml` (بين `<!-- SYNC:PERMISSIONS:START/END -->`)
 - `ios/Runner/Info.plist` (بين نفس العلامتين)
 
-يدعم حالياً: `camera`, `microphone`, `location`, `locationAlways`, `photos`, `fileStorage`, `contacts`, `bluetooth`, `pushNotifications`, `localNotifications`. الكتل مُدارة بعلامات sync آمنة — لا تلمس أي إدخال يدوي خارجها، وتُحذف/تُضاف تلقائياً في كل تشغيل حسب الأعلام الحالية. والكتلة تأخذ إزاحةَ العلامة بالملف (tabs بـ`Info.plist`)، فتشغيلٌ لم يغيّر إذناً لا يترك فرقاً بـgit — `kit.dart` يناديه مع كل تركيب وإزالة.
+يدعم حالياً: `camera`, `microphone`, `speechRecognition`, `textToSpeech`, `location`, `locationAlways`, `photos`, `fileStorage`, `contacts`, `bluetooth`, `pushNotifications`, `localNotifications`. الكتل مُدارة بعلامات sync آمنة — لا تلمس أي إدخال يدوي خارجها، وتُحذف/تُضاف تلقائياً في كل تشغيل حسب الأعلام الحالية. و`speechRecognition`/`textToSpeech` يكتبان أيضاً `<queries>` بأندرويد — بلا إعلانٍ لا يرى التطبيقُ المحرّكَ على أندرويد 11+. والكتلة تأخذ إزاحةَ العلامة بالملف (tabs بـ`Info.plist`)، فتشغيلٌ لم يغيّر إذناً لا يترك فرقاً بـgit — `kit.dart` يناديه مع كل تركيب وإزالة.
 
 ---
 

@@ -112,6 +112,8 @@
 | إشعار محلّي | `LocalNotificationsService` | `FlutterLocalNotificationsPlugin()` | C16 |
 | إذن نظام | `PermissionsService.request(AppPermission.x)` | `Permission.camera.request()` | 👁 |
 | حالة الشبكة | `NetworkStateMonitor` · `ConnectivityDot` | `Connectivity()` | 👁 |
+| إملاءٌ بالصوت · قراءةٌ بصوت | `CustomTextField(dictation: true)` · `DictationButton` · `SpeakButton` — kit `voice` | `SpeechToText()` · `FlutterTts()` | C19 |
+| إذنٌ تطلبه kit | `ensureKitReady(contract.availability, permissions)` | طلبٌ داخل الـkit | 👁 |
 
 **والطرفيات الثقيلة — صوت · فيديو · مسح · كتابة يدوية · أوامر النظام — ليست هنا**:
 kit تحت `packages/` تُركَّب بـ`dart run scripts/kit.dart add <name>`، والشاشة تسأل
