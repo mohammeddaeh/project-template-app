@@ -269,9 +269,15 @@ class _ButtonLabel extends StatelessWidget {
         Icon(leadingIcon, size: 18, color: color),
         const SizedBox(width: 6),
       ],
-      Text(
-        text,
-        style: style?.copyWith(color: color, fontWeight: FontWeight.w600),
+      // A label longer than the button (a long translation, a large text
+      // scale) ends in an ellipsis instead of overflowing the button.
+      Flexible(
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: style?.copyWith(color: color, fontWeight: FontWeight.w600),
+        ),
       ),
     ],
   );

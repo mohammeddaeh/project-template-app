@@ -71,10 +71,9 @@ class AppOpenContainer<T> extends StatelessWidget {
         // router's dispatcher answers instead, and nothing closes.
         if (Router.maybeOf(context) == null) return page;
         return BackButtonListener(
-          onBackButtonPressed: () async {
-            close();
-            return true;
-          },
+          // `maybePop`, not `close()`: it asks the top route's PopScope first —
+          // this page's own, or that of a route pushed above it.
+          onBackButtonPressed: () => Navigator.of(context).maybePop(),
           child: page,
         );
       },
