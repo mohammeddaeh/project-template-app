@@ -50,6 +50,10 @@ void main() {
     testWidgets('${style.name}: the body ends where the bar begins', (
       tester,
     ) async {
+      // The surface itself is narrow — a MediaQuery size alone lays out at 800.
+      tester.view.physicalSize = const Size(320, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
       late double contentInset;
       await tester.pumpWidget(
         MediaQuery(
@@ -105,6 +109,18 @@ void main() {
         0,
         reason: 'nothing covers the body inside the shell — no padding owed',
       );
+      if (style == AppBottomBarStyle.expanding) {
+        // The selected pill carries its label — equal shares squeezed it to
+        // nothing with five tabs on a narrow phone.
+        // Measured on the clip around it — the Text keeps its own width.
+        final label = tester.getRect(
+          find.ancestor(
+            of: find.text(LocaleKeys.tabHome.tr()),
+            matching: find.byType(AnimatedSize),
+          ),
+        );
+        expect(label.width, greaterThan(24));
+      }
     });
   }
 

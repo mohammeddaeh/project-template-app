@@ -243,11 +243,11 @@ class AppColors extends ThemeExtension<AppColors> {
     return AppColors(
       primary: AppPalette.secondaryLight,
       primaryContainer: AppPalette.secondary32,
-      onPrimaryContainer: AppPalette.gray50,
+      onPrimaryContainer: AppPalette.gray900,
       secondary: AppPalette.primaryLighter,
       onSecondary: AppPalette.gray900,
       secondaryContainer: AppPalette.primary32,
-      onSecondaryContainer: AppPalette.gray50,
+      onSecondaryContainer: AppPalette.gray900,
       tertiary: AppPalette.secondary40,
       onTertiary: AppPalette.gray900,
       tertiaryContainer: AppPalette.secondary24,

@@ -404,6 +404,15 @@ class _FlatBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final tabs = [
+      for (var i = 0; i < items.length; i++)
+        _FlatTab(
+          item: items[i],
+          selected: i == currentIndex,
+          onTap: () => onTap(i),
+          expanding: expanding,
+        ),
+    ];
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.bgCard,
@@ -413,33 +422,53 @@ class _FlatBar extends StatelessWidget {
         top: false,
         child: SizedBox(
           height: 64,
-          child: Row(
-            children: [
-              for (var i = 0; i < items.length; i++)
-                Expanded(
-                  child: Center(
-                    child: _TabButton(
-                      item: items[i],
-                      selected: i == currentIndex,
-                      onTap: () => onTap(i),
-                      child: expanding
-                          ? _ExpandingTab(
-                              item: items[i],
-                              selected: i == currentIndex,
-                            )
-                          : _DotTab(
-                              item: items[i],
-                              selected: i == currentIndex,
-                            ),
-                    ),
-                  ),
+          child: expanding
+              // Idle tabs keep their icon's width, so the selected one has
+              // the rest for its label — equal shares leave it none.
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    for (var i = 0; i < items.length; i++)
+                      if (i == currentIndex)
+                        Flexible(child: tabs[i])
+                      else
+                        tabs[i],
+                  ],
+                )
+              : Row(
+                  children: [
+                    for (var i = 0; i < items.length; i++)
+                      Expanded(child: Center(child: tabs[i])),
+                  ],
                 ),
-            ],
-          ),
         ),
       ),
     );
   }
+}
+
+class _FlatTab extends StatelessWidget {
+  const _FlatTab({
+    required this.item,
+    required this.selected,
+    required this.onTap,
+    required this.expanding,
+  });
+
+  final NavItem item;
+  final bool selected;
+  final VoidCallback onTap;
+  final bool expanding;
+
+  @override
+  Widget build(BuildContext context) => _TabButton(
+    item: item,
+    selected: selected,
+    onTap: onTap,
+    child: expanding
+        ? _ExpandingTab(item: item, selected: selected)
+        : _DotTab(item: item, selected: selected),
+  );
 }
 
 class _ExpandingTab extends StatelessWidget {

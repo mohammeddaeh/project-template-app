@@ -109,6 +109,39 @@ void main() {
       );
     },
   );
+
+  test('every playground control has its Arabic meaning', () {
+    // KnobName builds the key at runtime ('showcaseKnob' + name), so neither
+    // the analyzer nor an unused-key sweep sees it; a missing key shows the
+    // bare code name with no error.
+    final ar = File('assets/translations/ar.json').readAsStringSync();
+    final tour = Directory('lib/modules/showcase')
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((f) => f.path.endsWith('.dart'))
+        .map((f) => f.readAsStringSync())
+        .join('\n');
+    final names = {
+      for (final m in RegExp(
+        r"(?:Enum|Choice|Bool|Text|Number|OptionalNumber|color|callback)Knob"
+        r"(?:<[^>]*>)?\(\s*'(\w+)'",
+      ).allMatches(tour))
+        m[1]!,
+    };
+    expect(names, isNotEmpty);
+    final missing = [
+      for (final n in names)
+        if (!ar.contains(
+          '"showcaseKnob${n[0].toUpperCase()}${n.substring(1)}"',
+        ))
+          n,
+    ]..sort();
+    expect(
+      missing,
+      isEmpty,
+      reason: 'add showcaseKnob<Name> to ar.json/en.json',
+    );
+  });
 }
 
 /// Library classes the tour does not show, each with its reason.

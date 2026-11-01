@@ -71,6 +71,20 @@ void main() {
           );
         });
       });
+
+      test('a label on a tonal container is readable', () {
+        // Tonal buttons, the selected tab, chips: on* over *Container.
+        expect(
+          contrast(c.onPrimaryContainer, c.primaryContainer),
+          greaterThanOrEqualTo(bodyText),
+          reason: 'onPrimaryContainer on primaryContainer',
+        );
+        expect(
+          contrast(c.onSecondaryContainer, c.secondaryContainer),
+          greaterThanOrEqualTo(bodyText),
+          reason: 'onSecondaryContainer on secondaryContainer',
+        );
+      });
     });
   });
 }

@@ -109,29 +109,35 @@ class _PhoneFrameState extends State<_PhoneFrame> {
     final index = _index.clamp(0, widget.items.length - 1);
     return ClipRRect(
       borderRadius: AppRadius.lgRadius,
-      child: SizedBox(
-        height: 320,
-        child: Scaffold(
-          backgroundColor: colors.bgPage,
-          body: AppTabSwitcher(
-            index: index,
-            transition: widget.transition,
-            child: IndexedStack(
+      // The frame sits mid-page: the device's system-bar inset is not its own.
+      child: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        removeBottom: true,
+        child: SizedBox(
+          height: 320,
+          child: Scaffold(
+            backgroundColor: colors.bgPage,
+            body: AppTabSwitcher(
               index: index,
-              children: [
-                for (var i = 0; i < widget.items.length; i++)
-                  _TabBody(
-                    labelKey: widget.items[i].labelKey,
-                    icon: widget.items[i].activeIcon,
-                  ),
-              ],
+              transition: widget.transition,
+              child: IndexedStack(
+                index: index,
+                children: [
+                  for (var i = 0; i < widget.items.length; i++)
+                    _TabBody(
+                      labelKey: widget.items[i].labelKey,
+                      icon: widget.items[i].activeIcon,
+                    ),
+                ],
+              ),
             ),
-          ),
-          bottomNavigationBar: AppBottomBar(
-            items: widget.items,
-            currentIndex: index,
-            onTap: (i) => setState(() => _index = i),
-            style: widget.style,
+            bottomNavigationBar: AppBottomBar(
+              items: widget.items,
+              currentIndex: index,
+              onTap: (i) => setState(() => _index = i),
+              style: widget.style,
+            ),
           ),
         ),
       ),
