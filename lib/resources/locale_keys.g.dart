@@ -736,4 +736,11 @@ abstract class LocaleKeys {
   static const showcaseApiOriginRemembered = 'showcaseApiOriginRemembered';
   static const showcaseApiOriginKept = 'showcaseApiOriginKept';
   static const showcaseApiOriginWiped = 'showcaseApiOriginWiped';
+  static const syncConflictTitle = 'syncConflictTitle';
+  static const syncConflictBody = 'syncConflictBody';
+  static const syncConflictFields = 'syncConflictFields';
+  static const syncKeepServer = 'syncKeepServer';
+  static const syncKeepMine = 'syncKeepMine';
+  static const dataTransferEmptyFile = 'dataTransferEmptyFile';
+  static const listSeparator = 'listSeparator';
 }

@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:app_template/core/infra/config/env.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
 
 /// Downloads `/export` and `/template` — **the two endpoints in this API that
 /// answer file bytes instead of `{status, message, data}`.**
@@ -83,9 +85,9 @@ class TransferFileDownloader {
     }
 
     if (bytes.isEmpty) {
-      throw const TransferDownloadException(
+      throw TransferDownloadException(
         statusCode: 200,
-        message: 'The server returned an empty file',
+        message: LocaleKeys.dataTransferEmptyFile.tr(),
       );
     }
 

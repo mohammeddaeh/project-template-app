@@ -153,12 +153,7 @@ class OptionalNumberKnob extends Knob<double?> {
     final v = value as double?;
     return Row(
       children: [
-        Text(
-          name,
-          style: context.textTheme.labelSmall?.copyWith(
-            color: context.colors.textMuted,
-          ),
-        ),
+        KnobName(name),
         Switch.adaptive(
           value: v != null,
           onChanged: (on) => onChanged(on ? whenOn : null),

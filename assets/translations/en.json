@@ -722,5 +722,12 @@
   "showcaseApiOriginAccount": "Every account key and module row — device preferences stay",
   "showcaseApiOriginRemembered": "Saved accounts were addresses on the old server",
   "showcaseApiOriginKept": "Nothing wiped — startup goes on",
-  "showcaseApiOriginWiped": "The device was wiped — no session is left, so startup goes on signed out"
+  "showcaseApiOriginWiped": "The device was wiped — no session is left, so startup goes on signed out",
+  "syncConflictTitle": "Sync conflict",
+  "syncConflictBody": "“{}” changed here and on the server. Which version do you keep?",
+  "syncConflictFields": "Fields that differ: {}",
+  "syncKeepServer": "Server version",
+  "syncKeepMine": "My version",
+  "dataTransferEmptyFile": "The server returned an empty file",
+  "listSeparator": ", "
 }

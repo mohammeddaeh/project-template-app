@@ -823,6 +823,13 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiOriginKept": "لا مسح — يمضي الإقلاع",
     "showcaseApiOriginWiped":
         "مُسح الجهاز — لا جلسة باقية، فيمضي الإقلاع بلا دخول",
+    "syncConflictTitle": "تعارض في المزامنة",
+    "syncConflictBody": "تغيّر «{}» هنا وعلى الخادم معاً. أيّ النسختين تُبقي؟",
+    "syncConflictFields": "الحقول المختلفة: {}",
+    "syncKeepServer": "نسخة الخادم",
+    "syncKeepMine": "نسختي",
+    "dataTransferEmptyFile": "وصل الملف فارغاً من الخادم",
+    "listSeparator": "، ",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -1658,6 +1665,14 @@ class CodegenLoader extends AssetLoader {
     "showcaseApiOriginKept": "Nothing wiped — startup goes on",
     "showcaseApiOriginWiped":
         "The device was wiped — no session is left, so startup goes on signed out",
+    "syncConflictTitle": "Sync conflict",
+    "syncConflictBody":
+        "“{}” changed here and on the server. Which version do you keep?",
+    "syncConflictFields": "Fields that differ: {}",
+    "syncKeepServer": "Server version",
+    "syncKeepMine": "My version",
+    "dataTransferEmptyFile": "The server returned an empty file",
+    "listSeparator": ", ",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

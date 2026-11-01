@@ -175,19 +175,25 @@ class _ConflictResolutionSheet extends StatelessWidget {
             children: [
               Icon(Icons.sync_problem_rounded, color: theme.colorScheme.error),
               const SizedBox(width: 8),
-              Text('Sync Conflict', style: theme.textTheme.titleMedium),
+              Text(
+                LocaleKeys.syncConflictTitle.tr(),
+                style: theme.textTheme.titleMedium,
+              ),
             ],
           ),
           const SizedBox(height: 12),
           Text(
-            'A conflict was detected for ${conflict.entityName}.\n'
-            'Choose how to resolve it:',
+            LocaleKeys.syncConflictBody.tr(args: [conflict.entityName]),
             style: theme.textTheme.bodyMedium,
           ),
           if (conflict.conflictFields.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
-              'Conflicting fields: ${conflict.conflictFields.join(', ')}',
+              LocaleKeys.syncConflictFields.tr(
+                args: [
+                  conflict.conflictFields.join(LocaleKeys.listSeparator.tr()),
+                ],
+              ),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
@@ -200,7 +206,7 @@ class _ConflictResolutionSheet extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () => onResolve(false),
                   icon: const Icon(Icons.cloud_download_outlined),
-                  label: const Text('Keep Server Version'),
+                  label: Text(LocaleKeys.syncKeepServer.tr()),
                 ),
               ),
               const SizedBox(width: 12),
@@ -208,7 +214,7 @@ class _ConflictResolutionSheet extends StatelessWidget {
                 child: FilledButton.icon(
                   onPressed: () => onResolve(true),
                   icon: const Icon(Icons.phone_android_rounded),
-                  label: const Text('Keep My Version'),
+                  label: Text(LocaleKeys.syncKeepMine.tr()),
                 ),
               ),
             ],

@@ -722,5 +722,12 @@
   "showcaseApiOriginAccount": "كل مفاتيح الحساب وصفوف الموديولات — وتفضيلات الجهاز باقية",
   "showcaseApiOriginRemembered": "الحسابات المحفوظة عناوينُ على الخادم القديم",
   "showcaseApiOriginKept": "لا مسح — يمضي الإقلاع",
-  "showcaseApiOriginWiped": "مُسح الجهاز — لا جلسة باقية، فيمضي الإقلاع بلا دخول"
+  "showcaseApiOriginWiped": "مُسح الجهاز — لا جلسة باقية، فيمضي الإقلاع بلا دخول",
+  "syncConflictTitle": "تعارض في المزامنة",
+  "syncConflictBody": "تغيّر «{}» هنا وعلى الخادم معاً. أيّ النسختين تُبقي؟",
+  "syncConflictFields": "الحقول المختلفة: {}",
+  "syncKeepServer": "نسخة الخادم",
+  "syncKeepMine": "نسختي",
+  "dataTransferEmptyFile": "وصل الملف فارغاً من الخادم",
+  "listSeparator": "، "
 }

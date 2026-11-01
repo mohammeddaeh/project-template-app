@@ -347,7 +347,7 @@ class BoolKnob extends Knob<bool> {
     ValueChanged<Object?> onChanged,
   ) => Row(
     children: [
-      Expanded(child: _KnobName(name)),
+      Expanded(child: KnobName(name)),
       Switch.adaptive(value: value! as bool, onChanged: onChanged),
     ],
   );
@@ -409,7 +409,7 @@ class NumberKnob extends Knob<double> {
     ValueChanged<Object?> onChanged,
   ) => Row(
     children: [
-      _KnobName(name),
+      KnobName(name),
       Expanded(
         child: Slider.adaptive(
           value: value! as double,
@@ -437,25 +437,58 @@ class _Labelled extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [_KnobName(name), 4.heightBox, child],
+    children: [KnobName(name), 4.heightBox, child],
   );
 }
 
-class _KnobName extends StatelessWidget {
-  const _KnobName(this.name);
+/// A control's caption: what the option means in the reader's language, and
+/// the argument's name in code beside it — `الشكل · variant`.
+///
+/// The meaning is the translation key `showcaseKnob<Name>`; a name without
+/// one (or an English reader, whose label is the name) shows the name alone.
+class KnobName extends StatelessWidget {
+  const KnobName(this.name, {super.key});
 
   final String name;
 
+  /// The option's meaning, or `null` when it has none apart from its name.
+  static String? meaningOf(String name) {
+    final key = 'showcaseKnob${name[0].toUpperCase()}${name.substring(1)}';
+    final meaning = key.tr();
+    return meaning == key || meaning == name ? null : meaning;
+  }
+
+  /// `الشكل · variant` as plain text — for a field's label.
+  static String caption(String name) {
+    final meaning = meaningOf(name);
+    return meaning == null ? name : '$meaning · $name';
+  }
+
   @override
-  Widget build(BuildContext context) => Directionality(
-    textDirection: TextDirection.ltr,
-    child: Text(
-      name,
-      style: context.textTheme.labelSmall?.copyWith(
-        color: context.colors.textMuted,
+  Widget build(BuildContext context) {
+    // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
+    context.locale;
+    final meaning = meaningOf(name);
+    final translated = meaning != null;
+    final colors = context.colors;
+    return Text.rich(
+      TextSpan(
+        children: [
+          if (translated) ...[
+            TextSpan(
+              text: meaning,
+              style: context.textTheme.labelMedium?.copyWith(
+                color: colors.textSecondary,
+              ),
+            ),
+            const TextSpan(text: '  ·  '),
+          ],
+          TextSpan(text: name),
+        ],
       ),
-    ),
-  );
+      style: context.textTheme.labelSmall?.copyWith(color: colors.textMuted),
+    );
+  }
 }
 
 class _TextControl extends StatefulWidget {
@@ -485,7 +518,7 @@ class _TextControlState extends State<_TextControl> {
   @override
   Widget build(BuildContext context) => CustomTextField(
     controller: _c,
-    labelText: widget.name,
+    labelText: KnobName.caption(widget.name),
     ltr: true,
     onChanged: widget.onChanged,
   );
