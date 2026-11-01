@@ -11,6 +11,17 @@
 
 ## غير مُصدَر
 
+- **دَين `check_structure` صفر** — المخالفات الـ53 المسجَّلة أُصلحت بالكود، و`.structure_baseline.txt`
+  لا يحمل شيئاً. صفحاتُ الحساب والإعدادات قُسّمت إلى ودجاتٍ مسمّاة بـ`presentation/widgets/`.
+- ⚠️ **تغييرات واجهة عامة** (لا مستدعٍ لها بالقالب، وقد يكون لها بمشروع):
+  - `app_padding_extension`: `leftPadding`/`rightPadding` وأخواتها الست صارت
+    `startPadding`/`endPadding`… وتُعيد `EdgeInsetsDirectional`.
+  - حقولُ البريد وكلمة المرور والرمز **بلا `ltr: true`** — تتبع اتجاه الصفحة (F10).
+  - `AppColors`: `feedbackSuccess` · `feedbackError` · `feedbackWarning` · `feedbackInfo`.
+  - `AppLocale`: `nativeName` · `shortName` (أسماء اللغات بلغتها).
+  - `flavor_banner.dart` يُصدَّر من `widgets.dart`.
+  - شريط «لا اتصال» بالوضع الداكن: النصّ `onError` (رماديٌّ داكن) بدل الأبيض — تباينٌ أعلى.
+
 - **أوضاع الدخول** `AppFeatures.authMode` (`none` افتراضاً · `required` · `optional`)،
   تُختار بـ`setup_project.dart --auth` و`new_project.ps1 -Auth`. والقالب **يبدأ بلا
   دخول**: ترحيبٌ ثم الرئيسية. ⚠️ **يغيّر سلوك مشروعٍ قائم** يأخذ التحديث: يرجع إلى

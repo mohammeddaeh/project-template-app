@@ -21,14 +21,9 @@ class LocaleSwitcherController {
       context.isAr ? AppLocale.english : AppLocale.arabic;
 
   /// Display label for [locale].
-  static String labelFor(AppLocale locale) => switch (locale) {
-    AppLocale.arabic => 'العربية',
-    AppLocale.english => 'English',
-  };
+  /// The language's own name ([AppLocale.nativeName]), never translated.
+  static String labelFor(AppLocale locale) => locale.nativeName;
 
   /// Short code label (used in segmented / icon variants).
-  static String shortLabelFor(AppLocale locale) => switch (locale) {
-    AppLocale.arabic => 'ع',
-    AppLocale.english => 'EN',
-  };
+  static String shortLabelFor(AppLocale locale) => locale.shortName;
 }

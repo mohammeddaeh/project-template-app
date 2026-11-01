@@ -95,52 +95,76 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: CurvedAnimation(parent: _entryCtrl, curve: Curves.easeIn),
-      child: _buildStyle(context),
+      child: switch (widget.style) {
+        PageLoadingStyle.spinner => const _Spinner(),
+        PageLoadingStyle.linearBar => const _LinearBar(),
+        PageLoadingStyle.shimmerBar => const _ShimmerBar(),
+        PageLoadingStyle.dotsWave => _DotsWave(controllers: _dotCtrl),
+        PageLoadingStyle.textSpinner => _TextSpinner(
+          loadingText: widget.loadingText,
+        ),
+        PageLoadingStyle.pulseDots => _PulseDots(controllers: _dotCtrl),
+      },
     );
   }
+}
 
-  Widget _buildStyle(BuildContext context) => switch (widget.style) {
-    PageLoadingStyle.spinner => _buildSpinner(context),
-    PageLoadingStyle.linearBar => _buildLinearBar(context),
-    PageLoadingStyle.shimmerBar => _buildShimmerBar(context),
-    PageLoadingStyle.dotsWave => _buildDotsWave(context),
-    PageLoadingStyle.textSpinner => _buildTextSpinner(context),
-    PageLoadingStyle.pulseDots => _buildPulseDots(context),
-  };
+// ── Spinner ───────────────────────────────────────────────────────────────────
 
-  // ── Spinner ─────────────────────────────────────────────────────────────────
+class _Spinner extends StatelessWidget {
+  const _Spinner();
 
-  Widget _buildSpinner(BuildContext context) => const AppProgress.circular(
+  @override
+  Widget build(BuildContext context) => const AppProgress.circular(
     dimension: 28,
     centered: true,
     padding: EdgeInsets.symmetric(vertical: 16),
   );
+}
 
-  // ── Linear Bar ──────────────────────────────────────────────────────────────
+// ── Linear Bar ────────────────────────────────────────────────────────────────
 
-  Widget _buildLinearBar(BuildContext context) => const AppProgress.linear(
+class _LinearBar extends StatelessWidget {
+  const _LinearBar();
+
+  @override
+  Widget build(BuildContext context) => const AppProgress.linear(
     height: 3,
     padding: EdgeInsets.symmetric(vertical: 10),
   );
+}
 
-  // ── Shimmer Bar ─────────────────────────────────────────────────────────────
+// ── Shimmer Bar ───────────────────────────────────────────────────────────────
 
-  Widget _buildShimmerBar(BuildContext context) => Padding(
+class _ShimmerBar extends StatelessWidget {
+  const _ShimmerBar();
+
+  @override
+  Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 8),
     child: ShimmerLoadingWidget(
       child: Container(
         height: 44,
         decoration: BoxDecoration(
-          color: Colors.white,
+          // قناعٌ لا لون: الـshimmer يرسم ألوانه فوق الشكل المعتم أياً كان لونه.
+          color: context.colors.bgCard,
           borderRadius: BorderRadius.circular(10),
         ),
       ),
     ),
   );
+}
 
-  // ── Dots Wave ───────────────────────────────────────────────────────────────
+// ── Dots Wave ─────────────────────────────────────────────────────────────────
 
-  Widget _buildDotsWave(BuildContext context) {
+class _DotsWave extends StatelessWidget {
+  const _DotsWave({required this.controllers});
+
+  /// متحكّمات النقاط الثلاث — يملكها [_PageLoadingIndicatorState].
+  final List<AnimationController> controllers;
+
+  @override
+  Widget build(BuildContext context) {
     final color = context.colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -149,11 +173,11 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
         children: List.generate(
           3,
           (i) => AnimatedBuilder(
-            animation: _dotCtrl[i],
+            animation: controllers[i],
             builder: (ctx, _) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Transform.translate(
-                offset: Offset(0, -9 * _dotCtrl[i].value),
+                offset: Offset(0, -9 * controllers[i].value),
                 child: Container(
                   width: 9,
                   height: 9,
@@ -169,10 +193,17 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
       ),
     );
   }
+}
 
-  // ── Text + Spinner ──────────────────────────────────────────────────────────
+// ── Text + Spinner ────────────────────────────────────────────────────────────
 
-  Widget _buildTextSpinner(BuildContext context) {
+class _TextSpinner extends StatelessWidget {
+  const _TextSpinner({this.loadingText});
+
+  final String? loadingText;
+
+  @override
+  Widget build(BuildContext context) {
     final scheme = context.colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -182,7 +213,7 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
           const AppProgress.circular(size: AppProgressSize.sm),
           const SizedBox(width: 10),
           Text(
-            widget.loadingText ?? 'Loading more…',
+            loadingText ?? 'Loading more…',
             style: context.textTheme.bodySmall?.copyWith(
               color: scheme.outline,
               fontWeight: FontWeight.w500,
@@ -192,10 +223,18 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
       ),
     );
   }
+}
 
-  // ── Pulse Dots ──────────────────────────────────────────────────────────────
+// ── Pulse Dots ────────────────────────────────────────────────────────────────
 
-  Widget _buildPulseDots(BuildContext context) {
+class _PulseDots extends StatelessWidget {
+  const _PulseDots({required this.controllers});
+
+  /// متحكّمات النقاط الثلاث — يملكها [_PageLoadingIndicatorState].
+  final List<AnimationController> controllers;
+
+  @override
+  Widget build(BuildContext context) {
     final color = context.colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -204,13 +243,13 @@ class _PageLoadingIndicatorState extends State<PageLoadingIndicator>
         children: List.generate(
           3,
           (i) => AnimatedBuilder(
-            animation: _dotCtrl[i],
+            animation: controllers[i],
             builder: (ctx, _) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Opacity(
-                opacity: 0.2 + 0.8 * _dotCtrl[i].value,
+                opacity: 0.2 + 0.8 * controllers[i].value,
                 child: Transform.scale(
-                  scale: 0.65 + 0.35 * _dotCtrl[i].value,
+                  scale: 0.65 + 0.35 * controllers[i].value,
                   child: Container(
                     width: 11,
                     height: 11,

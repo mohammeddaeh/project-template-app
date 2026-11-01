@@ -54,7 +54,7 @@ class PrimaryButton extends StatelessWidget {
     );
 
     final child = isLoading
-        ? _loader(context)
+        ? _Loader(isTextOnly: isTextOnly, colorButton: colorButton)
         : _LabelRow(
             text: text,
             vector: vector,
@@ -106,8 +106,16 @@ class PrimaryButton extends StatelessWidget {
       child: child,
     );
   }
+}
 
-  Widget _loader(BuildContext context) => isTextOnly
+class _Loader extends StatelessWidget {
+  const _Loader({required this.isTextOnly, this.colorButton});
+
+  final bool isTextOnly;
+  final Color? colorButton;
+
+  @override
+  Widget build(BuildContext context) => isTextOnly
       ? AppProgress.circular(
           size: AppProgressSize.md,
           color: colorButton ?? context.colors.primary,

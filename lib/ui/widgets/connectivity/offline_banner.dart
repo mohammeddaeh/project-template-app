@@ -23,13 +23,13 @@ class OfflineBanner extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
-              const Icon(Icons.wifi_off, color: Colors.white, size: 18),
+              Icon(Icons.wifi_off, color: context.colors.onError, size: 18),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   LocaleKeys.noInternetConnection.tr(),
                   style: context.textTheme.bodySmall?.copyWith(
-                    color: Colors.white,
+                    color: context.colors.onError,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

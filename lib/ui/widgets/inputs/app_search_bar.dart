@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -162,7 +164,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
       return IconButton(
         icon: Icon(Icons.close_rounded, color: context.colors.iconSubtle),
         onPressed: _onClearTap,
-        tooltip: 'مسح',
+        tooltip: LocaleKeys.clear.tr(),
         splashRadius: 18,
       );
     }

@@ -11,13 +11,20 @@ import 'package:flutter/widgets.dart';
 /// await context.changeLocale(AppLocale.english);
 /// ```
 enum AppLocale {
-  arabic('ar'),
-  english('en');
+  arabic('ar', 'العربية', 'ع'),
+  english('en', 'English', 'EN');
 
-  const AppLocale(this.code);
+  const AppLocale(this.code, this.nativeName, this.shortName);
 
   /// BCP 47 language code.
   final String code;
+
+  /// اسمُ اللغة **بلغتها** — يُعرض كما هو بكل لغات الواجهة، فيجدها المستخدم
+  /// أيّاً كانت اللغة الحالية. بيانٌ وصفيّ للّغة لا نصٌّ يُترجَم.
+  final String nativeName;
+
+  /// اختصارُه بلغته — شارةُ زرّ اللغة.
+  final String shortName;
 
   /// Whether this locale uses right-to-left text direction.
   bool get isRtl => this == arabic;

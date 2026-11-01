@@ -55,13 +55,20 @@ class _ReconnectCountdownChipState extends State<ReconnectCountdownChip>
         opacity: _fade,
         child: SlideTransition(
           position: _slide,
-          child: Center(child: _buildChip(context)),
+          child: Center(child: _Chip(seconds: widget.seconds)),
         ),
       ),
     );
   }
+}
 
-  Widget _buildChip(BuildContext context) {
+class _Chip extends StatelessWidget {
+  const _Chip({required this.seconds});
+
+  final int seconds;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -69,7 +76,7 @@ class _ReconnectCountdownChipState extends State<ReconnectCountdownChip>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.10),
+            color: context.colors.shadow.withValues(alpha: 0.10),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -81,7 +88,7 @@ class _ReconnectCountdownChipState extends State<ReconnectCountdownChip>
           const AppProgress.circular(size: AppProgressSize.xs, dimension: 14),
           const SizedBox(width: 8),
           Text(
-            '${LocaleKeys.reconnecting.tr()} ${widget.seconds}s',
+            '${LocaleKeys.reconnecting.tr()} ${seconds}s',
             style: context.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),

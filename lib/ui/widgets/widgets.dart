@@ -56,6 +56,7 @@ export 'layout/divider_widget.dart';
 export 'layout/dashed_divider.dart';
 export 'layout/spacing.dart';
 export 'layout/app_button.dart';
+export 'layout/flavor_banner.dart';
 export 'layout/primary_button.dart';
 export 'layout/detail_widgets.dart';
 

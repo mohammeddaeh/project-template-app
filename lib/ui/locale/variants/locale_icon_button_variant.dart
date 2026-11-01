@@ -17,7 +17,7 @@ class LocaleIconButtonVariant extends StatelessWidget {
       message: LocaleSwitcherController.labelFor(next),
       child: IconButton(
         icon: Stack(
-          alignment: Alignment.bottomRight,
+          alignment: AlignmentDirectional.bottomEnd,
           children: [
             const Icon(Icons.language_rounded),
             Container(

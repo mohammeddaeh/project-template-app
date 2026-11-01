@@ -31,6 +31,7 @@ abstract class LocaleKeys {
   static const cancel = 'cancel';
   static const changePassword = 'changePassword';
   static const chooseFormat = 'chooseFormat';
+  static const clear = 'clear';
   static const clearCache = 'clearCache';
   static const clearFilters = 'clearFilters';
   static const confirm = 'confirm';
@@ -72,6 +73,7 @@ abstract class LocaleKeys {
   static const enableNotifications = 'enableNotifications';
   static const endOfList = 'endOfList';
   static const error = 'error';
+  static const errorOccurred = 'errorOccurred';
   static const exitAppMessage = 'exitAppMessage';
   static const exitAppTitle = 'exitAppTitle';
   static const exportColumns = 'exportColumns';

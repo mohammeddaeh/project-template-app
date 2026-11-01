@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/features/auth/logout/presentation/widgets/logout_section.dart';
 import 'package:app_template/features/auth/me/domain/usecases/get_current_user_usecase.dart';
+import 'package:app_template/features/auth/profile/presentation/widgets/profile_header_card.dart';
 import 'package:app_template/features/auth/shared/current_user_repository.dart';
 import 'package:app_template/features/auth/shared/entities/auth_user.dart';
 import 'package:app_template/core/di/injection.dart';
@@ -71,41 +72,7 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.person_off_outlined,
                   )
                 else
-                  DetailHeaderCard(
-                    title: user.displayName,
-                    subtitle: user.email,
-                    leading: AvatarWidget(initial: user.initial, radius: 28),
-                    facts: [
-                      DetailFact(
-                        icon: Icons.alternate_email,
-                        label: LocaleKeys.eMail.tr(),
-                        value: user.email,
-                        // Digits reorder visibly in an RTL layout without this.
-                        forceLtr: true,
-                      ),
-                      DetailFact(
-                        icon: user.emailVerified
-                            ? Icons.verified_outlined
-                            : Icons.gpp_maybe_outlined,
-                        label: LocaleKeys.eMail.tr(),
-                        value: user.emailVerified
-                            ? LocaleKeys.emailVerifiedYes.tr()
-                            : LocaleKeys.emailVerifiedNo.tr(),
-                      ),
-                      DetailFact(
-                        icon: Icons.badge_outlined,
-                        label: LocaleKeys.accountStatus.tr(),
-                        value: _statusLabel(user.status),
-                      ),
-                      DetailFact(
-                        icon: Icons.event_outlined,
-                        label: LocaleKeys.memberSince.tr(),
-                        value: DateFormat.yMMMd(
-                          context.locale.languageCode,
-                        ).format(user.createdAt),
-                      ),
-                    ],
-                  ),
+                  ProfileHeaderCard(user: user),
                 const SizedBox(height: 24),
                 const LogoutSection(),
               ],
@@ -115,14 +82,4 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-
-  /// Exhaustive by construction — `switch` over a Dart enum has no default arm,
-  /// so a status added to [AuthUserStatus] fails to compile here rather than
-  /// rendering as a blank row.
-  String _statusLabel(AuthUserStatus status) => switch (status) {
-    AuthUserStatus.pendingVerification =>
-      LocaleKeys.statusPendingVerification.tr(),
-    AuthUserStatus.active => LocaleKeys.statusActive.tr(),
-    AuthUserStatus.disabled => LocaleKeys.statusDisabled.tr(),
-  };
 }

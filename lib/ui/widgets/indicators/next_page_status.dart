@@ -97,6 +97,43 @@ class NextPageStatus extends StatelessWidget {
     // ignore: unnecessary_statements — EasyLocalization dependency
     context.locale;
 
+    // The switcher animates on the key of its direct child, so each state is
+    // built here, keyed, rather than behind a wrapper widget of one fixed type.
+    final failure = error;
+    final Widget child;
+    if (isLoading) {
+      child = KeyedSubtree(
+        key: const ValueKey('next_loading'),
+        child:
+            loadingWidget ??
+            PageLoadingIndicator(
+              style: style,
+              loadingText: loadingText ?? LocaleKeys.loadingMore.tr(),
+            ),
+      );
+    } else if (failure != null) {
+      child = KeyedSubtree(
+        key: const ValueKey('next_error'),
+        child: FailureStateView.compact(failure: failure, onRetry: onRetry),
+      );
+    } else if (!isLastPage && onLoadMore != null) {
+      child = Padding(
+        key: const ValueKey('next_more'),
+        padding: const EdgeInsets.only(top: 4),
+        child: Center(
+          child: TextButton.icon(
+            onPressed: onLoadMore,
+            icon: const Icon(Icons.expand_more, size: 18),
+            label: Text(LocaleKeys.loadMore.tr()),
+          ),
+        ),
+      );
+    } else if (isLastPage && showEndMarker && endMarker != ListEndMarker.none) {
+      child = _EndMarker(key: const ValueKey('next_end'), marker: endMarker);
+    } else {
+      child = const SizedBox.shrink(key: ValueKey('next_none'));
+    }
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
       switchInCurve: Curves.easeOut,
@@ -109,50 +146,8 @@ class NextPageStatus extends StatelessWidget {
           child: child,
         ),
       ),
-      child: _child(context),
+      child: child,
     );
-  }
-
-  Widget _child(BuildContext context) {
-    if (isLoading) {
-      return KeyedSubtree(
-        key: const ValueKey('next_loading'),
-        child:
-            loadingWidget ??
-            PageLoadingIndicator(
-              style: style,
-              loadingText: loadingText ?? LocaleKeys.loadingMore.tr(),
-            ),
-      );
-    }
-
-    final failure = error;
-    if (failure != null) {
-      return KeyedSubtree(
-        key: const ValueKey('next_error'),
-        child: FailureStateView.compact(failure: failure, onRetry: onRetry),
-      );
-    }
-
-    if (!isLastPage && onLoadMore != null) {
-      return Padding(
-        key: const ValueKey('next_more'),
-        padding: const EdgeInsets.only(top: 4),
-        child: Center(
-          child: TextButton.icon(
-            onPressed: onLoadMore,
-            icon: const Icon(Icons.expand_more, size: 18),
-            label: Text(LocaleKeys.loadMore.tr()),
-          ),
-        ),
-      );
-    }
-
-    if (isLastPage && showEndMarker && endMarker != ListEndMarker.none) {
-      return _EndMarker(key: const ValueKey('next_end'), marker: endMarker);
-    }
-
-    return const SizedBox.shrink(key: ValueKey('next_none'));
   }
 }
 

@@ -72,7 +72,7 @@ class StatCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: isLoading
-              ? _buildSkeleton(context)
+              ? const _StatCardSkeleton()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -108,8 +108,13 @@ class StatCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSkeleton(BuildContext context) {
+class _StatCardSkeleton extends StatelessWidget {
+  const _StatCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

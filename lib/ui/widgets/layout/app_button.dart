@@ -158,8 +158,13 @@ class AppButton extends StatelessWidget {
     );
 
     final child = isLoading
-        ? _buildLoader(fgColor)
-        : _buildLabel(labelStyle, fgColor);
+        ? _ButtonLoader(color: fgColor)
+        : _ButtonLabel(
+            text: text,
+            leadingIcon: leadingIcon,
+            style: labelStyle,
+            color: fgColor,
+          );
 
     if (variant == AppButtonVariant.outlined) {
       return SizedBox(
@@ -221,11 +226,33 @@ class AppButton extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildLoader(Color color) =>
+class _ButtonLoader extends StatelessWidget {
+  const _ButtonLoader({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) =>
       AppProgress.circular(size: AppProgressSize.sm, color: color);
+}
 
-  Widget _buildLabel(TextStyle? style, Color color) => Row(
+class _ButtonLabel extends StatelessWidget {
+  const _ButtonLabel({
+    required this.text,
+    required this.leadingIcon,
+    required this.style,
+    required this.color,
+  });
+
+  final String text;
+  final IconData? leadingIcon;
+  final TextStyle? style;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.center,
     mainAxisSize: MainAxisSize.min,
     children: [

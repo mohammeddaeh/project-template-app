@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -104,8 +104,8 @@ class _MainShellScreenState extends State<MainShellScreen> {
                 onDestinationSelected: cubit.onItemTapped,
                 destinations: items.map((item) {
                   return NavigationDestination(
-                    icon: _buildIcon(item, isSelected: false),
-                    selectedIcon: _buildIcon(item, isSelected: true),
+                    icon: _NavIcon(item: item, isSelected: false),
+                    selectedIcon: _NavIcon(item: item, isSelected: true),
                     label: item.labelKey.tr(),
                   );
                 }).toList(),
@@ -116,8 +116,17 @@ class _MainShellScreenState extends State<MainShellScreen> {
       ),
     );
   }
+}
 
-  Widget _buildIcon(NavItem item, {required bool isSelected}) {
+/// أيقونة التبويب — بشارة عدٍّ حين يحمل العنصر [NavItem.badgeCount].
+class _NavIcon extends StatelessWidget {
+  const _NavIcon({required this.item, required this.isSelected});
+
+  final NavItem item;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
     final icon = Icon(isSelected ? item.activeIcon : item.icon);
     if (item.badgeCount == null) return icon;
 

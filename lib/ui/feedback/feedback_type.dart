@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_template/ui/theme/app_palette.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
@@ -29,10 +28,10 @@ extension FeedbackTypeX on FeedbackType {
 
   /// Accent / brand color for the feedback type (border, icon tint).
   Color accentColor(BuildContext context) => switch (this) {
-    FeedbackType.success => AppPalette.successMain,
-    FeedbackType.error => AppPalette.errorMain,
-    FeedbackType.warning => AppPalette.warningMain,
-    FeedbackType.info => AppPalette.infoMain,
+    FeedbackType.success => context.colors.feedbackSuccess,
+    FeedbackType.error => context.colors.feedbackError,
+    FeedbackType.warning => context.colors.feedbackWarning,
+    FeedbackType.info => context.colors.feedbackInfo,
   };
 
   /// Card/background color — usually bgCard so toast blends with theme.

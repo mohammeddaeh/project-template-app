@@ -1,14 +1,15 @@
 import 'package:app_template/ui/theme/theme_switcher.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/modules/access_control/presentation/widgets/access_control_section.dart';
 import 'package:app_template/modules/multi_device/presentation/widgets/devices_section.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:app_template/features/settings/presentation/cubits/font_preference_cubit.dart';
 import 'package:app_template/features/settings/presentation/cubits/settings_cubit.dart';
 import 'package:app_template/features/settings/presentation/cubits/settings_state.dart';
-import 'package:app_template/core/infra/config/app_fonts.dart';
+import 'package:app_template/features/settings/presentation/widgets/settings_about_section.dart';
+import 'package:app_template/features/settings/presentation/widgets/settings_font_section.dart';
+import 'package:app_template/features/settings/presentation/widgets/settings_section_divider.dart';
+import 'package:app_template/features/settings/presentation/widgets/settings_section_header.dart';
 import 'package:app_template/ui/locale/locale_switcher.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -52,13 +53,13 @@ class _SettingsBody extends StatelessWidget {
     return ListView(
       children: const [
         _AppearanceSection(),
-        _SectionDivider(),
-        _FontSection(),
-        _SectionDivider(),
+        SettingsSectionDivider(),
+        SettingsFontSection(),
+        SettingsSectionDivider(),
         _LanguageSection(),
-        _SectionDivider(),
+        SettingsSectionDivider(),
         _NotificationsSection(),
-        _SectionDivider(),
+        SettingsSectionDivider(),
         // Renders nothing when AppFeatures.multiDevice is off — the module owns
         // that check, so this list never has to and the tile can never appear
         // without the dependencies behind it.
@@ -66,7 +67,7 @@ class _SettingsBody extends StatelessWidget {
         // Same guarantee, same reason: nothing when AppFeatures.accessControl
         // is off, and hidden from an account without `roles.view` when it is on.
         AccessControlSection(),
-        _AboutSection(),
+        SettingsAboutSection(),
       ],
     );
   }
@@ -86,74 +87,13 @@ class _AppearanceSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(LocaleKeys.appearance.tr()),
+        SettingsSectionHeader(LocaleKeys.appearance.tr()),
         // **ودجةٌ واحدة للمبدِّل — لا ثلاث.** كانت هنا كتلةٌ تبني `ListTile`
         // بيدها، وبـ`app_theme_mode.dart` صنفٌ ثالث (`ThemeModeSelector`) بلا
         // مستهلك، و[ThemeSwitcher] موجودةٌ ولا يركّبها أحد — ثلاثُ نسخٍ من قرارِ
         // تصميمٍ واحد، تُشدَّد إحداها يوماً ولا تُشدَّد الأخريان (R34).
         const ThemeSwitcher(),
       ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Font picker
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _FontSection extends StatelessWidget {
-  const _FontSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final languageCode = context.locale.languageCode;
-    return BlocBuilder<FontPreferenceCubit, AppFontOption>(
-      builder: (context, current) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _SectionHeader(LocaleKeys.typography.tr()),
-            ...AppFonts.available.map((font) {
-              final isSelected = font.key == current.key;
-              return ListTile(
-                title: Text(
-                  font.labelFor(languageCode),
-                  style: TextStyle(
-                    fontFamily: font.familyFor(languageCode),
-                    fontSize: 15,
-                    color: isSelected
-                        ? context.colors.primary
-                        : context.colors.textMuted,
-                  ),
-                ),
-                subtitle: font.arabicFamily != font.latinFamily
-                    ? Text(
-                        languageCode == 'ar'
-                            ? font.latinLabel
-                            : font.arabicLabel,
-                        style: TextStyle(
-                          fontFamily: languageCode == 'ar'
-                              ? font.latinFamily
-                              : font.arabicFamily,
-                          fontSize: 12,
-                          color: context.colors.textMuted,
-                        ),
-                      )
-                    : null,
-                leading: Icon(
-                  isSelected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_off,
-                  color: isSelected
-                      ? context.colors.primary
-                      : context.colors.textMuted,
-                ),
-                onTap: () => context.read<FontPreferenceCubit>().setFont(font),
-              );
-            }),
-          ],
-        );
-      },
     );
   }
 }
@@ -172,7 +112,7 @@ class _LanguageSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(LocaleKeys.language.tr()),
+        SettingsSectionHeader(LocaleKeys.language.tr()),
         const LocaleSwitcher.tile(),
       ],
     );
@@ -193,7 +133,7 @@ class _NotificationsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(LocaleKeys.notifications.tr()),
+        SettingsSectionHeader(LocaleKeys.notifications.tr()),
         BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, state) => SwitchListTile.adaptive(
             title: Text(LocaleKeys.enableNotifications.tr()),
@@ -204,89 +144,6 @@ class _NotificationsSection extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// About
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _AboutSection extends StatelessWidget {
-  const _AboutSection();
-
-  @override
-  Widget build(BuildContext context) {
-    // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr() on locale change
-    context.locale;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _SectionHeader(LocaleKeys.appInfo.tr()),
-        BlocBuilder<SettingsCubit, SettingsState>(
-          buildWhen: (p, c) => p.appVersion != c.appVersion,
-          builder: (context, state) => ListTile(
-            title: Text(LocaleKeys.appVersion.tr()),
-            trailing: Text(
-              state.appVersion,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colors.textMuted,
-              ),
-            ),
-          ),
-        ),
-        BlocBuilder<SettingsCubit, SettingsState>(
-          buildWhen: (p, c) => p.isClearingCache != c.isClearingCache,
-          builder: (context, state) => ListTile(
-            title: Text(LocaleKeys.clearCache.tr()),
-            trailing: state.isClearingCache
-                ? const AppProgress.circular(size: AppProgressSize.sm)
-                : Icon(
-                    Icons.delete_sweep_outlined,
-                    color: context.colors.stateError,
-                  ),
-            onTap: state.isClearingCache
-                ? null
-                : () => context.read<SettingsCubit>().clearCache(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader(this.title);
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-      child: Text(
-        title,
-        style: context.textTheme.labelMedium?.copyWith(
-          color: context.colors.primary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _SectionDivider extends StatelessWidget {
-  const _SectionDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Divider(
-      height: 1,
-      thickness: 1,
-      color: context.colors.dividerSubtle,
     );
   }
 }

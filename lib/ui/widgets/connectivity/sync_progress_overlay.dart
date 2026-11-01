@@ -39,7 +39,7 @@ class SyncProgressOverlay extends StatelessWidget {
       canPop: false,
       child: Positioned.fill(
         child: ColoredBox(
-          color: Colors.black54,
+          color: context.colors.scrim.withValues(alpha: 0.54),
           child: Center(
             child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 32),

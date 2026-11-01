@@ -110,11 +110,11 @@ class BaseBottomSheet extends StatelessWidget {
     this.maxHeightRatio = 0.9,
   }) : assert(
          child == null || actions == null,
-         'لا تستخدم child و actions معاً.',
+         'BaseBottomSheet: do not pass both child and actions.',
        ),
        assert(
          child != null || (actions != null && actions.isNotEmpty),
-         'قدّم إما child أو قائمة actions غير فارغة.',
+         'BaseBottomSheet: provide either child or a non-empty actions list.',
        );
 
   final String? title;

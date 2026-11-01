@@ -46,10 +46,14 @@ class InitialLoadingIndicator extends StatelessWidget {
       size: AppProgressSize.lg,
       centered: true,
     ),
-    InitialLoadingStyle.shimmerList => _buildList(
-      (_) => const SkeletonListTile(),
+    InitialLoadingStyle.shimmerList => _RepeatedList(
+      itemCount: itemCount,
+      itemBuilder: (_) => const SkeletonListTile(),
     ),
-    InitialLoadingStyle.shimmerCard => _buildList((_) => const SkeletonCard()),
+    InitialLoadingStyle.shimmerCard => _RepeatedList(
+      itemCount: itemCount,
+      itemBuilder: (_) => const SkeletonCard(),
+    ),
     InitialLoadingStyle.shimmerGrid => GridView.builder(
       padding: const EdgeInsets.all(16),
       physics: const NeverScrollableScrollPhysics(),
@@ -62,8 +66,9 @@ class InitialLoadingIndicator extends StatelessWidget {
       itemCount: itemCount,
       itemBuilder: (_, _) => const SkeletonGridItem(),
     ),
-    InitialLoadingStyle.skeletonRows => _buildList(
-      (_) => const Padding(
+    InitialLoadingStyle.skeletonRows => _RepeatedList(
+      itemCount: itemCount,
+      itemBuilder: (_) => const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           children: [
@@ -84,8 +89,17 @@ class InitialLoadingIndicator extends StatelessWidget {
       ),
     ),
   };
+}
 
-  Widget _buildList(Widget Function(int) itemBuilder) => ListView.builder(
+/// قائمةٌ غير قابلة للتمرير تكرّر [itemBuilder] [itemCount] مرّة.
+class _RepeatedList extends StatelessWidget {
+  const _RepeatedList({required this.itemCount, required this.itemBuilder});
+
+  final int itemCount;
+  final Widget Function(int) itemBuilder;
+
+  @override
+  Widget build(BuildContext context) => ListView.builder(
     physics: const NeverScrollableScrollPhysics(),
     itemCount: itemCount,
     itemBuilder: (_, i) => itemBuilder(i),

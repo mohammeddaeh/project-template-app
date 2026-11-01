@@ -102,17 +102,11 @@ class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
                     ),
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
                   SliverToBoxAdapter(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 250),
-                      transitionBuilder: (child, anim) => FadeTransition(
-                        opacity: anim,
-                        child: SizeTransition(
-                          sizeFactor: anim,
-                          axisAlignment: -1,
-                          child: child,
-                        ),
-                      ),
-                      child: _buildNextPageStatus(loading, error),
+                    child: _NextPageTail(
+                      loading: loading,
+                      error: error,
+                      loadingItemWidget: widget.loadingItemWidget,
+                      onRetry: paginationCubit.getPage,
                     ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
@@ -131,28 +125,57 @@ class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
     );
   }
 
-  Widget _buildNextPageStatus(bool loading, Failure? error) {
-    if (loading) {
-      return KeyedSubtree(
-        key: const ValueKey('next_loading'),
-        child: widget.loadingItemWidget ?? const LoadingWidget(),
-      );
-    }
-    if (error != null) {
-      final action = FailureUiMapper.toAction(error);
-      if (action case ShowError(:final message)) {
-        return KeyedSubtree(
-          key: const ValueKey('next_error'),
-          child: ErrorStateWidget(
-            messageKey: message,
-            onRetry: paginationCubit.getPage,
-          ),
-        );
-      }
-    }
-    return const SizedBox.shrink(key: ValueKey('next_none'));
-  }
-
   @override
   bool get wantKeepAlive => widget.wantKeepAlive;
+}
+
+/// ذيل القائمة: تحميل الصفحة التالية · فشلها · لا شيء.
+class _NextPageTail extends StatelessWidget {
+  const _NextPageTail({
+    required this.loading,
+    required this.error,
+    required this.loadingItemWidget,
+    required this.onRetry,
+  });
+
+  final bool loading;
+  final Failure? error;
+  final Widget? loadingItemWidget;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    // الـswitcher يحرّك الانتقال بمفتاح ابنه المباشر — فيُبنى كلّ حالٍ هنا بمفتاحه.
+    final failure = error;
+    final action = loading || failure == null
+        ? null
+        : FailureUiMapper.toAction(failure);
+    final Widget child;
+    if (loading) {
+      child = KeyedSubtree(
+        key: const ValueKey('next_loading'),
+        child: loadingItemWidget ?? const LoadingWidget(),
+      );
+    } else if (action case ShowError(:final message)) {
+      child = KeyedSubtree(
+        key: const ValueKey('next_error'),
+        child: ErrorStateWidget(messageKey: message, onRetry: onRetry),
+      );
+    } else {
+      child = const SizedBox.shrink(key: ValueKey('next_none'));
+    }
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      transitionBuilder: (child, anim) => FadeTransition(
+        opacity: anim,
+        child: SizeTransition(
+          sizeFactor: anim,
+          axisAlignment: -1,
+          child: child,
+        ),
+      ),
+      child: child,
+    );
+  }
 }

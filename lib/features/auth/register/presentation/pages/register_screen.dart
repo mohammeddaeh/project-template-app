@@ -2,6 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/features/auth/register/presentation/cubits/register_cubit.dart';
+import 'package:app_template/features/auth/register/presentation/widgets/register_fields.dart';
+import 'package:app_template/features/auth/register/presentation/widgets/register_header.dart';
+import 'package:app_template/features/auth/register/presentation/widgets/register_submit_button.dart';
+import 'package:app_template/features/auth/register/presentation/widgets/sign_in_prompt.dart';
 import 'package:app_template/features/auth/shared/entities/auth_user.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/ui/extensions/extensions.dart';
@@ -121,150 +125,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: BlocConsumer<RegisterCubit, RegisterState>(
           bloc: _registerCubit,
           listener: _onStateChanged,
-          builder: (context, state) {
-            final isLoading = state is RegisterLoading;
-            return KeyboardDismissWidget(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        LocaleKeys.registerTitle.tr(),
-                        style: context.textTheme.headlineMedium?.copyWith(
-                          color: context.colors.textPrimary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        LocaleKeys.registerSubtitle.tr(),
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colors.textMuted,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      CustomTextField(
-                        controller: _nameController,
-                        labelText: LocaleKeys.fullNameOptional.tr(),
-                        hint: LocaleKeys.typeFullName.tr(),
-                        textInputAction: TextInputAction.next,
-                        // No validator, and none is missing: the column is
-                        // nullable server-side. A required-here/optional-there
-                        // mismatch is the client inventing a rule.
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextField(
-                        controller: _emailController,
-                        labelText: LocaleKeys.eMail.tr(),
-                        hint: LocaleKeys.typeEmail.tr(),
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        ltr: true,
-                        showRequired: true,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: _refreshCubit.refresh,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return LocaleKeys.invalidEmailAddress.tr();
-                          }
-                          if (!RegExp(
-                            r'^[\w-.]+@([\w-]+\.)+[\w-]{2,}$',
-                          ).hasMatch(value.trim())) {
-                            return LocaleKeys.invalidEmailAddress.tr();
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextField(
-                        controller: _passwordController,
-                        labelText: LocaleKeys.password.tr(),
-                        isFieldObscure: true,
-                        textInputAction: TextInputAction.next,
-                        ltr: true,
-                        showRequired: true,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: _refreshCubit.refresh,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return LocaleKeys.passwordValidationError.tr();
-                          }
-                          // Length only — see the class doc for why the
-                          // composition rules are not restated here.
-                          if (value.length < 8) {
-                            return LocaleKeys.passwordValidationError.tr();
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      CustomTextField(
-                        controller: _confirmController,
-                        labelText: LocaleKeys.confirmPassword.tr(),
-                        isFieldObscure: true,
-                        textInputAction: TextInputAction.done,
-                        ltr: true,
-                        showRequired: true,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: _refreshCubit.refresh,
-                        onFieldSubmitted: _submit,
-                        // Checked here and nowhere else: the server never sees
-                        // this field, because a confirmation box is a guard
-                        // against a typo on this device, not a fact about the
-                        // account.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return LocaleKeys.passwordValidationError.tr();
-                          }
-                          if (value != _passwordController.text) {
-                            return LocaleKeys.passwordsDoNotMatch.tr();
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 32),
-                      BlocBuilder<RefreshCubit, RefreshState>(
-                        bloc: _refreshCubit,
-                        builder: (context, _) => SizedBox(
-                          width: double.infinity,
-                          child: PrimaryButton(
-                            text: LocaleKeys.registerCta.tr(),
-                            isLoading: isLoading,
-                            isEnabled: _isFormValid,
-                            onTap: _submit,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            LocaleKeys.alreadyHaveAccount.tr(),
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: context.colors.textMuted,
-                            ),
-                          ),
-                          PrimaryButton(
-                            text: LocaleKeys.signIn.tr(),
-                            isTextOnly: true,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            onTap: () => context.router.maybePop(),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+          builder: (context, state) => KeyboardDismissWidget(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const RegisterHeader(),
+                    const SizedBox(height: 32),
+                    RegisterFields(
+                      nameController: _nameController,
+                      emailController: _emailController,
+                      passwordController: _passwordController,
+                      confirmController: _confirmController,
+                      onChanged: _refreshCubit.refresh,
+                      onSubmitted: _submit,
+                    ),
+                    const SizedBox(height: 32),
+                    RegisterSubmitButton(
+                      refreshCubit: _refreshCubit,
+                      isLoading: state is RegisterLoading,
+                      canSubmit: () => _isFormValid,
+                      onSubmit: _submit,
+                    ),
+                    const SizedBox(height: 16),
+                    const SignInPrompt(),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

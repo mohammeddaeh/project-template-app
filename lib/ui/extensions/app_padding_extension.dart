@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// الحشوات الجانبية **باتجاه الكتابة** (`start`/`end`): بالعربية `start` يمين.
+/// الأسماء المادّية (`left`/`right`) أُزيلت — حشوةٌ «يسار» تقع بالجانب الخطأ بـRTL
+/// (F10)، ولم يكن لها مستدعٍ.
 extension AppPaddingExtension on num {
   /// EdgeInsets.only with zero padding
   EdgeInsets get zeroPadding => EdgeInsets.zero;
@@ -10,11 +13,13 @@ extension AppPaddingExtension on num {
   /// EdgeInsets.only with bottom padding
   EdgeInsets get bottomPadding => EdgeInsets.only(bottom: toDouble());
 
-  /// EdgeInsets.only with left padding
-  EdgeInsets get leftPadding => EdgeInsets.only(left: toDouble());
+  /// EdgeInsetsDirectional.only with start padding
+  EdgeInsetsDirectional get startPadding =>
+      EdgeInsetsDirectional.only(start: toDouble());
 
-  /// EdgeInsets.only with right padding
-  EdgeInsets get rightPadding => EdgeInsets.only(right: toDouble());
+  /// EdgeInsetsDirectional.only with end padding
+  EdgeInsetsDirectional get endPadding =>
+      EdgeInsetsDirectional.only(end: toDouble());
 
   /// EdgeInsets.symmetric with horizontal padding
   EdgeInsets get horizontalPadding =>
@@ -28,7 +33,7 @@ extension AppPaddingExtension on num {
 
   /// EdgeInsets.only with left & right padding
   EdgeInsets get leftRightPadding =>
-      EdgeInsets.only(left: toDouble(), right: toDouble());
+      EdgeInsets.symmetric(horizontal: toDouble());
 
   /// EdgeInsets.only with top & bottom padding
   EdgeInsets get topBottomPadding =>
@@ -36,35 +41,41 @@ extension AppPaddingExtension on num {
 
   /// EdgeInsets.only with left, right, and top padding
   EdgeInsets get leftRightTopPadding =>
-      EdgeInsets.only(left: toDouble(), right: toDouble(), top: toDouble());
+      EdgeInsets.fromLTRB(toDouble(), toDouble(), toDouble(), 0);
 
   /// EdgeInsets.only with left, right, and bottom padding
   EdgeInsets get leftRightBottomPadding =>
-      EdgeInsets.only(left: toDouble(), right: toDouble(), bottom: toDouble());
+      EdgeInsets.fromLTRB(toDouble(), 0, toDouble(), toDouble());
 
-  /// EdgeInsets.only with left, top, and bottom padding
-  EdgeInsets get leftTopBottomPadding =>
-      EdgeInsets.only(left: toDouble(), top: toDouble(), bottom: toDouble());
+  /// EdgeInsetsDirectional.only with start, top, bottom padding
+  EdgeInsetsDirectional get startTopBottomPadding => EdgeInsetsDirectional.only(
+    start: toDouble(),
+    top: toDouble(),
+    bottom: toDouble(),
+  );
 
-  /// EdgeInsets.only with right, top, and bottom padding
-  EdgeInsets get rightTopBottomPadding =>
-      EdgeInsets.only(right: toDouble(), top: toDouble(), bottom: toDouble());
+  /// EdgeInsetsDirectional.only with end, top, bottom padding
+  EdgeInsetsDirectional get endTopBottomPadding => EdgeInsetsDirectional.only(
+    end: toDouble(),
+    top: toDouble(),
+    bottom: toDouble(),
+  );
 
-  /// EdgeInsets.only with left & top padding
-  EdgeInsets get leftTopPadding =>
-      EdgeInsets.only(left: toDouble(), top: toDouble());
+  /// EdgeInsetsDirectional.only with start, top padding
+  EdgeInsetsDirectional get startTopPadding =>
+      EdgeInsetsDirectional.only(start: toDouble(), top: toDouble());
 
-  /// EdgeInsets.only with left & bottom padding
-  EdgeInsets get leftBottomPadding =>
-      EdgeInsets.only(left: toDouble(), bottom: toDouble());
+  /// EdgeInsetsDirectional.only with start, bottom padding
+  EdgeInsetsDirectional get startBottomPadding =>
+      EdgeInsetsDirectional.only(start: toDouble(), bottom: toDouble());
 
-  /// EdgeInsets.only with right & top padding
-  EdgeInsets get rightTopPadding =>
-      EdgeInsets.only(right: toDouble(), top: toDouble());
+  /// EdgeInsetsDirectional.only with end, top padding
+  EdgeInsetsDirectional get endTopPadding =>
+      EdgeInsetsDirectional.only(end: toDouble(), top: toDouble());
 
-  /// EdgeInsets.only with right & bottom padding
-  EdgeInsets get rightBottomPadding =>
-      EdgeInsets.only(right: toDouble(), bottom: toDouble());
+  /// EdgeInsetsDirectional.only with end, bottom padding
+  EdgeInsetsDirectional get endBottomPadding =>
+      EdgeInsetsDirectional.only(end: toDouble(), bottom: toDouble());
 
   SizedBox get widthBox => SizedBox(width: toDouble());
   SizedBox get heightBox => SizedBox(height: toDouble());

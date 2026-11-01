@@ -3,7 +3,9 @@ import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 import 'package:app_template/ui/widgets/misc/app_text.dart';
 import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/locale/locale.dart';
 
 @RoutePage(name: 'ErrorRoute')
@@ -17,7 +19,7 @@ class ErrorView extends StatelessWidget {
   String get _displayText {
     if (errorDetails != null) return errorDetails!.exceptionAsString();
     if (message != null && message!.isNotEmpty) return message!;
-    return 'حدث خطأ';
+    return LocaleKeys.errorOccurred.tr();
   }
 
   @override

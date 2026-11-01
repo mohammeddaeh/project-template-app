@@ -40,6 +40,10 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.bgDisabled,
     required this.textDisabled,
     required this.bgBrand,
+    required this.feedbackSuccess,
+    required this.feedbackError,
+    required this.feedbackWarning,
+    required this.feedbackInfo,
     required this.onBrand,
     required this.onBrandAccent,
     required this.borderSubtle,
@@ -129,6 +133,13 @@ class AppColors extends ThemeExtension<AppColors> {
   /// وأوّل شاشةٍ مطليّة بالهوية (الترحيب).
   final Color bgBrand;
 
+  /// لمسةُ رسالة التنبيه (`context.feedback.*`) — شريطُها وأيقونتها. لا تنقلب مع
+  /// الوضع: الرسالة تطفو فوق أي سطح، ولونُها معناها.
+  final Color feedbackSuccess;
+  final Color feedbackError;
+  final Color feedbackWarning;
+  final Color feedbackInfo;
+
   /// اللمسةُ المميِّزة فوق سطح العلامة — تقدُّمٌ, أو قيمةٌ تُبرَز.
   final Color onBrandAccent;
   final Color borderSubtle;
@@ -194,6 +205,10 @@ class AppColors extends ThemeExtension<AppColors> {
       bgDisabled: AppPalette.gray300,
       textDisabled: AppPalette.gray700, // 6.59:1 over bgDisabled
       bgBrand: AppPalette.brandSurface,
+      feedbackSuccess: AppPalette.successMain,
+      feedbackError: AppPalette.errorMain,
+      feedbackWarning: AppPalette.warningMain,
+      feedbackInfo: AppPalette.infoMain,
       onBrand: AppPalette.white,
       onBrandAccent: AppPalette.secondaryMain,
       borderSubtle: AppPalette.gray200,
@@ -261,6 +276,10 @@ class AppColors extends ThemeExtension<AppColors> {
       bgDisabled: AppPalette.gray700,
       textDisabled: AppPalette.gray300, // 6.59:1 over bgDisabled
       bgBrand: AppPalette.brandSurface,
+      feedbackSuccess: AppPalette.successMain,
+      feedbackError: AppPalette.errorMain,
+      feedbackWarning: AppPalette.warningMain,
+      feedbackInfo: AppPalette.infoMain,
       onBrand: AppPalette.white,
       onBrandAccent: AppPalette.secondaryMain,
       borderSubtle: AppPalette.gray700,
@@ -327,6 +346,10 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? bgDisabled,
     Color? textDisabled,
     Color? bgBrand,
+    Color? feedbackSuccess,
+    Color? feedbackError,
+    Color? feedbackWarning,
+    Color? feedbackInfo,
     Color? onBrand,
     Color? onBrandAccent,
     Color? borderSubtle,
@@ -391,6 +414,10 @@ class AppColors extends ThemeExtension<AppColors> {
       bgDisabled: bgDisabled ?? this.bgDisabled,
       textDisabled: textDisabled ?? this.textDisabled,
       bgBrand: bgBrand ?? this.bgBrand,
+      feedbackSuccess: feedbackSuccess ?? this.feedbackSuccess,
+      feedbackError: feedbackError ?? this.feedbackError,
+      feedbackWarning: feedbackWarning ?? this.feedbackWarning,
+      feedbackInfo: feedbackInfo ?? this.feedbackInfo,
       onBrand: onBrand ?? this.onBrand,
       onBrandAccent: onBrandAccent ?? this.onBrandAccent,
       borderSubtle: borderSubtle ?? this.borderSubtle,
@@ -482,6 +509,10 @@ class AppColors extends ThemeExtension<AppColors> {
       bgDisabled: Color.lerp(bgDisabled, other.bgDisabled, t)!,
       textDisabled: Color.lerp(textDisabled, other.textDisabled, t)!,
       bgBrand: Color.lerp(bgBrand, other.bgBrand, t)!,
+      feedbackSuccess: Color.lerp(feedbackSuccess, other.feedbackSuccess, t)!,
+      feedbackError: Color.lerp(feedbackError, other.feedbackError, t)!,
+      feedbackWarning: Color.lerp(feedbackWarning, other.feedbackWarning, t)!,
+      feedbackInfo: Color.lerp(feedbackInfo, other.feedbackInfo, t)!,
       onBrand: Color.lerp(onBrand, other.onBrand, t)!,
       onBrandAccent: Color.lerp(onBrandAccent, other.onBrandAccent, t)!,
       borderSubtle: Color.lerp(borderSubtle, other.borderSubtle, t)!,

@@ -1,12 +1,13 @@
-import 'dart:ui' as ui;
-
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_template/core/di/injection.dart';
-import 'package:app_template/features/auth/logout/presentation/widgets/logout_section.dart';
 import 'package:app_template/features/auth/verify_email/presentation/cubits/verify_email_cubit.dart';
+import 'package:app_template/features/auth/verify_email/presentation/widgets/verify_email_actions.dart';
+import 'package:app_template/features/auth/verify_email/presentation/widgets/verify_email_code_field.dart';
+import 'package:app_template/features/auth/verify_email/presentation/widgets/verify_email_intro.dart';
+import 'package:app_template/features/auth/verify_email/presentation/widgets/verify_email_why_card.dart';
 import 'package:app_template/ui/extensions/extensions.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/state/refresh/refresh_cubit.dart';
@@ -123,8 +124,6 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
           listener: _onStateChanged,
           builder: (context, state) {
             final isLoading = state is VerifyEmailLoading;
-            final secondsLeft = _cubit.secondsUntilResend;
-
             return KeyboardDismissWidget(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -136,94 +135,24 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        LocaleKeys.verifyEmailSubtitle.tr(),
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colors.textMuted,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      // LTR and selectable: an address is never Arabic text, and
-                      // a user comparing it against what they typed needs to be
-                      // able to read every character of it.
-                      Directionality(
-                        // `ui.` prefixed: easy_localization re-exports intl,
-                        // which has its own TextDirection and shadows Flutter's.
-                        textDirection: ui.TextDirection.ltr,
-                        child: SelectableText(
-                          widget.email,
-                          style: context.textTheme.bodyLarge?.copyWith(
-                            color: context.colors.textPrimary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                      VerifyEmailIntro(email: widget.email),
                       const SizedBox(height: 24),
-                      _WhyCard(),
+                      const VerifyEmailWhyCard(),
                       const SizedBox(height: 24),
-                      CustomTextField(
+                      VerifyEmailCodeField(
                         controller: _codeController,
-                        labelText: LocaleKeys.verifyEmailHint.tr(),
-                        keyboardType: TextInputType.text,
-                        textInputAction: TextInputAction.done,
-                        ltr: true,
-                        showRequired: true,
-                        // No forced upper-casing: the server normalises case
-                        // and trims whitespace before hashing, so a lower-case
-                        // paste out of a mail client is the right code entered
-                        // correctly. Rejecting it on presentation would be
-                        // refusing a correct answer on a technicality.
                         onChanged: _refreshCubit.refresh,
-                        onFieldSubmitted: _submit,
-                        validator: (value) =>
-                            (value == null || value.trim().isEmpty)
-                            ? LocaleKeys.verifyEmailCodeRequired.tr()
-                            : null,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        LocaleKeys.verifyEmailCheckSpam.tr(),
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: context.colors.textMuted,
-                        ),
+                        onSubmitted: _submit,
                       ),
                       const SizedBox(height: 28),
-                      BlocBuilder<RefreshCubit, RefreshState>(
-                        bloc: _refreshCubit,
-                        builder: (context, _) => SizedBox(
-                          width: double.infinity,
-                          child: PrimaryButton(
-                            text: LocaleKeys.verifyEmailCta.tr(),
-                            isLoading: isLoading,
-                            isEnabled: _isValid,
-                            onTap: _submit,
-                          ),
-                        ),
+                      VerifyEmailActions(
+                        refreshCubit: _refreshCubit,
+                        isLoading: isLoading,
+                        canSubmit: () => _isValid,
+                        onSubmit: _submit,
+                        secondsLeft: _cubit.secondsUntilResend,
+                        onResend: _cubit.resend,
                       ),
-                      const SizedBox(height: 12),
-                      Center(
-                        child: TextButton(
-                          // Disabled during the cooldown rather than hidden: a
-                          // button that vanishes reads as a bug, while one that
-                          // says how long is left answers the question the user
-                          // is actually asking.
-                          onPressed: secondsLeft > 0 || isLoading
-                              ? null
-                              : _cubit.resend,
-                          child: Text(
-                            secondsLeft > 0
-                                ? LocaleKeys.verifyEmailResendIn.tr(
-                                    args: ['$secondsLeft'],
-                                  )
-                                : LocaleKeys.verifyEmailResend.tr(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      // The way out for someone who registered with the wrong
-                      // address. Without it this screen is a trap: the code can
-                      // only arrive somewhere they cannot read.
-                      const LogoutSection(),
                     ],
                   ),
                 ),
@@ -231,52 +160,6 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-/// Explains why the app is asking, in one short card.
-///
-/// Present because the step is otherwise unexplained friction — the user just
-/// finished a form and is being asked to do more before anything happens. One
-/// sentence naming what it buys ("nobody can register with an address they do
-/// not own") converts an obstacle into a reason.
-class _WhyCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colors.statusInfoBg,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.info_outline, size: 18, color: colors.statusInfoFg),
-              const SizedBox(width: 8),
-              Text(
-                LocaleKeys.verifyEmailWhyTitle.tr(),
-                style: context.textTheme.labelLarge?.copyWith(
-                  color: colors.statusInfoFg,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            LocaleKeys.verifyEmailWhyBody.tr(),
-            style: context.textTheme.bodySmall?.copyWith(
-              color: colors.textSecondary,
-            ),
-          ),
-        ],
       ),
     );
   }

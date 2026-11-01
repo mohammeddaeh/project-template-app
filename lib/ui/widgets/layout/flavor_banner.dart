@@ -11,10 +11,15 @@ class FlavorBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (Env.isProd) return child;
-    return Material(child: Stack(children: [child, _buildBanner(context)]));
+    return Material(child: Stack(children: [child, const _EnvBanner()]));
   }
+}
 
-  Widget _buildBanner(BuildContext context) {
+class _EnvBanner extends StatelessWidget {
+  const _EnvBanner();
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       width: 50,
       height: 50,

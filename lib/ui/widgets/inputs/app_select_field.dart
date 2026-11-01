@@ -203,9 +203,26 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
 
             // ── Input ─────────────────────────────────────────────────────────
             if (widget.mode == AppSelectMode.dropdown)
-              _buildDropdown(context, state)
+              _SelectDropdown<T>(
+                value: _currentValue,
+                items: widget.items,
+                labelResolver: widget.labelResolver,
+                hint: widget.hint,
+                enabled: widget.enabled,
+                hasError: hasError,
+                prefixIcon: widget.prefixIcon,
+                onChanged: widget.enabled ? _onSelect : null,
+              )
             else
-              _buildTapField(context, state),
+              _SelectTapField<T>(
+                value: _currentValue,
+                labelResolver: widget.labelResolver,
+                hint: widget.hint,
+                enabled: widget.enabled,
+                hasError: hasError,
+                prefixIcon: widget.prefixIcon,
+                onTap: () => _openBottomSheet(context),
+              ),
 
             // ── Error ─────────────────────────────────────────────────────────
             if (hasError) ...[
@@ -238,24 +255,53 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
       },
     );
   }
+}
 
-  // ── dropdown ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// _SelectDropdown<T> — وضع القائمة المنسدلة
+// ─────────────────────────────────────────────────────────────────────────────
 
-  Widget _buildDropdown(BuildContext context, FormFieldState<T> state) {
+class _SelectDropdown<T> extends StatelessWidget {
+  const _SelectDropdown({
+    required this.value,
+    required this.items,
+    required this.labelResolver,
+    required this.hint,
+    required this.enabled,
+    required this.hasError,
+    required this.prefixIcon,
+    required this.onChanged,
+  });
+
+  final T? value;
+  final List<T> items;
+  final String Function(T) labelResolver;
+  final String? hint;
+  final bool enabled;
+  final bool hasError;
+  final Widget? prefixIcon;
+  final ValueChanged<T?>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.colors;
     final textTheme = context.textTheme;
-    final hasError = state.hasError;
 
     return InputDecorator(
-      decoration: _inputDecoration(colors, hasError: hasError, focused: false),
+      decoration: _selectInputDecoration(
+        colors,
+        hasError: hasError,
+        focused: false,
+        prefixIcon: prefixIcon,
+      ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
-          value: _currentValue,
+          value: value,
           isExpanded: true,
           isDense: true,
-          hint: widget.hint != null
+          hint: hint != null
               ? Text(
-                  widget.hint!,
+                  hint!,
                   style: textTheme.bodyMedium?.copyWith(
                     color: colors.textMuted,
                     fontSize: 14,
@@ -270,16 +316,16 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
           ),
           icon: Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: widget.enabled ? colors.iconSubtle : colors.textMuted,
+            color: enabled ? colors.iconSubtle : colors.textMuted,
             size: 20,
           ),
           dropdownColor: colors.bgCard,
-          onChanged: widget.enabled ? _onSelect : null,
-          items: widget.items
+          onChanged: onChanged,
+          items: items
               .map(
                 (item) => DropdownMenuItem<T>(
                   value: item,
-                  child: Text(widget.labelResolver(item)),
+                  child: Text(labelResolver(item)),
                 ),
               )
               .toList(),
@@ -287,34 +333,52 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
       ),
     );
   }
+}
 
-  // ── bottomSheet tap field ─────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// _SelectTapField<T> — حقلٌ يُفتح بالنقر على ورقة سفلية
+// ─────────────────────────────────────────────────────────────────────────────
 
-  Widget _buildTapField(BuildContext context, FormFieldState<T> state) {
+class _SelectTapField<T> extends StatelessWidget {
+  const _SelectTapField({
+    required this.value,
+    required this.labelResolver,
+    required this.hint,
+    required this.enabled,
+    required this.hasError,
+    required this.prefixIcon,
+    required this.onTap,
+  });
+
+  final T? value;
+  final String Function(T) labelResolver;
+  final String? hint;
+  final bool enabled;
+  final bool hasError;
+  final Widget? prefixIcon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.colors;
     final textTheme = context.textTheme;
-    final hasValue = _currentValue != null;
-    final hasError = state.hasError;
+    final hasValue = value != null;
 
     return GestureDetector(
-      onTap: () => _openBottomSheet(context),
+      onTap: onTap,
       child: InputDecorator(
-        decoration: _inputDecoration(
+        // الأيقونة هنا داخل الـRow لا في الزخرفة.
+        decoration: _selectInputDecoration(
           colors,
           hasError: hasError,
           focused: false,
         ),
         child: Row(
           children: [
-            if (widget.prefixIcon != null) ...[
-              widget.prefixIcon!,
-              const SizedBox(width: 8),
-            ],
+            if (prefixIcon != null) ...[prefixIcon!, const SizedBox(width: 8)],
             Expanded(
               child: Text(
-                hasValue
-                    ? widget.labelResolver(_currentValue as T)
-                    : (widget.hint ?? ''),
+                hasValue ? labelResolver(value as T) : (hint ?? ''),
                 style: textTheme.bodyMedium?.copyWith(
                   color: hasValue ? colors.textPrimary : colors.textMuted,
                   fontSize: 14,
@@ -324,7 +388,7 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
             ),
             Icon(
               Icons.keyboard_arrow_down_rounded,
-              color: widget.enabled ? colors.iconSubtle : colors.textMuted,
+              color: enabled ? colors.iconSubtle : colors.textMuted,
               size: 20,
             ),
           ],
@@ -332,40 +396,38 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
       ),
     );
   }
+}
 
-  // ── helpers ───────────────────────────────────────────────────────────────────
+// ── helpers ───────────────────────────────────────────────────────────────────
 
-  InputDecoration _inputDecoration(
-    AppColors colors, {
-    required bool hasError,
-    required bool focused,
-  }) {
-    final radius = BorderRadius.circular(12);
-    final borderColor = hasError
-        ? colors.error
-        : focused
-        ? colors.primary
-        : colors.borderSubtle;
-    final border = OutlineInputBorder(
-      borderRadius: radius,
-      borderSide: BorderSide(width: 1, color: borderColor),
-    );
-    return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      border: border,
-      enabledBorder: border,
-      focusedBorder: border,
-      errorBorder: border,
-      focusedErrorBorder: border,
-      disabledBorder: border,
-      prefixIcon:
-          widget.prefixIcon != null && widget.mode == AppSelectMode.dropdown
-          ? widget.prefixIcon
-          : null,
-      isDense: true,
-      errorStyle: const TextStyle(height: 0, fontSize: 0),
-    );
-  }
+InputDecoration _selectInputDecoration(
+  AppColors colors, {
+  required bool hasError,
+  required bool focused,
+  Widget? prefixIcon,
+}) {
+  final radius = BorderRadius.circular(12);
+  final borderColor = hasError
+      ? colors.error
+      : focused
+      ? colors.primary
+      : colors.borderSubtle;
+  final border = OutlineInputBorder(
+    borderRadius: radius,
+    borderSide: BorderSide(width: 1, color: borderColor),
+  );
+  return InputDecoration(
+    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+    border: border,
+    enabledBorder: border,
+    focusedBorder: border,
+    errorBorder: border,
+    focusedErrorBorder: border,
+    disabledBorder: border,
+    prefixIcon: prefixIcon,
+    isDense: true,
+    errorStyle: const TextStyle(height: 0, fontSize: 0),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
