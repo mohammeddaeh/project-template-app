@@ -52,6 +52,8 @@ export 'layout/expandable_section.dart';
 export 'layout/stat_card.dart';
 export 'layout/section_title.dart';
 export 'layout/app_card.dart';
+export 'layout/app_open_container.dart';
+export 'layout/app_step_switcher.dart';
 export 'layout/divider_widget.dart';
 export 'layout/dashed_divider.dart';
 export 'layout/spacing.dart';
@@ -66,8 +68,10 @@ export 'lists/paginated_list_view.dart';
 export 'lists/load_more_widget.dart';
 export 'lists/refresh_wrapper.dart';
 export 'lists/list_item_appear.dart';
+export 'lists/list_appear_tracker.dart';
 
 // Indicators
+export 'indicators/animated_count.dart';
 export 'indicators/app_progress.dart';
 export 'indicators/progress_with_count.dart';
 export 'indicators/app_loader.dart';
@@ -82,6 +86,7 @@ export 'indicators/status_feedback_indicator.dart';
 export 'wrappers/error_boundary.dart';
 export 'wrappers/keyboard_dismiss_widget.dart';
 export 'wrappers/pressable_scale.dart';
+export 'wrappers/shake_on_error.dart';
 export 'wrappers/safe_area_wrapper.dart';
 export 'wrappers/system_bar_style.dart';
 

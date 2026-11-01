@@ -1,4 +1,4 @@
-import 'package:flutter/animation.dart';
+import 'package:flutter/widgets.dart';
 
 /// مدّة وcurve الحركة — صفر توكن لها قبل هذا الملف؛ كل micro-interaction
 /// كانت تُبنى بقيمة مكتوبة يدوياً بلا قرار موحَّد خلفها.
@@ -26,4 +26,51 @@ abstract final class AppMotion {
 
   /// تأخير قبل تنفيذ إجراء بعد كتابة حيّة — حقل بحث أو فلترة.
   static const Duration debounce = Duration(milliseconds: 300);
+
+  /// الفاصل بين عنصرٍ وتاليه بظهورٍ متتالٍ (قائمة · ترحيب).
+  static const Duration stagger = Duration(milliseconds: 45);
+
+  /// أقصى عدد عناصر يتأخّر ظهورُها في دفعةٍ واحدة — العنصر التاسع يظهر مع
+  /// الثامن، فلا ينتظر القارئ عموداً فارغاً يمتلئ خلفه.
+  static const int staggerCap = 8;
+
+  /// المدد **كما يجب أن تُستعمل الآن**: صفرٌ حين فعّل المستخدم «تقليل الحركة»
+  /// بالنظام (`MediaQuery.disableAnimations`). كل حركةٍ تُبنى بشاشة أو ودجة
+  /// تأخذ مدّتها من هنا لا من الثوابت أعلاه مباشرةً.
+  static MotionValues of(BuildContext context) =>
+      MediaQuery.maybeDisableAnimationsOf(context) == true
+      ? MotionValues.reduced
+      : MotionValues.standard;
+}
+
+/// مددُ الحركة بعد احترام «تقليل الحركة» — راجع [AppMotion.of].
+class MotionValues {
+  const MotionValues._({
+    required this.fast,
+    required this.base,
+    required this.slow,
+    required this.stagger,
+  });
+
+  static const standard = MotionValues._(
+    fast: AppMotion.fast,
+    base: AppMotion.base,
+    slow: AppMotion.slow,
+    stagger: AppMotion.stagger,
+  );
+
+  static const reduced = MotionValues._(
+    fast: Duration.zero,
+    base: Duration.zero,
+    slow: Duration.zero,
+    stagger: Duration.zero,
+  );
+
+  final Duration fast;
+  final Duration base;
+  final Duration slow;
+  final Duration stagger;
+
+  /// هل الحركة مطفأة بطلب المستخدم؟ ما لا مدّةَ له (اهتزاز · عدّاد) يُتخطّى كلّه.
+  bool get isReduced => identical(this, reduced);
 }

@@ -403,6 +403,15 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 
 الفاحص: `check_structure.dart` §`C01…C17` — النداءُ الخامّ للحزمة خارج غلافه يُفشل البناء.
 
+### R41 · كل حركةٍ تأخذ مدّتها من `AppMotion.of(context)` 👁
+
+المدّة من `AppMotion.of(context)` والمنحنى من `AppMotion` — فلا رقمَ بالشاشة، ولا
+حركةَ تتجاهل «تقليل الحركة» (`MediaQuery.disableAnimations`): من فعّله لدوارٍ أو
+لتشتّت يجد التطبيق ثابتاً كلّه، بلا علَمٍ لكل شاشة. وما لا مدّة له (هزّة · عدّاد)
+يتخطّى نفسه حين `isReduced`. الحركاتُ الجاهزة بـ[`06_CAPABILITIES.md`](06_CAPABILITIES.md) §الحركة.
+
+الاختبار: `test/motion_test.dart`.
+
 ### R39 · كل رابطٍ بوثيقة يصل ملفاً موجوداً 🔒
 
 نقلُ ملفٍّ أو حذفُه يكسر كل رابطٍ إليه، ولا شيء آخر يفشل. ورابطٌ إلى `_template/`
@@ -507,6 +516,7 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R38  لا تاريخ ولا اسمَ مشروع بوثيقةٍ أو تعليق — audit_template §٥
 [ ] R39  check_docs بلا رابطٍ معطوب
 [ ] R40  بحثتُ بـ06_CAPABILITIES قبل كتابة أداة — والناقص وُسِّع بمكانه
+[ ] R41  كل حركةٍ مدّتها من AppMotion.of(context) — صفرٌ مع «تقليل الحركة»
 [ ] R36  صفر TextField/TextFormField خام — CustomTextField وحده
 [ ] R37  صفر رقمِ مقاسٍ خام — context.screen · وجُرِّبت على هاتف ولوح
 [ ] R16  اتجاه التبعية سليم

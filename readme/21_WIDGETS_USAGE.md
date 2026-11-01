@@ -60,6 +60,10 @@
 | `GuideOverlay` | onboarding | [§32](widgets/06_navigation.md) |
 | `validateAndReveal` | نماذج | [§33](widgets/02_inputs.md) |
 | `SvgImageWidget` / `.icon` | صور | [§34](widgets/04_display.md) |
+| `AppOpenContainer` | حركة · تنقّل | [§35](widgets/03_layout.md) |
+| `AppStepSwitcher` | حركة · خطوات | [§36](widgets/03_layout.md) |
+| `AnimatedCount` | حركة · أرقام | [§37](widgets/04_display.md) |
+| `ShakeOnError` | حركة · تحقّق | [§38](widgets/01_buttons.md) |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 

@@ -268,6 +268,17 @@ AppProgress.circular(value: p, dimension: 54, center: Text('65%'))
 > لا بالسلوك. و`progressIndicatorTheme` لم يكفِ — يوحّد اللونَ الافتراضيَّ وحده،
 > فكان كلُّ موضعٍ يتجاوزه بـ`color:` صريح.
 
+## Motion — الحركة من `AppMotion.of(context)` (R41)
+
+```dart
+final m = AppMotion.of(context);          // صفرٌ مع «تقليل الحركة» بالنظام
+AnimatedOpacity(duration: m.base, curve: AppMotion.baseCurve, ...)
+```
+
+الجاهز: انتقال الصفحات بالثيم (PredictiveBack) · صفوف القوائم متتالية افتراضاً ·
+`AppOpenContainer` · `AppStepSwitcher` · `AnimatedCount` · `ShakeOnError` ·
+`PressableScale`. **ولا `Duration(milliseconds: …)` بشاشة.**
+
 ## Text — Overflow & Expansion (صارمة)
 
 - كل `Text` داخل `Row` أفقي → `Expanded` + `overflow: TextOverflow.ellipsis`

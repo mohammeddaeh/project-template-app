@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
+import 'package:app_template/ui/widgets/lists/list_appear_tracker.dart';
+import 'package:app_template/ui/widgets/lists/list_item_appear.dart';
 
-class PaginatedListView extends StatelessWidget {
+class PaginatedListView extends StatefulWidget {
   const PaginatedListView({
     super.key,
     required this.itemCount,
@@ -11,6 +13,7 @@ class PaginatedListView extends StatelessWidget {
     this.loadMoreThreshold = 3,
     this.loadingWidget,
     this.hasMore = true,
+    this.itemAppear = ListItemAppear.fadeSlide,
   });
 
   final int itemCount;
@@ -20,15 +23,31 @@ class PaginatedListView extends StatelessWidget {
   final Widget? loadingWidget;
   final bool hasMore;
 
+  /// كيف يظهر كل صفٍّ **أوّل مرّة** — متتالياً داخل دفعته ([ListAppearTracker]).
+  final ListItemAppear itemAppear;
+
+  @override
+  State<PaginatedListView> createState() => _PaginatedListViewState();
+}
+
+class _PaginatedListViewState extends State<PaginatedListView> {
+  final _appear = ListAppearTracker();
+
   @override
   Widget build(BuildContext context) {
+    final widget = this.widget;
+    _appear.observeLength(widget.itemCount);
     return ListView.builder(
-      itemCount: itemCount + (hasMore && onLoadMore != null ? 1 : 0),
+      itemCount:
+          widget.itemCount +
+          (widget.hasMore && widget.onLoadMore != null ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index >= itemCount) {
-          if (hasMore && onLoadMore != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) => onLoadMore!());
-            return loadingWidget ??
+        if (index >= widget.itemCount) {
+          if (widget.hasMore && widget.onLoadMore != null) {
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => widget.onLoadMore!(),
+            );
+            return widget.loadingWidget ??
                 const AppProgress.circular(
                   centered: true,
                   padding: EdgeInsets.all(16),
@@ -36,12 +55,23 @@ class PaginatedListView extends StatelessWidget {
           }
           return const SizedBox.shrink();
         }
-        if (onLoadMore != null &&
-            hasMore &&
-            index >= itemCount - loadMoreThreshold) {
-          WidgetsBinding.instance.addPostFrameCallback((_) => onLoadMore!());
+        if (widget.onLoadMore != null &&
+            widget.hasMore &&
+            index >= widget.itemCount - widget.loadMoreThreshold) {
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => widget.onLoadMore!(),
+          );
         }
-        return itemBuilder(context, index);
+        final item = widget.itemBuilder(context, index);
+        final order = _appear.staggerFor(index);
+        if (order == null || widget.itemAppear == ListItemAppear.none) {
+          return item;
+        }
+        return ListItemAppearWdg(
+          animation: widget.itemAppear,
+          staggerIndex: order,
+          child: item,
+        );
       },
     );
   }

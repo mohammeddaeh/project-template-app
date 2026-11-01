@@ -199,3 +199,33 @@ Container(
 ```
 
 ⚠️ **حدّها**: داخل صندوق يلتصق بالنصّ (`Column` بلا ارتفاع ثابت) لا موضع تُزاح إليه — الإزاحة تدفع الحبر خارج حدوده هناك. التفصيل الكامل والسبب البصري: [`lib/CLAUDE.md`](../../lib/CLAUDE.md) §«توسيط الأرقام».
+
+---
+
+## §35 · `AppOpenContainer` — بطاقةٌ تتمدّد لتصير صفحتها
+
+```dart
+AppOpenContainer(
+  closedBuilder: (context, open) => OrderCard(order, onTap: open),
+  openBuilder: (context, close) => OrderDetailScreen(id: order.id),
+)
+```
+
+انتقال Material «container transform» (حزمة `animations` الرسمية): العين تتبع
+البطاقة وهي تصير الصفحة، فيُقرأ «فتحتُ هذا العنصر». **من قائمةٍ إلى تفاصيل عنصرها
+وحده.** ⚠️ الصفحة المفتوحة تُبنى هنا لا بالموجّه — لا رابط عميق يصلها؛ تفاصيلُ يصلها
+رابطٌ تُفتح بـ`context.router.push`. المدّة `AppMotion.of(context).slow`.
+
+---
+
+## §36 · `AppStepSwitcher` — خطواتٌ داخل شاشةٍ واحدة
+
+```dart
+AppStepSwitcher(
+  step: state.step,
+  child: switch (state.step) { 0 => EmailStep(), _ => CodeStep() },
+)
+```
+
+انتقال «shared axis» الأفقي: التقدّم ينزلق باتجاه القراءة والرجوع بعكسه (زيادة
+`step` أو نقصه)، والاتجاه يتبع لغة الواجهة. لا يحفظ حالة الخطوة السابقة — مكانُها الـcubit.

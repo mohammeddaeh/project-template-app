@@ -96,6 +96,8 @@ dependencies:
   device_info_plus: ^12.4.0
   lottie: ^3.3.3
   syncfusion_flutter_core: ^31.2.18
+  # Material motion (container transform · shared axis · fade through) — first-party.
+  animations: ^2.1.1
 
 
 dependency_overrides:

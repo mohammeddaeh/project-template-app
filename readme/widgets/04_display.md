@@ -379,3 +379,15 @@ SvgImageWidget.icon(Assets.images.vectors.logoSvg, size: 18)
 ⚠️ **و`flutter_svg` لا يطبّق `<style>`**: SVG يلوّن بأصناف CSS يُرسم أسود. أصلحه
 مرّةً بـ`dart run scripts/svg_inline_styles.dart <الملف>` — و`test/svg_no_style_test.dart`
 يُفشل أي SVG بـ`assets/` بقي فيه `<style>`.
+
+---
+
+## §37 · `AnimatedCount` — رقمٌ يعدّ إلى قيمته
+
+```dart
+AnimatedCount(value: state.total, style: context.textTheme.headlineMedium)
+AnimatedCount(value: n, format: AppNumberFormats.count)   // الشكل من الكتالوج
+```
+
+يعدّ من القيمة السابقة إلى الجديدة بدل أن يقفز — «تغيّر الرقم» يُرى ولو فاتت لحظتُه.
+الشكل من `AppNumberFormats` (افتراضاً `count`)، ومع «تقليل الحركة» يظهر الرقم فوراً.

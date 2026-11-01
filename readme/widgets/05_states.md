@@ -111,6 +111,12 @@ BlocProvider(
 )
 ```
 
+**والصفوف تظهر متتالية أوّل مرّة** (`itemAppear`، افتراضاً `ListItemAppear.fadeSlide`):
+كل دفعةٍ تصل تتتابع من صفّها الأول، بحدٍّ أقصى ثمانية صفوف (`AppMotion.staggerCap`)،
+والرجوع بالتمرير يرسم ما ظهر ثابتاً، والسحب للتحديث يعرض القائمة كأنها جديدة. ومع
+«تقليل الحركة» تظهر ثابتة. لقائمةٍ كثيفة: `itemAppear: ListItemAppear.none`.
+و`PaginatedListView` بالسلوك نفسه. والمنطق بـ`ListAppearTracker` لمن يبني قائمته بيده.
+
 
 ---
 

@@ -67,6 +67,19 @@
 | لون · خط · زاوية · حركة · ظلّ | `context.colors.x` · `context.textTheme.x` · `AppRadius` · `AppMotion` · `AppElevation` — [`20_WIDGETS.md`](20_WIDGETS.md) §3 | `Color(0xFF…)` · `Colors.x` | F04 |
 | اتجاه حشوة أو محاذاة | `EdgeInsetsDirectional` · `AlignmentDirectional` | `EdgeInsets.only(left:)` | F10 |
 
+## الحركة
+
+| الحاجة | استعمل | لا تكتب | الحارس |
+|---|---|---|---|
+| مدّة أو منحنى حركة | `AppMotion.of(context).base` (صفرٌ مع «تقليل الحركة») · `AppMotion.baseCurve` — [`ui/theme/app_motion.dart`](../lib/ui/theme/app_motion.dart) | `Duration(milliseconds: 300)` بالشاشة | 👁 R41 |
+| انتقال الصفحات | لا شيء — الثيم: `PredictiveBack` على أندرويد (يتبع إصبع الرجوع) · Cupertino على iOS | `PageRouteBuilder` لكل شاشة | 👁 |
+| ظهور صفوف القائمة | `PaginationBuilderWdg` / `PaginatedListView` (متتالٍ افتراضاً) · `ListAppearTracker` + `ListItemAppearWdg` لقائمةٍ يدوية | `AnimationController` لكل صف | 👁 |
+| من بطاقةٍ إلى تفاصيلها | `AppOpenContainer` — §35 | `Hero` + مسار مخصّص | 👁 |
+| خطوات داخل شاشة | `AppStepSwitcher` — §36 | `AnimatedSwitcher` بانزلاقٍ يدويّ | 👁 |
+| رقمٌ يتغيّر | `AnimatedCount` — §37 | `TweenAnimationBuilder` بالشاشة | 👁 |
+| حقلٌ رُفض | `ShakeOnError` — §38 (و`CustomTextField` يهتزّ وحده) | هزّةٌ بـ`Transform` يدوياً | 👁 |
+| ضغطةٌ لها ردّ | `PressableScale` | `GestureDetector` + `AnimatedScale` | 👁 |
+
 ## السجلّ
 
 | الحاجة | استعمل | لا تكتب | الحارس |

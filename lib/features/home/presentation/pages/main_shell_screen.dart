@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/dialogs/app_confirm_dialog.dart';
@@ -95,9 +97,15 @@ class _MainShellScreenState extends State<MainShellScreen> {
               // فبقي شهوراً.)
               extendBody: true,
               // IndexedStack يحفظ حالة كل شاشة عند التبديل بين التبويبات
-              body: IndexedStack(
+              // و`_TabFadeThrough` يُدخل التبويب الجديد بتلاشٍ وتكبيرٍ خفيف
+              // (Material «fade through») **بلا** هدم الـIndexedStack — فلا
+              // تضيع حالة تبويب.
+              body: _TabFadeThrough(
                 index: state.currentIndex,
-                children: items.map((e) => e.screenBuilder()).toList(),
+                child: IndexedStack(
+                  index: state.currentIndex,
+                  children: items.map((e) => e.screenBuilder()).toList(),
+                ),
               ),
               bottomNavigationBar: NavigationBar(
                 selectedIndex: state.currentIndex,
@@ -135,4 +143,47 @@ class _NavIcon extends StatelessWidget {
       child: icon,
     );
   }
+}
+
+/// يُشغّل دخول «fade through» كلّما تبدّل [index] — على الـ`IndexedStack`
+/// كلّه، فالتبويب الجديد يظهر متلاشياً والقديم يختفي فوراً، وتبقى الحالات.
+class _TabFadeThrough extends StatefulWidget {
+  const _TabFadeThrough({required this.index, required this.child});
+
+  final int index;
+  final Widget child;
+
+  @override
+  State<_TabFadeThrough> createState() => _TabFadeThroughState();
+}
+
+class _TabFadeThroughState extends State<_TabFadeThrough>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl = AnimationController(
+    vsync: this,
+    duration: AppMotion.base,
+    value: 1,
+  );
+
+  @override
+  void didUpdateWidget(_TabFadeThrough old) {
+    super.didUpdateWidget(old);
+    if (old.index == widget.index) return;
+    _ctrl.duration = AppMotion.of(context).base;
+    _ctrl.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FadeThroughTransition(
+    animation: _ctrl,
+    secondaryAnimation: kAlwaysDismissedAnimation,
+    fillColor: Colors.transparent,
+    child: widget.child,
+  );
 }

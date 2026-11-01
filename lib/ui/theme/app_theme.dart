@@ -406,9 +406,13 @@ abstract final class AppThemeData {
         ),
       ),
 
+      // أندرويد: انتقالُ «الرجوع التنبؤي» — الصفحة تتحرّك مع إصبع المستخدم
+      // فيرى ما خلفها قبل أن يكمل، وبلا إيماءةٍ ينزلق بأسلوب أندرويد 14
+      // (`FadeForwards`). يحتاج `enableOnBackInvokedCallback` بالـmanifest (موجود).
+      // iOS يبقى على انزلاقه الأصلي.
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
-          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),

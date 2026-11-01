@@ -7,6 +7,8 @@ import 'package:app_template/ui/widgets/states/empty_state_widget.dart';
 import 'package:app_template/ui/widgets/states/error_state_widget.dart';
 import 'package:app_template/ui/widgets/states/loading_widget.dart';
 import 'package:app_template/ui/state/pagination/pagination_cubit.dart';
+import 'package:app_template/ui/widgets/lists/list_appear_tracker.dart';
+import 'package:app_template/ui/widgets/lists/list_item_appear.dart';
 
 class PaginationBuilderWdg<C extends PaginationCubit<E>, E>
     extends StatefulWidget {
@@ -21,6 +23,7 @@ class PaginationBuilderWdg<C extends PaginationCubit<E>, E>
     this.emptyList,
     this.wantKeepAlive = false,
     this.contentPadding,
+    this.itemAppear = ListItemAppear.fadeSlide,
   });
 
   final Widget? loadingItemsWidget;
@@ -38,6 +41,10 @@ class PaginationBuilderWdg<C extends PaginationCubit<E>, E>
   /// Pass [EdgeInsets.zero] when the parent container already handles margins.
   final EdgeInsets? contentPadding;
 
+  /// كيف يظهر كل صفٍّ **أوّل مرّة** — متتالياً داخل دفعته ([ListAppearTracker]).
+  /// `ListItemAppear.none` لقائمةٍ كثيفة تكون الحركةُ فيها ضجيجاً.
+  final ListItemAppear itemAppear;
+
   @override
   State<PaginationBuilderWdg<C, E>> createState() =>
       _PaginationBuilderWdgState<C, E>();
@@ -46,6 +53,8 @@ class PaginationBuilderWdg<C extends PaginationCubit<E>, E>
 class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
     extends State<PaginationBuilderWdg<C, E>>
     with AutomaticKeepAliveClientMixin {
+  final _appear = ListAppearTracker();
+
   late final C paginationCubit;
 
   @override
@@ -79,7 +88,10 @@ class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
                 widget.contentPadding ??
                 const EdgeInsets.symmetric(horizontal: 24.0),
             child: RefreshIndicator(
-              onRefresh: paginationCubit.refresh,
+              onRefresh: () {
+                _appear.reset();
+                return paginationCubit.refresh();
+              },
               child: CustomScrollView(
                 controller: paginationCubit.scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -92,7 +104,18 @@ class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
                   else
                     SliverList.separated(
                       itemBuilder: (context, index) {
-                        return widget.itemWdg!(entity.data[index]);
+                        _appear.observeLength(entity.data.length);
+                        final item = widget.itemWdg!(entity.data[index]);
+                        final order = _appear.staggerFor(index);
+                        if (order == null ||
+                            widget.itemAppear == ListItemAppear.none) {
+                          return item;
+                        }
+                        return ListItemAppearWdg(
+                          animation: widget.itemAppear,
+                          staggerIndex: order,
+                          child: item,
+                        );
                       },
                       separatorBuilder: (context, index) {
                         return widget.separatorWidget ??

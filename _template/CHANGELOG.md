@@ -11,6 +11,12 @@
 
 ## غير مُصدَر
 
+- **الحركة**: انتقال الصفحات `PredictiveBack` على أندرويد (كان Cupertino) · صفوف
+  `PaginationBuilderWdg`/`PaginatedListView` تظهر متتالية (`itemAppear`) · تبويبات
+  القشرة بـ«fade through» · الترحيب يظهر متتالياً · `CustomTextField` يهتزّ لخطأ جديد ·
+  ودجات `AppOpenContainer` · `AppStepSwitcher` · `AnimatedCount` · `ShakeOnError` ·
+  `AppMotion.of(context)` (صفرٌ مع «تقليل الحركة») وR41. تبعيةٌ جديدة: `animations` (رسمية).
+
 - **دَين `check_structure` صفر** — المخالفات الـ53 المسجَّلة أُصلحت بالكود، و`.structure_baseline.txt`
   لا يحمل شيئاً. صفحاتُ الحساب والإعدادات قُسّمت إلى ودجاتٍ مسمّاة بـ`presentation/widgets/`.
 - ⚠️ **تغييرات واجهة عامة** (لا مستدعٍ لها بالقالب، وقد يكون لها بمشروع):

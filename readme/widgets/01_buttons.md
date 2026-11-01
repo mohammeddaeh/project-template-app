@@ -140,3 +140,14 @@ PressableScale(
 
 مستهلكٌ حيّ: `modules/session_guard/presentation/widgets/pin_pad.dart` — رد فعل
 لمسي على أزرار لوحة الأرقام.
+
+---
+
+## §38 · `ShakeOnError` — هزّةٌ حين يظهر خطأٌ جديد
+
+```dart
+ShakeOnError(error: state.errorText, child: MyPicker(...))
+```
+
+`CustomTextField` يستعملها وحده؛ وتُلفّ بها أي ودجةٍ لها خطأ تحقّق (منتقٍ · شرائح).
+تهتزّ حين يتبدّل `error` إلى نصٍّ جديد غير فارغ — لا بكل إعادة بناء، ولا مع «تقليل الحركة».
