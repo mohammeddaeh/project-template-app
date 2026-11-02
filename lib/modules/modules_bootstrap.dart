@@ -15,6 +15,7 @@ import 'package:app_template/modules/remote_config/remote_config_module.dart';
 import 'package:app_template/modules/session_guard/session_guard_plugin.dart';
 import 'package:app_template/modules/sync/sync_plugin.dart';
 import 'package:app_template/modules/showcase/showcase_plugin.dart';
+import 'package:app_template/modules/token_inspector/token_inspector_plugin.dart';
 
 /// Single, ordered activation point for ALL optional modules.
 ///
@@ -132,6 +133,11 @@ abstract final class ModulesBootstrap {
     }
     if (AppFeatures.showcase) {
       await ShowcasePlugin.initialize(di);
+    }
+    // أداةُ مطوّر — لا يعتمد عليها شيء. وتعود من سطرها الأول بنسخة `prod`
+    // release حتى لو بقي العلَم مُشعَلاً (`TokenInspector.enabled`).
+    if (AppFeatures.tokenInspector) {
+      await TokenInspectorPlugin.initialize(di);
     }
   }
 

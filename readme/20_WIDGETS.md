@@ -39,6 +39,7 @@ Some UI infrastructure lives in `lib/ui/`:
 | `ui/locale/` | `LocaleSwitcher` variants, `context.isAr`, `context.changeLocale()` |
 | `ui/state/connectivity/` | `ConnectivityCubit` |
 | `ui/state/pagination/` | `PaginationCubit` |
+| `ui/overlays/` | `AppOverlays.register` + `AppOverlayHost` — نقطة تركيب طبقات الموديولات فوق كل المسارات بـ`MaterialApp.builder`، فلا يستورد `app.dart` موديولاً |
 
 Do not put these in `core/`.
 

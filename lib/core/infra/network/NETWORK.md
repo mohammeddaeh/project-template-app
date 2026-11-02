@@ -100,6 +100,19 @@ class MyTokenRefreshGateway implements TokenRefreshGateway {
 > class MyTokenRefreshGateway implements TokenRefreshGateway { … }
 > ```
 
+**والمعترض يُخبر `AuthSessionObserver` بكل خطوة** — بدء التجديد · التأجيل حين لم
+يُجب خادم · الرفض · `401` ثانٍ بعد التجديد. ونجاحُ التجديد يُخبر به **المنفّذ**
+بعد الحفظ، لأنه وحده يعرف ما أرسله الخادم:
+
+```dart
+await _secureStorage.write(PersistenceKeys.token, grant.accessToken);
+_observer.onRefreshSucceeded(grant, oldAccess: old, oldRefresh: oldRefresh);
+// grant = TokenGrant.fromOAuthJson(json, receivedAt: DateTime.now())
+```
+
+لا يسمع أحد ما لم يُشعَل `token_inspector` —
+[`readme/33_MODULE_TOKEN_INSPECTOR.md`](../../../../readme/33_MODULE_TOKEN_INSPECTOR.md).
+
 ---
 
 ## I2 — RetryInterceptor · إعادة المحاولة مع Exponential Back-off

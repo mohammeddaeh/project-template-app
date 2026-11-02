@@ -92,6 +92,15 @@ dart run scripts/build_apk.dart [options]
 | `--no-bump` | — | off |
 | `--clean` | — | off |
 | `--no-codegen` | — | off |
+| `--allow-token-trace` | — | off |
+
+**قبل أي خطوة، ببناء `prod` أو `release`**: يعدّد كلَّ ما تركه المطوّر من أداة
+التوكن — العلَم `tokenInspector = true`، وكلَّ نداء `TokenInspector.*` و
+`TokenInspectorPanel(` خارج الموديول — بملفّه وسطره. تفاعلياً يسأل `[y/N]`،
+و`N` يوقف البناء **قبل رفع الإصدار**. وبلا طرفية (CI) يُفشل، إلا مع
+`--allow-token-trace`. والنسخة لا تعرض شيئاً منها على أي حال
+([`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) §٤) — فهذا تذكيرٌ
+بالحذف، لا حارسُ أمان.
 
 **أنواع الـ bump:**
 

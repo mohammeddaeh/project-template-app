@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
+import 'package:app_template/core/foundation/contracts/auth_session_observer.dart';
 import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart';
 import 'package:app_template/core/infra/session/auth_event_bus.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
@@ -30,12 +31,23 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 /// NOT registered via injectable — circular dependency with Dio.
 /// Wired manually in [InjectableModule.dioInstance] only when
 /// [TokenRefreshGateway] is registered.
+///
+/// ## Observation
+/// Every step is also told to [AuthSessionObserver] — one call per step, no
+/// logic, nothing awaited, nothing read back. Nobody listens unless the
+/// `token_inspector` module is on.
 class TokenRefreshInterceptor extends Interceptor {
-  TokenRefreshInterceptor(this._dio, this._refreshGateway, this._authGateway);
+  TokenRefreshInterceptor(
+    this._dio,
+    this._refreshGateway,
+    this._authGateway, {
+    AuthSessionObserver observer = const NoAuthSessionObserver(),
+  }) : _observer = observer;
 
   final Dio _dio;
   final TokenRefreshGateway _refreshGateway;
   final AuthNetworkGateway _authGateway;
+  final AuthSessionObserver _observer;
 
   /// Non-null while a refresh is in flight — other 401 handlers wait on this.
   Completer<void>? _refreshCompleter;
@@ -49,6 +61,7 @@ class TokenRefreshInterceptor extends Interceptor {
 
     // If THIS request is the refresh call itself — the server answered 401 to
     // the credential's own renewal, which is as terminal as an answer gets.
+    final path = err.requestOptions.path;
     if (err.requestOptions.extra['_isRefreshRequest'] == true) {
       LogService.error(
         'Token refresh request returned 401',
@@ -57,6 +70,7 @@ class TokenRefreshInterceptor extends Interceptor {
       return _handleRefreshFailure(err, handler, cause: err);
     }
 
+    var refreshed = false;
     try {
       if (_refreshCompleter != null) {
         // Another request is already refreshing — wait for it to complete
@@ -83,6 +97,7 @@ class TokenRefreshInterceptor extends Interceptor {
         unawaited(_refreshCompleter!.future.catchError((Object _) {}));
 
         LogService.info('Starting token refresh…', tag: 'TOKEN-REFRESH');
+        _observer.onRefreshStarted(path, oldAccess: _authGateway.getToken());
 
         await _refreshGateway.refresh();
 
@@ -91,10 +106,15 @@ class TokenRefreshInterceptor extends Interceptor {
         LogService.info('Token refresh succeeded.', tag: 'TOKEN-REFRESH');
       }
 
+      refreshed = true;
+
       // Retry the original request — AuthInterceptor injects the new token
       final response = await _dio.fetch<dynamic>(err.requestOptions);
       handler.resolve(response);
     } catch (e) {
+      if (refreshed && e is DioException && e.response?.statusCode == 401) {
+        _observer.onUnauthorizedAfterRefresh(path);
+      }
       _refreshCompleter?.completeError(e);
       _refreshCompleter = null;
       await _handleRefreshFailure(err, handler, cause: e);
@@ -138,6 +158,7 @@ class TokenRefreshInterceptor extends Interceptor {
       // and every screen that turns that into «sign in again» undoes the
       // decision just made above.
       final transport = cause as DioException;
+      _observer.onRefreshDeferred(transport.type.name);
       return handler.next(
         DioException(
           requestOptions: err.requestOptions,
@@ -152,6 +173,12 @@ class TokenRefreshInterceptor extends Interceptor {
       'Token refresh refused — local session cleared.',
       tag: 'TOKEN-REFRESH',
       error: cause,
+    );
+    final refusal = cause is DioException ? cause.response : null;
+    _observer.onRefreshRefused(
+      refusal?.statusCode,
+      refusal?.data?.toString() ?? '$cause',
+      err.requestOptions.path,
     );
     await _refreshGateway.onRefreshFailed();
     AuthEventBus.instance.emit(AuthEvent.sessionExpired);

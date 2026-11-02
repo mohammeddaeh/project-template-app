@@ -37,11 +37,12 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 |------|----------------------|
 | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | `modules/access_control/` + `core/authz/` — الصلاحيات |
 | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | `modules/data_transfer/` — الاستيراد والتصدير |
+| [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) | `modules/token_inspector/` + `AuthSessionObserver` + `AppOverlays` — تتبّع التوكن على الشاشة |
 | [`sync_design_spec.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
 | [`../lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) | Sync — ما يعمل وما ينقص (اقرأه أولاً) |
 | [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync — إعداد سريع |
 | [`../lib/modules/multi_device/README.md`](../lib/modules/multi_device/README.md) | الأجهزة والجلسات النشطة |
-| `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates · session_guard · notification_center |
+| `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates · session_guard · notification_center · token_inspector |
 
 ### العمليات والخارطة
 
@@ -61,7 +62,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | `lib/core/` | Shared infrastructure — `foundation/`, `platform/`, `infra/`, `di/` |
 | `lib/modules/` | Optional runtime modules — each has `SETUP.md` + entry point |
 | `lib/features/` | Isolated business features — data / domain / presentation |
-| `lib/ui/` | The whole shared UI layer — `widgets/` (barrel: `widgets.dart`) · `theme/` · `state/` · `error/` · `feedback/` · `locale/` · `extensions/` |
+| `lib/ui/` | The whole shared UI layer — `widgets/` (barrel: `widgets.dart`) · `theme/` · `state/` · `error/` · `feedback/` · `locale/` · `extensions/` · `overlays/` (نقطة تركيب طبقات الموديولات فوق كل المسارات) |
 | `lib/routes/` | Navigation (`auto_route`) |
 | `lib/resources/` | Generated locale keys, assets helpers |
 
@@ -151,6 +152,7 @@ core/
 | `in_app_updates/` | `inAppUpdates` | ⬜ OFF | `InAppUpdatesModule.initialize(di)` بـ`ModulesBootstrap` + `AppUpdateGate` بالقشرة | in_app_update · package_info_plus · url_launcher |
 | `session_guard/` | `sessionGuard` | ⬜ OFF | `SessionGuardPlugin.initialize(di)` بـ`ModulesBootstrap` + `SessionGuardGate` بالقشرة (الأعلى بين المعلِنَين — راجع `main_shell_page.dart`) | crypto (بصمة الرقم — لا تبعية خارجية أخرى) |
 | `notification_center/` | `notificationCenter` | ⬜ OFF | `NotificationCenterPlugin.initialize(di)` بـ`ModulesBootstrap` — يستهلك بثّ `push_notifications` (`pushNotifications` يجب أن يكون مُشعلاً أيضاً)، ولا يستدعي FCM بذاته | لا تبعية خارجية إضافية |
+| `token_inspector/` | `tokenInspector` | ⬜ OFF | `TokenInspectorPlugin.initialize(di)` بـ`ModulesBootstrap` — يعلّق مستمعَه على `AuthSessionRelay` ويسجّل طبقته بـ`AppOverlays`، فلا تعرفه النواة ولا `app.dart` (`C20`). **ولا يُقلع بنسخة `prod` release** حتى مُشعَلاً | لا تبعية خارجية |
 | `showcase/` | `showcase` | ✅ ON | `ShowcasePlugin.initialize(di)` بـ`ModulesBootstrap` (لا تسجيل) + `ShowcaseView` بجسد `HomeScreen` — جولة المطوّر، تُطفأ مع رئيسية المشروع | animations (عبر `AppOpenContainer`) — لا تبعية خاصّة |
 
 > **العَلَم هو العمود المهم.** جدولٌ بلا علَم يقرأ الجميعَ موصولين، بينما معظمها

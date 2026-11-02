@@ -441,6 +441,19 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 الفاحص: `check_structure.dart` — `C18` (الاستيراد) · `C19` (حزم المنصّة). التفصيل:
 [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
 
+### R44 · النواة تُخبر ولا تعرف من يسمع 🔒
+
+`core/` و`ui/` لا يستوردان `modules/token_inspector/`. النواة تُخبر عن الجلسة عبر
+`AuthSessionObserver` (منفذٌ بـ`foundation/`)، والموديول يعلّق مستمعه على
+`AuthSessionRelay`، ويسجّل طبقته المرئية بـ`AppOverlays` — فلا سطرَ بـ`app.dart`
+يعرفه.
+
+> **لماذا**: أداةُ مطوّرٍ تستوردها النواة مباشرةً تبقى بالكود حين تُطفأ، وتُشحن
+> حين تُنسى، ويصير حذفُها بحثاً بستّة ملفات. وبالمنفذ، إطفاؤها علَمٌ، وحذفُها مجلّد.
+
+الفاحص: `check_structure.dart` — `C20`. التفصيل:
+[`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md).
+
 ### R39 · كل رابطٍ بوثيقة يصل ملفاً موجوداً 🔒
 
 نقلُ ملفٍّ أو حذفُه يكسر كل رابطٍ إليه، ولا شيء آخر يفشل. ورابطٌ إلى `_template/`
@@ -548,6 +561,7 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R41  كل حركةٍ مدّتها من AppMotion.of(context) — صفرٌ مع «تقليل الحركة»
 [ ] R42  ودجةٌ جديدة بالمكتبة لها مثالٌ بصفحةٍ من lib/modules/showcase/
 [ ] R43  حزمةٌ بكودٍ أصليٍّ ثقيل kit بـpackages/ — و lib/ يعرف kit_contracts وحده
+[ ] R44  core/ و ui/ لا يستوردان token_inspector — المنفذ والمرحِّل و AppOverlays
 [ ] R36  صفر TextField/TextFormField خام — CustomTextField وحده
 [ ] R37  صفر رقمِ مقاسٍ خام — context.screen · وجُرِّبت على هاتف ولوح
 [ ] R16  اتجاه التبعية سليم

@@ -138,6 +138,9 @@ kit تحت `packages/` تُركَّب بـ`dart run scripts/kit.dart add <name>`
 | ردٌّ نصّيّ أو JSON بضجيج | خدمة Retrofit تُعيد `Future<String>` بـ`ResponseType.plain` — [`12_REST_API.md`](12_REST_API.md) §Step B′ | `HttpResponse<dynamic>` مع `ResponseType.plain` (يُتجاهل بصمت) | 👁 |
 | إخفاء ما لا يملكه المستخدم | `Can(permission: PermKeys.x)` — [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | مفتاحاً نصّياً خامّاً | 🔒 R24 |
 | استيراد · تصدير | `DataTransferSheet.show(context, resource:)` — [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | شاشة رفع ملف لكل feature | 👁 |
+| رؤية التوكن والتجديد على الجهاز | `TokenInspector.mark` · `.snapshot` · `TokenInspectorPanel` — [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) | `print(token)` · `LogService` بتوكن (يمرّ إلى Crashlytics) | C20 |
+| إخبارٌ بحدث جلسة من النواة | `AuthSessionObserver` بالـDI — [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) §٢ | استيراد موديولٍ من `core/` | C20 |
+| طبقةٌ فوق كل الشاشات من موديول | `AppOverlays.register(...)` بـ`initialize` الموديول — [`ui/overlays/app_overlays.dart`](../lib/ui/overlays/app_overlays.dart) | سطرٌ بـ`app.dart` يستورد الموديول | C20 |
 | عمل دون اتصال | `modules/sync/` — [`lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) **قبل أي شيء** | طابوراً محلّياً ثانياً | 👁 |
 
 ---

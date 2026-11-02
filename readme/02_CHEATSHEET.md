@@ -422,6 +422,7 @@ res.fold((failure) {
 | `accessControl` · `multiDevice` | موديولات `lib/modules/` — **مطفأة** |
 | `rememberedAccounts` | صفّ الحسابات المحفوظة فوق نموذج الدخول + سؤال «احفظ بريدك؟» بعد أول دخول. **مطفأ** — هوية فقط بلا كلمة مرور، والقائمة تنجو من الخروج. راجع `RememberedAccountsRepository` |
 | `dataTransfer` | ✅ **مُشعَل** — شاشتاه تُبنيان من ردّ الخادم، فلا Dart لكل مورد. راجع [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
+| `tokenInspector` | أداة مطوّر: زرٌّ عائم بالتوكن والتجديد وفحص Keycloak. **لا يُرى بنسخة `prod` release** حتى مُشعَلاً، و`build_apk.dart` يعدّد ما تركتَه — `TokenInspector.mark('…')` · `TokenInspector.snapshot('…')` · `const TokenInspectorPanel()`. راجع [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) |
 
 ---
 

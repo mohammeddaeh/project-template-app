@@ -256,6 +256,25 @@ abstract final class AppFeatures {
   /// every other module here.
   static const notificationCenter = false;
 
+  /// Enable the on-device token inspector — a developer tool, not a feature.
+  ///
+  /// **When true**: a draggable key bubble floats over every screen. Tapping it
+  /// opens the live session (what is stored now, and how long it has left),
+  /// realm-setting checks when the tokens come from Keycloak, and a history of
+  /// every sign-in, launch restore, 401, refresh, deferral and refusal — kept
+  /// across app restarts and sign-outs, so a "closed app for an hour" test can
+  /// be read afterwards without a console.
+  ///
+  /// **Never shown in a `prod` release build**, even if left `true`:
+  /// `TokenInspector.enabled` folds this flag with `kReleaseMode` and the
+  /// flavor at compile time, so that build registers, records and draws
+  /// nothing. `build_apk.dart` also lists every hand-placed call before a
+  /// release build. See `lib/modules/token_inspector/SETUP.md`.
+  ///
+  /// **When false**: nothing is registered, zero overhead — same contract as
+  /// every other module here.
+  static const tokenInspector = false;
+
   // ── Firebase-backed modules ───────────────────────────────────────────────
   // All require google-services.json (Android) / GoogleService-Info.plist (iOS).
   // ModulesBootstrap calls Firebase.initializeApp() once when any are enabled.

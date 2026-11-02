@@ -18,6 +18,7 @@ import 'package:app_template/core/infra/session/auth_event_bus.dart';
 import 'package:app_template/core/infra/session/locale_provider_impl.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
+import 'package:app_template/ui/overlays/app_overlays.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -287,8 +288,13 @@ class _AppState extends State<App> {
                   // [ResponsiveScope] لسبب السقف ١٫٣ وغياب الأرضية.
                   child: ResponsiveScope(
                     child: FlavorBanner(
-                      child: _ConnectivityLayer(
-                        child: child ?? const SizedBox.shrink(),
+                      // طبقاتُ الموديولات — كلٌّ يسجّل نفسه بـ[AppOverlays]،
+                      // فلا يستورد هذا الملف أيّاً منها.
+                      child: AppOverlayHost(
+                        navigatorKey: _router.navigatorKey,
+                        child: _ConnectivityLayer(
+                          child: child ?? const SizedBox.shrink(),
+                        ),
                       ),
                     ),
                   ),

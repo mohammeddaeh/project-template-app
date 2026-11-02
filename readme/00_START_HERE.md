@@ -196,6 +196,7 @@ dart run scripts/build_apk.dart --flavor staging --mode release --bump minor
 | أجهزة وجلسات | `multiDevice` | `lib/modules/multi_device/SETUP.md` |
 | قفل جلسة محلّي (رقم/بصمة) | `sessionGuard` | `lib/modules/session_guard/SETUP.md` |
 | مركز إشعارات داخل التطبيق | `notificationCenter` (يحتاج `pushNotifications` أيضاً) | `lib/modules/notification_center/SETUP.md` |
+| تتبّع التوكن على الشاشة — أداة مطوّر، لا تظهر بنسخة `prod` release | `tokenInspector` | [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) |
 | جولة المطوّر بالرئيسية — **مُشعَلة افتراضاً**، تُطفأ مع رئيسية المشروع | `showcase` | `lib/modules/showcase/SETUP.md` |
 | تحليلات · انهيارات · إشعارات · إعدادات بعيدة | راجع `AppFeatures` | `lib/modules/<name>/SETUP.md` |
 

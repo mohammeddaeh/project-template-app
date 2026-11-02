@@ -28,6 +28,7 @@
 | **ما يخدمه الباك فعلاً** | [`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) — جردُ النقاط وحالاتُها الأربع · ودَينُ الباك بلغة المستخدم |
 | الصلاحيات — `modules/access_control/` + `core/authz/` | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) |
 | الاستيراد/التصدير — `modules/data_transfer/` | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
+| تتبّع التوكن على الشاشة — `modules/token_inspector/` + فحص إعدادات Keycloak | [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) |
 | السكربتات (`codegen`, `export`, `sync_*`) | [`40_SCRIPTS.md`](40_SCRIPTS.md) |
 | **أول يوم بالقالب** | [`00_START_HERE.md`](00_START_HERE.md) — رود ماب بخمس مراحل، كلُّ مرحلةٍ بمعيار «تمّت» |
 | تُجهّز جهازك · تجعل القالب مشروعك | [`01_SETUP.md`](01_SETUP.md) — البيئة والهوية والأيقونات والألوان، ومزالقُها |

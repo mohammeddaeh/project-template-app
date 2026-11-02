@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:app_template/core/foundation/contracts/api_response.dart';
+import 'package:app_template/core/foundation/contracts/auth_session_observer.dart';
 import 'package:app_template/core/foundation/contracts/network_origin.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/infra/network/boundary/base_repository.dart';
@@ -20,6 +21,7 @@ class LoginRepositoryImpl extends BaseRepository implements LoginRepository {
     this._sessionRepository,
     this._currentUserRepository,
     this._accountDataCleaner,
+    this._observer,
     HandleBodyResponse handler,
   ) : super(handler);
 
@@ -27,6 +29,7 @@ class LoginRepositoryImpl extends BaseRepository implements LoginRepository {
   final SessionRepository _sessionRepository;
   final CurrentUserRepository _currentUserRepository;
   final AccountDataCleaner _accountDataCleaner;
+  final AuthSessionObserver _observer;
 
   @override
   Future<Either<Failure, LoginEntity>> login(LoginParams params) =>
@@ -63,6 +66,9 @@ class LoginRepositoryImpl extends BaseRepository implements LoginRepository {
           // snapshot on disk without the credential that justifies it is the one
           // ordering that can survive a crash in a misleading state.
           await _sessionRepository.saveToken(entity.token);
+          _observer.onSignedIn(
+            TokenGrant(accessToken: entity.token, receivedAt: DateTime.now()),
+          );
           _currentUserRepository.setCurrentUser(entity.user);
           return Right(entity);
         }),

@@ -1,3 +1,4 @@
+import 'package:app_template/core/foundation/contracts/auth_session_observer.dart';
 import 'package:app_template/core/infra/session/data_origin_guard.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
@@ -26,13 +27,15 @@ class StartupResolver {
     this._sessionRepository,
     this._currentUserRepository,
     this._originGuard,
-    this._storage,
-  );
+    this._storage, {
+    AuthSessionObserver observer = const NoAuthSessionObserver(),
+  }) : _observer = observer;
 
   final SessionRepository _sessionRepository;
   final CurrentUserRepository _currentUserRepository;
   final DataOriginGuard _originGuard;
   final StorageService _storage;
+  final AuthSessionObserver _observer;
 
   Future<StartupDestination> resolve() async {
     // **ما كان `main()` ينتظره قبل `runApp` ثم نُقل، عاد إلى هنا.**
@@ -72,6 +75,7 @@ class StartupResolver {
   /// يستعيد الجلسة المخزَّنة، ويُعيد هل بقيت جلسةٌ صالحة.
   Future<bool> _restoreSession() async {
     final token = await _sessionRepository.loadCachedToken();
+    _observer.onSessionRestored(token, null);
     if (token == null || token.isEmpty) return false;
 
     // تُستعاد **قبل** أول إطار لا بعده.

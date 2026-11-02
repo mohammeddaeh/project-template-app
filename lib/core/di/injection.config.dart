@@ -12,6 +12,8 @@
 import 'package:app_template/core/di/injection_module.dart' as _i321;
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart'
     as _i188;
+import 'package:app_template/core/foundation/contracts/auth_session_observer.dart'
+    as _i869;
 import 'package:app_template/core/foundation/contracts/local_data_wiper.dart'
     as _i675;
 import 'package:app_template/core/foundation/contracts/locale_provider.dart'
@@ -205,6 +207,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i675.LocalDataWiper>(
       () => injectableModule.localDataWiper,
     );
+    gh.lazySingleton<_i869.AuthSessionRelay>(
+      () => injectableModule.authSessionRelay,
+    );
     gh.lazySingleton<_i434.EncryptionService>(
       () => injectableModule.encryptionService,
     );
@@ -237,6 +242,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i880.ConnectivityCubit(gh<_i979.NetworkStateMonitor>()),
     );
     gh.lazySingleton<_i135.MediaService>(() => _i347.MediaServiceImpl());
+    gh.lazySingleton<_i869.AuthSessionObserver>(
+      () => injectableModule.authSessionObserver(gh<_i869.AuthSessionRelay>()),
+    );
     gh.lazySingleton<_i888.UrlLauncherService>(
       () => _i866.UrlLauncherServiceImpl(),
     );
@@ -394,19 +402,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i702.LocaleProvider>(),
       ),
     );
-    gh.lazySingleton<_i230.VerifyEmailRepository>(
-      () => _i866.VerifyEmailRepositoryImpl(
-        gh<_i585.VerifyEmailRemoteDataSource>(),
-        gh<_i258.CurrentUserRepository>(),
-        gh<_i148.HandleBodyResponse>(),
-      ),
-    );
     gh.lazySingleton<_i1031.LoginRepository>(
       () => _i662.LoginRepositoryImpl(
         gh<_i858.AuthRemoteDataSource>(),
         gh<_i512.SessionRepository>(),
         gh<_i258.CurrentUserRepository>(),
         gh<_i231.AccountDataCleaner>(),
+        gh<_i869.AuthSessionObserver>(),
+        gh<_i148.HandleBodyResponse>(),
+      ),
+    );
+    gh.lazySingleton<_i230.VerifyEmailRepository>(
+      () => _i866.VerifyEmailRepositoryImpl(
+        gh<_i585.VerifyEmailRemoteDataSource>(),
+        gh<_i258.CurrentUserRepository>(),
         gh<_i148.HandleBodyResponse>(),
       ),
     );
@@ -419,12 +428,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i246.ResetPasswordUseCase>(),
       ),
     );
-    gh.singleton<_i371.TokenRefreshGateway>(
-      () => _i819.TokenRefreshGatewayImpl(
-        gh<_i512.SessionRepository>(),
-        gh<_i258.CurrentUserRepository>(),
-      ),
-    );
     gh.lazySingleton<_i196.MeRepository>(
       () => _i408.MeRepositoryImpl(
         gh<_i3.MeRemoteDataSource>(),
@@ -434,6 +437,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i662.LoginUseCase>(
       () => _i662.LoginUseCase(gh<_i1031.LoginRepository>()),
+    );
+    gh.singleton<_i371.TokenRefreshGateway>(
+      () => _i819.TokenRefreshGatewayImpl(
+        gh<_i512.SessionRepository>(),
+        gh<_i258.CurrentUserRepository>(),
+        gh<_i869.AuthSessionObserver>(),
+      ),
     );
     gh.factory<_i1015.LogoutUseCase>(
       () => _i1015.LogoutUseCase(gh<_i524.LogoutRepository>()),

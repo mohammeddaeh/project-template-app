@@ -1,5 +1,5 @@
 // ignore_for_file: avoid_print
-/// يفحص قواعد بنية الواجهة آلياً — `F04` · `F10` · `F13` · `F19`…`F23` · وحدود حِزَم الأجهزة `C18`/`C19`.
+/// يفحص قواعد بنية الواجهة آلياً — `F04` · `F10` · `F13` · `F19`…`F23` · وحدود حِزَم الأجهزة `C18`/`C19` · وحدّ أداة التوكن `C20`.
 ///
 /// وُجد لأن قاعدةً بلا فاحص اقتراحٌ لا قاعدة (R30). كل ما يفحصه هنا **لا يراه**
 /// `dart analyze` ولا `flutter test`: صفحةٌ بألف سطر تُصرَّف، و`Color(0xFF...)`
@@ -106,6 +106,7 @@ void main(List<String> args) {
 
     _checkCapabilities(path, code);
     _checkRestApiPlacement(path, code);
+    _checkTokenInspectorBoundary(path, code);
 
     if (_isPage(path)) _checkPage(path, code);
     if (_isSharedWidget(path)) _checkSharedWidget(path, code, barrelExports);
@@ -463,6 +464,28 @@ void _checkKitBoundaries(List<File> appFiles) {
   }
 }
 
+/// C20 — `lib/core/` و`lib/ui/` لا يعرفان `modules/token_inspector/`.
+///
+/// النواة **تُخبر** عبر `AuthSessionObserver`، والطبقة تُركَّب عبر `AppOverlays`
+/// — فلا سطرَ فيهما يبقى حين يُطفأ الموديول أو يُحذف. واستيرادُه من ودجةٍ
+/// مشتركة يوزّع أداةَ مطوّرٍ على كل شاشةٍ تستعملها، بلا أن يراها `build_apk.dart`
+/// حيث يبحث. النداءُ اليدويّ مكانُه شاشةُ الشريحة.
+void _checkTokenInspectorBoundary(String path, List<String?> code) {
+  if (!path.startsWith('lib/core/') && !path.startsWith('lib/ui/')) return;
+  for (var i = 0; i < code.length; i++) {
+    final line = code[i];
+    if (line == null) continue;
+    if (line.contains('package:app_template/modules/token_inspector/')) {
+      _flag(
+        'C20',
+        path,
+        i + 1,
+        'token_inspector مستورَدٌ بـcore/ أو ui/ — النواة تُخبر عبر AuthSessionObserver، والطبقة عبر AppOverlays',
+      );
+    }
+  }
+}
+
 /// L01 — `@RestApi` بملفٍّ اسمُه `*_api_service.dart` وحده.
 ///
 /// خدمةٌ مدفونةٌ بملف repository أو datasource لا يجدها من يبحث عن عقد الـwire
@@ -494,7 +517,8 @@ void _checkNoBuildMethods(String path, List<String?> code) {
     ).firstMatch(line);
     if (m == null) continue;
     final name = m.group(1)!;
-    if (name == 'build') continue;
+    // `Widget Function(` سطرُ typedef أو نوعُ وسيط، لا دالةٌ تبني قسماً.
+    if (name == 'build' || name == 'Function') continue;
     _flag(
       'F20',
       path,

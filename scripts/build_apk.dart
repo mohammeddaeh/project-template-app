@@ -11,6 +11,7 @@
 /// │ --no-bump    │ —                    │ لا تغيير في الإصدار       │
 /// │ --clean      │ —                    │ flutter clean أولاً       │
 /// │ --no-codegen │ —                    │ تخطّى توليد الكود         │
+/// │ --allow-token-trace  │ —            │ لا توقّف على أداة التوكن  │
 /// └─────────────────────────────────────────────────────────────────┘
 ///
 /// أنواع الـ bump:
@@ -48,6 +49,7 @@ Future<void> main(List<String> args) async {
   final noBump = args.contains('--no-bump');
   final clean = args.contains('--clean');
   final noCodegen = args.contains('--no-codegen');
+  final allowTokenTrace = args.contains('--allow-token-trace');
 
   _validateFlavor(flavor);
   _validateMode(mode);
@@ -63,6 +65,14 @@ Future<void> main(List<String> args) async {
   print('  bump     : ${noBump ? "off (--no-bump)" : bump}');
   print('  clean    : $clean');
   print('  codegen  : ${!noCodegen}');
+
+  // ──────────────────────────────────────────────────────────────────
+  // الخطوة 0: أداة التوكن — قبل رفع الإصدار، فالتراجع هنا لا يترك أثراً
+  // ──────────────────────────────────────────────────────────────────
+  if (flavor == 'prod' || mode == 'release') {
+    _section('🔑  token_inspector — sensitive traces');
+    _checkTokenTraces(allow: allowTokenTrace);
+  }
 
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 1: flutter clean (اختياري)
@@ -162,6 +172,77 @@ Future<void> main(List<String> args) async {
   Size    : ${sizeMb.toStringAsFixed(1)} MB
   Package : $packageId
   Version : $version''');
+}
+
+// ── Token inspector ───────────────────────────────────────────────────────────
+
+/// يعدّد كلَّ ما تركه المطوّر من أداة التوكن **قبل** بناء إصدار.
+///
+/// نسخةُ `prod` release لا تعرض شيئاً منها أصلاً (`TokenInspector.enabled`
+/// ثابتٌ يطفئها) — فهذا ليس حارسَ أمان بل **تذكير**: السطر الذي يُنسى يبقى
+/// بالكود، ويُشحن إلى staging مُشعَلاً، ويُقرأ بمراجعةٍ لاحقة لغزاً.
+///
+/// تفاعلياً يسأل، و`N` يوقف البناء. وبلا طرفية (CI) يُفشل، إلا مع
+/// `--allow-token-trace`.
+void _checkTokenTraces({required bool allow}) {
+  final hits = <String>[];
+
+  final flagFile = File('lib/core/platform/features/app_features.dart');
+  final flagLines = flagFile.readAsLinesSync();
+  for (var i = 0; i < flagLines.length; i++) {
+    if (flagLines[i].contains('static const tokenInspector = true')) {
+      hits.add('${flagFile.path}:${i + 1}   AppFeatures.tokenInspector = true');
+    }
+  }
+
+  final call = RegExp(r'\bTokenInspector(?:Panel\s*\(|\.\w+)');
+  for (final f in Directory(
+    'lib',
+  ).listSync(recursive: true).whereType<File>()) {
+    final path = f.path.replaceAll(r'\', '/');
+    if (!path.endsWith('.dart') ||
+        path.startsWith('lib/modules/token_inspector/') ||
+        path == 'lib/modules/modules_bootstrap.dart') {
+      continue;
+    }
+    final lines = f.readAsLinesSync();
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i].trim();
+      if (line.startsWith('//') || line.startsWith('import ')) continue;
+      if (call.hasMatch(line)) hits.add('$path:${i + 1}   $line');
+    }
+  }
+
+  if (hits.isEmpty) {
+    print('  ✓ no token_inspector traces');
+    return;
+  }
+
+  print('  ⚠️  token_inspector — sensitive traces still in code:');
+  for (final h in hits) {
+    print('     $h');
+  }
+  print('     ── hidden at runtime in a prod release; remove before shipping.');
+
+  if (allow) {
+    print('  continuing (--allow-token-trace)');
+    return;
+  }
+  const noTerminal =
+      'token_inspector traces found and no terminal to ask.\n'
+      '    Remove them, or pass --allow-token-trace.';
+  if (!stdin.hasTerminal) _die(noTerminal);
+  stdout.write('  Build anyway? [y/N] ');
+  final String? answer;
+  try {
+    answer = stdin.readLineSync()?.trim().toLowerCase();
+  } on StdinException {
+    // `hasTerminal` يقول نعم أحياناً على ويندوز والمدخلُ محوَّل — فلا أحد يجيب.
+    _die(noTerminal);
+  }
+  if (answer != 'y' && answer != 'yes') {
+    _die('Build stopped — remove the traces above.');
+  }
 }
 
 // ── Version management ────────────────────────────────────────────────────────

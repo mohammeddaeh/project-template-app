@@ -11,6 +11,15 @@
 
 ## غير مُصدَر
 
+- **موديول `token_inspector`** (مطفأ): التوكن على الشاشة بلا كونسول. فيه زرٌّ عائم، وحالةُ الجلسة الآن،
+  وسجلٌّ يبقى بعد الإغلاق، وفحوصُ Keycloak تظهر حين يأتي التوكن منه. `TokenInspector.mark` · `.snapshot` ·
+  `TokenInspectorPanel`. **لا يُرى بنسخة `prod` release**، و`build_apk.dart` يعدّد النداءات المتروكة
+  ويسأل قبل البناء (`--allow-token-trace` لـCI). منفذٌ جديد `AuthSessionObserver` + `AuthSessionRelay`
+  بالـDI · `AppOverlays` نقطةُ تركيبٍ بـ`MaterialApp.builder` · القاعدة R44 بفاحصها `C20`.
+  ⚠️ `lib/app.dart` و`main.dart` و`TokenRefreshInterceptor` و`LoginRepositoryImpl` و
+  `TokenRefreshGatewayImpl` و`StartupResolver` تغيّرت (سطرُ إخبارٍ واحد بكلٍّ منها، ووسيطٌ جديد بالبنّاء).
+- **`check_structure` F20**: سطرُ `typedef … = Widget Function(` لم يعد يُقرأ دالّةً تبني قسماً.
+
 - **`SignaturePad` داخل صفحةٍ تتمرّر**: الضربةُ تُرسم كاملة (كان التمريرُ يأخذها فتخرج نقطة)، والضربةُ
   الأولى لا تضيع حين يختفي النصّ الإرشاديّ.
 - **الخروج من التطبيق لم يكن يعمل قطّ**: الرجوع يُظهر «الخروج من التطبيق؟» و«تأكيد» يُغلق الحوار

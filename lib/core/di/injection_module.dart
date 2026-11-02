@@ -8,6 +8,7 @@ import 'package:app_template/features/auth/me/data/datasources/me_api_service.da
 import 'package:app_template/features/auth/logout/data/datasources/logout_api_service.dart';
 import 'package:app_template/features/auth/login/data/datasources/auth_api_service.dart';
 import 'package:app_template/features/auth/register/data/datasources/register_api_service.dart';
+import 'package:app_template/core/foundation/contracts/auth_session_observer.dart';
 import 'package:app_template/core/foundation/contracts/local_data_wiper.dart';
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
 import 'package:app_template/core/foundation/contracts/unsynced_work_probe.dart';
@@ -175,6 +176,17 @@ abstract class InjectableModule {
   @lazySingleton
   LocalDataWiper get localDataWiper => const NoLocalDataWiper();
 
+  /// مرجعٌ ثابت لمن يُخبر عن الجلسة — الموديول `token_inspector` يعلّق مستمعه
+  /// عليه حين يُشعَل، وبلا ذلك يمرّ كل حدثٍ إلى [NoAuthSessionObserver].
+  ///
+  /// مرحِّلٌ لا استبدال: `TokenRefreshInterceptor` يُبنى مع `Dio` قبل إقلاع
+  /// الموديولات ويمسك ما وجده. راجع [AuthSessionRelay].
+  @lazySingleton
+  AuthSessionRelay get authSessionRelay => AuthSessionRelay();
+
+  @lazySingleton
+  AuthSessionObserver authSessionObserver(AuthSessionRelay relay) => relay;
+
   /// Symmetric encryption for sensitive data stored in [StorageService].
   /// Default adapter: [AesEncryptionAdapter] (AES-256-CBC + HMAC-SHA256,
   /// HKDF-derived keys — authenticated encryption).
@@ -241,6 +253,7 @@ abstract class InjectableModule {
           dio,
           getIt<TokenRefreshGateway>(),
           getIt<AuthNetworkGateway>(),
+          observer: getIt<AuthSessionObserver>(),
         ),
 
       // 5. Retry: exponential back-off on 5xx / connection errors (max 3 times)

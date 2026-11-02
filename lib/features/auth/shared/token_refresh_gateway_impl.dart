@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:app_template/core/foundation/contracts/auth_session_observer.dart';
 import 'package:app_template/core/foundation/contracts/token_refresh_gateway.dart';
 import 'package:app_template/core/infra/config/env.dart';
 import 'package:app_template/core/infra/network/rest/api_urls.dart';
@@ -40,10 +41,15 @@ import 'package:app_template/core/infra/session/session_repository.dart';
 /// setting the Authorization header by hand, once, here.
 @Singleton(as: TokenRefreshGateway)
 class TokenRefreshGatewayImpl implements TokenRefreshGateway {
-  TokenRefreshGatewayImpl(this._sessionRepository, this._currentUserRepository);
+  TokenRefreshGatewayImpl(
+    this._sessionRepository,
+    this._currentUserRepository,
+    this._observer,
+  );
 
   final SessionRepository _sessionRepository;
   final CurrentUserRepository _currentUserRepository;
+  final AuthSessionObserver _observer;
 
   static const _tag = 'TOKEN-REFRESH';
 
@@ -84,6 +90,10 @@ class TokenRefreshGatewayImpl implements TokenRefreshGateway {
     // and branching on the flag would be one more way for the stored credential
     // to drift from the one the server accepts.
     await _sessionRepository.saveToken(next);
+    _observer.onRefreshSucceeded(
+      TokenGrant(accessToken: next, receivedAt: DateTime.now()),
+      oldAccess: token,
+    );
 
     LogService.info(
       data?['rotated'] == true

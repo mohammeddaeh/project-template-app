@@ -5,6 +5,7 @@ import 'package:app_template/features/auth/shared/remembered_accounts_repository
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/infra/session/data_origin_guard.dart';
+import 'package:app_template/core/foundation/contracts/auth_session_observer.dart';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -101,6 +102,7 @@ Future<void> _bootstrap() async {
     getIt<CurrentUserRepository>(),
     getIt<DataOriginGuard>(),
     getIt<StorageService>(),
+    observer: getIt<AuthSessionObserver>(),
   ).resolve();
 
   // **بعد** `resolve` لا قبله: [DataOriginGuard] قد يمسح الجهاز حين يتبدّل

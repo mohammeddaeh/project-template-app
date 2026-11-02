@@ -143,6 +143,10 @@ await StartupResolver(...).resolve()                  ← ينتظر ModulesBoot
 runApp( App(startAt: …) )                             ← أوّلُ إطار = الوجهة
 ```
 
+و`StartupResolver` يأخذ `AuthSessionObserver` من الـDI ويُخبره بما قرأه من
+التخزين (`onSessionRestored`) — سطرٌ بلا منطق، لا يُنتظر ولا يغيّر الوجهة.
+راجع [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) §٢.
+
 وكلُّه داخل `runZonedGuarded(_bootstrap, _onError)`: خطأٌ لا يلتقطه أحد يصل
 `_onError`، فيمرّ بـ`LogService.error` (فيراه `crash_reporting` حين يُشعَل) ثم
 يُطبع بـ`debugPrint`.

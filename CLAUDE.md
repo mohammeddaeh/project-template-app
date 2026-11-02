@@ -127,6 +127,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 | `readme/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
 | `readme/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
 | `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
+| `readme/33_MODULE_TOKEN_INSPECTOR.md` | تغيير `modules/token_inspector/` · `AuthSessionObserver` أو أيّ موضع نداءٍ له · `ui/overlays/` · خطوة التوكن بـ`build_apk.dart` · `C20` |
 | `readme/21_WIDGETS_USAGE.md` + `readme/widgets/*.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود — القسم بملف فئته تحت `widgets/`، وصفُّه بجدول الفهرس |
 | `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
 | **`readme/24_DEVICE_KITS.md`** | **أي تغيير بـ`packages/` · `scripts/kit.dart` · `kit.json` · `lib/core/di/kits.g.dart` · أو `C18`/`C19`** |
