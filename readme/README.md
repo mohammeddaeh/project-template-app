@@ -22,6 +22,12 @@
 | `PaginationCubit` و`PaginationBuilderWdg` | [`14_PAGINATION.md`](14_PAGINATION.md) |
 | **أين** يوضع أي widget (feature أم `ui/widgets/`) | [`20_WIDGETS.md`](20_WIDGETS.md) |
 | **كيف** يُستعمل كل widget بالمكتبة | [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) — فهرسٌ برقم كل قسم، والشرح بملف فئته تحت [`widgets/`](widgets/) |
+| ↳ الأزرار والتفاعل | [`widgets/01_buttons.md`](widgets/01_buttons.md) |
+| ↳ الإدخال والنماذج | [`widgets/02_inputs.md`](widgets/02_inputs.md) |
+| ↳ التخطيط والمسافات | [`widgets/03_layout.md`](widgets/03_layout.md) |
+| ↳ عرض البيانات والصور والتاريخ | [`widgets/04_display.md`](widgets/04_display.md) |
+| ↳ الحالات والتحميل والرسائل | [`widgets/05_states.md`](widgets/05_states.md) |
+| ↳ التنقّل والحوارات والإرشاد | [`widgets/06_navigation.md`](widgets/06_navigation.md) |
 | **مقاسُ شاشة · لوح · كيبورد · تكبير خط** | [`22_RESPONSIVE.md`](22_RESPONSIVE.md) — `context.screen`، ولا نسبةَ من ارتفاع الشاشة |
 | **إقلاع التطبيق · شاشة البدء · شعارُها** | [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) — شاشةٌ واحدة لا شاشتان · ⛔ **و`android: false` بقرار** |
 | **صوت · فيديو · مسح · كتابة يدوية · أوامر النظام** | [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) — حزمةٌ تحت `packages/` تُركَّب بـ`kit.dart add`، والتطبيق يعرف عقدها وحده |

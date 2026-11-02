@@ -14,7 +14,7 @@ part 'offline_ux_state.dart';
 
 /// Drives the "offline banner" and "pending changes" UI indicators.
 ///
-/// ## Lives in `presentation/shared/sync/`
+/// ## Lives in `ui/state/sync/`
 /// Uses `NetworkStateMonitor` for the reactive connectivity stream.
 /// Never calls `ConnectivityService` directly in a loop — subscribes once.
 ///

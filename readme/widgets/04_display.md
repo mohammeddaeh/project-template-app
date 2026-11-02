@@ -215,27 +215,6 @@ extension on OrderStatus {
 
 ---
 
-## §25 · BadgeWidget / TagWidget — توافق
-
-> موجودان للتوافق. **للكود الجديد استخدم `AppLabel`.**
-
-```dart
-// ── BadgeWidget — عدد فوق widget (لا يُستبدَل) ──
-BadgeWidget(
-  count: notifications.length,   // 0 ⇐ لا شارة أصلاً، لا «0» حمراء
-  child: IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: _open),
-)
-
-// ── TagWidget — توافق قديم ──
-TagWidget(labelKey: LocaleKeys.active)
-
-// ── الصحيح في الكود الجديد ──
-AppLabel(labelKey: LocaleKeys.active, variant: AppLabelVariant.success)
-```
-
-
----
-
 ## §19 · AvatarWidget — صورة مستخدم
 
 ```dart
@@ -270,6 +249,27 @@ AttachmentView(attachmentId: attachment.id, height: 180)
 > **لماذا الثالثة ليست خطأً:** ملفٌ اختياري أُخلي الأسبوع الماضي على جهازٍ خارج
 > التغطية اليوم هو نظامٌ يعمل كما صُمِّم. ورسمُ خطأٍ أحمر له يعلّم المستخدم أن
 > التطبيق معطوب — ومن تعلّم ذلك يتوقف عن الإبلاغ عن الأعطال الحقيقية.
+
+
+---
+
+## §25 · BadgeWidget / TagWidget — توافق
+
+> موجودان للتوافق. **للكود الجديد استخدم `AppLabel`.**
+
+```dart
+// ── BadgeWidget — عدد فوق widget (لا يُستبدَل) ──
+BadgeWidget(
+  count: notifications.length,   // 0 ⇐ لا شارة أصلاً، لا «0» حمراء
+  child: IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: _open),
+)
+
+// ── TagWidget — توافق قديم ──
+TagWidget(labelKey: LocaleKeys.active)
+
+// ── الصحيح في الكود الجديد ──
+AppLabel(labelKey: LocaleKeys.active, variant: AppLabelVariant.success)
+```
 
 
 ---

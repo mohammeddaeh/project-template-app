@@ -23,7 +23,7 @@
 | الدفع والسحب والدمج | `SyncEngine` · `SyncGate` · `sync_meta` |
 | قراءة نوعية وتفاعلية | `watch` على العقد |
 | المرفقات — تنزيل مستأنَف · SHA-256 · رفع · تخزين خاص · Cache Manager | `attachments/` |
-| التشغيل بالخلفية — **أندرويد فقط** | `background/sync_background_worker.dart` (WorkManager). iOS يُعرَض عليه `SyncKeepOpenNotice` بدل وعدٍ لا يُوفى |
+| التشغيل بالخلفية — **أندرويد فقط** | `background/sync_background_worker.dart` (WorkManager). iOS بلا خلفية — ولا ودجةَ «أبقِ التطبيق مفتوحاً» بالقالب: تكتبها شاشةُ الطابور |
 | إحياء صفٍّ استنفد محاولاته | `SyncQueueRepository.reviveJob({jobId})` |
 | سبب رفض المزامنة اليدوية يصل الواجهة | `triggerManualSync` تُعيد `SyncBlockReason?` · حالة `SyncBlocked` |
 | فشل الدورات التلقائية يصل الواجهة | `SyncController._runCycleGuarded()` · `errorStream` ⇐ `SyncFailedState` |

@@ -11,7 +11,7 @@ part 'sync_manager_state.dart';
 
 /// Presentation-layer orchestrator for the sync module.
 ///
-/// Lives in `presentation/shared/sync/` — NOT in `modules/` — because it
+/// Lives in `ui/state/sync/` — NOT in `modules/` — because it
 /// depends on Flutter (flutter_bloc) which is outside the pure-Dart module boundary.
 ///
 /// ## Responsibilities

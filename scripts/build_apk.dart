@@ -66,6 +66,16 @@ Future<void> main(List<String> args) async {
   print('  clean    : $clean');
   print('  codegen  : ${!noCodegen}');
 
+  // ملفُّ البيئة قبل أي خطوةٍ تكتب — غيابُه بعد رفع الإصدار يترك pubspec.yaml
+  // مرفوعاً لبناءٍ لم يقع.
+  final envFile = '.env.$flavor.json';
+  if (!File(envFile).existsSync()) {
+    _die(
+      'ملف البيئة غير موجود: $envFile\n'
+      '    أنشئه أولاً بـ BASE_URL والإعدادات اللازمة.',
+    );
+  }
+
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 0: أداة التوكن — قبل رفع الإصدار، فالتراجع هنا لا يترك أثراً
   // ──────────────────────────────────────────────────────────────────
@@ -127,15 +137,6 @@ Future<void> main(List<String> args) async {
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 4: flutter build apk
   // ──────────────────────────────────────────────────────────────────
-  // التحقق من وجود ملف البيئة قبل البناء
-  final envFile = '.env.$flavor.json';
-  if (!File(envFile).existsSync()) {
-    _die(
-      'ملف البيئة غير موجود: $envFile\n'
-      '    أنشئه أولاً بـ BASE_URL والإعدادات اللازمة.',
-    );
-  }
-
   _section('🔨  Flutter build apk  [$flavor · $mode]');
   await _stream('flutter', [
     'build',

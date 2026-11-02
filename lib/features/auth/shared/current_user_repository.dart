@@ -24,8 +24,9 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 /// `false` for every key on every call — a gate that is always shut reads in
 /// code exactly like a gate that works.
 ///
-/// **When you add RBAC**, the server issues the claims first. Then reinstate a
-/// field here and cache it beside the user with the same two-key pattern below.
+/// **Permissions live in `modules/access_control`** (`Can` · `AbilitiesStore`,
+/// fed by `GET /authz/me`), not on the user — see
+/// `readme/31_MODULE_PERMISSIONS.md`.
 ///
 /// ## Persistence across app restarts
 ///

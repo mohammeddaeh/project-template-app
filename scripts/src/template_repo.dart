@@ -75,14 +75,24 @@ class ProjectManifest {
   final String templateVersion;
   final Map<String, dynamic> raw;
 
+  /// يُنهي العملية برسالةٍ واضحة حين لا بيان — هذا خطأُ مكانٍ متوقَّع، لا عطل.
   static ProjectManifest read() {
     final file = File('.template_manifest.json');
     if (!file.existsSync()) {
-      throw StateError(
-        '.template_manifest.json غير موجود — شغّل من جذر مشروعٍ أنشأه setup_project.dart',
+      _exitWith(
+        Directory('_template').existsSync()
+            ? 'هذا مستودعُ القالب نفسه — template_drift وtemplate_update يُشغَّلان '
+                  'داخل مشروعٍ مبنيٍّ عليه.'
+            : '.template_manifest.json غير موجود — شغّل من جذر مشروعٍ أنشأه '
+                  'setup_project.dart.',
       );
     }
-    final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    final Map<String, dynamic> json;
+    try {
+      json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    } on FormatException catch (e) {
+      _exitWith('.template_manifest.json تالف: ${e.message}');
+    }
     final package = json['package'] as String? ?? templatePackage;
     final version = json['templateVersion'] as String? ?? 'unknown';
     return ProjectManifest._(package, version, json);
@@ -189,4 +199,9 @@ List<String> projectOwnedFiles() {
     }
   }
   return out..sort();
+}
+
+Never _exitWith(String message) {
+  stderr.writeln('\n❌  $message\n');
+  exit(2);
 }

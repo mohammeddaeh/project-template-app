@@ -5,9 +5,9 @@
 > **يُحدَّث** عند إضافة قاعدة أو فاحص آلي جديد.
 
 **كيف تُقرأ**: لكل قاعدة رقم ثابت `R##` — استشهد به بمراجعة الكود («يخالف R07»)
-بدل إعادة شرحها. الترتيب من الأخطر إلى الأقلّ.
+بدل إعادة شرحها. القواعد مجمّعةٌ بالموضوع، والرقمُ معرّفٌ ثابت لا ترتيب أهمية.
 
-> **وسلسلةٌ ثانية `F01…F18`** تخصّ تحويل تصدير الفيغما إلى صفحة —
+> **وسلسلةٌ ثانية `F##`** تخصّ تحويل تصدير الفيغما إلى صفحة —
 > [`05_FIGMA_TO_PAGE.md`](05_FIGMA_TO_PAGE.md). **تضيف ولا تُعفي**: كل `R##` هنا
 > سارٍ على صفحات الفيغما أيضاً.
 
@@ -212,17 +212,6 @@ Figma hex → AppPalette (خام) → AppColors.light/dark (دلالي) → cont
 > بعضُها اسمَ الأب لا الشخص. ولا مصرِّف ولا فاحص يرى ذلك: كلها سلاسل صحيحة.
 > والقدرةُ الناقصة سطران داخل الودجة نفسها، لا ملفٌّ جديد يوازيها.
 
-### R36 · حقل الإدخال واحدٌ — `CustomTextField` وحده 🔒
-
-**ممنوع بأي ملف تحت `lib/`** (عدا `ui/widgets/inputs/`): `TextField(` · `TextFormField(`.
-الفاحص: `F36` بـ`scripts/check_structure.dart`.
-
-> **لماذا**: Flutter لا يُلغي الفوكس عند لمسة إصبعٍ خارج الحقل على أندرويد
-> وiOS — قرارٌ متعمَّد بالإطار، لا سهو. فالكيبورد يبقى مفتوحاً فوق نصف الشاشة
-> حتى يُغلقه شيء. وعلَمٌ يُطلب تشغيله عند كل حقل لا يُشغَّل — **ما يُطلب تذكّره
-> عند كل موضع لا يُتذكَّر** (درس R34 و R35). فالقرار داخل الحقل
-> (`onTapOutsideDismissTheKeyboard` = `true` افتراضاً)، والفاحص يمنع ولادة حقلٍ خارجه.
-
 ### R35 · مؤشّر التقدّم واحدٌ — `AppProgress` وحده 🔒
 
 **ممنوع بأي ملف تحت `lib/`** (عدا `ui/widgets/indicators/app_progress.dart`):
@@ -245,6 +234,51 @@ Figma hex → AppPalette (خام) → AppColors.light/dark (دلالي) → cont
 الاستعمال: [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §26.
 
 ---
+
+### R36 · حقل الإدخال واحدٌ — `CustomTextField` وحده 🔒
+
+**ممنوع بأي ملف تحت `lib/`** (عدا `ui/widgets/inputs/`): `TextField(` · `TextFormField(`.
+الفاحص: `F36` بـ`scripts/check_structure.dart`.
+
+> **لماذا**: Flutter لا يُلغي الفوكس عند لمسة إصبعٍ خارج الحقل على أندرويد
+> وiOS — قرارٌ متعمَّد بالإطار، لا سهو. فالكيبورد يبقى مفتوحاً فوق نصف الشاشة
+> حتى يُغلقه شيء. وعلَمٌ يُطلب تشغيله عند كل حقل لا يُشغَّل — **ما يُطلب تذكّره
+> عند كل موضع لا يُتذكَّر** (درس R34 و R35). فالقرار داخل الحقل
+> (`onTapOutsideDismissTheKeyboard` = `true` افتراضاً)، والفاحص يمنع ولادة حقلٍ خارجه.
+
+### R37 · كل رقمٍ يعتمد على الشاشة يمرّ بـ`context.screen` 🔒👁
+
+```dart
+final s = context.screen;
+ResponsiveGap(24)                       // ❌ SizedBox(height: 24) · 24.heightBox
+EdgeInsets.all(s.space(16))             // ❌ 16.allPadding
+Icon(Icons.x, size: s.size(24))         // ❌ size: 24
+EdgeInsets.symmetric(horizontal: s.gutter)
+s.pick(compact: 1, expanded: 2)         // ❌ if (width > 600)
+```
+
+**وجسدُ كل شاشة داخل `ResponsiveContentBox`**، وما يمتدّ إلى الحافة — ترويسةٌ
+ملوّنة، شريطٌ، صورةُ عرضٍ كامل — يبقى خارجه.
+
+**الاستثناءان:**
+
+| ✅ يبقى كما هو | لماذا |
+|---|---|
+| مقاسُ الخطّ من `context.textTheme` | السلّم يملكه، و`ResponsiveScope` يقيّد تكبير النظام فوقه. ضربُه بمعاملٍ ثانٍ يكسر تسهيلات الرؤية |
+| `maxHeight: context.sh * 0.85` | **قيدٌ لا مسافة** — سقفُ ورقةٍ سفلية، قياسُ شاشةٍ حقيقيّ |
+
+**لماذا**: فاصلٌ مثل `context.sh * 0.08` نسبةٌ من **ارتفاع الشاشة كاملاً** لا
+تتقلّص حين يقتطع الكيبورد نصف الجسد — فيخرج أسفلُ الشاشة، وفيه زرُّها، خارج الحدّ.
+
+**وشقّان مفحوصان آلياً (F37)، والباقي بالعين:** الفاحص يمسك `context.sh *`
+مسافةً، و`setPreferredOrientations` خارج `OrientationPolicy`. ولا يمسك كل
+`SizedBox(height: 16)` بالمستودع **بقصد** — فاحصٌ يصرخ من مئات الأسطر السليمة
+يُدرَّب الناس على تجاهله، فيمرّ معه ما كان يمسكه (R30).
+
+⚠️ **وجرّب على ثلاثة قبل التسليم**: هاتف ~٣٦٠ · لوحٌ عموديّ (٨٠٠) · لوحٌ أفقيّ (١٢٨٠).
+فرعُ اللوح لا يُبنى على هاتفٍ أصلاً، فخطؤه لا يظهر إلا هناك — و`dart analyze` نظيفٌ عليه.
+
+التفصيل والقوالب: [`22_RESPONSIVE.md`](22_RESPONSIVE.md).
 
 ## هـ) الحدود المعمارية
 
@@ -356,9 +390,10 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 
 الجرد الكامل: [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) §«المبنيّ بلا مستهلك».
 
-### R29 · كل موديول يُولد بثلاثة معاً 👁
+### R29 · كل موديول يُولد بأركانه معاً 👁
 
-علَم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صفّ بجدول `10_ARCHITECTURE.md`.
+علَم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صفّ بجدول `10_ARCHITECTURE.md` ·
+صفّ بجدول `00_START_HERE.md` — `scaffold_module.dart` يكتبها معاً.
 واحدٌ ناقص ⇒ كود يُشحن ولا يُشعَل ولا يُطفأ.
 
 > **وموديولٌ لا يتّسع له الإقلاع** (حوارٌ يحتاج `BuildContext`) ينقسم نصفين ولا
@@ -378,6 +413,15 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 القصةُ تذهب إلى رسالة الـcommit أو `_template/`.
 
 الفاحص: `dart run scripts/audit_template.dart` §٥ (استشاريّ، `--verbose` للأسطر).
+
+### R39 · كل رابطٍ بوثيقة يصل ملفاً موجوداً 🔒
+
+نقلُ ملفٍّ أو حذفُه يكسر كل رابطٍ إليه، ولا شيء آخر يفشل. ورابطٌ إلى `_template/`
+من خارجه رابطُ GitHub كامل (المجلد لا يصل المشاريع).
+
+الفاحص: `dart run scripts/check_docs.dart` — حاجبٌ بالـCI.
+
+---
 
 ### R40 · ابحث في كتالوج القدرات قبل أن تكتب أداة 🔒
 
@@ -437,50 +481,7 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 الفاحص: `check_structure.dart` — `C20`. التفصيل:
 [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md).
 
-### R39 · كل رابطٍ بوثيقة يصل ملفاً موجوداً 🔒
-
-نقلُ ملفٍّ أو حذفُه يكسر كل رابطٍ إليه، ولا شيء آخر يفشل. ورابطٌ إلى `_template/`
-من خارجه رابطُ GitHub كامل (المجلد لا يصل المشاريع).
-
-الفاحص: `dart run scripts/check_docs.dart` — حاجبٌ بالـCI.
-
----
-
 ## ط) تغيير الكود
-
-### R37 · كل رقمٍ يعتمد على الشاشة يمرّ بـ`context.screen` 🔒👁
-
-```dart
-final s = context.screen;
-ResponsiveGap(24)                       // ❌ SizedBox(height: 24) · 24.heightBox
-EdgeInsets.all(s.space(16))             // ❌ 16.allPadding
-Icon(Icons.x, size: s.size(24))         // ❌ size: 24
-EdgeInsets.symmetric(horizontal: s.gutter)
-s.pick(compact: 1, expanded: 2)         // ❌ if (width > 600)
-```
-
-**وجسدُ كل شاشة داخل `ResponsiveContentBox`**، وما يمتدّ إلى الحافة — ترويسةٌ
-ملوّنة، شريطٌ، صورةُ عرضٍ كامل — يبقى خارجه.
-
-**الاستثناءان:**
-
-| ✅ يبقى كما هو | لماذا |
-|---|---|
-| مقاسُ الخطّ من `context.textTheme` | السلّم يملكه، و`ResponsiveScope` يقيّد تكبير النظام فوقه. ضربُه بمعاملٍ ثانٍ يكسر تسهيلات الرؤية |
-| `maxHeight: context.sh * 0.85` | **قيدٌ لا مسافة** — سقفُ ورقةٍ سفلية، قياسُ شاشةٍ حقيقيّ |
-
-**لماذا**: فاصلٌ مثل `context.sh * 0.08` نسبةٌ من **ارتفاع الشاشة كاملاً** لا
-تتقلّص حين يقتطع الكيبورد نصف الجسد — فيخرج أسفلُ الشاشة، وفيه زرُّها، خارج الحدّ.
-
-**وشقّان مفحوصان آلياً (F37)، والباقي بالعين:** الفاحص يمسك `context.sh *`
-مسافةً، و`setPreferredOrientations` خارج `OrientationPolicy`. ولا يمسك كل
-`SizedBox(height: 16)` بالمستودع **بقصد** — فاحصٌ يصرخ من مئات الأسطر السليمة
-يُدرَّب الناس على تجاهله، فيمرّ معه ما كان يمسكه (R30).
-
-⚠️ **وجرّب على ثلاثة قبل التسليم**: هاتف ~٣٦٠ · لوحٌ عموديّ (٨٠٠) · لوحٌ أفقيّ (١٢٨٠).
-فرعُ اللوح لا يُبنى على هاتفٍ أصلاً، فخطؤه لا يظهر إلا هناك — و`dart analyze` نظيفٌ عليه.
-
-التفصيل والقوالب: [`22_RESPONSIVE.md`](22_RESPONSIVE.md).
 
 ### R31 · تغيير معزول — لا refactor واسع بلا موافقة صريحة 👁
 
@@ -534,8 +535,13 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R04  SafeCubit  ·  R05 @freezed  ·  R06 context.mounted
 [ ] R08  المسار مسجَّل بـrouter.dart وبـtest/router_contract_test.dart
 [ ] R10  لا نصّ مكتوباً  ·  R11 context.locale  ·  R12 لا لون خام
+[ ] R16  اتجاه التبعية سليم
+[ ] R26  الوثيقة المقابلة حُدِّثت
+[ ] R33  analyze نظيف  ·  flutter test أخضر  ·  check_structure بلا جديد
 [ ] R34  فحصت lib/ui/widgets/ ومستهلكي الودجة قبل بناء واحدة جديدة
 [ ] R35  صفر مؤشّر إطارٍ خام — AppProgress وحده
+[ ] R36  صفر TextField/TextFormField خام — CustomTextField وحده
+[ ] R37  صفر رقمِ مقاسٍ خام — context.screen · وجُرِّبت على هاتف ولوح
 [ ] R38  لا تاريخ ولا اسمَ مشروع بوثيقةٍ أو تعليق — audit_template §٥
 [ ] R39  check_docs بلا رابطٍ معطوب
 [ ] R40  بحثتُ بـ06_CAPABILITIES قبل كتابة أداة — والناقص وُسِّع بمكانه
@@ -543,12 +549,7 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R42  ودجةٌ جديدة بالمكتبة لها مثالٌ بصفحةٍ من lib/modules/showcase/
 [ ] R43  حزمةٌ بكودٍ أصليٍّ ثقيل kit بـpackages/ — و lib/ يعرف kit_contracts وحده
 [ ] R44  core/ و ui/ لا يستوردان token_inspector — المنفذ والمرحِّل و AppOverlays
-[ ] R36  صفر TextField/TextFormField خام — CustomTextField وحده
-[ ] R37  صفر رقمِ مقاسٍ خام — context.screen · وجُرِّبت على هاتف ولوح
-[ ] R16  اتجاه التبعية سليم
-[ ] R26  الوثيقة المقابلة حُدِّثت
 [ ] 🪤   فخٌّ جديد بمكتبة؟ علَّق عليه بموضعه + صفٌّ بجدول §🪤
-[ ] R33  analyze نظيف  ·  flutter test أخضر  ·  check_structure بلا جديد
 ```
 
 الأوامر والمسارات: [`00_START_HERE.md`](00_START_HERE.md)

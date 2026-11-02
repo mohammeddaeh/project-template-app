@@ -185,31 +185,6 @@ Icon(Icons.x, size: s.size(24))       // ❌ size: 24
 
 راجع **F37** أدناه — وهو ما يجعل ٣٩٠ إطارَ رسمٍ فعلاً لا مقاسَ جهاز.
 
-### F37 · كل رقمِ مقاسٍ يمرّ بـ`context.screen`، وجسدُ الصفحة داخل صندوق 🔒
-
-نصفُ القاعدة مفحوصٌ آلياً (F37 بـ`check_structure.dart`)، ونصفُها بالعين.
-والقاعدةُ المرقّمة: [`03_RULES.md`](03_RULES.md) §R37 · القوالب:
-[`22_RESPONSIVE.md`](22_RESPONSIVE.md) §٣‑ب.
-
-```dart
-body: ResponsiveContentBox(
-  width: ContentWidth.content,   // form (٤٨٠ للحقول) · content (٨٤٠) · full
-  horizontalPadding: false,      // متى حمل الجسد حشوته أصلاً — وهو الغالب
-  child: const XBody(),
-)
-```
-
-**وما يمتدّ إلى حافة الشاشة يبقى خارج الصندوق**: ترويسةٌ ملوّنة، شريطٌ علويّ،
-صورةُ عرضٍ كامل. وما يُقرأ صفّاً صفّاً يدخله.
-
-| ✅ استثناءان | لماذا |
-|---|---|
-| مقاسُ الخطّ من `context.textTheme` (F12) | السلّم يملكه، و`ResponsiveScope` يقيّد تكبير النظام فوقه |
-| `maxHeight: context.sh * 0.85` | **قيدٌ لا مسافة** — سقفُ ورقةٍ سفلية |
-
-⚠️ **والنسبةُ من ارتفاع الشاشة ممنوعةٌ مسافةً** — `context.sh * 0.08` لا تتقلّص
-مع الكيبورد، فتدفع الزرَّ خارج الحدّ على شاشةٍ قصيرة. والفاحصُ يردّها (F37).
-
 ### F09 · الإحداثيات المطلقة تُترجَم إلى تدفّق 👁
 
 الفيغما يضع كل شيء بـ`x`/`y`. الترجمة:
@@ -378,6 +353,31 @@ Scaffold(
 `Column` بلا تمرير إن كان المحتوى مضموناً قصيراً.
 
 ---
+
+### F37 · كل رقمِ مقاسٍ يمرّ بـ`context.screen`، وجسدُ الصفحة داخل صندوق 🔒
+
+نصفُ القاعدة مفحوصٌ آلياً (F37 بـ`check_structure.dart`)، ونصفُها بالعين.
+والقاعدةُ المرقّمة: [`03_RULES.md`](03_RULES.md) §R37 · القوالب:
+[`22_RESPONSIVE.md`](22_RESPONSIVE.md) §٣‑ب.
+
+```dart
+body: ResponsiveContentBox(
+  width: ContentWidth.content,   // form (٤٨٠ للحقول) · content (٨٤٠) · full
+  horizontalPadding: false,      // متى حمل الجسد حشوته أصلاً — وهو الغالب
+  child: const XBody(),
+)
+```
+
+**وما يمتدّ إلى حافة الشاشة يبقى خارج الصندوق**: ترويسةٌ ملوّنة، شريطٌ علويّ،
+صورةُ عرضٍ كامل. وما يُقرأ صفّاً صفّاً يدخله.
+
+| ✅ استثناءان | لماذا |
+|---|---|
+| مقاسُ الخطّ من `context.textTheme` (F12) | السلّم يملكه، و`ResponsiveScope` يقيّد تكبير النظام فوقه |
+| `maxHeight: context.sh * 0.85` | **قيدٌ لا مسافة** — سقفُ ورقةٍ سفلية |
+
+⚠️ **والنسبةُ من ارتفاع الشاشة ممنوعةٌ مسافةً** — `context.sh * 0.08` لا تتقلّص
+مع الكيبورد، فتدفع الزرَّ خارج الحدّ على شاشةٍ قصيرة. والفاحصُ يردّها (F37).
 
 ## د) النصّ والخط
 
@@ -614,28 +614,6 @@ class _RecordHeader extends StatelessWidget { ... }
 | صفّ يظهر بتدرّج داخل قائمة | `ListItemAppearWdg` |
 | سحب-للتحديث | `RefreshWrapper` |
 
-### F36 · حقل الإدخال واحدٌ — `CustomTextField` وحده 🔒
-
-**ممنوع بأي ملف تحت `lib/`** (عدا `ui/widgets/inputs/`): `TextField(` · `TextFormField(`.
-
-**والسبب سلوكٌ لا شكل.** Flutter **لا يُلغي الفوكس** عند لمسة إصبعٍ خارج الحقل
-على أندرويد وiOS — يفعلها للفأرة والقلم وسطح المكتب فقط، وللمس على الويب.
-راجع `_DefaultEditableTextTapOutsideAction` بالإطار 3.35:
-
-```dart
-case TargetPlatform.android:
-case TargetPlatform.iOS:
-  case ui.PointerDeviceKind.touch:
-    if (kIsWeb) intent.focusNode.unfocus();   // الويب وحده
-```
-
-فكل حقلٍ خام = كيبوردٌ يبقى مفتوحاً فوق الشاشة على المنصّتين الوحيدتين اللتين
-يُشحن إليهما التطبيق. و`CustomTextField` تُغلقه لأن `onTapOutsideDismissTheKeyboard`
-افتراضُها `true`.
-
-> **ولذلك الافتراضُ `true` لا علَمٌ يُمرَّر**: خيارٌ اختياري على كل موضع = خيارٌ
-> لا يُتَّخذ.
-
 ### F35 · مؤشّر التقدّم واحدٌ — `AppProgress` وحده 🔒
 
 **ممنوع بأي ملف تحت `lib/`** (عدا `ui/widgets/indicators/app_progress.dart`):
@@ -662,6 +640,28 @@ AppProgress.linear(value: p, tone: AppProgressTone.accent)     // تقدّم ب�
 [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §26.
 
 ---
+
+### F36 · حقل الإدخال واحدٌ — `CustomTextField` وحده 🔒
+
+**ممنوع بأي ملف تحت `lib/`** (عدا `ui/widgets/inputs/`): `TextField(` · `TextFormField(`.
+
+**والسبب سلوكٌ لا شكل.** Flutter **لا يُلغي الفوكس** عند لمسة إصبعٍ خارج الحقل
+على أندرويد وiOS — يفعلها للفأرة والقلم وسطح المكتب فقط، وللمس على الويب.
+راجع `_DefaultEditableTextTapOutsideAction` بالإطار 3.35:
+
+```dart
+case TargetPlatform.android:
+case TargetPlatform.iOS:
+  case ui.PointerDeviceKind.touch:
+    if (kIsWeb) intent.focusNode.unfocus();   // الويب وحده
+```
+
+فكل حقلٍ خام = كيبوردٌ يبقى مفتوحاً فوق الشاشة على المنصّتين الوحيدتين اللتين
+يُشحن إليهما التطبيق. و`CustomTextField` تُغلقه لأن `onTapOutsideDismissTheKeyboard`
+افتراضُها `true`.
+
+> **ولذلك الافتراضُ `true` لا علَمٌ يُمرَّر**: خيارٌ اختياري على كل موضع = خيارٌ
+> لا يُتَّخذ.
 
 ## ح) قبل تسليم أي صفحة — البطاقة
 
