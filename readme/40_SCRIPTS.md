@@ -800,7 +800,9 @@ dart run scripts/device_shot.dart home --ref docs/port/reference/home.png
 الشيء مرّتين.
 
 **جدول الإشارات بـ`scripts/src/port_signals.dart`** — وكلُّ قدرةٍ تُضاف إلى الكتالوج أو
-kit أو موديول تحتاج إشارةً فيه، أو استثناءً بسببه.
+kit أو موديول تحتاج إشارةً فيه، أو استثناءً بسببه. `test/port_signals_test.dart` يُفشل
+الناقص، ويتحقّق أن كلَّ إشارةٍ تُلتقط فعلاً من مشروعٍ قديم وهمي بـ
+`test/fixtures/port/old_app/` — فإشارةٌ جديدة تحتاج سطراً هناك يطابقها.
 
 **`device_shot`** يلتقط الشاشة (`adb screencap`) ونصوصها (`uiautomator dump`) إلى
 `docs/port/shots/`، ومع `--ref` صفحة HTML باللقطتين متجاورتين. ويطبع **العرض المنطقيّ**:

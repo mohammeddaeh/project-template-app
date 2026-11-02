@@ -1,0 +1,16 @@
+:root {
+  --ion-color-primary: #0e6b5c;
+}
+
+.card {
+  margin-left: 8px;
+  animation: fade 200ms;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+}
+
+@media (min-width: 768px) {
+  .card { margin-left: 16px; }
+}

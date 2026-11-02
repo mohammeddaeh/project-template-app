@@ -1,0 +1,16 @@
+<ion-content>
+  <ion-datetime presentation="date"></ion-datetime>
+  <ion-datetime presentation="time"></ion-datetime>
+  <ion-badge>99+</ion-badge>
+  <ion-spinner></ion-spinner>
+  <ion-input label="Name"></ion-input>
+  <ion-icon name="cart"></ion-icon>
+  <img src="{{ order.photo }}" />
+  <div class="empty-state">Nothing here</div>
+  <ion-reorder-group><ion-reorder></ion-reorder></ion-reorder-group>
+  <ion-list>
+    <ion-item-sliding><ion-item>Order</ion-item></ion-item-sliding>
+  </ion-list>
+  <video controls [src]="order.clip"></video>
+  <ion-infinite-scroll (ionInfinite)="load()"></ion-infinite-scroll>
+</ion-content>
