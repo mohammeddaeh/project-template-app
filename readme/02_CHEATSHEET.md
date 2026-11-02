@@ -23,6 +23,8 @@ dart run scripts/check_structure.dart         # ★ بنية الواجهة — 
 dart run scripts/template_drift.dart          # بمشروعٍ مبنيّ: ما غيّره بملفات القالب ولم يُسجَّل
 dart run scripts/template_update.dart         # بمشروعٍ مبنيّ: نسخةٌ أحدث من القالب (--apply يكتب)
 dart run scripts/port_inventory.dart <old>    # نقلُ تطبيقٍ قائم: جردُه ⇐ docs/port/inventory.md
+                                              #   هويّة المتجر · الأذونات بعلَمها · METHOD /path · إشاراتٌ ⇐ قدرة/kit/موديول
+                                              #   إشارةٌ جديدة: scripts/src/port_signals.dart (test/port_signals_test.dart يُفشل الناقص)
 dart run scripts/device_shot.dart <name>      # لقطةُ جهاز + نصوصها (--ref للمقارنة)
 dart run scripts/prune_project.dart           # ما لا يستعمله أحد (--apply يحذف المفاتيح والأصول)
 dart run scripts/check_docs.dart              # روابط .md المعطوبة — حاجب بالـCI

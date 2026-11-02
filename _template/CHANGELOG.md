@@ -11,6 +11,13 @@
 
 ## غير مُصدَر
 
+- **أدوات النقل** (`port_inventory.dart` + skill `port-to-template`): إشارةٌ لكل صفٍّ بالكتالوج ولكل kit
+  وموديول (`scripts/src/port_signals.dart`)، وتُطابَق على ملفات الاعتماديات لا الكود وحده ·
+  `test/port_signals_test.dart` يُفشل الناقص ومشروعٌ وهميّ يثبت التقاط كل إشارة · الـendpoints
+  بالـmethod · هويّة المتجر (المعرّف · رقم البناء · التوقيع) · الأذونات بعلَمها · إشارة دخول OAuth/Keycloak.
+  والخطّة تحسم قبل M1: fixture wire لكل endpoint · «الباك كما هو» (ما يُطفأ وما يُكيَّف) · ما لا
+  ينتقل من جهاز المستخدم.
+
 - **موديول `token_inspector`** (مطفأ): التوكن على الشاشة بلا كونسول. فيه زرٌّ عائم، وحالةُ الجلسة الآن،
   وسجلٌّ يبقى بعد الإغلاق، وفحوصُ Keycloak تظهر حين يأتي التوكن منه. `TokenInspector.mark` · `.snapshot` ·
   `TokenInspectorPanel`. **لا يُرى بنسخة `prod` release**، و`build_apk.dart` يعدّد النداءات المتروكة
