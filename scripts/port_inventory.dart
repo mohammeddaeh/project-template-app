@@ -13,6 +13,7 @@
 /// | الـendpoints | المسار **ومعه الـmethod** حين يظهر — نداءٌ باسمه · تعليقة Retrofit · `fetch` · نصٌّ بـ`/api/` (`src/port_endpoints.dart`) |
 /// | الترجمات | ملفات JSON تحت `i18n/` · `locales/` · `translations/` وعدد مفاتيحها |
 /// | هويّة المتجر | معرّف الحزمة · رقم البناء · إعداد التوقيع ومسارُ المفتاح (لا محتواه) — `src/port_store.dart` |
+/// | الأذونات | `AndroidManifest.xml` · `Info.plist` ⇐ علَمُها بـ`AppFeatures` — `src/port_permissions.dart` |
 /// | الخطوط | كل `.ttf`/`.otf` ووزنه **من الملف** (`usWeightClass`) |
 /// | SVG | عددها، وما فيه `<style>` (يُرسم أسود بـflutter_svg) |
 /// | القدرات | إشاراتٌ بالكود وملفات الاعتماديات ⇐ قسمٌ بـ`06_CAPABILITIES.md` · kit · موديول — الجدول بـ`src/port_signals.dart` |
@@ -26,6 +27,7 @@ library;
 import 'dart:io';
 
 import 'src/port_endpoints.dart';
+import 'src/port_permissions.dart';
 import 'src/port_signals.dart';
 import 'src/port_store.dart';
 import 'sync_fonts.dart' show fontFileWeight;
@@ -167,6 +169,35 @@ void main(List<String> args) {
   if (store.isEmpty) out.writeln('| ⚠️ لم يُعثر على شيء | — | — |');
   for (final i in store) {
     out.writeln('| ${i.label} | `${i.value}` | `${i.source}` |');
+  }
+
+  final permissions = readPermissions({
+    for (final f in files)
+      if (f.path.endsWith('AndroidManifest.xml') ||
+          f.path.endsWith('Info.plist'))
+        rel(f): _read(f),
+  });
+  out
+    ..writeln()
+    ..writeln(
+      '## الأذونات (${permissions.length}) — علَمٌ بـ`AppFeatures` لكلٍّ منها',
+    )
+    ..writeln()
+    ..writeln(
+      '> أشعل العلَم ثم `dart run scripts/sync_platform_permissions.dart`. '
+      'إذنٌ ناقص لا يُفشل شيئاً قبل الجهاز: أندرويد يرفض الطلب، وiOS يُغلق '
+      'التطبيق حين يسأل بلا نصّ استعمال.',
+    )
+    ..writeln()
+    ..writeln('| الإذن | العلَم | من |')
+    ..writeln('|---|---|---|');
+  for (final p in permissions) {
+    final flag = !p.known
+        ? '✖️ لا مقابل بالقالب — راجعه'
+        : p.flag == null
+        ? '— (مُعلَنٌ دائماً)'
+        : '`${p.flag}`';
+    out.writeln('| `${p.name}` | $flag | `${p.source}` |');
   }
 
   void list(String title, Iterable<String> items, [String? note]) {
