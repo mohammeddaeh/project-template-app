@@ -10,7 +10,7 @@
 /// |---|---|
 /// | المنصّة | `package.json` · `pubspec.yaml` · `build.gradle` · `*.xcodeproj` |
 /// | الشاشات | ملفاتٌ تحت `pages/` · `screens/` · `views/` أو أسماؤها `*Page`/`*Screen`/`*View` |
-/// | الـendpoints | نصوصٌ تبدأ بـ`/api/` أو `http(s)://` |
+/// | الـendpoints | المسار **ومعه الـmethod** حين يظهر — نداءٌ باسمه · تعليقة Retrofit · `fetch` · نصٌّ بـ`/api/` (`src/port_endpoints.dart`) |
 /// | الترجمات | ملفات JSON تحت `i18n/` · `locales/` · `translations/` وعدد مفاتيحها |
 /// | الخطوط | كل `.ttf`/`.otf` ووزنه **من الملف** (`usWeightClass`) |
 /// | SVG | عددها، وما فيه `<style>` (يُرسم أسود بـflutter_svg) |
@@ -24,6 +24,7 @@ library;
 
 import 'dart:io';
 
+import 'src/port_endpoints.dart';
 import 'src/port_signals.dart';
 import 'sync_fonts.dart' show fontFileWeight;
 
@@ -78,15 +79,7 @@ void main(List<String> args) {
         path,
   ]..sort();
 
-  final endpoints = <String>{};
-  final endpoint = RegExp(
-    r'''['"`]((?:https?://[^'"`\s]+)|(?:/api/[^'"`\s]*))['"`]''',
-  );
-  for (final text in contents.values) {
-    for (final m in endpoint.allMatches(text)) {
-      endpoints.add(m.group(1)!);
-    }
-  }
+  final endpoints = extractEndpoints(contents.values);
 
   final translations = [
     for (final f in files)
@@ -167,8 +160,10 @@ void main(List<String> args) {
   list('الشاشات', screens);
   list(
     'الـendpoints',
-    endpoints.toList()..sort(),
-    'كلٌّ منها ثابتٌ بـ`ApiUrls` — راجع `readme/17_SERVED_CONTRACT.md`.',
+    endpoints,
+    'كلٌّ منها ثابتٌ بـ`ApiUrls` ومعه **fixture wire** بـ`test/fixtures/wire/` '
+        'قبل M1 — ردٌّ حقيقيّ، بلا توكنٍ ولا بيانات أشخاص. `?` = method لم '
+        'يظهر بالكود: يُعرف من الطلب نفسه عند التقاط الردّ.',
   );
   list('الترجمات', translations);
   list(
