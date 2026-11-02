@@ -792,9 +792,15 @@ dart run scripts/device_shot.dart home --ref docs/port/reference/home.png
 
 **`port_inventory`** يجرد ولا يجتهد: المنصّة (Capacitor · React · Flutter · أندرويد · iOS) ·
 الشاشات · الـendpoints · ملفات الترجمة · الخطوط **بوزنها من الملف** · SVG بـ`<style>` ·
-وإشاراتٍ (مكتبة تاريخ · تخزين · إشعارات · موقع · مشاركة …) مربوطةً بقسمها بـ
-`06_CAPABILITIES.md`. ويتجاوز ناتج البناء (حزمٌ مضغوطة · نسخة الويب داخل أندرويد/iOS ·
-`build-*`) فلا يعدّ الشيء مرّتين.
+وإشاراتٍ مربوطةً بما يقابلها: قسمٌ بـ`06_CAPABILITIES.md`، أو kit تُركَّب بـ
+`scripts/kit.dart add <name>`، أو موديولٌ بـ`lib/modules/`. والإشارات تُطابَق على الكود
+**وملفات الاعتماديات** (`package.json` · `pubspec.yaml` · `build.gradle` · `Podfile` ·
+`AndroidManifest.xml` · `Info.plist`) والأنماط — فاسمُ حزمةٍ وحده يكفي. ويتجاوز ناتج
+البناء (حزمٌ مضغوطة · نسخة الويب داخل أندرويد/iOS · `build-*` · كودٌ مولَّد) فلا يعدّ
+الشيء مرّتين.
+
+**جدول الإشارات بـ`scripts/src/port_signals.dart`** — وكلُّ قدرةٍ تُضاف إلى الكتالوج أو
+kit أو موديول تحتاج إشارةً فيه، أو استثناءً بسببه.
 
 **`device_shot`** يلتقط الشاشة (`adb screencap`) ونصوصها (`uiautomator dump`) إلى
 `docs/port/shots/`، ومع `--ref` صفحة HTML باللقطتين متجاورتين. ويطبع **العرض المنطقيّ**:

@@ -113,7 +113,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 |---|---|
 | **`readme/README.md`** | **فهرس المجلد — يُحدَّث عند إضافة/حذف/نقل أي ملف فيه، بنفس التغيير** |
 | `readme/03_RULES.md` | إضافة قاعدة صارمة أو فاحص آلي |
-| **`readme/06_CAPABILITIES.md`** | **إضافة قدرة أو غلاف بالقالب · تغيير اسم واجهةٍ عامة فيه · أي قاعدة `C##`** — ومعه جدول `_capabilities` بـ`check_structure.dart` بنفس التغيير |
+| **`readme/06_CAPABILITIES.md`** | **إضافة قدرة أو غلاف بالقالب · تغيير اسم واجهةٍ عامة فيه · أي قاعدة `C##`** — ومعه جدول `_capabilities` بـ`check_structure.dart` **وإشارةٌ بـ`scripts/src/port_signals.dart`** (وكذلك لكل kit وموديول جديد) بنفس التغيير |
 | `readme/04_FIRST_FEATURE.md` | تغيير بنية الشريحة أو ترتيب التوليد |
 | `readme/05_FIGMA_TO_PAGE.md` | تغيير طريقة تصدير الفيغما · قاعدة تحويل `F##` · جدول المقابلة · **أو أي زوج لون يُفحص تباينه** |
 | `readme/10_ARCHITECTURE.md` | أي تغيير هيكلي في lib/ |

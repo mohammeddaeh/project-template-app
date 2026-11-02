@@ -14,7 +14,7 @@
 /// | الترجمات | ملفات JSON تحت `i18n/` · `locales/` · `translations/` وعدد مفاتيحها |
 /// | الخطوط | كل `.ttf`/`.otf` ووزنه **من الملف** (`usWeightClass`) |
 /// | SVG | عددها، وما فيه `<style>` (يُرسم أسود بـflutter_svg) |
-/// | القدرات | إشاراتٌ (مكتبة تاريخ · تخزين · إشعارات · موقع …) ⇐ القدرة المقابلة بالقالب |
+/// | القدرات | إشاراتٌ بالكود وملفات الاعتماديات ⇐ قسمٌ بـ`06_CAPABILITIES.md` · kit · موديول — الجدول بـ`src/port_signals.dart` |
 ///
 /// تشغيل من جذر المشروع الجديد (المبنيّ على القالب):
 ///   dart run scripts/port_inventory.dart ../old_project
@@ -24,6 +24,7 @@ library;
 
 import 'dart:io';
 
+import 'src/port_signals.dart';
 import 'sync_fonts.dart' show fontFileWeight;
 
 const _skip = {
@@ -51,110 +52,6 @@ const _codeExt = [
   '.java',
   '.swift',
   '.html',
-];
-
-/// إشارةٌ بالمشروع القديم ⇐ القدرة التي تقابلها بالقالب.
-const _signals = <(String, String, String)>[
-  (
-    'التاريخ والوقت',
-    r'moment\(|dayjs|date-fns|Intl\.DateTimeFormat|toLocaleDateString|toLocaleTimeString|DateFormat\(|hijri|ummalqura|umalqura',
-    '§التاريخ والوقت — AppDateFormats · HijriDateX (أم القرى) · AppTimeFormats',
-  ),
-  (
-    'الأرقام',
-    r'Intl\.NumberFormat|\.toFixed\(|toLocaleString\(|NumberFormat\(',
-    '§الأرقام — AppNumberFormats · ArabicDigits',
-  ),
-  (
-    'تخزين محلّي',
-    r'localStorage|sessionStorage|@capacitor/preferences|Preferences\.(get|set)|AsyncStorage|SharedPreferences|indexedDB',
-    '§المنصّة — StorageService',
-  ),
-  (
-    'تخزين آمن',
-    r'SecureStorage|Keychain|flutter_secure_storage|EncryptedSharedPreferences',
-    '§المنصّة — SecureStorageService',
-  ),
-  (
-    'قاعدة بيانات محلّية',
-    r'sqlite|SQLite|@capacitor-community/sqlite|Realm|WatermelonDB|sqflite|Room',
-    '§الشبكة — modules/sync (STATUS.md أولاً)',
-  ),
-  (
-    'إشعارات محلّية',
-    r'LocalNotifications|flutter_local_notifications|scheduleNotification|NotificationCompat',
-    '§المنصّة — LocalNotificationsService',
-  ),
-  (
-    'إشعارات push',
-    r'PushNotifications|firebase/messaging|FirebaseMessaging|onesignal|OneSignal',
-    'modules/push_notifications',
-  ),
-  (
-    'الموقع',
-    r'Geolocation|navigator\.geolocation|geolocator|FusedLocation|CLLocationManager',
-    '§المنصّة — DeviceLocationService',
-  ),
-  (
-    'كاميرا · معرض',
-    r'@capacitor/camera|Camera\.getPhoto|ImagePicker|getUserMedia|UIImagePickerController',
-    '§المنصّة — MediaService',
-  ),
-  (
-    'مشاركة',
-    r'@capacitor/share|Share\.share|navigator\.share|share_plus|ACTION_SEND',
-    '§المنصّة — ShareService',
-  ),
-  (
-    'حافظة',
-    r'@capacitor/clipboard|Clipboard\.|navigator\.clipboard',
-    '§المنصّة — ClipboardService',
-  ),
-  (
-    'اهتزاز',
-    r'@capacitor/haptics|Haptics\.|navigator\.vibrate|HapticFeedback',
-    '§المنصّة — HapticService',
-  ),
-  (
-    'فتح رابط',
-    r'window\.open|Browser\.open|InAppBrowser|launchUrl|Linking\.openURL',
-    '§المنصّة — UrlLauncherService',
-  ),
-  (
-    'بصمة · وجه',
-    r'FaceID|BiometricAuth|NativeBiometric|local_auth|BiometricPrompt',
-    '§المنصّة — BiometricsService',
-  ),
-  (
-    'ملفات',
-    r'@capacitor/filesystem|Filesystem\.|FilePicker|file_picker|DocumentPicker',
-    '§المنصّة — FileService',
-  ),
-  (
-    'ترجمة',
-    r'i18next|react-intl|vue-i18n|ngx-translate|easy_localization|\$t\(|\.tr\(\)',
-    '§النصوص — LocaleKeys.x.tr() (R10)',
-  ),
-  (
-    'شبكة',
-    r'axios|fetch\(|HttpClient|Dio\(|Retrofit|URLSession',
-    '§الشبكة — ApiUrls · Retrofit · HandleBodyResponse (ونصٌّ بضجيج: Future<String>)',
-  ),
-  (
-    'روابط عميقة',
-    r'appUrlOpen|deeplink|deep_link|universal link|intent-filter',
-    '23_STARTUP_SPLASH.md §٥ — resolveDeepLink',
-  ),
-  (
-    'خرائط',
-    r'google\.maps|GoogleMap|leaflet|mapbox|MapView',
-    '✖️ لا قدرة بالقالب — سجّلها بـTEMPLATE_FEEDBACK إن كانت عامّة',
-  ),
-  (
-    'دفع',
-    r'stripe|Stripe|paypal|InAppPurchase|in_app_purchase|StoreKit',
-    '✖️ لا قدرة بالقالب',
-  ),
 ];
 
 void main(List<String> args) {
@@ -212,15 +109,15 @@ void main(List<String> args) {
       if (_read(f).contains('<style')) rel(f),
   ]..sort();
 
-  final signals = <(String, String, List<String>)>[];
-  for (final (name, pattern, capability) in _signals) {
-    final re = RegExp(pattern);
-    final hits = [
-      for (final e in contents.entries)
-        if (re.hasMatch(e.value)) e.key,
-    ]..sort();
-    if (hits.isNotEmpty) signals.add((name, capability, hits));
-  }
+  // الإشارات تُطابَق على الكود **وملفات الاعتماديات والأنماط**: اسمُ حزمةٍ
+  // بـ`package.json` أو `build.gradle` يكفي ليُلتقط ما لم يُستدعَ بعد.
+  final signals = scanPortSignals({
+    ...contents,
+    for (final f in files)
+      if (portManifestNames.contains(f.uri.pathSegments.last) ||
+          portStyleExtensions.any(f.path.endsWith))
+        rel(f): _read(f),
+  });
 
   final out = StringBuffer()
     ..writeln('# جرد المشروع القديم')
@@ -247,9 +144,9 @@ void main(List<String> args) {
     ..writeln()
     ..writeln('| الإشارة | ملفات | بالقالب | أمثلة |')
     ..writeln('|---|---|---|---|');
-  for (final (name, capability, hits) in signals) {
+  for (final (signal, hits) in signals) {
     out.writeln(
-      '| $name | ${hits.length} | $capability | ${hits.take(3).map((h) => '`$h`').join(' · ')} |',
+      '| ${signal.name} | ${hits.length} | ${signal.target} | ${hits.take(3).map((h) => '`$h`').join(' · ')} |',
     );
   }
   void list(String title, Iterable<String> items, [String? note]) {
@@ -295,14 +192,17 @@ void main(List<String> args) {
 
 /// ناتجُ بناءٍ لا مصدر: حزمٌ مضغوطة بأسماءٍ مُجزَّأة (`App-BIj2GB2r.js`)، ونسخة
 /// الويب داخل مشروعَي أندرويد/iOS (`src/main/assets/public/` · `App/App/public/`)،
-/// ومجلدات `build-*`. عدُّها يضاعف كل إشارة بنسخٍ مولَّدة.
+/// ومجلدات `build-*`، وكودٌ مولَّد (`*.g.dart` · `GeneratedPluginRegistrant`).
+/// عدُّها يضاعف كل إشارة بنسخٍ مولَّدة.
 bool _bundled(String path) {
   final p = path.replaceAll(r'\', '/');
   return p.endsWith('.min.js') ||
       RegExp(r'-[A-Za-z0-9_-]{8}\.(js|css)$').hasMatch(p) ||
       p.contains('/src/main/assets/public/') ||
       p.contains('/App/App/public/') ||
-      RegExp(r'/build-[^/]+/').hasMatch(p);
+      RegExp(r'/build-[^/]+/').hasMatch(p) ||
+      RegExp(r'\.(g|freezed|gen|gr|config)\.dart$').hasMatch(p) ||
+      p.contains('GeneratedPluginRegistrant');
 }
 
 Iterable<File> _walk(Directory dir) sync* {
