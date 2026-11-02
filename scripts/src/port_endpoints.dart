@@ -8,7 +8,11 @@
 /// | نداءٌ باسم الـmethod | `http.get('/orders')` · `axios.post(`${api}/orders`)` · `dio.get(base + '/orders')` |
 /// | تعليقة Retrofit | `@GET("orders/{id}")` (Kotlin/Java/Dart) |
 /// | `fetch` | `fetch('/orders', { method: 'POST' })` — بلا `method` ⇐ `GET` |
-/// | نصٌّ يبدأ بـ`/api/` أو `http(s)://` | method مجهول ⇐ `?` |
+/// | نصٌّ يبدأ بـ`/api/`، أو رابطٌ كامل فيه `/api/` أو مضيفُه `api.` | method مجهول ⇐ `?` |
+///
+/// **ورابطٌ كامل غيرُ ذلك ليس endpoint**: موقعٌ يُفتح بالمتصفّح، صفحةُ المتجر،
+/// شروطُ الاستخدام، أو عنوانُ الخادم نفسه بملف البيئة. يُعرض بـ[extractOtherUrls]
+/// بأصله وحده (`https://host`)، لا بقائمة العقد.
 ///
 /// والمسار يُطبَّع: البادئةُ المتغيّرة (`${environment.apiUrl}` · `base +`) تسقط،
 /// و`${id}` يصير `{id}`، والاستعلام بعد `?` يسقط.
@@ -58,7 +62,7 @@ List<String> extractEndpoints(Iterable<String> texts) {
       add(m[3] ?? 'GET', m[2]!);
     }
     for (final m in _literal.allMatches(text)) {
-      add('?', m[1]!);
+      if (_isApiLiteral(m[1]!)) add('?', m[1]!);
     }
   }
 
@@ -100,4 +104,28 @@ String? _normalize(String raw, {required bool annotated}) {
   }
   if (!isUrl && !path.startsWith('/')) path = '/$path';
   return path;
+}
+
+/// الروابط الكاملة التي ليست endpoints — بأصلها (`https://host`)، مرتّبةً بلا تكرار.
+///
+/// عنوانُ الخادم بملف البيئة بينها: يُعرف منه أين يعيش الباك، ولا يُكتب ثابتاً بـ`ApiUrls`.
+List<String> extractOtherUrls(Iterable<String> texts) {
+  final origins = <String>{};
+  for (final text in texts) {
+    for (final m in _literal.allMatches(text)) {
+      final raw = m[1]!;
+      if (_isApiLiteral(raw)) continue;
+      final uri = Uri.tryParse(raw);
+      if (uri != null && uri.hasAuthority) origins.add(uri.origin);
+    }
+  }
+  return origins.toList()..sort();
+}
+
+/// `/api/...` نسبيّ · رابطٌ كامل فيه `/api/` · مضيفٌ يبدأ بـ`api.`.
+bool _isApiLiteral(String raw) {
+  if (raw.startsWith('/')) return true;
+  if (raw.contains('/api/')) return true;
+  final host = Uri.tryParse(raw)?.host ?? '';
+  return host.startsWith('api.') && (Uri.tryParse(raw)?.path.length ?? 0) > 1;
 }

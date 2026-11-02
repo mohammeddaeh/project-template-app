@@ -84,6 +84,7 @@ void main(List<String> args) {
   ]..sort();
 
   final endpoints = extractEndpoints(contents.values);
+  final otherUrls = extractOtherUrls(contents.values);
 
   final store = readStoreIdentity({
     for (final f in files)
@@ -222,6 +223,12 @@ void main(List<String> args) {
     'كلٌّ منها ثابتٌ بـ`ApiUrls` ومعه **fixture wire** بـ`test/fixtures/wire/` '
         'قبل M1 — ردٌّ حقيقيّ، بلا توكنٍ ولا بيانات أشخاص. `?` = method لم '
         'يظهر بالكود: يُعرف من الطلب نفسه عند التقاط الردّ.',
+  );
+  list(
+    'روابط أخرى — ليست endpoints',
+    otherUrls,
+    'بأصلها وحده: مواقع تُفتح · صفحة المتجر · وعنوانُ الخادم بملف البيئة إن كان '
+        'بينها (يذهب إلى `BASE_URL` بـ`.env.<flavor>.json`، لا إلى `ApiUrls`).',
   );
   list('الترجمات', translations);
   list(

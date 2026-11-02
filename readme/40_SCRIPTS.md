@@ -817,7 +817,8 @@ dart run scripts/device_shot.dart home --ref docs/port/reference/home.png
 **`port_inventory`** يجرد ولا يجتهد: المنصّة (Capacitor · React · Flutter · أندرويد · iOS) ·
 **هويّة المتجر** (معرّف الحزمة · رقم البناء · إعداد التوقيع ومسارُ المفتاح، لا محتواه — ما يجب أن
 يبقى ليصل التحديث) · **الأذونات** (`AndroidManifest.xml` · `Info.plist` ⇐ علَمُها بـ`AppFeatures`) · الشاشات · الـendpoints **بالـmethod** (`GET /orders` — من نداءٍ باسمه أو تعليقة Retrofit أو
-`fetch`، و`?` حين لا يظهر) · ملفات الترجمة · الخطوط **بوزنها من الملف** · SVG بـ`<style>` ·
+`fetch`، و`?` حين لا يظهر؛ والروابط الكاملة التي ليست API — موقعٌ يُفتح، صفحةُ المتجر، عنوانُ الخادم — بقائمةٍ
+منفصلة بأصلها وحده) · ملفات الترجمة · الخطوط **بوزنها من الملف** · SVG بـ`<style>` ·
 وإشاراتٍ مربوطةً بما يقابلها: قسمٌ بـ`06_CAPABILITIES.md`، أو kit تُركَّب بـ
 `scripts/kit.dart add <name>`، أو موديولٌ بـ`lib/modules/`. والإشارات تُطابَق على الكود
 **وملفات الاعتماديات** (`package.json` · `pubspec.yaml` · `build.gradle` · `Podfile` ·

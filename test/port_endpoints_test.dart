@@ -45,6 +45,25 @@ void main() {
     );
   });
 
+  test('a link that is not an API is listed apart, by origin', () {
+    const code = '''
+      Browser.open({ url: 'https://example.com/terms' });
+      const store = 'https://play.google.com/store/apps/details?id=x';
+      const server = 'https://backend.example.com';
+      const report = 'https://backend.example.com/api/reports';
+      const v1 = 'https://api.example.com/v1/orders';
+    ''';
+    expect(of(code), [
+      '? https://api.example.com/v1/orders',
+      '? https://backend.example.com/api/reports',
+    ]);
+    expect(extractOtherUrls([code]), [
+      'https://backend.example.com',
+      'https://example.com',
+      'https://play.google.com',
+    ]);
+  });
+
   test('storage keys and asset paths are not endpoints', () {
     expect(of("storage.get('token')"), isEmpty);
     expect(of("http.get('assets/i18n/ar.json')"), isEmpty);
