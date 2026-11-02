@@ -490,11 +490,12 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1))) `
     -Package inventory_app -Name "Inventory" -AppId com.example.inventory -BaseUrl https://api.example.com -Preset simple `
-    -Remote my-org/inventory_app
+    -Kits scan,voice -Remote my-org/inventory_app
 ```
 
 الوسائط: `-Package` · `-Name` · `-AppId` · `-BaseUrl` · `-BaseUrlStaging` ·
-`-BaseUrlProd` · `-Preset simple|enterprise|custom` · `-Directory` · `-Remote` ·
+`-BaseUrlProd` · `-Preset simple|enterprise|custom` · `-Auth none|required|optional` ·
+`-Kits voice,scan,…` (غائبٌ ⇐ يُسأل؛ فارغٌ ⇐ لا شيء) · `-Directory` · `-Remote` ·
 `-Source` (مستودعٌ أو مسارٌ محلّي بديل — للتجريب) · `-Branch`.
 
 > **ونظيرُه للباك بنفس المسار** بـ`project-template-backend` — بدّل اسم المستودع
@@ -726,9 +727,11 @@ dart run scripts/check_docs.dart
 كلاهما يُشغَّل **داخل المشروع**، ويقرأ `templateVersion` (commit القالب الذي بدأ منه)
 من `.template_manifest.json`. والقالب يُقرأ من مستنسخٍ محلّي (`--template ../app_template`)
 أو يُستنسخ مؤقّتاً من GitHub. **وما يملكه القالب** قائمةُ `templateOwned` بـ
-`scripts/src/template_repo.dart`: `lib/core/` · `lib/ui/` · `lib/modules/` · `scripts/` ·
-`readme/` · `.claude/skills/` · ملفات `CLAUDE.md` · `analysis_options.yaml` · CI ·
-`loadtest/`. وما سواها ملكُ المشروع (`lib/features/` · `lib/main.dart` · `pubspec.yaml` · `assets/` …).
+`scripts/src/template_repo.dart`: `lib/core/` · `lib/ui/` · `lib/modules/` · `packages/` ·
+`scripts/` · **`test/` بملفات القالب وحدها** · `readme/` · `.claude/skills/` · ملفات `CLAUDE.md` ·
+`analysis_options.yaml` · CI · `loadtest/` · `TEMPLATE_VERSION`. وما سواها ملكُ المشروع
+(`lib/features/` · `lib/main.dart` · `pubspec.yaml` · `assets/` …). واختبارٌ كتبه المشروع
+لا يمسّه تحديث، لأن القائمة تُطبَّق على شجرة القالب.
 
 **`projectEdited`** — ملفاتٌ يملكها القالب **ويُنتظر** أن يعدّلها كل مشروع (`api_urls.dart` ·
 `injection_module.dart` · `app_fonts.dart` · `app_palette.dart` · `app_colors.dart` ·
@@ -743,7 +746,7 @@ dart run scripts/template_drift.dart [--template DIR] [--write] [--strict] [--ba
 | يعرض | المعنى |
 |---|---|
 | معدَّل | ملفٌّ من القالب غيّره المشروع — وعددُ الأسطر `+أ −ح` |
-| مضاف | ملفٌّ جديد بـ`lib/core/` · `lib/ui/` · `lib/modules/` · `scripts/` — قدرةٌ عامّة على الأرجح |
+| مضاف | ملفٌّ جديد بـ`lib/core/` · `lib/ui/` · `lib/modules/` · `packages/` · `scripts/` — قدرةٌ عامّة على الأرجح |
 | محذوف | ملفٌّ من القالب أزاله المشروع |
 | متوقَّع | `projectEdited` — يُعرض ولا يُعدّ |
 
@@ -754,11 +757,11 @@ dart run scripts/template_drift.dart [--template DIR] [--write] [--strict] [--ba
 ### `template_update.dart` — ما يأتي من القالب
 
 ```bash
-dart run scripts/template_update.dart [--template DIR] [--to REF] [--apply]
+dart run scripts/template_update.dart [--template DIR] [--base COMMIT] [--to REF] [--apply]
 ```
 
-ثلاث نسخٍ لكل ملفٍّ مملوك: القالب حين بدأ المشروع · القالب عند `--to` (افتراضاً
-`origin/master`) · المشروع.
+ثلاث نسخٍ لكل ملفٍّ مملوك: القالب حين بدأ المشروع (أو `--base`) · القالب عند `--to`
+(افتراضاً `origin/master`) · المشروع. و`--to` لا يُعرف ⇐ يتوقّف، لا يسقط إلى `HEAD`.
 
 | الحالة | مع `--apply` |
 |---|---|

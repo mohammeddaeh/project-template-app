@@ -24,7 +24,7 @@ static const pushNotifications = true;
 static const notificationCenter = true;
 ```
 
-لا شيء آخر إلزامي — `ModulesBootstrap.initializeAll()` يسجّل المخزن ويبدأ
+لا شيء آخر إلزامي — `ModulesBootstrap` يسجّل المخزن ويبدأ
 الاستماع تلقائياً.
 
 ---

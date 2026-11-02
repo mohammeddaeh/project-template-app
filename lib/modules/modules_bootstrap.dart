@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -19,11 +20,16 @@ import 'package:app_template/modules/token_inspector/token_inspector_plugin.dart
 
 /// Single, ordered activation point for ALL optional modules.
 ///
-/// Call once from `main()` right after `configureInjection()`:
+/// Started from `main()` right after `configureInjection()`, and awaited by
+/// `StartupResolver` before the first frame:
 /// ```dart
-/// await configureInjection(Env.currentConfig);
-/// await ModulesBootstrap.initializeAll(getIt);
+/// await configureInjection(Env.flavor);
+/// ModulesBootstrap.start(getIt);
 /// ```
+///
+/// **The modules' own arguments are set here** (`enabled:`, `defaults:`,
+/// `config:`) — each module initialises once, so a second call from anywhere
+/// else is ignored.
 ///
 /// To enable/disable a module → flip ONE flag in [AppFeatures]. Disabled
 /// modules cost nothing (guarded `if` skips them entirely).
@@ -72,13 +78,14 @@ abstract final class ModulesBootstrap {
     }
 
     // 2. Crash reporting first, so it captures errors thrown by later steps.
+    // `!kDebugMode`: لا رفع ولا بيانات من جلسة تطوير — راجع SETUP كلٍّ منهما.
     if (AppFeatures.crashReporting) {
-      await CrashReportingModule.initialize();
+      await CrashReportingModule.initialize(enabled: !kDebugMode);
     }
 
     // 3. Analytics + remote config.
     if (AppFeatures.analytics) {
-      await AnalyticsModule.initialize(di);
+      await AnalyticsModule.initialize(di, enabled: !kDebugMode);
     }
     if (AppFeatures.remoteConfig) {
       await RemoteConfigModule.initialize(di);

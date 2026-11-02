@@ -11,11 +11,21 @@
 
 ---
 
-## ② الكود في `main.dart`
+## ② التفعيل — علَمٌ واحد
 
 ```dart
+// lib/core/platform/features/app_features.dart
+static const remoteConfig = true;
+```
+
+`ModulesBootstrap` يهيّئ Firebase مرّةً ثم ينادي الموديول حين يُشعَل علَمُه.
+**لا تناده من `main()`**: الموديول يُهيَّأ مرّةً واحدة، فنداءٌ ثانٍ بوسائط أخرى
+يُتجاهل بصمت، أيُّهما سبق. ولتغيير الوسائط عدّل سطره هناك:
+
+```dart
+// lib/modules/modules_bootstrap.dart
 await RemoteConfigModule.initialize(
-  getIt,
+  di,
   // القيم الافتراضية المحلية — تُستخدم عند عدم الاتصال أو قبل أول fetch
   defaults: {
     'new_payment_flow':  false,

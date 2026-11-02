@@ -50,8 +50,16 @@ void main(List<String> args) {
   final manifest = ProjectManifest.read();
   final repo = TemplateRepo.open(path: option('--template'));
   final base = repo.resolve(option('--base') ?? manifest.templateVersion);
-  final target =
-      repo.resolve(option('--to') ?? 'origin/master') ?? repo.resolve('HEAD');
+  // `--to` مكتوبٌ خطأً يوقف التحديث — السقوطُ إلى HEAD كان يطبّق commitاً لم
+  // يطلبه أحد. والسقوطُ مقبولٌ حين لا يُمرَّر `--to` أصلاً.
+  final to = option('--to');
+  final target = to != null
+      ? repo.resolve(to)
+      : repo.resolve('origin/master') ?? repo.resolve('HEAD');
+  if (to != null && target == null) {
+    print('❌  --to "$to" ليس commitاً ولا وسماً ولا فرعاً بالقالب.');
+    exit(2);
+  }
   if (base == null || target == null) {
     print('❌  تعذّر تحديد commit البداية أو الهدف — مرّر --base و--to صراحةً.');
     exit(2);

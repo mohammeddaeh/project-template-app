@@ -7,7 +7,7 @@ import 'push_notification_event.dart';
 ///
 /// Usage (in a Cubit or UseCase):
 /// ```dart
-/// class NotificationCubit extends Cubit<...> {
+/// class NotificationCubit extends SafeCubit<...> {
 ///   NotificationCubit(this._push) : super(...) {
 ///     _push.foregroundStream.listen(_onMessage);
 ///     _push.tapStream.listen(_onTap);

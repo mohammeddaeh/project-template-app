@@ -25,26 +25,17 @@ import 'package:get_it/get_it.dart';
 ///   await Firebase.initializeApp();
 /// }
 ///
-/// void main() async {
-///   WidgetsFlutterBinding.ensureInitialized();
-///   await Firebase.initializeApp(...);
-///
-///   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
-///
-///   await configureInjection(Env.dev);
-///   await PushNotificationsModule.initialize(
-///     getIt,
-///     config: PushNotificationsConfig(
-///       onTokenRefresh: (token) => getIt<AuthRepo>().updatePushToken(token),
-///     ),
-///   );
-///   runApp(const App());
-/// }
+/// // Inside `_bootstrap()` in main.dart, before runApp:
+/// FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
 /// ```
+///
+/// The module itself is started by `ModulesBootstrap` when
+/// `AppFeatures.pushNotifications` is on — its `config:` is set there, since
+/// it initialises once and a second call is ignored. See `SETUP.md`.
 ///
 /// ### 3. Usage in a Feature
 /// ```dart
-/// class NotificationCubit extends Cubit<NotificationState> {
+/// class NotificationCubit extends SafeCubit<NotificationState> {
 ///   NotificationCubit(this._push) : super(...) {
 ///     _push.foregroundStream.listen(_onMessage);
 ///     _push.tapStream.listen(_onTap);     // deep-link routing

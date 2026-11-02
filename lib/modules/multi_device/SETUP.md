@@ -1,104 +1,45 @@
 ﻿# Multi-Device Session Module — دليل التفعيل
 
-## الخطوة ١ — تفعيل الموديول
+> الأجهزة والجلسات النشطة للحساب: قائمةٌ بها، وإنهاءُ جلسةٍ واحدة أو كلِّ ما عدا
+> الحالية. يقابل `GET /auth/sessions` و`DELETE /auth/sessions/{id}` و
+> `POST /auth/sessions/revoke-others` بـ`backend_template`.
+
+## الخطوة ١ — العلَم
 
 ```dart
 // lib/core/platform/features/app_features.dart
-static const multiDevice = true;  // ← غيّر من false إلى true
+static const multiDevice = true;
 ```
 
----
+`ModulesBootstrap` يُقلع `MultiDevicePlugin` حين يُشعَل. ولا خطوة ثانية للتوليد
+بعد تعديل الموديول: `dart run scripts/gen_code.dart` (خدمة Retrofit
+`DeviceSessionApiService`).
 
-## الخطوة ٢ — توليد Retrofit
+## الخطوة ٢ — الشاشة مركّبةٌ أصلاً
 
-الموديول يستخدم Retrofit لـ `DeviceSessionApiService`:
+`DevicesSection` بشاشة الإعدادات (`settings_screen.dart`) يفتح `ActiveDevicesScreen`،
+ويرسم لا شيء حين يُطفأ العلَم. **ولا مسار في `router.dart`**: الشاشة ليست
+`@RoutePage` بقصد، فموديولٌ مطفأ لا يضع مساراً بكل مشروع.
 
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
-
----
-
-## الخطوة ٣ — تأكيد التفعيل
-
-التطبيق سيطبع في console عند البداية:
-```
-[MULTI_DEVICE] MultiDevicePlugin initializing...
-[MULTI_DEVICE] DeviceIdService ready | id=550e8400...
-[MULTI_DEVICE] MultiDevicePlugin ready.
-```
-
----
-
-## الخطوة ٤ — إضافة شاشة الأجهزة (اختياري)
-
-### في router.dart
-
-```dart
-// lib/routes/router.dart
-AutoRoute(page: ActiveDevicesRoute.page, path: '/settings/devices'),
-```
-
-### في صفحة الإعدادات
-
-```dart
-import 'package:app_template/modules/multi_device/presentation/pages/active_devices_screen.dart';
-
-// Navigate:
-context.pushRoute(const ActiveDevicesRoute());
-```
-
----
-
-## الخطوة ٥ — ربط FCM (اختياري — للإشعارات)
-
-في handler الـ FCM الخاص بك:
-
-```dart
-FirebaseMessaging.onMessage.listen((message) {
-  getIt<DeviceNotificationHandler>().handle(message.data);
-});
-
-// Background messages:
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  getIt<DeviceNotificationHandler>().handle(message.data);
-}
-```
-
----
-
-## الخطوة ٦ — رسالة "تم تسجيل خروجك" (اختياري)
-
-عند الوصول لشاشة الدخول بعد `sessionRevoked`، يمكن عرض رسالة:
-
-```dart
-// في app.dart، داخل switch:
-case AuthEvent.sessionRevoked:
-  // يمكنك تخزين flag أو تمرير param:
-  SessionRevokedFlag.wasRevoked = true;
-  router.pushAndPopUntil(const LoginRoute(), predicate: (_) => false);
-```
-
----
-
-## ماذا يحدث تلقائياً بعد التفعيل؟
+## ما يحدث تلقائياً بعد التفعيل
 
 | الحدث | ما يحدث |
 |---|---|
-| تسجيل دخول | يُرسل `device_id` + `device_name` + `platform` تلقائياً |
-| أي طلب HTTP | يُضاف `X-Device-ID` header تلقائياً |
-| استقبال `SESSION_REVOKED` | مسح البيانات المحلية + انتقال للدخول |
-| استقبال FCM `session_revoked` | نفس السلوك أعلاه |
-| `is_primary` و `device_session_id` | تُحفظ تلقائياً بعد كل login ناجح |
+| أي طلب HTTP | رأس `X-Device-ID` — معرّفٌ ثابتٌ للجهاز من `DeviceIdService` |
+| `DevicesSection` | قائمةُ الجلسات من الخادم، وإنهاءُ أيٍّ منها |
+| جهازٌ آخر يُنهي هذه الجلسة | الطلب التالي يعود `401` ⇐ **انتهاءُ جلسةٍ عاديّ** (`sessionExpired`). رسالةُ «سُجِّل خروجك من جهازٍ آخر» (`sessionRevoked`) تحتاج خادماً يميّز الجلسة المُنهاة، ولا يميّزها `backend_template` |
 
----
+## ما ليس موصولاً — اقرأ قبل البناء عليه
 
-## إيقاف الموديول
+| السطح | الحالة |
+|---|---|
+| `DeviceNotificationHandler` (FCM `session_revoked`) | ⬜ **مسجَّلٌ بالـDI ولا يُنادى.** `push_notifications` لا يمرّر له شيئاً، و`DeviceIdService.saveSession` بلا مستدعٍ فـ`deviceSessionId` فارغٌ دائماً — فيتجاهل كلَّ رسالة. لتشغيله: احفظ `device_session_id` بعد الدخول، ومرّر `PushNotificationsService.foregroundStream` إلى `handle` |
+| الدخول | لا يُرسل بيانات الجهاز (`device_name` · `platform`) — الرأس وحده |
+
+## الإيقاف
 
 ```dart
-// lib/core/platform/features/app_features.dart
-static const multiDevice = false;  // ← أعِد إلى false
+static const multiDevice = false;
 ```
 
-لا حاجة لإزالة الكود — صفر أوفرهيد عند الإيقاف.
+لا حاجة لإزالة الكود — `DevicesSection` يرسم لا شيء، ولا شيء يُسجَّل.

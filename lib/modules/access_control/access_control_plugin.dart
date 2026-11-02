@@ -45,7 +45,7 @@ export 'presentation/widgets/can.dart' show AbilityContext, Can, CanMode;
 ///
 /// ## Activation
 /// 1. Set `AppFeatures.accessControl = true` in `app_features.dart`.
-/// 2. Nothing else — `ModulesBootstrap.initializeAll()` already calls this.
+/// 2. Nothing else — `ModulesBootstrap` already calls this.
 /// 3. Server side: seed a role, then `AUTHZ_ENABLED=true`. Until then the
 ///    server reports `enabled: false` and every gate here stays open, so the
 ///    order of the rollout cannot lock anyone out.

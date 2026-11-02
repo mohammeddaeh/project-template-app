@@ -1,3 +1,5 @@
+> 📦 **مؤرشَف — لا يصف الكود.** ما بُني فعلاً بـ[`lib/modules/multi_device/SETUP.md`](../../lib/modules/multi_device/SETUP.md).
+
 # Multi-Device Session — Backend Contract
 
 > هذا الملف موجّه لمطوّر الـ Backend حصراً.

@@ -1,3 +1,5 @@
+> 📦 **مؤرشَف — لا يصف الكود.** ما بُني فعلاً بـ[`lib/modules/multi_device/SETUP.md`](../../lib/modules/multi_device/SETUP.md).
+
 # Multi-Device Session Module
 
 > **الحالة:** تصميم مكتمل — جاهز للتنفيذ بعد موافقة Backend

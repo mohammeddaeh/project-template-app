@@ -15,7 +15,7 @@ import 'package:app_template/ui/overlays/app_overlays.dart';
 ///
 /// ## التفعيل
 /// 1. `AppFeatures.tokenInspector = true`
-/// 2. لا شيء آخر — `ModulesBootstrap.initializeAll()` ينادي هذا، فيعلّق مستمعَه
+/// 2. لا شيء آخر — `ModulesBootstrap` ينادي هذا، فيعلّق مستمعَه
 ///    على [AuthSessionRelay]، ويسجّل طبقته بـ[AppOverlays].
 ///
 /// ## الإطفاء

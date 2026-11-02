@@ -32,31 +32,25 @@ Crashlytics يعمل تلقائياً بعد إضافة `GoogleService-Info.plis
 
 ---
 
-## ④ الكود في `main.dart`
+## ④ التفعيل — علَمٌ واحد
 
 ```dart
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+// lib/core/platform/features/app_features.dart
+static const crashReporting = true;
+```
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+`ModulesBootstrap` يهيّئ Firebase مرّةً ثم ينادي الموديول حين يُشعَل علَمُه.
+**لا تناده من `main()`**: الموديول يُهيَّأ مرّةً واحدة، فنداءٌ ثانٍ بوسائط أخرى
+يُتجاهل بصمت، أيُّهما سبق. ولتغيير الوسائط عدّل سطره هناك:
 
-  // ① Firebase أولاً
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // ② Crash Reporting — قبل runApp مباشرة
-  await CrashReportingModule.initialize(
-    enabled: kReleaseMode, // فقط في release — لا uploads في debug
-  );
-
-  // ③ بعد login: اربط هوية المستخدم
-  // CrashReportingModule.setUserId(user.id);
-
-  runApp(const App());
+```dart
+// lib/modules/modules_bootstrap.dart — أوّلُ الموديولات بعد Firebase
+if (AppFeatures.crashReporting) {
+  await CrashReportingModule.initialize(enabled: !kDebugMode); // لا رفع من debug
 }
 ```
+
+وبعد الدخول: `CrashReportingModule.setUserId(user.id)`.
 
 ---
 

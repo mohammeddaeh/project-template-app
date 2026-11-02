@@ -1,4 +1,4 @@
-﻿import 'package:app_template/core/platform/features/app_features.dart';
+import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -8,19 +8,9 @@ import 'services/device_id_service.dart';
 /// Entry point for the Multi-Device Session Module.
 ///
 /// ## Activation
-/// 1. Set `AppFeatures.multiDevice = true` in `app_features.dart`.
-/// 2. Call in `main.dart` after `configureInjection()`:
-///    ```dart
-///    if (AppFeatures.multiDevice) {
-///      await MultiDevicePlugin.initialize(getIt);
-///    }
-///    ```
-///
-/// ## Usage after activation
-/// - Login enrichment: automatic via [MultiDeviceInterceptor].
-/// - Session revocation: navigate to [ActiveDevicesScreen] from settings.
-/// - FCM handling: call `getIt<DeviceNotificationHandler>().handle(data)`
-///   from your FCM callback.
+/// Set `AppFeatures.multiDevice = true` — `ModulesBootstrap` starts it, and
+/// `DevicesSection` in settings opens the screen. What is and is not wired:
+/// `SETUP.md`.
 ///
 /// ## Deactivation
 /// Set `AppFeatures.multiDevice = false` — zero overhead, no code changes.

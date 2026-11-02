@@ -29,7 +29,7 @@ IconButton(
 static const dataTransfer = true;   // ← خطوة واحدة
 ```
 
-`ModulesBootstrap.initializeAll()` يستدعي `DataTransferPlugin.initialize()` تلقائياً. مع `false`: لا يُسجَّل شيء، و`DataTransferSheet.show` **يرفض ويشرح** بدل فتح شاشة تعتمد على حقن لم يحدث — فنقطة الدخول لا يمكن أن تظهر بلا الموديول خلفها.
+`ModulesBootstrap` يستدعي `DataTransferPlugin.initialize()` تلقائياً. مع `false`: لا يُسجَّل شيء، و`DataTransferSheet.show` **يرفض ويشرح** بدل فتح شاشة تعتمد على حقن لم يحدث — فنقطة الدخول لا يمكن أن تظهر بلا الموديول خلفها.
 
 ---
 

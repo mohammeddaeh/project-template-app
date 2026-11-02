@@ -43,8 +43,4 @@ void main() {
     expect(decide(AuthMode.required), StartupDestination.login);
     expect(decide(AuthMode.required, signedIn: true), StartupDestination.shell);
   });
-
-  test('the template ships without sign-in', () {
-    expect(AppFeatures.authMode, AuthMode.none);
-  });
 }

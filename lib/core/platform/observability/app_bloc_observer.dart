@@ -2,6 +2,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_template/core/platform/config/app_settings.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 
 /// A singleton class for centralized Bloc event and state logging.
 class BlocLogger {
@@ -86,10 +87,19 @@ class CustomBlocObserver extends BlocObserver {
     return _logger.logTransition(bloc, transition);
   }
 
+  /// **Always reaches [LogService]**, whatever [AppSettings.enableBlocObserverLogger]
+  /// says: that switch silences the trace of events and states, not errors —
+  /// an error that only goes to the console never reaches crash reporting.
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
-    return _logger.logError(bloc, error, stackTrace);
+    LogService.error(
+      'Unhandled error in ${bloc.runtimeType}',
+      tag: 'BLOC',
+      error: error,
+      stackTrace: stackTrace,
+    );
+    _logger.logError(bloc, error, stackTrace);
   }
 
   @override

@@ -16,15 +16,21 @@ const templatePackage = 'app_template';
 /// **ما يملكه القالب** بمشروعٍ مبنيٍّ عليه: يُحدَّث منه، وتعديله بالمشروع
 /// ملاحظةٌ تعود إليه. مسارٌ ينتهي بـ`/` مجلدٌ كامل، وإلا فملفٌّ بعينه.
 ///
+/// **و`test/` بملفات القالب وحدها**: القائمة تُطبَّق على شجرة القالب لا على
+/// المشروع، فاختبارٌ كتبه المشروع لا يمسّه تحديثٌ ولا يُعدّ «مضافاً»
+/// (`template_drift` يعدّ المضاف بـ`lib/core/` وأخواته وحدها). واختبارُ قالبٍ
+/// عدّله المشروع (fixture wire لباكه مثلاً) يظهر «معدَّلاً» ويُراجَع ولا يُستبدل.
+///
 /// **وما ليس هنا ملكُ المشروع**: `lib/features/` (يبدأ من `auth/` ثم يصير
 /// للمشروع) · `lib/main.dart` · `lib/app.dart` · `lib/routes/` · `pubspec.yaml` ·
-/// `assets/` · `android/` · `ios/` · `docs/` · `test/` غيرُ اختبارات القالب.
+/// `assets/` · `android/` · `ios/` · `docs/`.
 const templateOwned = <String>[
   'lib/core/',
   'lib/ui/',
   'lib/modules/',
   'packages/',
   'scripts/',
+  'test/',
   'readme/',
   '.claude/skills/',
   'CLAUDE.md',

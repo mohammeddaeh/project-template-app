@@ -8,6 +8,7 @@
 #
 #   & ([scriptblock]::Create((irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/scripts/new_project.ps1))) `
 #       -Package inventory_app -Name "Inventory" -AppId com.example.inventory -BaseUrl https://api.example.com -Preset simple `
+#       -Kits scan,voice `
 #       -Remote my-org/inventory_app
 #
 # -Remote (owner/name or URL) is pushed to once the checks pass. It must be an
@@ -36,6 +37,7 @@ param(
     [string]$Preset,
     [ValidateSet('', 'none', 'required', 'optional')]
     [string]$Auth,
+    [string]$Kits,
     [string]$Directory,
     [string]$Remote,
     [string]$Source = 'https://github.com/mohammeddaeh/project-template-app.git',
@@ -67,6 +69,10 @@ $appIdRule = {
     if ($v -cnotmatch '^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$') { 'reverse-domain, lowercase, two segments at least (e.g. com.example.inventory)' }
 }
 $requiredRule = { param($v) if (-not $v) { 'cannot be empty' } }
+$kitsRule = {
+    param($v)
+    if ($v -and $v -cnotmatch '^[a-z]+(,[a-z]+)*$') { 'comma-separated kit names, no spaces (e.g. scan,voice), or empty for none' }
+}
 $urlRule = { param($v) if ($v -and $v -notmatch '^https?://') { 'must start with http:// or https:// (or leave empty)' } }
 $authRule = { param($v) if ($v -notin @('none', 'required', 'optional')) { 'none, required or optional' } }
 $presetRule = { param($v) if ($v -notin @('simple', 'enterprise', 'custom')) { 'simple, enterprise or custom' } }
@@ -218,6 +224,13 @@ function Invoke-NewProject {
     }
     if (-not $Preset) { $Preset = Read-Value 'Optional modules: simple / enterprise / custom' 'simple' $presetRule }
     if (-not $Auth) { $Auth = Read-Value 'Sign-in: none / required / optional' 'none' $authRule }
+    # Asked here because --yes below would otherwise answer «none» and remove
+    # every device kit without a word.
+    if ($PSBoundParameters.ContainsKey('Kits')) {
+        if (& $kitsRule $Kits) { Write-Fail "-Kits: $(& $kitsRule $Kits)"; return }
+    } else {
+        $Kits = Read-Value 'Device kits to keep: voice,audio,scan,ocr,video,system,ink (empty = none)' '' $kitsRule
+    }
     $pushTarget = Read-PushTarget $Remote
 
     if (-not $Directory) { $Directory = Join-Path (Get-Location) $Package }
@@ -248,6 +261,9 @@ function Invoke-NewProject {
         # `custom` asks flag by flag inside the Dart script, so no --preset;
         # the answers above were already confirmed, so --yes skips the recap.
         $setupArgs += @('--auth', $Auth)
+        # Empty = none, which --yes already answers: PowerShell 5.1 drops an
+        # empty argument to a native command, and --kits would swallow the next flag.
+        if ($Kits) { $setupArgs += @('--kits', $Kits) }
         if ($Preset -ne 'custom') { $setupArgs += @('--preset', $Preset) }
         $setupArgs += '--yes'
 

@@ -18,9 +18,13 @@ static const inAppUpdates = true;
 const AppUpdateGate(child: AppShell());
 ```
 
-تجلب دورة المزامنة `GET /api/v1/settings` وتحفظ `app_version` و
-`app_download_url` و`force_update` كلقطة واحدة. يقرأ الحارس اللقطة عند التركيب
-ويستمع لتحديثها، لذلك يصل قرارٌ جديد فور انتهاء الدورة من دون طلب شبكة من الشاشة.
+`GET /api/v1/settings` يُجلب ويُحفظ لقطةً واحدة (`app_version` · `app_download_url` ·
+`force_update`)، والحارس يقرأ اللقطة عند التركيب ويستمع لتحديثها:
+
+| `offlineSync` | متى تُجلب |
+|---|---|
+| مُشعَل | بكل دورة مزامنة — مهمّة `SyncRefreshTask` |
+| مطفأ | مرّةً بكل إقلاع، بالخلفية — `initialize` لا ينتظرها، والإخفاقُ يُبقي اللقطة السابقة |
 
 ---
 

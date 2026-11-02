@@ -30,7 +30,7 @@ export 'presentation/widgets/data_transfer_sheet.dart' show DataTransferSheet;
 ///
 /// ## Activation
 /// 1. Set `AppFeatures.dataTransfer = true` in `app_features.dart`.
-/// 2. Nothing else — `ModulesBootstrap.initializeAll()` already calls this.
+/// 2. Nothing else — `ModulesBootstrap` already calls this.
 ///
 /// ## Deactivation
 /// Set the flag to `false`. [initialize] returns immediately, nothing is

@@ -100,7 +100,7 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 ///
 /// ## التفعيل
 /// 1. `AppFeatures.__moduleCamel__ = true`
-/// 2. لا شيء آخر — `ModulesBootstrap.initializeAll()` ينادي هذا تلقائياً.
+/// 2. لا شيء آخر — `ModulesBootstrap` ينادي هذا تلقائياً.
 ///
 /// ## الإطفاء
 /// اترك العلَم `false`. `initialize` يعود فوراً، ولا شيء يُسجَّل — **صفر أثر**،

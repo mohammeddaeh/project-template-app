@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Declared here, not left to a plugin's manifest: an app that drops every
+         plugin which happens to declare it would ship a release with no network.
+         Debug and profile add it on their own, so the gap shows in release only. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"

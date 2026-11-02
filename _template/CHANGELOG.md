@@ -11,6 +11,12 @@
 
 ## غير مُصدَر
 
+- **إصلاحاتٌ تكسر المسار الرئيسي**: `setup_project --auth required|optional` لم يعد يُفشل اختباره ·
+  `new_project.ps1 -Kits` (كان يحذف كل الـkits بصمت) · `template_update --to` الخاطئ يتوقّف ولا يسقط إلى
+  `HEAD`، وينقل اختبارات القالب (`test/` بملفات القالب وحدها) · `in_app_updates` يجلب لقطته مرّةً بلا
+  المزامنة · أخطاء الـCubits تصل `LogService` دائماً · `INTERNET` صريحٌ بأندرويد · crash/analytics
+  مطفأان بـdebug من `ModulesBootstrap`. ⚠️ SETUP الموديولات الأربعة لـFirebase و`multi_device` أُعيدت
+  كتابتها؛ وثيقتا تصميم `multi_device` نُقلتا إلى `_template/archive/`.
 - **توقيع release الحقيقي**: `build.gradle.kts` يقرأ `android/key.properties` حين يوجد (وإلا مفتاح debug
   كما كان) · `build_apk.dart` ينبّه ببناء `prod` release بلاه · `.gitignore` الجذر يحجب المفاتيح بأي
   مكان (`*.jks` · `*.keystore` · `*.p12` · `*.p8` · `*.mobileprovision`) · `test/signing_secrets_test.dart`

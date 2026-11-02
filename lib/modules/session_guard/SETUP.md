@@ -11,7 +11,7 @@
 static const sessionGuard = true;  // ← غيّر من false إلى true
 ```
 
-لا شيء آخر إلزامي — `ModulesBootstrap.initializeAll()` و`SessionGuardGate`
+لا شيء آخر إلزامي — `ModulesBootstrap` و`SessionGuardGate`
 (مركَّبٌ بالفعل بـ`main_shell_page.dart`) يتوليان الباقي تلقائياً.
 
 ---

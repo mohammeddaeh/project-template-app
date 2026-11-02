@@ -41,8 +41,8 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | [`sync_design_spec.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
 | [`../lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) | Sync — ما يعمل وما ينقص (اقرأه أولاً) |
 | [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync — إعداد سريع |
-| [`../lib/modules/multi_device/README.md`](../lib/modules/multi_device/README.md) | الأجهزة والجلسات النشطة |
-| `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates · session_guard · notification_center · token_inspector |
+| [`../lib/modules/multi_device/SETUP.md`](../lib/modules/multi_device/SETUP.md) | الأجهزة والجلسات النشطة |
+| `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates · session_guard · notification_center · token_inspector · multi_device |
 
 ### العمليات والخارطة
 
@@ -135,8 +135,8 @@ core/
 
 ## Optional Modules (`lib/modules/`)
 
-> **نقطة التفعيل الوحيدة**: `ModulesBootstrap.initializeAll(getIt)` بـ`main.dart`
-> بعد `configureInjection()` مباشرة — **لا يُستدعى أي موديول من `main.dart` مباشرةً**،
+> **نقطة التفعيل الوحيدة**: `ModulesBootstrap.start(getIt)` بـ`main.dart` بعد
+> `configureInjection()` مباشرة، و`StartupResolver` ينتظر `ModulesBootstrap.ready` — **لا يُستدعى أي موديول من `main.dart` مباشرةً**،
 > والترتيب مفروض بالكود هناك لا بالتعليقات. كل وحدة تحتوي `SETUP.md` بخطوات التفعيل.
 
 | Module | العلَم (`AppFeatures`) | افتراضياً | نقطة التفعيل | Packages |
@@ -157,17 +157,11 @@ core/
 
 > **العَلَم هو العمود المهم.** جدولٌ بلا علَم يقرأ الجميعَ موصولين، بينما معظمها
 > **مطفأ** ويُستدعى من `ModulesBootstrap` تحت شرط.
->
-> **و`in_app_updates/` هو النموذج الصحيح لموديول لا يمرّ بـ`ModulesBootstrap`**:
-> يحتاج `BuildContext` فلا مكان له بالإقلاع، **فحمل عَلَمه وحارسه داخل دالته**
-> (`if (!AppFeatures.inAppUpdates) return;`). الشكل الخاطئ — كود كامل بلا علم وبلا
-> حارس — لا يُطفأ لأنه لا يُشعَل.
 
 > **و`in_app_updates/` يُولد بثلاثته رغم أن حواره يحتاج `BuildContext`** —
-> فانقسم نصفين: `initialize(di)` يسجّل **اللقطة المحلّية ومهمّةَ
-> تحديثها بدورة المزامنة** ولا يطلب الشبكة، و`AppUpdateGate` بالقشرة يقرأ اللقطة
-> عند التركيب ويستمع لتبدّلها. فيصل قرارٌ جديد **فور انتهاء الدورة** بلا أن
-> تسأل شاشةٌ شيئاً.
+> فانقسم نصفين: `initialize(di)` يسجّل **اللقطة المحلّية ومهمّةَ تحديثها بدورة
+> المزامنة** — وبلا المزامنة يجلبها مرّةً بالخلفية — و`AppUpdateGate` بالقشرة يقرأ
+> اللقطة عند التركيب ويستمع لتبدّلها، فلا تسأل شاشةٌ شيئاً.
 >
 > ⚠️ **ونقطتُه `GET /api/v1/settings` ليست عقداً عامّاً** — تردّ قائمةَ
 > `{key, value, isActive}` ويُقرأ منها `app_version` و`app_download_url` و

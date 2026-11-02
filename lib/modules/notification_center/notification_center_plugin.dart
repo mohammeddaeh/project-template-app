@@ -11,7 +11,7 @@ import 'package:app_template/modules/notification_center/integration/notificatio
 /// ## التفعيل
 /// 1. `AppFeatures.pushNotifications = true` (المصدر — بلا هذا لا شيء يصل)
 /// 2. `AppFeatures.notificationCenter = true`
-/// 3. لا شيء آخر — `ModulesBootstrap.initializeAll()` ينادي هذا تلقائياً.
+/// 3. لا شيء آخر — `ModulesBootstrap` ينادي هذا تلقائياً.
 ///
 /// ## الإطفاء
 /// اترك العلَم `false`. `initialize` يعود فوراً، ولا شيء يُسجَّل. **صفر أثر**،

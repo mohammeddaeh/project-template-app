@@ -13,21 +13,21 @@
 
 ---
 
-## ② الكود في `main.dart`
+## ② التفعيل — علَمٌ واحد
 
 ```dart
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+// lib/core/platform/features/app_features.dart
+static const analytics = true;
+```
 
-  await configureInjection(Env.dev);
+`ModulesBootstrap` يهيّئ Firebase مرّةً ثم ينادي الموديول حين يُشعَل علَمُه.
+**لا تناده من `main()`**: الموديول يُهيَّأ مرّةً واحدة، فنداءٌ ثانٍ بوسائط أخرى
+يُتجاهل بصمت، أيُّهما سبق. ولتغيير الوسائط عدّل سطره هناك:
 
-  await AnalyticsModule.initialize(
-    getIt,
-    enabled: kReleaseMode, // بيانات فقط في release
-  );
-
-  runApp(const App());
+```dart
+// lib/modules/modules_bootstrap.dart
+if (AppFeatures.analytics) {
+  await AnalyticsModule.initialize(di, enabled: !kDebugMode); // لا بيانات من debug
 }
 ```
 

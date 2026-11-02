@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -42,7 +43,10 @@ abstract final class InAppUpdatesModule {
   static String? _lastPromptedSignature;
 
   /// Registers the local snapshot and the task that refreshes it inside sync.
-  /// It performs no network request itself.
+  ///
+  /// **Without the sync module there is no cycle to run that task**, so the
+  /// snapshot is fetched once here instead — in the background, never awaited
+  /// by startup. `AppUpdateGate` listens to the store and prompts when it lands.
   static Future<void> initialize(GetIt di) async {
     if (_initialized || !AppFeatures.inAppUpdates) return;
     if (!di.isRegistered<AppUpdateSettingsStore>()) {
@@ -56,7 +60,27 @@ abstract final class InAppUpdatesModule {
       );
     }
     registerAppUpdateRefreshTask(di, instanceName: _refreshTaskName);
+    if (!AppFeatures.offlineSync) {
+      unawaited(
+        _fetchOnce(di<AppUpdateSettingsApi>(), di<AppUpdateSettingsStore>()),
+      );
+    }
     _initialized = true;
+  }
+
+  static Future<void> _fetchOnce(
+    AppUpdateSettingsApi api,
+    AppUpdateSettingsStore store,
+  ) async {
+    try {
+      await store.write(await api.fetch());
+    } on Object catch (e) {
+      // The last snapshot stays; the next launch asks again.
+      LogService.warning(
+        'App update settings not fetched: $e',
+        tag: 'IN-APP-UPDATE',
+      );
+    }
   }
 
   /// Checks for an available update and prompts the user.

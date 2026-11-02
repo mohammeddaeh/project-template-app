@@ -41,47 +41,43 @@
 
 ---
 
-## ③ الكود في `main.dart`
+## ③ التفعيل — علَمٌ واحد، ومعالجُ الخلفية بـ`main.dart`
 
 ```dart
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'firebase_options.dart'; // مولَّد بـ flutterfire configure
+// lib/core/platform/features/app_features.dart
+static const pushNotifications = true;
+```
 
-// ① Background handler — يجب أن يكون top-level function
-@pragma('vm:entry-point')
-Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // معالجة بسيطة فقط — لا UI هنا
-}
+`ModulesBootstrap` يهيّئ Firebase مرّةً ثم ينادي الموديول حين يُشعَل علَمُه.
+**لا تناده من `main()`**: الموديول يُهيَّأ مرّةً واحدة، فنداءٌ ثانٍ بوسائط أخرى
+يُتجاهل بصمت، أيُّهما سبق. ولتغيير الوسائط عدّل سطره هناك:
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // ② تهيئة Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // ③ تسجيل Background handler قبل أي شيء آخر
-  FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
-
-  // ④ تهيئة DI
-  await configureInjection(Env.dev);
-
-  // ⑤ تهيئة الموديول (بعد DI مباشرة)
+```dart
+// lib/modules/modules_bootstrap.dart
+if (AppFeatures.pushNotifications) {
   await PushNotificationsModule.initialize(
-    getIt,
+    di,
     config: PushNotificationsConfig(
       // أرسل الـ token للـ backend عند كل تحديث
       onTokenRefresh: (token) async {
-        // مثال: await getIt<AuthRepository>().updatePushToken(token);
+        // مثال: await di<AuthRepository>().updatePushToken(token);
       },
     ),
   );
-
-  runApp(const App());
 }
+```
+
+**ومعالجُ الخلفية وحده بـ`main.dart`** — دالّةٌ top-level لا يملكها موديول:
+
+```dart
+@pragma('vm:entry-point')
+Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  // معالجة بسيطة فقط — لا UI هنا
+}
+
+// داخل _bootstrap() قبل runApp:
+FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
 ```
 
 ---
@@ -89,7 +85,7 @@ void main() async {
 ## ④ الاستخدام في Feature
 
 ```dart
-class NotificationCubit extends Cubit<NotificationState> {
+class NotificationCubit extends SafeCubit<NotificationState> {
   NotificationCubit(PushNotificationsService push) : super(...) {
     // رسائل وصلت والتطبيق مفتوح
     push.foregroundStream.listen(_showInAppBanner);

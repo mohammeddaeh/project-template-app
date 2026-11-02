@@ -9,7 +9,7 @@ import 'package:app_template/modules/session_guard/integration/session_guard_boo
 ///
 /// ## التفعيل
 /// 1. `AppFeatures.sessionGuard = true`
-/// 2. لا شيء آخر — `ModulesBootstrap.initializeAll()` ينادي هذا تلقائياً،
+/// 2. لا شيء آخر — `ModulesBootstrap` ينادي هذا تلقائياً،
 ///    و`SessionGuardGate` بالقشرة يسأل الـDI عن حالته.
 ///
 /// ## الإطفاء
