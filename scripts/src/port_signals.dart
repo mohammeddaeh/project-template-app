@@ -44,9 +44,6 @@ class PortSignal {
 /// ما لا يُنتظر أن يحمله تطبيقٌ قديم — وسببُه.
 const portSignalExemptions = <String, String>{
   'module:showcase': 'جولة المطوّر بالقالب نفسه — لا يحملها تطبيقٌ يُنقل',
-  'module:token_inspector':
-      'أداة مطوّر لفحص التوكن — تُشعَل بعد النقل، لا تُنقل من القديم',
-  'TokenInspector': 'أداة مطوّر لفحص التوكن — لا تُنقل من القديم',
   'ensureKitReady':
       'سباكةُ أذونات الـkits — تأتي مع الـkit، لا مقابل لها بالقديم',
   'AuthSessionObserver': 'منفذٌ داخليّ بالنواة — لا مقابل له بالقديم',
@@ -422,6 +419,16 @@ final portSignals = <PortSignal>[
     'روابط عميقة',
     r'appUrlOpen|deeplink|deep_link|universal link|intent-filter',
     '23_STARTUP_SPLASH.md §٥ — resolveDeepLink',
+  ),
+
+  // ── المصادقة ────────────────────────────────────────────────────────────────
+  const PortSignal(
+    'دخول بتوكن · OAuth · Keycloak',
+    r'keycloak|Keycloak|flutter_appauth|react-native-app-auth|angular-oauth2-oidc|oidc-client|openid-client|AppAuth|openid-connect|grant_type|refresh_token|jwt-decode|jwt_decoder',
+    'features/auth يُكيَّف للباك (الخطّة «ج») · TokenRefreshGateway + '
+        'TokenGrant.fromOAuthJson · Keycloak: scope «openid offline_access» · '
+        'token_inspector يفحص الجلسة على الجهاز (33_MODULE_TOKEN_INSPECTOR.md §٦)',
+    covers: ['module:token_inspector', 'TokenInspector'],
   ),
 
   // ── الموديولات ─────────────────────────────────────────────────────────────

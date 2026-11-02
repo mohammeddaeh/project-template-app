@@ -91,7 +91,7 @@ dart run scripts/port_inventory.dart <مسار التطبيق القديم>
 ### ج · ما يُكيَّف ليطابق الباك
 | الطبقة | بالقالب | بهذا الباك |
 |---|---|---|
-| الدخول | `POST /account/login` ⇐ توكنٌ معتم | <كما يفعل القديم: Keycloak · JWT · …> |
+| الدخول | `POST /account/login` ⇐ توكنٌ معتم | <كما يفعل القديم: Keycloak · JWT · …> — إشارة «دخول بتوكن» بالجرد. وKeycloak: `scope: 'openid offline_access'` وإلا مات الـrefresh بالخمول، و`token_inspector` يتحقّق على الجهاز |
 | التجديد | `TokenRefreshGateway` ⇐ `/auth/refresh` | <طريقة الباك — أو بلا تجديد> |
 | غلاف الردّ | `ApiResponse.fromJson` يقرأ `status` · `message` · `data` · `statusCode` | <شكل الباك — يُكيَّف بـ`HandleBodyResponse` مرّةً، لا بكل مستودع> |
 | شكل الخطأ | `FailureMapperRegistry` · `13_ERROR_FLOW.md` | <أين يضع الباك رسالة الخطأ ورمزه> |
