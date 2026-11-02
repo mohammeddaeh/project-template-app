@@ -1093,6 +1093,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
+  in_app_review:
+    dependency: transitive
+    description:
+      name: in_app_review
+      sha256: "364db0c160b37fe7fad9cdaa18f968473924b17368869010af902760421b6bf8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.12"
+  in_app_review_platform_interface:
+    dependency: transitive
+    description:
+      name: in_app_review_platform_interface
+      sha256: fed2c755f2125caa9ae10495a3c163aa7fab5af3585a9c62ef4a6920c5b45f10
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   in_app_update:
     dependency: "direct main"
     description:
@@ -1206,6 +1222,13 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/kit_scan"
+      relative: true
+    source: path
+    version: "1.0.0"
+  kit_system:
+    dependency: "direct main"
+    description:
+      path: "packages/kit_system"
       relative: true
     source: path
     version: "1.0.0"
@@ -1671,6 +1694,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  quick_actions:
+    dependency: transitive
+    description:
+      name: quick_actions
+      sha256: "7e35dd6a21f5bbd21acf6899039eaf85001a5ac26d52cbd6a8a2814505b90798"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  quick_actions_android:
+    dependency: transitive
+    description:
+      name: quick_actions_android
+      sha256: "6fbdda87fbedd0602b91f35d870c2cbcb6d053bc863efb76c6e7f60f1d8e3fd6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.30"
+  quick_actions_ios:
+    dependency: transitive
+    description:
+      name: quick_actions_ios
+      sha256: a2e08ceb01f9d26e1b1826b1c4f5da6b7b6bbf61bcbaacd8e93dfff58b91f996
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.3"
+  quick_actions_platform_interface:
+    dependency: transitive
+    description:
+      name: quick_actions_platform_interface
+      sha256: "1fec7068db5122cd019e9340d3d7be5d36eab099695ef3402c7059ee058329a4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   recase:
     dependency: transitive
     description:

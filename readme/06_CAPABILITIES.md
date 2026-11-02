@@ -118,6 +118,8 @@
 | نصٌّ من صورة (لاتيني) | `DeviceScan.text` — kit `ocr` | `TextRecognizer(` (ML Kit) | C19 |
 | تشغيلُ فيديو | `AppVideoPlayer` — kit `video` | `VideoPlayerController` | C19 |
 | شريطُ تشغيل (أيّ مشغّل) | `PlaybackBar` | `Slider` + وقتٌ يُكتب باليد | 👁 |
+| اختصارٌ على أيقونة التطبيق | `AppShortcuts.setShortcuts` — kit `system` · الضغطة ⇐ `navigatePath` | `QuickActions()` | C19 |
+| ورقةُ تقييم المتجر | `AppReview.request` · `openStore` — kit `system` | `InAppReview.instance` | C19 |
 | إذنٌ تطلبه kit | `ensureKitReady(contract.availability, permissions)` ثم `showKitReadiness` | طلبٌ داخل الـkit · رسالةٌ لكل ودجة | 👁 |
 
 **والطرفيات الثقيلة — صوت · فيديو · مسح · كتابة يدوية · أوامر النظام — ليست هنا**:

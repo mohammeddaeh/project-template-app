@@ -28,6 +28,7 @@ import 'package:app_template/ui/state/connectivity/connectivity_cubit.dart';
 import 'package:app_template/ui/widgets/connectivity/connectivity_overlay.dart';
 import 'package:app_template/ui/widgets/layout/flavor_banner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kit_contracts/kit_contracts.dart';
 
 class App extends StatefulWidget {
   final AdaptiveThemeMode? savedThemeMode;
@@ -53,6 +54,7 @@ class _AppState extends State<App> {
   late final AppLocaleProvider _localeProvider;
   late final FontPreferenceCubit _fontCubit;
   StreamSubscription<AuthEvent>? _authSub;
+  StreamSubscription<String>? _shortcutSub;
   late final SessionSyncService _sessionSync;
 
   @override
@@ -67,6 +69,18 @@ class _AppState extends State<App> {
     );
 
     _authSub = AuthEventBus.instance.stream.listen(_handleAuthEvent);
+
+    // A launcher shortcut is a route path (`kit_system`): it goes through the
+    // router like a deep link, guards included. After the first frame, so a
+    // cold start through a shortcut lands on top of the start route rather
+    // than racing it.
+    if (getIt.isRegistered<AppShortcuts>()) {
+      _shortcutSub = getIt<AppShortcuts>().launches.listen(
+        (path) => WidgetsBinding.instance.addPostFrameCallback(
+          (_) => _router.navigatePath(path),
+        ),
+      );
+    }
 
     // Started here rather than from a screen: the account must stay in step
     // with the server for as long as the app is alive, and any screen that
@@ -93,6 +107,7 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     _authSub?.cancel();
+    _shortcutSub?.cancel();
     _sessionSync.dispose();
     _fontCubit.close();
     super.dispose();

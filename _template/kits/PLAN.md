@@ -1,6 +1,6 @@
 # حِزَم الأجهزة (Device Kits) — الخطة
 
-> **الحالة: ◐ K0 · K1 · K2 · K3 · K4 ✅ (2026-11-02) — `voice` · `audio` · `scan` · `ocr` · `video` مركّبة بالقالب. التالي K5 system.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
+> **الحالة: ◐ K0 – K5 ✅ (2026-11-02) — `voice` · `audio` · `scan` · `ocr` · `video` · `system` مركّبة بالقالب. التالي K6 ink.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
 > الهدف: الصوت والفيديو والمسح والكتابة اليدوية وأوامر النظام — **كلٌّ في حزمةٍ
 > منفصلة يركّبها المشروع حين يحتاجها**، لا تبعياتٌ تُشحن مع كل مشروع.
 
@@ -151,7 +151,7 @@ dart run scripts/kit.dart remove voice    # يزيل
 | **K2** ✅ | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات (`AttachmentPreview` · `CapturedPhoto.isAudio`) | K0 |
 | **K3** ✅ | scan · ocr | `CodeScanner` (kit `scan`) · `TextRecognizer` (kit `ocr` — انفصلت للحجم) · `DeviceScan` · ~~`DocumentScanner`~~ أُلغي | K0 |
 | **K4** ✅ | video | `VideoPlayback` · `AppVideoPlayer` · `PlaybackBar` المشترك · المعاينة (`CapturedPhoto.isVideo`) | K0 |
-| **K5** | system | `AppShortcuts` · `HomeWidgetBridge` · `ReviewPrompt` | K0 · deep links |
+| **K5** ✅ | system | `AppShortcuts` (الضغطة ⇐ `navigatePath`) · `AppReview` · ~~`HomeWidgetBridge`~~ ليس قدرةً قالبية | K0 · deep links |
 | **K6** | ink | `InkRecognizer` · `SignaturePad` | K0 |
 
 K1…K6 مستقلّةٌ عن بعضها — **أيُّ ترتيبٍ بعد K0 يصحّ**، والمقترح أعلاه بحسب الطلب
@@ -274,4 +274,13 @@ ML Kit Document Scanner وحدةٌ تُنزَّل عبر Play services: فشلت
   (طولٌ مجهول · انقلابُ «الموضع / الطول») يسريان على الفيديو بلا نسخ.
 - مثالُ المرآة يشغّل مقطع Flutter نفسه (`assets-for-api-docs/…/butterfly.mp4`)، ومثالٌ ثانٍ للشريط وحده
   بمؤقّت.
+- ⬜ **التجربة على الجهاز** — الجهاز كان على تطبيقٍ آخر قيد الاستعمال.
+
+### K5 — system ✅ (2026-11-02)
+
+- `quick_actions` 1.1.0 · `in_app_review` 2.0.12 (Play review + `play-services-base` — طلبُ التقييم بلا متجر بلا معنى).
+- **الاختصار مسار**: `app.dart` يمرّر كلَّ ضغطةٍ لـ`navigatePath` بعد أوّل إطار، فتمرّ بحرّاس الموجّه.
+  والإقلاعُ البارد من اختصار يُحفظ بالـkit حتى أوّل مستمع (مختبَر).
+- **ودجةُ الشاشة الرئيسية أُخرجت من K5**: XML أندرويد وامتدادُ WidgetKit يُكتبان لكل مشروع — قالبٌ
+  يشحن ودجةً بعينها يشحن مثالاً لا قدرة.
 - ⬜ **التجربة على الجهاز** — الجهاز كان على تطبيقٍ آخر قيد الاستعمال.

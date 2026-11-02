@@ -975,4 +975,13 @@ abstract class LocaleKeys {
   static const showcaseVideo = 'showcaseVideo';
   static const showcaseVideoSample = 'showcaseVideoSample';
   static const showcaseVideoBar = 'showcaseVideoBar';
+  static const showcaseSystem = 'showcaseSystem';
+  static const showcaseShortcutAdd = 'showcaseShortcutAdd';
+  static const showcaseShortcutClear = 'showcaseShortcutClear';
+  static const showcaseShortcutHint = 'showcaseShortcutHint';
+  static const showcaseShortcutTitle = 'showcaseShortcutTitle';
+  static const showcaseReviewRequest = 'showcaseReviewRequest';
+  static const showcaseReviewStore = 'showcaseReviewStore';
+  static const showcaseReviewAvailable = 'showcaseReviewAvailable';
+  static const showcaseReviewUnavailable = 'showcaseReviewUnavailable';
 }

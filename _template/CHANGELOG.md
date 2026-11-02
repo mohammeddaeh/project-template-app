@@ -11,6 +11,8 @@
 
 ## غير مُصدَر
 
+- **kit `system` (K5)**: اختصاراتُ أيقونة التطبيق (`AppShortcuts` — كلُّ اختصارٍ مسار، و`app.dart` يمرّره
+  لـ`navigatePath`) · ورقةُ تقييم المتجر (`AppReview`). ⚠️ `lib/app.dart` تغيّر — يستمع لضغطات الاختصارات.
 - **kit `video` (K4)**: `AppVideoPlayer` (الصورة بشكلها · لمسةٌ تشغّل) · `AttachmentPreview` يشغّل مرفق
   الفيديو بالتطبيق · `CapturedPhoto.isVideo` · `PlaybackBar` شريطٌ واحد لكل مشغّل (استُخرج من `AudioPlayerTile`).
 - **kits `scan` · `ocr` (K3)**: `DeviceScan.code` (ورقةٌ بالكاميرا) · `DeviceScan.text` (لاتيني وحده،

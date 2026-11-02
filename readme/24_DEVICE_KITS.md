@@ -117,6 +117,7 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 | `scan` | `CodeScanner` | `DeviceScan.code` — [§44](widgets/02_inputs.md) | `camera` |
 | `ocr` | `TextRecognizer` | `DeviceScan.text` — **لاتينيّ وحده، لا عربي** | — |
 | `video` | `VideoPlayback` (مصنع) | `AppVideoPlayer` · `AttachmentPreview` يشغّل مرفق الفيديو بالتطبيق — [§45](widgets/04_display.md) | — |
+| `system` | `AppShortcuts` · `AppReview` | العقدان مباشرةً — §٨ | — |
 
 **والحجم يقرّر الحدود** — release arm64، تطبيقُ القالب بلا kit = 30.3MB:
 
@@ -137,6 +138,28 @@ WeScan) يطلب Flutter أحدث، وتصونه يدٌ واحدة. التفصي
 **وحزمةٌ تطلب AGP لا يُحمَّل من شبكتك** — `record_android` يثبّت إصداراً بعينه بـ`buildscript`
 الخاص به، و`dl.google.com` محجوبٌ ببعض الشبكات (حتى لإصداراتٍ موجودة). الحلّ بناءٌ واحد
 عبر VPN فيُحفظ بـ`~/.gradle` ثم يعمل بلا شبكة. ⚠️ لا تثبيتَ لإصدارٍ أقدم من الحزمة لتفاديه.
+
+## ٨. أوامر النظام — `system`
+
+**اختصارُ الأيقونة مسارٌ لا أمر.** `AppShortcut(path: '/orders/new', title: …)` — والضغطةُ تصل
+`lib/app.dart` فيمرّرها لـ`navigatePath` **بعد أوّل إطار**: تمرّ بحرّاس الموجّه كأي رابطٍ عميق، وإقلاعٌ
+باردٌ من اختصارٍ يهبط فوق شاشة البدء لا يسابقها.
+
+```dart
+await getIt<AppShortcuts>().setShortcuts([
+  AppShortcut(path: '/orders/new', title: LocaleKeys.newOrder.tr()),
+]);
+```
+
+- **العنوان مترجَمٌ وقت الضبط** — المشغّل يعرضه كما وصله، فتبديلُ اللغة يعيد الضبط.
+- **الأيقونة موردٌ أصليّ** (drawable بأندرويد · asset بـiOS) أو لا شيء — المشروع يضيفه.
+
+**وطلبُ التقييم يقرّره المتجر لا التطبيق**: حصّةٌ لكل مستخدم ولا جوابَ إن نفدت. فـ`request()`
+**بلحظة نجاح** (مهمّةٌ انتهت)، لا من زرٍّ ينتظر المستخدمُ أن يعمل كل مرّة — ذاك `openStore()`.
+وعلى أندرويد عبر Google Play: جهازٌ بلا متجر يردّ `isAvailable() == false` بلا انهيار.
+
+**وودجةُ الشاشة الرئيسية ليست هنا بقصد**: تصميمُها XML أندرويد وامتدادُ WidgetKit بـiOS، **مكتوبان
+لكل مشروع** — قالبٌ يشحن ودجةً بعينها يشحن مثالاً لا قدرة.
 
 ## ٧. kit جديدة
 

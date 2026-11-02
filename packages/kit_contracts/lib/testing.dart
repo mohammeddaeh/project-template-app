@@ -266,3 +266,39 @@ class FakeVideoPlayback implements VideoPlayback {
     await _states.close();
   }
 }
+
+/// Remembers the shortcuts set; [launch] plays a tap on one.
+class FakeAppShortcuts implements AppShortcuts {
+  final _launches = StreamController<String>.broadcast();
+  List<AppShortcut> current = const [];
+
+  void launch(String path) => _launches.add(path);
+
+  @override
+  Future<void> setShortcuts(List<AppShortcut> shortcuts) async =>
+      current = shortcuts;
+
+  @override
+  Stream<String> get launches => _launches.stream;
+}
+
+class FakeAppReview implements AppReview {
+  FakeAppReview({this.available = true});
+
+  bool available;
+  int requests = 0;
+  String? openedStoreWith;
+  bool openedStore = false;
+
+  @override
+  Future<bool> isAvailable() async => available;
+
+  @override
+  Future<void> request() async => requests++;
+
+  @override
+  Future<void> openStore({String? appStoreId}) async {
+    openedStore = true;
+    openedStoreWith = appStoreId;
+  }
+}

@@ -959,5 +959,14 @@
   "videoCannotPlay": "تعذّر تشغيل هذا الفيديو",
   "showcaseVideo": "الفيديو",
   "showcaseVideoSample": "مقطعٌ قصير من الشبكة",
-  "showcaseVideoBar": "الشريط وحده — لمشغّلٍ تبنيه أنت"
+  "showcaseVideoBar": "الشريط وحده — لمشغّلٍ تبنيه أنت",
+  "showcaseSystem": "أوامر النظام",
+  "showcaseShortcutAdd": "أضف اختصاراً لأيقونة التطبيق",
+  "showcaseShortcutClear": "احذف الاختصارات",
+  "showcaseShortcutHint": "اضغط مطوّلاً على أيقونة التطبيق، ثم اختر «شاشة الترحيب»",
+  "showcaseShortcutTitle": "شاشة الترحيب",
+  "showcaseReviewRequest": "اطلب تقييم التطبيق",
+  "showcaseReviewStore": "صفحة التطبيق في المتجر",
+  "showcaseReviewAvailable": "المتجر متاح — قد تظهر ورقة التقييم، والمتجر يقرّر",
+  "showcaseReviewUnavailable": "لا متجر على هذا الجهاز — لن تظهر ورقة التقييم"
 }

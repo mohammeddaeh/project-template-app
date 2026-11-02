@@ -1,0 +1,6 @@
+{
+  "name": "system",
+  "register": "registerSystemKit",
+  "permissions": [],
+  "platformPackages": ["quick_actions", "in_app_review"]
+}

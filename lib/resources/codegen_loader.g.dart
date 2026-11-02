@@ -1061,6 +1061,18 @@ class CodegenLoader extends AssetLoader {
     "showcaseVideo": "الفيديو",
     "showcaseVideoSample": "مقطعٌ قصير من الشبكة",
     "showcaseVideoBar": "الشريط وحده — لمشغّلٍ تبنيه أنت",
+    "showcaseSystem": "أوامر النظام",
+    "showcaseShortcutAdd": "أضف اختصاراً لأيقونة التطبيق",
+    "showcaseShortcutClear": "احذف الاختصارات",
+    "showcaseShortcutHint":
+        "اضغط مطوّلاً على أيقونة التطبيق، ثم اختر «شاشة الترحيب»",
+    "showcaseShortcutTitle": "شاشة الترحيب",
+    "showcaseReviewRequest": "اطلب تقييم التطبيق",
+    "showcaseReviewStore": "صفحة التطبيق في المتجر",
+    "showcaseReviewAvailable":
+        "المتجر متاح — قد تظهر ورقة التقييم، والمتجر يقرّر",
+    "showcaseReviewUnavailable":
+        "لا متجر على هذا الجهاز — لن تظهر ورقة التقييم",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -2139,6 +2151,18 @@ class CodegenLoader extends AssetLoader {
     "showcaseVideo": "Video",
     "showcaseVideoSample": "A short clip from the network",
     "showcaseVideoBar": "The bar alone — for a player you build",
+    "showcaseSystem": "System actions",
+    "showcaseShortcutAdd": "Add a shortcut to the app icon",
+    "showcaseShortcutClear": "Remove the shortcuts",
+    "showcaseShortcutHint":
+        "Long-press the app icon, then pick “Welcome screen”",
+    "showcaseShortcutTitle": "Welcome screen",
+    "showcaseReviewRequest": "Ask for a rating",
+    "showcaseReviewStore": "The app's store page",
+    "showcaseReviewAvailable":
+        "A store is present — the rating sheet may appear; the store decides",
+    "showcaseReviewUnavailable":
+        "No store on this device — the rating sheet won't appear",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

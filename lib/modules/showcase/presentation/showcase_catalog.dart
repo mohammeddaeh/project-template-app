@@ -7,6 +7,7 @@ import 'package:app_template/modules/showcase/presentation/pages/data/failures_d
 import 'package:app_template/modules/showcase/presentation/pages/data/pagination_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/audio_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/scan_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/devices/system_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/video_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/voice_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/foundations/colors_demo.dart';
@@ -301,6 +302,12 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcaseVideo,
       Icons.smart_display_outlined,
       VideoDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.devices,
+      LocaleKeys.showcaseSystem,
+      Icons.app_shortcut,
+      SystemDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.platform,

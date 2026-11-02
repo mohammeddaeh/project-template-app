@@ -959,5 +959,14 @@
   "videoCannotPlay": "This video can't be played",
   "showcaseVideo": "Video",
   "showcaseVideoSample": "A short clip from the network",
-  "showcaseVideoBar": "The bar alone — for a player you build"
+  "showcaseVideoBar": "The bar alone — for a player you build",
+  "showcaseSystem": "System actions",
+  "showcaseShortcutAdd": "Add a shortcut to the app icon",
+  "showcaseShortcutClear": "Remove the shortcuts",
+  "showcaseShortcutHint": "Long-press the app icon, then pick “Welcome screen”",
+  "showcaseShortcutTitle": "Welcome screen",
+  "showcaseReviewRequest": "Ask for a rating",
+  "showcaseReviewStore": "The app's store page",
+  "showcaseReviewAvailable": "A store is present — the rating sheet may appear; the store decides",
+  "showcaseReviewUnavailable": "No store on this device — the rating sheet won't appear"
 }
