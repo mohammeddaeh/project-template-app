@@ -32,6 +32,7 @@
 | **إقلاع التطبيق · شاشة البدء · شعارُها** | [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) — شاشةٌ واحدة لا شاشتان · ⛔ **و`android: false` بقرار** |
 | **صوت · فيديو · مسح · كتابة يدوية · أوامر النظام** | [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) — حزمةٌ تحت `packages/` تُركَّب بـ`kit.dart add`، والتطبيق يعرف عقدها وحده |
 | **ما يخدمه الباك فعلاً** | [`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) — جردُ النقاط وحالاتُها الأربع · ودَينُ الباك بلغة المستخدم |
+| **الموديولات الاختيارية كلّها** — جدولٌ واحد | [`30_MODULES.md`](30_MODULES.md) |
 | الصلاحيات — `modules/access_control/` + باك `src/core/authz/` | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) |
 | الاستيراد/التصدير — `modules/data_transfer/` | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
 | تتبّع التوكن على الشاشة — `modules/token_inspector/` + فحص إعدادات Keycloak | [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) |

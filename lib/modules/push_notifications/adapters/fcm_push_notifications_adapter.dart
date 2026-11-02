@@ -9,7 +9,7 @@ import 'package:app_template/modules/push_notifications/push_notifications_servi
 
 /// [PushNotificationsService] implementation backed by Firebase Cloud Messaging.
 ///
-/// Initialised exclusively through [PushNotificationsModule.initialize].
+/// Initialised exclusively through [PushNotificationsPlugin.initialize].
 /// Do NOT construct directly.
 class FcmPushNotificationsAdapter implements PushNotificationsService {
   FcmPushNotificationsAdapter({
@@ -32,7 +32,7 @@ class FcmPushNotificationsAdapter implements PushNotificationsService {
   @override
   Stream<PushNotificationEvent> get tapStream => _tapController.stream;
 
-  // ── Initialisation (called once by PushNotificationsModule) ─────────────────
+  // ── Initialisation (called once by PushNotificationsPlugin) ─────────────────
 
   Future<void> init() async {
     if (_config.requestPermissionOnInit) {
@@ -53,7 +53,7 @@ class FcmPushNotificationsAdapter implements PushNotificationsService {
     final initial = await FirebaseMessaging.instance.getInitialMessage();
     if (initial != null) _handleTap(initial);
 
-    LogService.info('PushNotificationsModule ready', tag: 'PUSH');
+    LogService.info('PushNotificationsPlugin ready', tag: 'PUSH');
   }
 
   // ── PushNotificationsService ─────────────────────────────────────────────────

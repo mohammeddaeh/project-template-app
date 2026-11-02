@@ -12,7 +12,7 @@
 /// ```
 abstract interface class RemoteConfigService {
   /// Fetches fresh values from the server and activates them.
-  /// Call on app start (after [RemoteConfigModule.initialize]).
+  /// Call on app start (after [RemoteConfigPlugin.initialize]).
   Future<void> fetchAndActivate();
 
   /// Returns a `bool` remote config value.

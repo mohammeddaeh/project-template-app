@@ -8,7 +8,7 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 ///   (appear in the "Logs" tab of each crash report)
 ///
 /// Set via [LogService.setDelegate] — never construct directly.
-/// Use [CrashReportingModule.initialize] which handles this automatically.
+/// Use [CrashReportingPlugin.initialize] which handles this automatically.
 class CrashlyticsLogDelegate implements LogDelegate {
   const CrashlyticsLogDelegate();
 

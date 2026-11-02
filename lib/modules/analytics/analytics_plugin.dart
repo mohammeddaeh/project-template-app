@@ -10,7 +10,7 @@ import 'package:get_it/get_it.dart';
 /// ## Usage
 /// ```dart
 /// // main.dart — after Firebase.initializeApp()
-/// await AnalyticsModule.initialize(getIt);
+/// await AnalyticsPlugin.initialize(getIt);
 ///
 /// // In any Cubit / UseCase:
 /// getIt<AnalyticsService>().track('purchase_completed', {
@@ -19,12 +19,12 @@ import 'package:get_it/get_it.dart';
 /// });
 ///
 /// // After login:
-/// AnalyticsModule.identify(userId: user.id, plan: user.plan);
+/// AnalyticsPlugin.identify(userId: user.id, plan: user.plan);
 ///
 /// // After logout:
-/// await AnalyticsModule.reset(getIt);
+/// await AnalyticsPlugin.reset(getIt);
 /// ```
-abstract final class AnalyticsModule {
+abstract final class AnalyticsPlugin {
   static bool _initialized = false;
 
   /// Registers [AnalyticsService] in [di].
@@ -40,7 +40,7 @@ abstract final class AnalyticsModule {
 
     _initialized = true;
     LogService.info(
-      'AnalyticsModule initialized (enabled=$enabled)',
+      'AnalyticsPlugin initialized (enabled=$enabled)',
       tag: 'ANALYTICS',
     );
   }
@@ -57,3 +57,7 @@ abstract final class AnalyticsModule {
     _initialized = false;
   }
 }
+
+/// الاسم السابق — يبقى ليُصرَّف `modules_bootstrap.dart` بمشروعٍ قائم حتى يُحدَّث.
+@Deprecated('Use AnalyticsPlugin')
+typedef AnalyticsModule = AnalyticsPlugin;

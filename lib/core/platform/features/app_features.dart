@@ -182,7 +182,7 @@ abstract final class AppFeatures {
   /// from a screen that is already mounted — after sign-in, or on resume:
   ///
   /// ```dart
-  /// await InAppUpdatesModule.checkAndPrompt(context, iosAppId: '123456789');
+  /// await InAppUpdatesPlugin.checkAndPrompt(context, iosAppId: '123456789');
   /// ```
   ///
   /// **When false**: `checkAndPrompt` returns immediately without touching the

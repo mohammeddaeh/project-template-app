@@ -392,8 +392,8 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 
 ### R29 · كل موديول يُولد بأركانه معاً 👁
 
-علَم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صفّ بجدول `10_ARCHITECTURE.md` ·
-صفّ بجدول `00_START_HERE.md` — `scaffold_module.dart` يكتبها معاً.
+علَم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صفّ بجدول [`30_MODULES.md`](30_MODULES.md) —
+`scaffold_module.dart` يكتبها معاً.
 واحدٌ ناقص ⇒ كود يُشحن ولا يُشعَل ولا يُطفأ.
 
 > **وموديولٌ لا يتّسع له الإقلاع** (حوارٌ يحتاج `BuildContext`) ينقسم نصفين ولا

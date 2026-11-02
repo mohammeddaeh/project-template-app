@@ -29,7 +29,7 @@ dart run scripts/device_shot.dart <name>      # لقطةُ جهاز + نصوصه
 dart run scripts/prune_project.dart           # ما لا يستعمله أحد (--apply يحذف المفاتيح والأصول)
 dart run scripts/check_docs.dart              # روابط .md المعطوبة — حاجب بالـCI
 dart run scripts/audit_template.dart          # تدقيق استشاري — موديولات · مسارات يتيمة · توثيق · تاريخ (--verbose)
-dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الأربعة معاً
+dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الثلاثة معاً
 flutter run --flavor dev --dart-define-from-file=.env.dev.json
 ```
 

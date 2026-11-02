@@ -414,11 +414,12 @@ void _applyIdentity({required String appName, required String appId}) {
   print('  ✓ ios/Runner/Info.plist');
 
   // pubspec.yaml — الوصف فقط. اسم الحزمة (`name:`) خارج النطاق عمداً.
-  _replaceOrDie(
-    File('pubspec.yaml'),
-    'description: A new Flutter project.',
+  final pubspec = File('pubspec.yaml');
+  final described = pubspec.readAsStringSync().replaceFirst(
+    RegExp(r'^description: .*$', multiLine: true),
     'description: $appName.',
   );
+  pubspec.writeAsStringSync(described);
   print('  ✓ pubspec.yaml (description)');
 }
 
@@ -615,7 +616,7 @@ const _gotchas = <String, String>{
   'remoteConfig':
       'لن يعمل بلا google-services.json (Android) و GoogleService-Info.plist (iOS)',
   'inAppUpdates':
-      'يحتاج نداءً يدوياً InAppUpdatesModule.checkAndPrompt(context) من شاشة مُركَّبة',
+      'يحتاج نداءً يدوياً InAppUpdatesPlugin.checkAndPrompt(context) من شاشة مُركَّبة',
 };
 
 void _printGotchas(Map<String, bool> flags) {

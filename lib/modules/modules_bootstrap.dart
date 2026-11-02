@@ -5,14 +5,14 @@ import 'package:get_it/get_it.dart';
 
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/modules/access_control/access_control_plugin.dart';
-import 'package:app_template/modules/analytics/analytics_module.dart';
-import 'package:app_template/modules/crash_reporting/crash_reporting_module.dart';
+import 'package:app_template/modules/analytics/analytics_plugin.dart';
+import 'package:app_template/modules/crash_reporting/crash_reporting_plugin.dart';
 import 'package:app_template/modules/data_transfer/data_transfer_plugin.dart';
-import 'package:app_template/modules/in_app_updates/in_app_updates_module.dart';
+import 'package:app_template/modules/in_app_updates/in_app_updates_plugin.dart';
 import 'package:app_template/modules/multi_device/multi_device_plugin.dart';
 import 'package:app_template/modules/notification_center/notification_center_plugin.dart';
-import 'package:app_template/modules/push_notifications/push_notifications_module.dart';
-import 'package:app_template/modules/remote_config/remote_config_module.dart';
+import 'package:app_template/modules/push_notifications/push_notifications_plugin.dart';
+import 'package:app_template/modules/remote_config/remote_config_plugin.dart';
 import 'package:app_template/modules/session_guard/session_guard_plugin.dart';
 import 'package:app_template/modules/sync/sync_plugin.dart';
 import 'package:app_template/modules/showcase/showcase_plugin.dart';
@@ -80,15 +80,15 @@ abstract final class ModulesBootstrap {
     // 2. Crash reporting first, so it captures errors thrown by later steps.
     // `!kDebugMode`: لا رفع ولا بيانات من جلسة تطوير — راجع SETUP كلٍّ منهما.
     if (AppFeatures.crashReporting) {
-      await CrashReportingModule.initialize(enabled: !kDebugMode);
+      await CrashReportingPlugin.initialize(enabled: !kDebugMode);
     }
 
     // 3. Analytics + remote config.
     if (AppFeatures.analytics) {
-      await AnalyticsModule.initialize(di, enabled: !kDebugMode);
+      await AnalyticsPlugin.initialize(di, enabled: !kDebugMode);
     }
     if (AppFeatures.remoteConfig) {
-      await RemoteConfigModule.initialize(di);
+      await RemoteConfigPlugin.initialize(di);
     }
 
     // 4. Push notifications.
@@ -97,7 +97,7 @@ abstract final class ModulesBootstrap {
     //    FirebaseMessaging.onBackgroundMessage(...) in main() — that is
     //    app-specific and cannot live here.
     if (AppFeatures.pushNotifications) {
-      await PushNotificationsModule.initialize(di);
+      await PushNotificationsPlugin.initialize(di);
     }
 
     // 5. Feature modules.
@@ -122,7 +122,7 @@ abstract final class ModulesBootstrap {
     // المحرّك.** ولا نداءَ شبكةٍ هنا: اللافتةُ تُركَّب لاحقاً بـ`AppUpdateGate`
     // حيث يوجد `BuildContext`.
     if (AppFeatures.inAppUpdates) {
-      await InAppUpdatesModule.initialize(di);
+      await InAppUpdatesPlugin.initialize(di);
     }
     if (AppFeatures.offlineSync) {
       await SyncSDK.initialize(const SyncSdkConfig(enabled: true), di);
@@ -146,6 +146,7 @@ abstract final class ModulesBootstrap {
     if (AppFeatures.tokenInspector) {
       await TokenInspectorPlugin.initialize(di);
     }
+    // scaffold_module: موديولٌ جديد فوق هذا السطر
   }
 
   /// True when any module that depends on Firebase is enabled.

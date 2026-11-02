@@ -1,13 +1,11 @@
 // ignore_for_file: avoid_print
-/// مولّد موديول اختياري جديد — يكتب الأركان الأربعة التي يفرضها CLAUDE.md
+/// مولّد موديول اختياري جديد — يكتب الأركان الثلاثة التي يفرضها CLAUDE.md (R29)
 /// معاً دائماً لأي موديول تحت `lib/modules/`: علَم بـ`AppFeatures` · سطر
-/// تسجيل بـ`ModulesBootstrap` · صفّ بجدول `10_ARCHITECTURE.md` · صفّ بجدول
-/// «الموديولات الاختيارية» بـ`readme/00_START_HERE.md`.
+/// تسجيل بـ`ModulesBootstrap` · صفّ بالجدول الواحد `readme/30_MODULES.md`.
 ///
-/// **لماذا الأربعة معاً بأمرٍ واحد**: ركنٌ منسيّ لا يراه المصرِّف ولا
+/// **لماذا الثلاثة معاً بأمرٍ واحد**: ركنٌ منسيّ لا يراه المصرِّف ولا
 /// الاختبارات — موديولٌ بلا سطر `ModulesBootstrap` يُصرَّف ولا يعمل، وموديولٌ
-/// بلا صفّ بـ`00_START_HERE.md` لا يعرفه القارئ الجديد. التوليد الآلي يمنعه
-/// لأنه لا يترك خياراً بتخطّي ركن.
+/// بلا صفّ بالجدول لا يعرفه القارئ الجديد. التوليد الآلي لا يترك خياراً بتخطّي ركن.
 ///
 /// تشغيل من جذر المشروع:
 ///   `dart run scripts/scaffold_module.dart <module_name>`
@@ -59,11 +57,11 @@ Future<void> main(List<String> args) async {
   _section('🔗  الركن ٢ — تسجيل ModulesBootstrap');
   _appendBootstrapRegistration(vars);
 
-  _section('📋  الركن ٣ — صفّ جدول 10_ARCHITECTURE.md');
-  _appendArchitectureTableRow(vars);
+  _section('📋  الركن ٣ — صفّ بالجدول readme/30_MODULES.md');
+  _appendModulesTableRow(vars);
 
-  _section('📖  الركن ٤ — صفّ جدول 00_START_HERE.md');
-  _appendStartHereRow(vars);
+  _section('🔎  إشارة الجرد — scripts/src/port_signals.dart');
+  _appendPortSignalTodo(vars);
 
   final healthy = await _runHealthChecks();
 
@@ -76,11 +74,12 @@ Future<void> main(List<String> args) async {
   print(
     'التالي:\n'
     '  1. سجّل تبعيات الموديول الفعلية بـ$pluginPath (مكان TODO).\n'
-    '  2. راجع صفّ 10_ARCHITECTURE.md — عمود Packages لا يزال "TODO".\n'
-    '  3. راجع صفّ 00_START_HERE.md — عموده الأول لا يزال وصفاً عاماً.\n'
-    '  4. لو احتاج الموديول واجهة عرض: راجع نمط modules/multi_device/ (Widget عام\n'
+    '  2. أكمل صفّه بـreadme/30_MODULES.md — الوصف وما يحتاجه خارج التطبيق.\n'
+    '  3. لو احتاج الموديول واجهة عرض: راجع نمط modules/multi_device/ (Widget عام\n'
     '     self-contained يملك cubit داخلياً — لا يستورده المستهلك أبداً).\n'
-    '  5. أضف SETUP.md بخطوات التفعيل — كل موديول قائم يحمل واحداً.\n',
+    '  4. أضف SETUP.md بخطوات التفعيل — كل موديول قائم يحمل واحداً.\n'
+    '  5. بـscripts/src/port_signals.dart: استبدل استثناءه TODO بإشارةٍ تكشف\n'
+    '     قدرته بتطبيقٍ قديم (أو بسببٍ حقيقيٍّ لغيابها).\n',
   );
 
   if (!healthy) exit(1);
@@ -167,20 +166,14 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
   }
   content = content.replaceFirst(importMarker, newImport);
 
-  const registrationMarker = '''
-    if (AppFeatures.dataTransfer) {
-      await DataTransferPlugin.initialize(di);
-    }
-  }''';
+  // علامةٌ ثابتة لا آخرُ موديول: آخرُ موديولٍ يتبدّل، والعلامة تبقى.
+  const registrationMarker =
+      '    // scaffold_module: موديولٌ جديد فوق هذا السطر';
   final newRegistration =
-      '''
-    if (AppFeatures.dataTransfer) {
-      await DataTransferPlugin.initialize(di);
-    }
-    if (AppFeatures.$camel) {
-      await ${featurePascal}Plugin.initialize(di);
-    }
-  }''';
+      '    if (AppFeatures.$camel) {\n'
+      '      await ${featurePascal}Plugin.initialize(di);\n'
+      '    }\n'
+      '$registrationMarker';
   if (!content.contains(registrationMarker)) {
     _die('لم أجد نقطة تسجيل الموديول بـ${file.path}.');
   }
@@ -192,60 +185,22 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
   );
 }
 
-void _appendArchitectureTableRow(Map<String, String> vars) {
-  final file = File('readme/10_ARCHITECTURE.md');
-  if (!file.existsSync()) {
-    print('  ⚠️   readme/10_ARCHITECTURE.md غير موجود — أضف الصفّ يدوياً.');
-    return;
-  }
-  const marker =
-      '| `notification_center/` | `notificationCenter` | ⬜ OFF | `NotificationCenterPlugin.initialize(di)` بـ`ModulesBootstrap` — يستهلك بثّ `push_notifications` (`pushNotifications` يجب أن يكون مُشعلاً أيضاً)، ولا يستدعي FCM بذاته | لا تبعية خارجية إضافية |';
+void _appendModulesTableRow(Map<String, String> vars) {
+  final file = File('readme/30_MODULES.md');
+  const marker = '<!-- scaffold_module: صفٌّ جديد فوق هذا السطر -->';
   final module = vars['__module__']!;
   final camel = vars['__moduleCamel__']!;
-  final featurePascal = vars['__Module__']!;
-  final newRowLine =
-      '| `$module/` | `$camel` | ⬜ OFF | `${featurePascal}Plugin.initialize(di)` | TODO |';
-  final newRow = '$marker\n$newRowLine';
-  final content = file.readAsStringSync();
+  final row =
+      '| `$module/` — TODO صِفه | `$camel` | ⬜ OFF | TODO | — | '
+      '[`SETUP.md`](../lib/modules/$module/SETUP.md) |';
+  final content = file.existsSync() ? file.readAsStringSync() : '';
   if (!content.contains(marker)) {
-    print('  ⚠️   لم أجد جدول الموديولات بالشكل المتوقَّع — أضف الصفّ يدوياً:');
-    print('      $newRowLine');
+    print('  ⚠️   لم أجد نقطة الإدراج بـ${file.path} — أضف الصفّ يدوياً:');
+    print('      $row');
     return;
   }
-  file.writeAsStringSync(content.replaceFirst(marker, newRow));
-  print(
-    '  ✓ readme/10_ARCHITECTURE.md (عمود Packages لا يزال TODO — عدّله يدوياً)',
-  );
-}
-
-/// ب٠٠_START_HERE.md هو الملف الوحيد الذي يُقال لعضو فريق جديد أن يقرأه
-/// أولاً — وجدولُ «الموديولات الاختيارية» فيه يتقادم صامتاً ما لم يربطه شيءٌ
-/// بتوليد موديولٍ جديد. هذا الركن هو ذلك الرابط.
-void _appendStartHereRow(Map<String, String> vars) {
-  final file = File('readme/00_START_HERE.md');
-  if (!file.existsSync()) {
-    print('  ⚠️   readme/00_START_HERE.md غير موجود — أضف الصفّ يدوياً.');
-    return;
-  }
-  const marker =
-      '| مركز إشعارات داخل التطبيق | `notificationCenter` (يحتاج `pushNotifications` أيضاً) | `lib/modules/notification_center/SETUP.md` |';
-  final module = vars['__module__']!;
-  final camel = vars['__moduleCamel__']!;
-  final newRowLine =
-      '| وُلِّد بـ`scaffold_module.dart` — صِف الموديول هنا | `$camel` | `lib/modules/$module/SETUP.md` |';
-  final newRow = '$marker\n$newRowLine';
-  final content = file.readAsStringSync();
-  if (!content.contains(marker)) {
-    print(
-      '  ⚠️   لم أجد جدول الموديولات الاختيارية بالشكل المتوقَّع — أضف الصفّ يدوياً:',
-    );
-    print('      $newRowLine');
-    return;
-  }
-  file.writeAsStringSync(content.replaceFirst(marker, newRow));
-  print(
-    '  ✓ readme/00_START_HERE.md (العمود الأول لا يزال وصفاً عاماً — عدّله يدوياً)',
-  );
+  file.writeAsStringSync(content.replaceFirst(marker, '$row\n$marker'));
+  print('  ✓ readme/30_MODULES.md (الوصف وما يحتاجه لا يزالان TODO)');
 }
 
 // ── Health checks ─────────────────────────────────────────────────────────────
@@ -313,4 +268,23 @@ void _section(String msg) => print('\n▸ $msg');
 void _die(String msg) {
   print('\n❌  $msg\n');
   exit(1);
+}
+
+/// كلُّ موديولٍ يحتاج إشارةً بجرد النقل أو سبباً لغيابها — `port_signals_test`
+/// يُفشل الناقص. والمولَّد للتوّ لا قدرةَ فيه بعد تُكشف، فيُكتب له استثناءٌ
+/// بـ`TODO` ظاهر: يمرّ الاختبار، ويبقى البند مقروءاً حتى يُستبدل.
+void _appendPortSignalTodo(Map<String, String> vars) {
+  final file = File('scripts/src/port_signals.dart');
+  const anchor = 'const portSignalExemptions = <String, String>{';
+  final module = vars['__module__']!;
+  final content = file.existsSync() ? file.readAsStringSync() : '';
+  if (!content.contains(anchor)) {
+    print('  ⚠️   لم أجد portSignalExemptions — أضف إشارةً للموديول يدوياً.');
+    return;
+  }
+  final entry =
+      "  'module:$module':\n"
+      "      'TODO — موديولٌ جديد: أضف PortSignal تكشف قدرته، أو سبباً لغيابها',";
+  file.writeAsStringSync(content.replaceFirst(anchor, '$anchor\n$entry'));
+  print('  ✓ scripts/src/port_signals.dart (استثناءٌ TODO — استبدله بإشارة)');
 }

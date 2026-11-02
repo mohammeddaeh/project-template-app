@@ -52,6 +52,9 @@
 
 ### Modules الاختيارية البارزة
 
+> **الجدولُ الكامل للموديولات الثلاثة عشر** — علَم · افتراض · ما يحتاجه · الوثيقة:
+> [`readme/30_MODULES.md`](readme/30_MODULES.md). أدناه أكثرُها تفصيلاً وحده.
+
 | المسار | ما تفعله |
 |---|---|
 | `modules/data_transfer/` | **استيراد/تصدير عام — صفر Dart لكل feature.** الشاشتان تُبنيان من `GET /data-transfer/resources`، فـfeature تُعلن قابليتها بالباك تظهر بنسخة مبنية قبل وجودها. سطر الدخول: `DataTransferSheet.show(context, resource: 'notes')` — **و`'notes'` هنا اسمُ مورد بالباك لا feature بالمستودع**. علَم: `AppFeatures.dataTransfer`. ⚠️ `/export` يردّ **بايتات لا مغلّفاً** — راجع `readme/32_MODULE_DATA_TRANSFER.md` |
@@ -126,10 +129,12 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 | `readme/00_START_HERE.md` · `01_SETUP.md` | تغيير هيكل المشروع · خطوات الإعداد · onboarding |
 | `readme/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
 | `readme/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
+| **`readme/30_MODULES.md`** | **إضافة/حذف موديول · تغيير علَمه أو افتراضه أو ما يحتاجه من الباك** |
 | `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو باك `src/core/authz/` أو عقد `/api/v1/authz` |
 | `readme/33_MODULE_TOKEN_INSPECTOR.md` | تغيير `modules/token_inspector/` · `AuthSessionObserver` أو أيّ موضع نداءٍ له · `ui/overlays/` · خطوة التوكن بـ`build_apk.dart` · `C20` |
 | `readme/21_WIDGETS_USAGE.md` + `readme/widgets/*.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود — القسم بملف فئته تحت `widgets/`، وصفُّه بجدول الفهرس |
 | `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
+| `packages/README.md` | إضافة kit أو حذفها · تغيير ما توفّره أو حجمها |
 | **`readme/24_DEVICE_KITS.md`** | **أي تغيير بـ`packages/` · `scripts/kit.dart` · `kit.json` · `lib/core/di/kits.g.dart` · أو `C18`/`C19`** |
 | **`readme/23_STARTUP_SPLASH.md`** | **أي سطر بـ`main()` · `ModulesBootstrap.start`/`ready` · `StartupResolver` · `deepLinkBuilder` بـ`app.dart` · أيُّ مورد أندرويد بـ`res/drawable/splash_*` أو `values*/styles.xml` · علَم `android` بـ`flutter_native_splash.yaml`** |
 | **`readme/17_SERVED_CONTRACT.md`** | **إضافة/حذف ثابت بـ`ApiUrls` · صيرورةُ نقطةٍ مخدومة · كشفُ عقدٍ يخالف المُعلَن · إعادةُ أي شريحة محذوفة** |
@@ -198,7 +203,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 
 | القاعدة | التفصيل |
 |---|---|
-| كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `10_ARCHITECTURE.md` |
+| كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `readme/30_MODULES.md` — `scaffold_module.dart` يكتبها |
 | `✅` بأي جدول حالة تعني **«له مستهلك هنا»** | لا «الملف وصل» |
 | ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد بـ[`readme/10_ARCHITECTURE.md`](readme/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك»، أو يُحذف |
 

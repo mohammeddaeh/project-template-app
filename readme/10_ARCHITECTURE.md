@@ -35,6 +35,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 
 | File | When to read / update |
 |------|----------------------|
+| [`30_MODULES.md`](30_MODULES.md) | **الجدولُ الواحد للموديولات** — علَم · افتراض · ما يحتاجه · الوثيقة |
 | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | `modules/access_control/` + باك `src/core/authz/` — الصلاحيات |
 | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | `modules/data_transfer/` — الاستيراد والتصدير |
 | [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) | `modules/token_inspector/` + `AuthSessionObserver` + `AppOverlays` — تتبّع التوكن على الشاشة |
@@ -135,43 +136,18 @@ core/
 
 ## Optional Modules (`lib/modules/`)
 
-> **نقطة التفعيل الوحيدة**: `ModulesBootstrap.start(getIt)` بـ`main.dart` بعد
-> `configureInjection()` مباشرة، و`StartupResolver` ينتظر `ModulesBootstrap.ready` — **لا يُستدعى أي موديول من `main.dart` مباشرةً**،
-> والترتيب مفروض بالكود هناك لا بالتعليقات. كل وحدة تحتوي `SETUP.md` بخطوات التفعيل.
+**الجدولُ الواحد** — العلَم · الافتراض · ما يحتاجه خارج التطبيق · أين يُركَّب · الوثيقة:
+[`30_MODULES.md`](30_MODULES.md). ونقطةُ التفعيل الوحيدة `ModulesBootstrap`.
 
-| Module | العلَم (`AppFeatures`) | افتراضياً | نقطة التفعيل | Packages |
-|---|---|---|---|---|
-| `data_transfer/` | `dataTransfer` | ✅ **ON** | `DataTransferPlugin.initialize(di)` | dio · file_picker |
-| `access_control/` | `accessControl` | ⬜ OFF | `AccessControlPlugin.initialize(di)` | dio (retrofit) |
-| `multi_device/` | `multiDevice` | ⬜ OFF | `MultiDevicePlugin.initialize(di)` | dio (retrofit) |
-| `sync/` | `offlineSync` | ⬜ OFF | `SyncSDK.initialize(config, di)` | sqflite |
-| `push_notifications/` | `pushNotifications` | ⬜ OFF | `PushNotificationsModule.initialize(di)` | firebase_messaging |
-| `crash_reporting/` | `crashReporting` | ⬜ OFF | `CrashReportingModule.initialize()` | firebase_crashlytics |
-| `analytics/` | `analytics` | ⬜ OFF | `AnalyticsModule.initialize(di)` | firebase_analytics |
-| `remote_config/` | `remoteConfig` | ⬜ OFF | `RemoteConfigModule.initialize(di)` | firebase_remote_config |
-| `in_app_updates/` | `inAppUpdates` | ⬜ OFF | `InAppUpdatesModule.initialize(di)` بـ`ModulesBootstrap` + `AppUpdateGate` بالقشرة | in_app_update · package_info_plus · url_launcher |
-| `session_guard/` | `sessionGuard` | ⬜ OFF | `SessionGuardPlugin.initialize(di)` بـ`ModulesBootstrap` + `SessionGuardGate` بالقشرة (الأعلى بين المعلِنَين — راجع `main_shell_page.dart`) | crypto (بصمة الرقم — لا تبعية خارجية أخرى) |
-| `notification_center/` | `notificationCenter` | ⬜ OFF | `NotificationCenterPlugin.initialize(di)` بـ`ModulesBootstrap` — يستهلك بثّ `push_notifications` (`pushNotifications` يجب أن يكون مُشعلاً أيضاً)، ولا يستدعي FCM بذاته | لا تبعية خارجية إضافية |
-| `token_inspector/` | `tokenInspector` | ⬜ OFF | `TokenInspectorPlugin.initialize(di)` بـ`ModulesBootstrap` — يعلّق مستمعَه على `AuthSessionRelay` ويسجّل طبقته بـ`AppOverlays`، فلا تعرفه النواة ولا `app.dart` (`C20`). **ولا يُقلع بنسخة `prod` release** حتى مُشعَلاً | لا تبعية خارجية |
-| `showcase/` | `showcase` | ✅ ON | `ShowcasePlugin.initialize(di)` بـ`ModulesBootstrap` (لا تسجيل) + `ShowcaseView` بجسد `HomeScreen` — جولة المطوّر، تُطفأ مع رئيسية المشروع | animations (عبر `AppOpenContainer`) — لا تبعية خاصّة |
-
-> **العَلَم هو العمود المهم.** جدولٌ بلا علَم يقرأ الجميعَ موصولين، بينما معظمها
-> **مطفأ** ويُستدعى من `ModulesBootstrap` تحت شرط.
-
-> **و`in_app_updates/` يُولد بثلاثته رغم أن حواره يحتاج `BuildContext`** —
-> فانقسم نصفين: `initialize(di)` يسجّل **اللقطة المحلّية ومهمّةَ تحديثها بدورة
-> المزامنة** — وبلا المزامنة يجلبها مرّةً بالخلفية — و`AppUpdateGate` بالقشرة يقرأ
-> اللقطة عند التركيب ويستمع لتبدّلها، فلا تسأل شاشةٌ شيئاً.
->
-> ⚠️ **ونقطتُه `GET /api/v1/settings` ليست عقداً عامّاً** — تردّ قائمةَ
-> `{key, value, isActive}` ويُقرأ منها `app_version` و`app_download_url` و
-> `force_update`. بدّلها بما يخدمه باكُك، أو بدّل `AppUpdateSettings.fromEntries`.
->
-> ⛔ **وتبعيّةُ المزامنة محصورةٌ بملفٍّ واحد** — `integration/app_update_settings_refresh_task.dart`
-> — لأن `test/sync/deletion_contract_test.dart` يشهد على أن حذفَ المزامنة حذفُ
-> مجلَّد. حتى الوسيطُ النوعيُّ `SyncRefreshTask` لا يُكتب بملفّ المدخل.
-
-> **لا `realtime/` بـ`lib/modules/`** — تصميمه بلا سطر Dart واحد، فوثيقته في [`_template/archive/realtime_design.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/realtime_design.md). **مجلد فارغ باسم ميزة هو ادّعاء بوجودها.**
+| Module | Packages |
+|---|---|
+| `data_transfer/` | dio · file_picker |
+| `access_control/` · `multi_device/` | dio (retrofit) |
+| `sync/` | sqflite · workmanager |
+| `push_notifications/` · `crash_reporting/` · `analytics/` · `remote_config/` | firebase_* |
+| `in_app_updates/` | in_app_update · package_info_plus · url_launcher |
+| `session_guard/` | crypto |
+| `notification_center/` · `token_inspector/` · `showcase/` | — |
 
 ---
 

@@ -8,7 +8,7 @@ import 'package:app_template/modules/analytics/analytics_service.dart';
 /// sees.
 ///
 /// Reads `getIt` directly rather than taking [AnalyticsService] by
-/// constructor: it is built once in `app.dart` before [AnalyticsModule] has
+/// constructor: it is built once in `app.dart` before [AnalyticsPlugin] has
 /// necessarily registered the service (the module starts async, unawaited,
 /// from `main()` — see `ModulesBootstrap`), and it must stay a harmless
 /// no-op for the entire lifetime of a build with `AppFeatures.analytics`

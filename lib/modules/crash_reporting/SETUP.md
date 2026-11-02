@@ -46,11 +46,11 @@ static const crashReporting = true;
 ```dart
 // lib/modules/modules_bootstrap.dart — أوّلُ الموديولات بعد Firebase
 if (AppFeatures.crashReporting) {
-  await CrashReportingModule.initialize(enabled: !kDebugMode); // لا رفع من debug
+  await CrashReportingPlugin.initialize(enabled: !kDebugMode); // لا رفع من debug
 }
 ```
 
-وبعد الدخول: `CrashReportingModule.setUserId(user.id)`.
+وبعد الدخول: `CrashReportingPlugin.setUserId(user.id)`.
 
 ---
 
@@ -58,15 +58,15 @@ if (AppFeatures.crashReporting) {
 
 ```dart
 // في AuthCubit بعد نجاح الدخول:
-await CrashReportingModule.setUserId(user.id);
-await CrashReportingModule.setUserAttribute('role', user.role);
-await CrashReportingModule.setUserAttribute('plan', user.subscriptionPlan);
+await CrashReportingPlugin.setUserId(user.id);
+await CrashReportingPlugin.setUserAttribute('role', user.role);
+await CrashReportingPlugin.setUserAttribute('plan', user.subscriptionPlan);
 ```
 
 ## ⑥ عند Logout — مسح الهوية
 
 ```dart
-await CrashReportingModule.clearUser();
+await CrashReportingPlugin.clearUser();
 ```
 
 ---

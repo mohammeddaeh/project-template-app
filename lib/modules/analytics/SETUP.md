@@ -27,7 +27,7 @@ static const analytics = true;
 ```dart
 // lib/modules/modules_bootstrap.dart
 if (AppFeatures.analytics) {
-  await AnalyticsModule.initialize(di, enabled: !kDebugMode); // لا بيانات من debug
+  await AnalyticsPlugin.initialize(di, enabled: !kDebugMode); // لا بيانات من debug
 }
 ```
 
@@ -75,5 +75,5 @@ await getIt<AnalyticsService>().setEnabled(true);
 |---------|---------|
 | اسم الحدث | ≤ 40 حرف، يبدأ بحرف، أحرف/أرقام/underscore فقط |
 | عدد المعاملات | ≤ 25 parameter per event |
-| تبديل الـ adapter | غيّر `FirebaseAnalyticsAdapter` بـ `MixpanelAdapter` في `AnalyticsModule` — لا تغيير في Features |
+| تبديل الـ adapter | غيّر `FirebaseAnalyticsAdapter` بـ `MixpanelAdapter` في `AnalyticsPlugin` — لا تغيير في Features |
 | بيانات debug | فعّل **DebugView** في Firebase console + `adb shell setprop debug.firebase.analytics.app <package>` |

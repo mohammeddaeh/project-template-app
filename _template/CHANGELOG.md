@@ -11,6 +11,13 @@
 
 ## غير مُصدَر
 
+- **خريطةٌ للقادم الجديد**: `README.md` بجذر المستودع (كان نصَّ Flutter الافتراضي) · `readme/30_MODULES.md`
+  جدولٌ واحد للموديولات الثلاثة عشر (علَم · افتراض · ما يحتاجه خارج التطبيق · الوثيقة) يحلّ محلّ جدولَي
+  `10_ARCHITECTURE` و`00_START_HERE` · `packages/README.md` · سكربتات `40_SCRIPTS.md` مجمّعةٌ بمتى تُحتاج.
+  ⚠️ **مداخلُ الموديولات كلّها `<name>_plugin.dart` / `<Name>Plugin`**: `AnalyticsModule` و`CrashReportingModule`
+  و`RemoteConfigModule` و`PushNotificationsModule` و`InAppUpdatesModule` صارت `…Plugin` — والأسماء القديمة
+  `typedef` مُهمَلة، لكنّ مسارات الاستيراد تبدّلت (`modules_bootstrap.dart` بالمشروع يُحدَّث).
+  `scaffold_module` يكتب صفَّ الجدول الواحد وعلامةً ثابتة بـ`ModulesBootstrap` واستثناءَ جردٍ بـ`TODO`.
 - **تنظيف**: حُذف `TextThemeEx` (أحجام خطوطٍ مكتوبةٌ باليد، و`baseTextStyle` مكرّر) · `showLoader` ·
   `rSpace`/`rSize` · `dismissKeyboard` · `GlobalKeyExtensions` · `ThemeEx.dividerColor`/`scaffoldBackgroundColor`
   · `AccountContextRefresher`. ⚠️ مشروعٌ يستعمل أيّاً منها يستبدله بـ`context.textTheme` · `context.screen` ·

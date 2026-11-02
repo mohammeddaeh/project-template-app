@@ -9,34 +9,39 @@
 dart run scripts/<script_name>.dart
 ```
 
-سكربتات Dart بـ`scripts/`، و**مُطلِق PowerShell واحد** (`new_project.ps1`):
+سكربتات Dart بـ`scripts/`، و**مُطلِق PowerShell واحد** (`new_project.ps1`) — مجمّعةً بمتى تحتاجها:
 
 | السكربت | الغرض |
 |---|---|
-| **`new_project.ps1`** | **مشروعٌ جديد بأمرٍ واحد من أي مجلد** — يُنادى عبر `irm … \| iex` بلا استنساخٍ مسبق: يفحص الأدوات، ويستنسخ القالب بتاريخٍ نظيف، ثم يسلّم `setup_project.dart` كلَّ القيم ويُنشئ أوّل commit **ويرفعه لمستودع GitHub يُسأل عنه** (ويُنشئه بـ`gh` إن وُجد). راجع §8‑د |
-| **`setup_project.dart`** | **الإعداد الأول لمشروع جديد** — الهوية (اسم · Application ID · **اسم حزمة Dart**) + `BASE_URL` + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل. تفاعليّ، أو بوسائط بلا أسئلة |
-| **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً. ويربط سلسلة المزامنة/الصلاحية تلقائياً إن كانت مُشعَلة بـ`AppFeatures` |
-| **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الأربعة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ `10_ARCHITECTURE.md` · صفّ `00_START_HERE.md` |
-| **`audit_template.dart`** | **تدقيقٌ ذاتيّ استشاريّ للقالب** — وصل الموديولات بإقلاعها · فجوة مزامنة حرجة · مسارات بلا نقطة تنقّل ظاهرة · ملفات readme/ خارج جدول التزامن · تاريخٌ بالملفات التي تصل المشاريع |
+| **كلَّ يوم** | |
 | `gen_code.dart` | توليد الكود (build_runner + مفاتيح الترجمة) |
 | `build_apk.dart` | تصدير APK مع إدارة الإصدار تلقائياً |
-| `sync_flavors.dart` | إعداد/إزالة flavors (ملفات `.env` + Android productFlavors + أسماء + أيقونات + launch.json) |
-| `gen_assets.dart` | مسح `assets/` وتوليد `lib/resources/assets.gen.dart` |
-| `svg_inline_styles.dart` | يُنزل قواعد `<style>` بملف SVG إلى سمات مباشرة — `flutter_svg` لا يطبّقها فيرسم أسود. راجع §4 |
-| `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
-| `gen_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
-| `sync_platform_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
-| **`kit.dart`** | **حِزَم الأجهزة** — `list` · `add <name>` · `remove <name>` · `test`. التركيب والإزالة بأمرٍ واحد (تبعية · تسجيل · أذونات · قواعد R8)، والجولة لا تترك فرقاً بـgit. راجع [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) |
 | **`check_structure.dart`** | **فاحصٌ آليّ لقواعد البنية** (`F04` · `F10` · `F13` · `F19`…`F21` · `F35`…`F37` · `C01`…`C20` · `L01`) — يفشل بمخالفة **جديدة** ويتسامح مع الدَّين المسجَّل |
 | **`check_docs.dart`** | **روابط التوثيق المعطوبة** — كل رابط Markdown نسبيّ يصل ملفاً موجوداً، ورابطُ GitHub إلى `_template/` حين يوجد المجلد. حاجبٌ بالـCI. راجع §8‑ح |
+| **مشروعٌ جديد — مرّةً واحدة** | |
+| **`new_project.ps1`** | **مشروعٌ جديد بأمرٍ واحد من أي مجلد** — يُنادى عبر `irm … \| iex` بلا استنساخٍ مسبق: يفحص الأدوات، ويستنسخ القالب بتاريخٍ نظيف، ثم يسلّم `setup_project.dart` كلَّ القيم ويُنشئ أوّل commit **ويرفعه لمستودع GitHub يُسأل عنه** (ويُنشئه بـ`gh` إن وُجد). راجع §8‑د |
+| **`setup_project.dart`** | **الإعداد الأول لمشروع جديد** — الهوية (اسم · Application ID · **اسم حزمة Dart**) + `BASE_URL` + الوحدات الاختيارية ذات الكلفة الخارجية، ثم فحص صحة كامل. تفاعليّ، أو بوسائط بلا أسئلة |
+| `sync_flavors.dart` | إعداد/إزالة flavors (ملفات `.env` + Android productFlavors + أسماء + أيقونات + launch.json) |
+| **`gen_splash_assets.dart`** | **موردا شاشة الإقلاع لأندرويد** من الـSVG — و`android: false` بـ`flutter_native_splash` بقرار |
+| **`prune_project.dart`** | **تنظيف ما لا يستعمله أحد** — مفاتيح ترجمة · أصول (تُحذف بـ`--apply`) · موديولات مطفأة · ملفات بلا مستورِد · حزم بلا import (تُعرض). راجع §8‑ي |
+| **مولّدات** | |
+| **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً. ويربط سلسلة المزامنة/الصلاحية تلقائياً إن كانت مُشعَلة بـ`AppFeatures` |
+| **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الثلاثة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ بالجدول الواحد `30_MODULES.md` |
+| `gen_assets.dart` | مسح `assets/` وتوليد `lib/resources/assets.gen.dart` |
+| `gen_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
+| **الأصول والمنصّة** | |
+| `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
+| `svg_inline_styles.dart` | يُنزل قواعد `<style>` بملف SVG إلى سمات مباشرة — `flutter_svg` لا يطبّقها فيرسم أسود. راجع §4 |
+| `sync_platform_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
+| **`kit.dart`** | **حِزَم الأجهزة** — `list` · `add <name>` · `remove <name>` · `test`. التركيب والإزالة بأمرٍ واحد (تبعية · تسجيل · أذونات · قواعد R8)، والجولة لا تترك فرقاً بـgit. راجع [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) |
+| **`pull_figma.dart`** | **يسحب تصاميم الفيغما** عبر REST إلى `.figma/` — صورةٌ وخلاصةٌ مقروءة وشجرةٌ مُقلَّمة لكل إطار |
+| **القالب والمشروع بعد الإنشاء** | |
 | **`template_drift.dart`** | **ما غيّره المشروع بملفات القالب ولم يُسجَّل** — يقارن بنسخة القالب حين بدأ المشروع. راجع §8‑ط |
 | **`template_update.dart`** | **يجلب نسخةً أحدث من القالب** — يحدّث ما لم يلمسه المشروع، ويضع التعارض جانباً. راجع §8‑ط |
-| **`prune_project.dart`** | **تنظيف ما لا يستعمله أحد** — مفاتيح ترجمة · أصول (تُحذف بـ`--apply`) · موديولات مطفأة · ملفات بلا مستورِد · حزم بلا import (تُعرض). راجع §8‑ي |
+| **`audit_template.dart`** | **تدقيقٌ ذاتيّ استشاريّ للقالب** — وصل الموديولات بإقلاعها · فجوة مزامنة حرجة · مسارات بلا نقطة تنقّل ظاهرة · ملفات readme/ خارج جدول التزامن · تاريخٌ بالملفات التي تصل المشاريع |
+| **نقلُ تطبيقٍ قائم** | |
 | **`port_inventory.dart`** | **جردُ تطبيقٍ قديم قبل نقله** — المنصّة · الشاشات · الـendpoints · الخطوط · SVG · إشارات القدرات ⇐ ما يقابلها بالقالب. راجع §8‑ك |
 | **`device_shot.dart`** | **لقطةٌ من جهاز أندرويد** بجانب لقطة التطبيق القديم، ونصوص الشاشة، والعرض المنطقيّ. راجع §8‑ك |
-| **`pull_figma.dart`** | **يسحب تصاميم الفيغما** عبر REST إلى `.figma/` — صورةٌ وخلاصةٌ مقروءة وشجرةٌ مُقلَّمة لكل إطار |
-| **`gen_splash_assets.dart`** | **موردا شاشة الإقلاع لأندرويد** من الـSVG — و`android: false` بـ`flutter_native_splash` بقرار |
-
 ---
 
 ## 1) `gen_code.dart` — توليد الكود
@@ -670,7 +675,7 @@ dart run scripts/scaffold_module.dart <module_name>
 dart run scripts/scaffold_module.dart audit_log
 ```
 
-يكتب الأركان الأربعة معاً لأي موديول تحت `lib/modules/` — ركنٌ يُنسى يترك موديولاً
+يكتب الأركان الثلاثة معاً لأي موديول تحت `lib/modules/` — ركنٌ يُنسى يترك موديولاً
 كامل الكود لا يُقلع، والتوليد الآلي لا يترك خياراً بتخطّي ركن:
 
 1. **ملفّ المدخل** `lib/modules/<name>/<name>_plugin.dart` — نمط الحراسة
@@ -679,14 +684,9 @@ dart run scripts/scaffold_module.dart audit_log
 2. **العلَم** — سطرٌ جديد بـ`app_features.dart` تحت "Optional modules"،
    افتراضُه `false`.
 3. **التسجيل** — سطرٌ جديد بـ`modules_bootstrap.dart` (`if (AppFeatures.x)
-   await XPlugin.initialize(di);`)، بعد كتلة `dataTransfer` (آخر الموديولات
-   المسجَّلة، وترتيبُها غير مهمّ حسب تعليق الملف نفسه).
-4. **صفّ التوثيق** — إضافةٌ تلقائية لجدول الموديولات بـ
-   [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) (عمود Packages يبقى `TODO` —
-   يدويّ بقصد، لا شيء يعرف تبعيات موديولٍ لم يُكتب بعد).
-5. **صفّ «أول يوم»** — إضافةٌ تلقائية لجدول «الموديولات الاختيارية» بـ
-   [`00_START_HERE.md`](00_START_HERE.md) — **الركن الرابع**: بدونه لا شيء يربط
-   توليد موديولٍ جديد بالملف الوحيد الذي يُقال لعضو فريقٍ جديد أن يقرأه أولاً. العمود الأول يبقى وصفاً عاماً — يدويّ بقصد.
+   await XPlugin.initialize(di);`) فوق علامة `// scaffold_module:` الثابتة.
+4. **صفّ الجدول الواحد** — بـ[`30_MODULES.md`](30_MODULES.md) فوق علامته. الوصفُ وما
+   يحتاجه خارج التطبيق يبقيان `TODO` — يدويّان بقصد، لا شيء يعرفهما قبل كتابة الموديول.
 
 لا يمسّ DI/router/freezed/ترجمة، فلا حاجة لـ`gen_code.dart` — فقط فحص صحة
 نهائي: `dart analyze lib` → `flutter test` → `check_structure.dart`.

@@ -24,7 +24,7 @@ static const remoteConfig = true;
 
 ```dart
 // lib/modules/modules_bootstrap.dart
-await RemoteConfigModule.initialize(
+await RemoteConfigPlugin.initialize(
   di,
   // القيم الافتراضية المحلية — تُستخدم عند عدم الاتصال أو قبل أول fetch
   defaults: {
@@ -82,4 +82,4 @@ config.onUpdated.listen((_) {
 | `defaults` | ضع قيمًا افتراضية لكل مفتاح — تضمن عمل التطبيق offline |
 | `minimumFetchInterval` | في debug استخدم `Duration.zero` — في production `hours: 12` |
 | `onUpdated` | يعمل فقط مع خطط Firebase Blaze (Spark لا يدعم real-time) |
-| تبديل الـ adapter | غيّر `FirebaseRemoteConfigAdapter` في `RemoteConfigModule` — لا تغيير في Features |
+| تبديل الـ adapter | غيّر `FirebaseRemoteConfigAdapter` في `RemoteConfigPlugin` — لا تغيير في Features |

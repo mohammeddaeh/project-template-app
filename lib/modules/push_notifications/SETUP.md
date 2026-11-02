@@ -55,7 +55,7 @@ static const pushNotifications = true;
 ```dart
 // lib/modules/modules_bootstrap.dart
 if (AppFeatures.pushNotifications) {
-  await PushNotificationsModule.initialize(
+  await PushNotificationsPlugin.initialize(
     di,
     config: PushNotificationsConfig(
       // أرسل الـ token للـ backend عند كل تحديث
@@ -110,7 +110,7 @@ class NotificationCubit extends SafeCubit<NotificationState> {
 ## ⑤ عند Logout — حذف الـ Token
 
 ```dart
-await PushNotificationsModule.shutdown(getIt);
+await PushNotificationsPlugin.shutdown(getIt);
 // أو مباشرة:
 await getIt<PushNotificationsService>().deleteToken();
 ```
@@ -136,5 +136,5 @@ await getIt<PushNotificationsService>().unsubscribeFromTopic('announcements');
 | الـ Token | يُخزَّن تلقائياً في `SecureStorageService` بمفتاح `'fcm_token'` (قابل للتغيير في `PushNotificationsConfig`) |
 | صلاحيات iOS | يُطلَب إذن المستخدم تلقائياً عند `initialize()` — يمكن تعطيله بـ `requestPermissionOnInit: false` |
 | Background handler | يجب أن يكون `top-level function` — لا `class method` ولا `lambda` |
-| Firebase init | يجب استدعاء `Firebase.initializeApp()` قبل `PushNotificationsModule.initialize()` |
+| Firebase init | يجب استدعاء `Firebase.initializeApp()` قبل `PushNotificationsPlugin.initialize()` |
 | Android 13+ | يحتاج `POST_NOTIFICATIONS` permission — FCM يطلبها تلقائياً |

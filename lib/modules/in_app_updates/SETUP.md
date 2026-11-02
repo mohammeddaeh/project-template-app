@@ -47,7 +47,7 @@ const AppUpdateGate(child: AppShell());
 
 ```dart
 // إن احتاج تطبيقٌ آخر استدعاءه يدوياً، فالنداء يقرأ اللقطة المحلية فقط:
-await InAppUpdatesModule.checkAndPrompt(
+await InAppUpdatesPlugin.checkAndPrompt(
   context,
   mode: UpdateMode.flexible,   // flexible أو immediate
   iosAppId: '1234567890',      // App Store ID للـ iOS
@@ -71,7 +71,7 @@ final minVersion = getIt<RemoteConfigService>().getString('min_app_version');
 final currentVersion = (await PackageInfo.fromPlatform()).version;
 
 if (_isOutdated(currentVersion, minVersion)) {
-  await InAppUpdatesModule.checkAndPrompt(
+  await InAppUpdatesPlugin.checkAndPrompt(
     context,
     mode: UpdateMode.immediate, // إجباري إذا أقل من الحد الأدنى
     iosAppId: '1234567890',

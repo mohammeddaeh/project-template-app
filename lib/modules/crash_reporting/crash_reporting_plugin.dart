@@ -21,21 +21,21 @@ import 'package:app_template/modules/crash_reporting/adapters/crashlytics_log_de
 /// ## Usage
 /// ```dart
 /// // main.dart — after Firebase.initializeApp()
-/// await CrashReportingModule.initialize();
+/// await CrashReportingPlugin.initialize();
 /// ```
 /// After that, use [LogService] as usual — Crashlytics receives everything.
 ///
 /// ### Setting user identity (after login)
 /// ```dart
-/// CrashReportingModule.setUserId('user_123');
-/// CrashReportingModule.setUserAttribute('role', 'admin');
+/// CrashReportingPlugin.setUserId('user_123');
+/// CrashReportingPlugin.setUserAttribute('role', 'admin');
 /// ```
 ///
 /// ### Clearing user identity (on logout)
 /// ```dart
-/// CrashReportingModule.clearUser();
+/// CrashReportingPlugin.clearUser();
 /// ```
-abstract final class CrashReportingModule {
+abstract final class CrashReportingPlugin {
   static bool _initialized = false;
 
   /// Initialises Crashlytics and wires it into [LogService].
@@ -67,7 +67,7 @@ abstract final class CrashReportingModule {
 
     _initialized = true;
     LogService.info(
-      'CrashReportingModule initialized (enabled=$enabled)',
+      'CrashReportingPlugin initialized (enabled=$enabled)',
       tag: 'CRASH',
     );
   }
@@ -107,3 +107,7 @@ abstract final class CrashReportingModule {
     );
   }
 }
+
+/// الاسم السابق — يبقى ليُصرَّف `modules_bootstrap.dart` بمشروعٍ قائم حتى يُحدَّث.
+@Deprecated('Use CrashReportingPlugin')
+typedef CrashReportingModule = CrashReportingPlugin;

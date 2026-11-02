@@ -157,7 +157,7 @@ void main() {
     // The entry file and the data layer stay out: one doorway, not three.
     expect(
       moduleSyncOptIn.hasMatch(
-        'lib/modules/in_app_updates/in_app_updates_module.dart',
+        'lib/modules/in_app_updates/in_app_updates_plugin.dart',
       ),
       isFalse,
     );

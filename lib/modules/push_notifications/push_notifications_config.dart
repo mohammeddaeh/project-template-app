@@ -1,4 +1,4 @@
-/// Configuration passed to [PushNotificationsModule.initialize].
+/// Configuration passed to [PushNotificationsPlugin.initialize].
 ///
 /// [tokenStorageKey] — the [SecureStorageService] key used to persist the
 /// FCM device token. Defaults to `'fcm_token'`.

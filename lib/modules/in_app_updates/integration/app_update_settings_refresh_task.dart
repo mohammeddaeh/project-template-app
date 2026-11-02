@@ -10,11 +10,11 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 ///
 /// `test/sync/deletion_contract_test.dart` يشهد على أن حذفَ موديول المزامنة
 /// **حذفُ مجلَّدٍ لا بحثٌ بالشجرة**، ويسمح بشكلٍ واحدٍ من الانخراط: ملفٌّ
-/// بـ`integration/` لا غير. فلو نادى `in_app_updates_module.dart` اسمَ `SyncRefreshTask`
+/// بـ`integration/` لا غير. فلو نادى `in_app_updates_plugin.dart` اسمَ `SyncRefreshTask`
 /// بنفسه — ولو لمجرّد وسيطٍ نوعيّ — صار لموديولٍ اختياريٍّ **مدخلان** إلى آخر،
 /// ومن حذف المزامنة يقع على خطأ تصريفٍ بملفٍّ لا يتوقّعه.
 ///
-/// فالتسجيل يسكن هنا، و[InAppUpdatesModule] ينادي دالّةً لا يعرف ما تُسجِّل.
+/// فالتسجيل يسكن هنا، و[InAppUpdatesPlugin] ينادي دالّةً لا يعرف ما تُسجِّل.
 class AppUpdateSettingsRefreshTask implements SyncRefreshTask {
   const AppUpdateSettingsRefreshTask(this._api, this._store);
 

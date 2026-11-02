@@ -43,7 +43,7 @@ import 'package:get_it/get_it.dart';
 ///   final PushNotificationsService _push;
 /// }
 /// ```
-abstract final class PushNotificationsModule {
+abstract final class PushNotificationsPlugin {
   static bool _initialized = false;
 
   /// Initialises Firebase Messaging and registers [PushNotificationsService]
@@ -76,7 +76,7 @@ abstract final class PushNotificationsModule {
     di.registerSingleton<PushNotificationsService>(adapter);
 
     _initialized = true;
-    LogService.info('PushNotificationsModule initialized', tag: 'PUSH');
+    LogService.info('PushNotificationsPlugin initialized', tag: 'PUSH');
   }
 
   /// Removes the [PushNotificationsService] registration and resets state.
@@ -90,3 +90,7 @@ abstract final class PushNotificationsModule {
     _initialized = false;
   }
 }
+
+/// الاسم السابق — يبقى ليُصرَّف `modules_bootstrap.dart` بمشروعٍ قائم حتى يُحدَّث.
+@Deprecated('Use PushNotificationsPlugin')
+typedef PushNotificationsModule = PushNotificationsPlugin;

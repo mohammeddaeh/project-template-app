@@ -33,8 +33,8 @@ lib/features/{feature}/
 ```
 
 **والموديول بالشكل نفسه**: `lib/modules/<name>/` يحمل الطبقات ذاتها (`data/` ·
-`domain/` · `presentation/` حين يلزم)، وملفُّ `<name>_plugin.dart` أو `<name>_module.dart`
-وحده بجذره — هو المدخل الذي يستورده الآخرون.
+`domain/` · `presentation/` حين يلزم)، وملفُّ `<name>_plugin.dart` بجذره — هو المدخل
+الذي يستورده الآخرون، وصنفُه `<Name>Plugin` بكل موديول.
 
 **و`data/datasources/` لكل مصدر**: خدمة Retrofit، **وكلّ** مصدرٍ محلّي (مخزن ·
 طابور · جسر منصّة).

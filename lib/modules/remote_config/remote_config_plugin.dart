@@ -10,7 +10,7 @@ import 'package:get_it/get_it.dart';
 /// ## Usage
 /// ```dart
 /// // main.dart
-/// await RemoteConfigModule.initialize(getIt, defaults: {
+/// await RemoteConfigPlugin.initialize(getIt, defaults: {
 ///   'new_payment_flow': false,
 ///   'min_app_version': '1.0.0',
 ///   'banner_text': '',
@@ -19,7 +19,7 @@ import 'package:get_it/get_it.dart';
 /// // Anywhere in the app:
 /// final enabled = getIt<RemoteConfigService>().getBool('new_payment_flow');
 /// ```
-abstract final class RemoteConfigModule {
+abstract final class RemoteConfigPlugin {
   static bool _initialized = false;
 
   /// Initialises Firebase Remote Config and registers [RemoteConfigService].
@@ -46,6 +46,10 @@ abstract final class RemoteConfigModule {
     di.registerSingleton<RemoteConfigService>(adapter);
 
     _initialized = true;
-    LogService.info('RemoteConfigModule initialized', tag: 'RCONFIG');
+    LogService.info('RemoteConfigPlugin initialized', tag: 'RCONFIG');
   }
 }
+
+/// الاسم السابق — يبقى ليُصرَّف `modules_bootstrap.dart` بمشروعٍ قائم حتى يُحدَّث.
+@Deprecated('Use RemoteConfigPlugin')
+typedef RemoteConfigModule = RemoteConfigPlugin;

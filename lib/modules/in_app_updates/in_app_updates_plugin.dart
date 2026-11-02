@@ -31,12 +31,12 @@ import 'package:dio/dio.dart';
 /// ## Usage
 /// ```dart
 /// // Call after login or on app resume:
-/// await InAppUpdatesModule.checkAndPrompt(
+/// await InAppUpdatesPlugin.checkAndPrompt(
 ///   context,
 ///   mode: UpdateMode.flexible,   // or UpdateMode.immediate
 /// );
 /// ```
-abstract final class InAppUpdatesModule {
+abstract final class InAppUpdatesPlugin {
   static const _refreshTaskName = 'in-app-updates.settings-refresh';
   static bool _initialized = false;
   static bool _promptInProgress = false;
@@ -234,3 +234,7 @@ enum UpdateMode {
   /// Full-screen blocking update — use for critical security patches.
   immediate,
 }
+
+/// الاسم السابق — يبقى ليُصرَّف `modules_bootstrap.dart` بمشروعٍ قائم حتى يُحدَّث.
+@Deprecated('Use InAppUpdatesPlugin')
+typedef InAppUpdatesModule = InAppUpdatesPlugin;

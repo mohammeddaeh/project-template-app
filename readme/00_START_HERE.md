@@ -183,24 +183,10 @@ dart run scripts/build_apk.dart --flavor staging --mode release --bump minor
 
 ## بعد المرحلة 5 — تشغيل موديول اختياري
 
-كل موديول بـ`lib/modules/` يُشعَل بعلَم واحد بـ`lib/core/platform/features/app_features.dart`،
-وله `SETUP.md` بجواره.
+كل موديول بـ`lib/modules/` يُشعَل بعلَمٍ واحد بـ`AppFeatures`. **والجدولُ الواحد** — ما
+يحتاجه كلٌّ منها خارج التطبيق، وأين يُركَّب، ووثيقته: [`30_MODULES.md`](30_MODULES.md).
 
-| الموديول | العلَم | الوثيقة |
-|---|---|---|
-| الصلاحيات والأدوار | `accessControl` | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) |
-| استيراد/تصدير | `dataTransfer` | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
-| مزامنة دون اتصال | `offlineSync` ⛔ **مطفأ** | [`lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) · [`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) |
-| أجهزة وجلسات | `multiDevice` | `lib/modules/multi_device/SETUP.md` |
-| قفل جلسة محلّي (رقم/بصمة) | `sessionGuard` | `lib/modules/session_guard/SETUP.md` |
-| مركز إشعارات داخل التطبيق | `notificationCenter` (يحتاج `pushNotifications` أيضاً) | `lib/modules/notification_center/SETUP.md` |
-| تتبّع التوكن على الشاشة — أداة مطوّر، لا تظهر بنسخة `prod` release | `tokenInspector` | [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) |
-| جولة المطوّر بالرئيسية — **مُشعَلة افتراضاً**، تُطفأ مع رئيسية المشروع | `showcase` | `lib/modules/showcase/SETUP.md` |
-| تحليلات · انهيارات · إشعارات · إعدادات بعيدة | راجع `AppFeatures` | `lib/modules/<name>/SETUP.md` |
-
-> ⚠️ **علَمٌ مُشعَل لا يكفي.** الموديول قد يحتاج نصفاً بالباك وتسجيلاً بالـDI.
-> وأخطر ما فيه أنه يفشل **صامتاً**: `offlineSync = true` بلا محوّل feature يترك
-> التطبيق يعمل بالكامل على الشبكة، بلا انهيار ولا تحذير ولا اختبار أحمر.
+> ⚠️ **علَمٌ مُشعَل لا يكفي** — الموديول قد يحتاج نصفاً بالباك، ويفشل **صامتاً** بلاه.
 
 ---
 
