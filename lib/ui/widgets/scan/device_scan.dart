@@ -14,15 +14,14 @@ import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/dialogs/app_bottom_sheet.dart';
 
-/// The camera as an input — a code and paper pages through `kit_scan`,
-/// printed text through `kit_ocr`. Each call asks for the camera itself and says why when it
+/// The camera as an input — a code through `kit_scan`, printed text through
+/// `kit_ocr`. Each call asks for the camera itself and says why when it
 /// cannot go on.
 ///
-/// Check [canScanCodes] / [canScanDocuments] / [canReadText] before drawing
+/// Check [canScanCodes] / [canReadText] before drawing
 /// the button: without the kit there is nothing to call.
 abstract final class DeviceScan {
   static bool get canScanCodes => getIt.isRegistered<CodeScanner>();
-  static bool get canScanDocuments => getIt.isRegistered<DocumentScanner>();
   static bool get canReadText => getIt.isRegistered<TextRecognizer>();
 
   /// A sheet with the live camera — the first code read, or `null` when the
@@ -50,34 +49,6 @@ abstract final class DeviceScan {
       isScrollable: false,
       child: _CodeScanView(session: scanner.open()),
     );
-  }
-
-  /// The platform's document scanner — page images in order, or `null`.
-  ///
-  /// ⚠️ The files are temporary: copy them into private storage at once, as
-  /// with a captured photo (`PrivateFileIngestService.ingest`).
-  static Future<List<String>?> document(
-    BuildContext context, {
-    int maxPages = 5,
-  }) async {
-    final scanner = getIt<DocumentScanner>();
-    if (await scanner.availability() is! KitReady) {
-      if (context.mounted) {
-        context.feedback.warning(LocaleKeys.scanDocumentUnsupported.tr());
-      }
-      return null;
-    }
-    final result = await scanner.scan(maxPages: maxPages);
-    if (!context.mounted) return null;
-    switch (result) {
-      case DocumentScanned(:final pages):
-        return pages;
-      case DocumentScanCancelled():
-        return null;
-      case DocumentScanFailed():
-        context.feedback.warning(LocaleKeys.scanDocumentFailed.tr());
-        return null;
-    }
   }
 
   /// The printed text in an image — `null` when there is none or it could not

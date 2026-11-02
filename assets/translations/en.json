@@ -950,13 +950,10 @@
   "scanCameraDenied": "Scanning needs the camera",
   "scanCameraBlocked": "The camera is off for this app — allow it in Settings",
   "scanUnsupported": "Scanning is not available on this device",
-  "scanDocumentUnsupported": "The document scanner needs Android with Google services",
-  "scanDocumentFailed": "Couldn't open the document scanner",
   "scanTextFailed": "Couldn't read the image",
   "scanTextEmpty": "No text found — only Latin script is read",
   "showcaseScan": "Scanning",
   "showcaseScanCode": "Scan a code",
-  "showcaseScanDocument": "Scan a document",
-  "showcaseScanText": "Read the text of the first page",
-  "showcaseScanNothing": "Nothing yet"
+  "showcaseScanNothing": "Nothing yet",
+  "showcaseScanText": "Pick an image and read its text"
 }

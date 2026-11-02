@@ -187,26 +187,6 @@ class FakeScanSession implements ScanSession {
   }
 }
 
-class FakeDocumentScanner implements DocumentScanner {
-  FakeDocumentScanner({
-    this.answer = const KitReady(),
-    this.result = const DocumentScanCancelled(),
-  });
-
-  KitAvailability answer;
-  DocumentScanResult result;
-  int? askedFor;
-
-  @override
-  Future<KitAvailability> availability() async => answer;
-
-  @override
-  Future<DocumentScanResult> scan({int maxPages = 5}) async {
-    askedFor = maxPages;
-    return result;
-  }
-}
-
 class FakeTextRecognizer implements TextRecognizer {
   FakeTextRecognizer({this.answer = const KitReady(), this.text = ''});
 

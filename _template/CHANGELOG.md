@@ -11,8 +11,8 @@
 
 ## غير مُصدَر
 
-- **kits `scan` · `ocr` (K3)**: `DeviceScan.code` (ورقةٌ بالكاميرا) · `DeviceScan.document` (ماسح
-  النظام، أندرويد بخدمات Google) · `DeviceScan.text` (لاتيني وحده، kit مستقلّة لأنها +12MB).
+- **kits `scan` · `ocr` (K3)**: `DeviceScan.code` (ورقةٌ بالكاميرا) · `DeviceScan.text` (لاتيني وحده،
+  kit مستقلّة لأنها +12MB). لا ماسحَ مستندات — أُلغي بقرار (يحتاج خدمات Google).
   ⚠️ `kit_contracts` صار حزمة Flutter. ⚠️ `kit.json` يحمل `proguard`، و`build.gradle.kts` يضمّ
   `proguard-kits.pro` المولَّد — بلاه تفشل نسخة release.
 - **`AppBottomSheet(isScrollable: false)`** يعطي المحتوى سقف الورقة — كان يفيض على شاشةٍ قصيرة.

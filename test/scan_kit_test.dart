@@ -50,7 +50,6 @@ void main() {
 
   test('without the kit nothing offers to scan', () {
     expect(DeviceScan.canScanCodes, isFalse);
-    expect(DeviceScan.canScanDocuments, isFalse);
     expect(DeviceScan.canReadText, isFalse);
   });
 
@@ -91,37 +90,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(scanner.session!.torch, isTrue);
     expect(find.byIcon(Icons.flashlight_off_outlined), findsOneWidget);
-  });
-
-  testWidgets('scanned pages come back in order', (tester) async {
-    final scanner = FakeDocumentScanner(
-      result: const DocumentScanned(['/p1.jpg', '/p2.jpg']),
-    );
-    getIt.registerSingleton<DocumentScanner>(scanner);
-    List<String>? pages;
-    await tester.pumpWidget(
-      host((c) async => pages = await DeviceScan.document(c, maxPages: 2)),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('go'));
-    await tester.pumpAndSettle();
-    expect(pages, ['/p1.jpg', '/p2.jpg']);
-    expect(scanner.askedFor, 2);
-  });
-
-  testWidgets('backing out of the scanner is no pages and no message', (
-    tester,
-  ) async {
-    getIt.registerSingleton<DocumentScanner>(FakeDocumentScanner());
-    List<String>? pages = const ['untouched'];
-    await tester.pumpWidget(
-      host((c) async => pages = await DeviceScan.document(c)),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('go'));
-    await tester.pumpAndSettle();
-    expect(pages, isNull);
-    expect(tester.takeException(), isNull);
   });
 
   testWidgets('printed text is read from the image given', (tester) async {

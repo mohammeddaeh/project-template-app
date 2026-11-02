@@ -114,7 +114,7 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 |---|---|---|---|
 | `voice` | `SpeechInput` · `SpeechOutput` | `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` — [§42](widgets/02_inputs.md) | `microphone` · `speechRecognition` · `textToSpeech` |
 | `audio` | `AudioRecorder` · `AudioPlayback` (مصنع: مشغّلٌ لكل طالب) | `VoiceNoteRecorder` · `AudioPlayerTile` · `AttachmentPreview` يشغّل المرفق الصوتيّ بالتطبيق — [§43](widgets/04_display.md) | `microphone` |
-| `scan` | `CodeScanner` · `DocumentScanner` | `DeviceScan.code` · `DeviceScan.document` — [§44](widgets/02_inputs.md) | `camera` |
+| `scan` | `CodeScanner` | `DeviceScan.code` — [§44](widgets/02_inputs.md) | `camera` |
 | `ocr` | `TextRecognizer` | `DeviceScan.text` — **لاتينيّ وحده، لا عربي** | — |
 
 **والحجم يقرّر الحدود** — release arm64، تطبيقُ القالب بلا kit = 30.3MB:
@@ -125,8 +125,9 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 | `scan` | +6.5MB | نموذجُ الباركود مضمَّنٌ بالتطبيق — يعمل بلا خدمات Google وبلا شبكة |
 | `ocr` | +12MB | نموذجُ النص اللاتيني مضمَّن — **ولهذا هو kit وحده**: من يمسح الرموز لا يحمله |
 
-`DocumentScanner` شاشةُ Google نفسُها تُنزَّل عبر Play services عند أوّل استعمال: **لا تعمل على
-جهازٍ بلا خدمات Google، ولا على شبكةٍ تحجب Google** — والفشلُ يعود كإلغاء.
+**ولا ماسحَ مستنداتٍ بالقالب — بقرار.** ماسحُ Google (ML Kit) وحدةٌ تُنزَّل عبر Play services ورفضها جهازُ
+التجربة حتى عبر VPN؛ والبديلُ الوحيد السليم بلا خدمات Google (`flutter_edge_detection`: OpenCV 4.13 ·
+WeScan) يطلب Flutter أحدث، وتصونه يدٌ واحدة. التفصيل بخطّة الـkits بمستودع القالب.
 
 **وأعلامٌ بلا إذن**: `textToSpeech` لا يطلب شيئاً من المستخدم، لكن أندرويد 11+ لا
 يُري التطبيقَ محرّكاً لم يُعلَن بـ`<queries>` — فيُقال «لا محرّك» والمحرّك مثبَّت.

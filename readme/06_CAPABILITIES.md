@@ -114,7 +114,7 @@
 | حالة الشبكة | `NetworkStateMonitor` · `ConnectivityDot` | `Connectivity()` | 👁 |
 | إملاءٌ بالصوت · قراءةٌ بصوت | `CustomTextField(dictation: true)` · `DictationButton` · `SpeakButton` — kit `voice` | `SpeechToText()` · `FlutterTts()` | C19 |
 | تسجيلُ صوت · تشغيلُ صوت | `VoiceNoteRecorder` · `AudioPlayerTile` — kit `audio` | `AudioRecorder()` (record) · `AudioPlayer()` (just_audio) | C19 |
-| مسحُ رمز QR/باركود · مستند | `DeviceScan.code` · `DeviceScan.document` — kit `scan` | `MobileScanner(` · `DocumentScanner(` | C19 |
+| مسحُ رمز QR/باركود | `DeviceScan.code` — kit `scan` | `MobileScanner(` | C19 |
 | نصٌّ من صورة (لاتيني) | `DeviceScan.text` — kit `ocr` | `TextRecognizer(` (ML Kit) | C19 |
 | إذنٌ تطلبه kit | `ensureKitReady(contract.availability, permissions)` ثم `showKitReadiness` | طلبٌ داخل الـkit · رسالةٌ لكل ودجة | 👁 |
 

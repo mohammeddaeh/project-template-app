@@ -11,7 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^9.2.0
-  google_mlkit_document_scanner: ^0.5.0
   kit_contracts:
     path: ../kit_contracts
   mobile_scanner: ^7.4.3

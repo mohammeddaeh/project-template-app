@@ -149,7 +149,7 @@ dart run scripts/kit.dart remove voice    # يزيل
 | **K0** ✅ | البنية | `packages/` · `kit_contracts` · `kit.dart` (`list`/`add`/`remove`/`test`) · `kits.g.dart` · `C18`/`C19` · `setup_project --kits` · `readme/24_DEVICE_KITS.md` + R43 · `packages/` يملكه القالب بـ`template_drift`/`template_update` · خطوةٌ بالـCI. **فصلُ «الطرفيات» بالمرآة نُقل إلى K1** — بلا kit لا شيء يُعرض | — |
 | **K1** ✅ | voice | `SpeechInput` · `SpeechOutput` · `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` · `ensureKitReady` · فصلُ «الطرفيات» بالمرآة | K0 |
 | **K2** ✅ | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات (`AttachmentPreview` · `CapturedPhoto.isAudio`) | K0 |
-| **K3** ✅ | scan · ocr | `CodeScanner` · `DocumentScanner` (kit `scan`) · `TextRecognizer` (kit `ocr` — انفصلت للحجم) · `DeviceScan` | K0 |
+| **K3** ✅ | scan · ocr | `CodeScanner` (kit `scan`) · `TextRecognizer` (kit `ocr` — انفصلت للحجم) · `DeviceScan` · ~~`DocumentScanner`~~ أُلغي | K0 |
 | **K4** | video | `VideoPlayback` · `AppVideoPlayer` · المعاينة | K0 |
 | **K5** | system | `AppShortcuts` · `HomeWidgetBridge` · `ReviewPrompt` | K0 · deep links |
 | **K6** | ink | `InkRecognizer` · `SignaturePad` | K0 |
@@ -250,3 +250,19 @@ K1…K6 مستقلّةٌ عن بعضها — **أيُّ ترتيبٍ بعد K0 �
   موجود) — الأرجح خدماتٌ غير معتمدة تُرفض وحداتُها الاختيارية. والتطبيق عاد بلا انهيار. يُعاد على جهازٍ آخر. ⬜ **قراءة النص**
   على الجهاز تنتظر صفحةً من الماسح. ⬜ **ربطُ رمز QR بـ`resolveDeepLink`** — `ui/` لا تستورد
   `routes/`؛ مكانه شاشةُ المشروع لا المكتبة.
+
+#### ماسحُ المستندات — أُلغي بقرار المستخدم (2026-11-02)
+
+ML Kit Document Scanner وحدةٌ تُنزَّل عبر Play services: فشلت على جهاز التجربة (HONOR · GMS 26.25)
+بلا VPN ومعه. **فبُحث عن بديلٍ بلا خدمات Google** — والحكمُ من ملفّات البناء نفسها لا من وصف الحزمة:
+
+| الحزمة | أندرويد فعلاً | الحكم |
+|---|---|---|
+| `cunning_document_scanner` 3.0.4 | `play-services-mlkit-document-scanner` + قصٌّ يدويّ بلاها | ❌ |
+| `scanner_document` 1.1.1 | ML Kit — جرّبوا OpenCV ثم **عادوا لـML Kit «للاستقرار»** | ❌ |
+| `paper_document_scanner` 0.1.3 · `document_scan` 0.4.0 | OpenCV | ❌ Flutter ≥3.44 |
+| `edge_detection` 1.1.3 | OpenCV 3.4.5 (quickbird) | ❌ 2023، بلا 16KB |
+| **`flutter_edge_detection` 1.2.0** | **`org.opencv:opencv:4.13.0` (16KB) · iOS WeScan** | ✅ تقنياً — Flutter ≥3.35.7، صفحةٌ واحدة، يدٌ واحدة (4 إعجابات) |
+
+**القرار**: إلغاء الميزة الآن بدل رفع Flutter أو نسخ حزمةٍ تُصان بالقالب. يُعاد فتحه بـ`flutter_edge_detection`
+حين يُرفع Flutter، أو بـ`paper_document_scanner` حين يصل 3.44 — ويُقاس حجم OpenCV قبل القرار.

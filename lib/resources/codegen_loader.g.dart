@@ -1051,15 +1051,12 @@ class CodegenLoader extends AssetLoader {
     "scanCameraDenied": "المسح يحتاج إذن الكاميرا",
     "scanCameraBlocked": "الكاميرا ممنوعة لهذا التطبيق — اسمح بها من الإعدادات",
     "scanUnsupported": "المسح غير متاح على هذا الجهاز",
-    "scanDocumentUnsupported": "ماسح المستندات يحتاج أندرويد بخدمات Google",
-    "scanDocumentFailed": "تعذّر فتح ماسح المستندات",
     "scanTextFailed": "تعذّرت قراءة الصورة",
     "scanTextEmpty": "لم يُعثر على نص — القراءة بالحروف اللاتينية وحدها",
     "showcaseScan": "المسح",
     "showcaseScanCode": "امسح رمزاً",
-    "showcaseScanDocument": "امسح مستنداً",
-    "showcaseScanText": "اقرأ النص من أول صفحة",
     "showcaseScanNothing": "لا شيء بعد",
+    "showcaseScanText": "اختر صورة واقرأ نصّها",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -2128,16 +2125,12 @@ class CodegenLoader extends AssetLoader {
     "scanCameraBlocked":
         "The camera is off for this app — allow it in Settings",
     "scanUnsupported": "Scanning is not available on this device",
-    "scanDocumentUnsupported":
-        "The document scanner needs Android with Google services",
-    "scanDocumentFailed": "Couldn't open the document scanner",
     "scanTextFailed": "Couldn't read the image",
     "scanTextEmpty": "No text found — only Latin script is read",
     "showcaseScan": "Scanning",
     "showcaseScanCode": "Scan a code",
-    "showcaseScanDocument": "Scan a document",
-    "showcaseScanText": "Read the text of the first page",
     "showcaseScanNothing": "Nothing yet",
+    "showcaseScanText": "Pick an image and read its text",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,
