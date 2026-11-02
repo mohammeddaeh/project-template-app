@@ -49,6 +49,16 @@ app.*.map.json
 .env.staging.json
 .env.prod.json
 
+# Release signing — the key and its passwords stay on the machine that builds.
+# Anywhere in the repo, not only under android/: a key dropped at the root is
+# one `git add .` from being in history for good.
+key.properties
+**/*.jks
+**/*.keystore
+**/*.p12
+**/*.p8
+**/*.mobileprovision
+
 # Generated flavor icon yamls — recreated by sync_flavors.dart
 flutter_launcher_icons-*.yaml
 

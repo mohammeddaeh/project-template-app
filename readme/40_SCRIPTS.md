@@ -120,6 +120,30 @@ dart run scripts/build_apk.dart [options]
 
 **APK output:** `build/app/outputs/flutter-apk/{displayName}-{mode}-{version}.apk`
 
+### التوقيع — مفتاحُ النشر لا يدخل git
+
+`android/app/build.gradle.kts` يوقّع نسخة release بمفتاح `android/key.properties` حين
+يوجد، وبمفتاح debug حين يغيب (يكفي لـ`flutter run --release`، ويرفضه المتجر تحديثاً).
+و`build_apk.dart --flavor prod --mode release` ينبّه إن غاب — **يسأل عن وجود الملف
+وحده، ولا يفتحه**.
+
+```properties
+# android/key.properties — على جهاز البناء وحده
+storePassword=…
+keyPassword=…
+keyAlias=upload
+storeFile=C:/keys/upload-keystore.jks   # خارج المستودع أفضل
+```
+
+| الحارس | ما يمنعه |
+|---|---|
+| `.gitignore` (الجذر و`android/`) | `key.properties` · `*.jks` · `*.keystore` · `*.p12` · `*.p8` · `*.mobileprovision` **بأي مكان** |
+| `test/signing_secrets_test.dart` | سطرٌ يُحذف من `.gitignore`، أو مفتاحٌ مُتتبَّعٌ أصلاً — يسأل git نفسه |
+
+⛔ **مفتاحٌ دخل git مرّةً بقي بتاريخه** — حذفُه بـcommit لاحق لا يمحو شيئاً، ومن
+يملكه يستطيع نشر «تحديث» لكل نسخةٍ مثبَّتة. ونقلُ تطبيقٍ قائم يحتاج **مفتاحَه القديم**
+نفسه، وإلا لم يُثبَّت فوقه (skill `port-to-template`).
+
 ### بناء يدوي (بدون السكربتات)
 
 ```bash

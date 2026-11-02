@@ -74,6 +74,21 @@ Future<void> main(List<String> args) async {
     _checkTokenTraces(allow: allowTokenTrace);
   }
 
+  // مفتاح التوقيع: **وجودُ الملف وحده** يُسأل عنه — لا يُفتح ولا يُطبع منه شيء.
+  // بلاه تُوقَّع النسخة بمفتاح debug: تعمل على جهازك، ويرفضها المتجر تحديثاً.
+  if (flavor == 'prod' && mode == 'release') {
+    _section('✍️   Release signing');
+    if (File('android/key.properties').existsSync()) {
+      print('  ✓ android/key.properties found — release key');
+    } else {
+      print(
+        '  ⚠️  android/key.properties missing — signed with the DEBUG key.\n'
+        '     Fine for testing; a store will not accept it as an update.\n'
+        '     See readme/40_SCRIPTS.md §2 «التوقيع».',
+      );
+    }
+  }
+
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 1: flutter clean (اختياري)
   // ──────────────────────────────────────────────────────────────────

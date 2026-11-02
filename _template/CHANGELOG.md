@@ -11,6 +11,11 @@
 
 ## غير مُصدَر
 
+- **توقيع release الحقيقي**: `build.gradle.kts` يقرأ `android/key.properties` حين يوجد (وإلا مفتاح debug
+  كما كان) · `build_apk.dart` ينبّه ببناء `prod` release بلاه · `.gitignore` الجذر يحجب المفاتيح بأي
+  مكان (`*.jks` · `*.keystore` · `*.p12` · `*.p8` · `*.mobileprovision`) · `test/signing_secrets_test.dart`
+  يسأل git نفسه. ⚠️ `android/app/build.gradle.kts` تغيّر.
+
 - **أدوات النقل** (`port_inventory.dart` + skill `port-to-template`): إشارةٌ لكل صفٍّ بالكتالوج ولكل kit
   وموديول (`scripts/src/port_signals.dart`)، وتُطابَق على ملفات الاعتماديات لا الكود وحده ·
   `test/port_signals_test.dart` يُفشل الناقص ومشروعٌ وهميّ يثبت التقاط كل إشارة · الـendpoints
