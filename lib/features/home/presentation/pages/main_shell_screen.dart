@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/dialogs/app_confirm_dialog.dart';
@@ -60,6 +61,11 @@ class _MainShellScreenState extends State<MainShellScreen> {
     if (!context.mounted) return;
     if (confirmed) {
       context.read<NavigationCubit>().confirmExit();
+      // The shell blocks the pop (`canPop: false`) to ask first, so after a
+      // yes nothing leaves on its own — the app has to say so. Android closes
+      // the activity; iOS ignores it (apps do not quit themselves there, and
+      // no system back reaches this dialog).
+      await SystemNavigator.pop();
     } else {
       context.read<NavigationCubit>().dismissExitDialog();
     }
