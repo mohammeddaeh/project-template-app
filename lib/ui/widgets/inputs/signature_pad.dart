@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kit_contracts/kit_contracts.dart';
 
@@ -90,18 +91,34 @@ class SignaturePad extends StatelessWidget {
               builder: (context, _) => Stack(
                 fit: StackFit.expand,
                 children: [
-                  if (controller.isEmpty && hint != null)
+                  // Kept in the tree and only hidden: removing it on the first
+                  // touch shifts the detector below it to a new slot, Flutter
+                  // rebuilds it, and the stroke being drawn ends at its dot.
+                  if (hint != null)
                     Center(
-                      child: Text(
-                        hint!,
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: colors.textMuted,
+                      child: Opacity(
+                        opacity: controller.isEmpty ? 1 : 0,
+                        child: Text(
+                          hint!,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: colors.textMuted,
+                          ),
                         ),
                       ),
                     ),
-                  GestureDetector(
-                    onPanStart: (d) => controller._begin(d.localPosition),
-                    onPanUpdate: (d) => controller._extend(d.localPosition),
+                  RawGestureDetector(
+                    gestures: {
+                      _ImmediatePan:
+                          GestureRecognizerFactoryWithHandlers<_ImmediatePan>(
+                            _ImmediatePan.new,
+                            (r) {
+                              r.onStart = (d) =>
+                                  controller._begin(d.localPosition);
+                              r.onUpdate = (d) =>
+                                  controller._extend(d.localPosition);
+                            },
+                          ),
+                    },
                     child: CustomPaint(
                       painter: _InkPainter(
                         controller._strokes,
@@ -129,6 +146,19 @@ class SignaturePad extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// A pan that wins the moment a finger lands on the pad.
+///
+/// Inside a scrolling page an ordinary pan loses every vertical stroke to the
+/// scroll: the signature comes out as the first dot and the page moves
+/// instead. Claiming the pointer at once keeps the page still while signing.
+class _ImmediatePan extends PanGestureRecognizer {
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    super.addAllowedPointer(event);
+    resolve(GestureDisposition.accepted);
   }
 }
 

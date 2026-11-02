@@ -67,11 +67,44 @@ void main() {
       await scribble(tester);
       expect(ink.isEmpty, isFalse);
       expect(ink.strokes.single.points.length, greaterThan(1));
-      expect(find.text('Sign'), findsNothing);
+      final hint = tester.widget<Opacity>(
+        find.ancestor(of: find.text('Sign'), matching: find.byType(Opacity)),
+      );
+      expect(hint.opacity, 0, reason: 'hidden, kept in the tree');
 
       await tester.tap(find.byIcon(Icons.backspace_outlined));
       await tester.pumpAndSettle();
       expect(ink.isEmpty, isTrue);
+    });
+
+    testWidgets('a vertical stroke inside a scrolling page draws, and the '
+        'page stays still', (tester) async {
+      // An ordinary pan loses vertical movement to the scroll: the signature
+      // came out as its first dot while the page moved.
+      final ink = InkController();
+      final scroll = ScrollController();
+      await tester.pumpWidget(
+        host(
+          SizedBox(
+            height: 400,
+            child: ListView(
+              controller: scroll,
+              children: [
+                // With a hint: it leaves on the first touch, and the stroke
+                // must survive that.
+                SignaturePad(controller: ink, hint: 'Sign here'),
+                const SizedBox(height: 1200),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final pad = tester.getCenter(find.byType(SignaturePad));
+      await tester.dragFrom(pad, const Offset(0, -60));
+      await tester.pumpAndSettle();
+      expect(ink.strokes.single.points.length, greaterThan(2));
+      expect(scroll.offset, 0);
     });
 
     testWidgets('the drawing saves as a PNG, nothing as null', (tester) async {
