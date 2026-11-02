@@ -10,15 +10,6 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
 extension DialogContextExtension on BuildContext {
-  void showLoader() {
-    showDialog(
-      context: this,
-      barrierDismissible: false,
-      builder: (_) =>
-          const AppProgress.circular(size: AppProgressSize.lg, centered: true),
-    );
-  }
-
   Future<void> showLoadingDialog() {
     return showCustomDialog(
       child: PopScope(
@@ -28,18 +19,9 @@ extension DialogContextExtension on BuildContext {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            AppProgress.circular(
-              size: AppProgressSize.xs,
-              color: liteGrayHeadLineText.color,
-            ),
+            const AppProgress.circular(size: AppProgressSize.xs),
             const SizedBox(width: 10),
-            AppText(
-              LocaleKeys.loading,
-              style: liteGrayHeadLineText.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+            AppText(LocaleKeys.loading, style: textTheme.bodyMedium),
           ],
         ),
       ),

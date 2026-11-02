@@ -1,7 +1,10 @@
 import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import 'settings_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'settings_cubit.freezed.dart';
+part 'settings_state.dart';
 
 class SettingsCubit extends SafeCubit<SettingsState> {
   SettingsCubit() : super(const SettingsState());

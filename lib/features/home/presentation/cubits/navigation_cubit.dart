@@ -1,20 +1,17 @@
 import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/ui/widgets/navigation/nav_item.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
+part 'navigation_cubit.freezed.dart';
 part 'navigation_state.dart';
 
 @lazySingleton
 class NavigationCubit extends SafeCubit<NavigationState> {
   NavigationCubit() : super(const NavigationState());
 
-  List<NavItem> _items = [];
-
-  List<NavItem> get visibleItems => _items;
-
   void setItems(List<NavItem> items) {
-    _items = items;
-    emit(state.copyWith(currentIndex: 0));
+    emit(state.copyWith(items: items, currentIndex: 0));
   }
 
   void onItemTapped(int index) {

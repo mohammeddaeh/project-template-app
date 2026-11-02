@@ -1,7 +1,6 @@
 ﻿import 'package:auto_route/auto_route.dart';
 import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 import 'package:app_template/ui/widgets/misc/app_text.dart';
-import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +47,7 @@ class ErrorView extends StatelessWidget {
               const SizedBox(height: 10),
               AppText(
                 _displayText,
-                style: context.bodyNutralColorsBure,
+                style: context.textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
             ],

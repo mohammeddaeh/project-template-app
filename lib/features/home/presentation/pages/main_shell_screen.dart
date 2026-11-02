@@ -83,7 +83,7 @@ class _MainShellScreenState extends State<MainShellScreen> {
           // ignore: unnecessary_statements — registers EasyLocalization dependency so .tr() labels rebuild on locale change
           context.locale;
           final cubit = context.read<NavigationCubit>();
-          final items = cubit.visibleItems;
+          final items = state.items;
 
           return PopScope(
             canPop: false,

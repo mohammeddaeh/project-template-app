@@ -1,6 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 
 import 'device_location_service.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 
 /// يُسجَّل من [PlatformServicesRegistry] تحت `AppFeatures.location` — **لا
 /// بـ`injectable`**: القالب يَعِد بصفر أثرٍ عند الإطفاء، ووسمٌ غيرُ مشروط يُسجّل
@@ -44,7 +45,8 @@ class DeviceLocationServiceImpl implements DeviceLocationService {
       );
     } on DeviceLocationException {
       rethrow;
-    } catch (_) {
+    } catch (e) {
+      LogService.warning('Location unavailable: $e', tag: 'LOCATION');
       throw const DeviceLocationException(DeviceLocationFailure.unavailable);
     }
   }

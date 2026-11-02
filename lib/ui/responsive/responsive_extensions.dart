@@ -22,10 +22,4 @@ extension ResponsiveContextX on BuildContext {
 
   /// الهامش الأفقي القياسي للصفحة.
   double get gutter => screen.gutter;
-
-  /// مسافةٌ من التصميم محمولةً إلى هذه الشاشة.
-  double rSpace(double base) => screen.space(base);
-
-  /// مقاسٌ من التصميم محمولاً إلى هذه الشاشة.
-  double rSize(double base) => screen.size(base);
 }

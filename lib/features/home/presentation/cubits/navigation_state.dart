@@ -1,15 +1,11 @@
 part of 'navigation_cubit.dart';
 
-class NavigationState {
-  const NavigationState({this.currentIndex = 0, this.showExitDialog = false});
-
-  final int currentIndex;
-  final bool showExitDialog;
-
-  NavigationState copyWith({int? currentIndex, bool? showExitDialog}) {
-    return NavigationState(
-      currentIndex: currentIndex ?? this.currentIndex,
-      showExitDialog: showExitDialog ?? this.showExitDialog,
-    );
-  }
+@freezed
+abstract class NavigationState with _$NavigationState {
+  const factory NavigationState({
+    /// التبويبات الظاهرة — بالحالة لا بجانبها، فتبدّلُها يعيد البناء بنفسه.
+    @Default(<NavItem>[]) List<NavItem> items,
+    @Default(0) int currentIndex,
+    @Default(false) bool showExitDialog,
+  }) = _NavigationState;
 }

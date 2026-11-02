@@ -274,7 +274,9 @@ class ServerFileCache implements AccountScopedStore {
       final payload = decoded is Map ? decoded['data'] : decoded;
       final raw = payload is Map ? payload['data'] : payload;
       return InlineFileData.decode(raw?.toString());
-    } catch (_) {
+    } catch (e) {
+      // A changed reply shape would otherwise read as "no file".
+      LogService.warning('Inline file reply not decoded: $e', tag: _tag);
       return null;
     }
   }

@@ -1,30 +1,10 @@
-import 'package:equatable/equatable.dart';
+part of 'settings_cubit.dart';
 
-class SettingsState extends Equatable {
-  final bool notificationsEnabled;
-  final String appVersion;
-  final bool isClearingCache;
-
-  const SettingsState({
-    this.notificationsEnabled = false,
-    this.appVersion = '-',
-    this.isClearingCache = false,
-  });
-
-  SettingsState copyWith({
-    bool? notificationsEnabled,
-    String? appVersion,
-    bool? isClearingCache,
-  }) => SettingsState(
-    notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
-    appVersion: appVersion ?? this.appVersion,
-    isClearingCache: isClearingCache ?? this.isClearingCache,
-  );
-
-  @override
-  List<Object?> get props => [
-    notificationsEnabled,
-    appVersion,
-    isClearingCache,
-  ];
+@freezed
+abstract class SettingsState with _$SettingsState {
+  const factory SettingsState({
+    @Default(false) bool notificationsEnabled,
+    @Default('-') String appVersion,
+    @Default(false) bool isClearingCache,
+  }) = _SettingsState;
 }

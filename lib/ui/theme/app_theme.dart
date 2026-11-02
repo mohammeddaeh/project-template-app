@@ -556,56 +556,7 @@ abstract final class AppThemeData {
   }
 }
 
-extension TextThemeEx on BuildContext {
-  /// Uses the theme font (Arabic or Latin family per locale).
-  String get _fontFamily =>
-      Theme.of(this).textTheme.bodyMedium?.fontFamily ??
-      AppFonts.available.first.latinFamily;
-
-  TextStyle get headLineS24W600 =>
-      Theme.of(this).textTheme.headlineLarge!.copyWith(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        fontFamily: _fontFamily,
-      );
-
-  TextStyle get labelSmallS16W400 =>
-      Theme.of(this).textTheme.headlineLarge!.copyWith(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        fontFamily: _fontFamily,
-      );
-
-  TextStyle get labelSmallS12W400 =>
-      Theme.of(this).textTheme.headlineLarge!.copyWith(
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        fontFamily: _fontFamily,
-      );
-
-  TextStyle get baseTextStyle =>
-      Theme.of(this).textTheme.bodyMedium!.copyWith(fontFamily: _fontFamily);
-
-  TextStyle get headLineMed => Theme.of(
-    this,
-  ).textTheme.headlineMedium!.copyWith(fontFamily: _fontFamily);
-
-  TextStyle get liteGrayHeadLineText =>
-      Theme.of(this).textTheme.headlineLarge!.copyWith(fontFamily: _fontFamily);
-
-  TextStyle get appBarStyle =>
-      Theme.of(this).textTheme.labelLarge!.copyWith(fontFamily: _fontFamily);
-
-  TextStyle get bodyNutralColorsBure =>
-      Theme.of(this).textTheme.bodyMedium!.copyWith(fontFamily: _fontFamily);
-
-  TextStyle get bodyPrimarys700 =>
-      Theme.of(this).textTheme.labelSmall!.copyWith(fontFamily: _fontFamily);
-}
-
 extension ThemeEx on BuildContext {
   Color get iconColor => Theme.of(this).iconTheme.color!;
   Color get cardColor => Theme.of(this).cardColor;
-  Color get dividerColor => Theme.of(this).dividerColor;
-  Color get scaffoldBackgroundColor => Theme.of(this).scaffoldBackgroundColor;
 }

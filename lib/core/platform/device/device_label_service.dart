@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 
 /// Produces the human-readable label a sign-in attaches to its session, e.g.
 /// `Samsung SM-G991B · android · v1.2.0`.
@@ -40,7 +41,8 @@ class DeviceLabelService {
       parts.add(await _deviceName());
       parts.add(Platform.isIOS ? 'ios' : 'android');
       parts.add('v${(await PackageInfo.fromPlatform()).version}');
-    } catch (_) {
+    } catch (e) {
+      LogService.warning('Device label incomplete: $e', tag: 'DEVICE');
       // A label is a convenience for a screen the user may never open.
       // Failing to build it must never cost them the ability to sign in, so
       // whatever was gathered before the failure is what gets sent — and an

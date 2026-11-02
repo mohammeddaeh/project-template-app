@@ -5,7 +5,6 @@ import 'package:app_template/modules/access_control/presentation/widgets/access_
 import 'package:app_template/modules/multi_device/presentation/widgets/devices_section.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:app_template/features/settings/presentation/cubits/settings_cubit.dart';
-import 'package:app_template/features/settings/presentation/cubits/settings_state.dart';
 import 'package:app_template/features/settings/presentation/widgets/settings_about_section.dart';
 import 'package:app_template/features/settings/presentation/widgets/settings_font_section.dart';
 import 'package:app_template/features/settings/presentation/widgets/settings_section_divider.dart';

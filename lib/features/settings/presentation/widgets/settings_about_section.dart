@@ -1,5 +1,4 @@
 import 'package:app_template/features/settings/presentation/cubits/settings_cubit.dart';
-import 'package:app_template/features/settings/presentation/cubits/settings_state.dart';
 import 'package:app_template/features/settings/presentation/widgets/settings_section_header.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';

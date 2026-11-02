@@ -11,6 +11,12 @@
 
 ## غير مُصدَر
 
+- **تنظيف**: حُذف `TextThemeEx` (أحجام خطوطٍ مكتوبةٌ باليد، و`baseTextStyle` مكرّر) · `showLoader` ·
+  `rSpace`/`rSize` · `dismissKeyboard` · `GlobalKeyExtensions` · `ThemeEx.dividerColor`/`scaffoldBackgroundColor`
+  · `AccountContextRefresher`. ⚠️ مشروعٌ يستعمل أيّاً منها يستبدله بـ`context.textTheme` · `context.screen` ·
+  `unfocus()`. `NavigationState`/`SettingsState` صارتا `@freezed` (التبويبات داخل الحالة). أربعة `catch`
+  صامتة صارت تسجّل. `pubspec`: حُذف `mockito` و`bloc_test` و`http_mock_adapter` و`cupertino_icons`، و`freezed`
+  و`flutter_native_splash` إلى `dev_dependencies`.
 - **إصلاحاتٌ تكسر المسار الرئيسي**: `setup_project --auth required|optional` لم يعد يُفشل اختباره ·
   `new_project.ps1 -Kits` (كان يحذف كل الـkits بصمت) · `template_update --to` الخاطئ يتوقّف ولا يسقط إلى
   `HEAD`، وينقل اختبارات القالب (`test/` بملفات القالب وحدها) · `in_app_updates` يجلب لقطته مرّةً بلا

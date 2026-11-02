@@ -187,6 +187,8 @@ core/
 | `ui/state/mutation_result.dart` | **لا مستهلكَ له خارج جولة المطوّر** — النمط يُغلق حين يستهلكه أول cubit طفرة بشريحة |
 | `ui/state/sync/widgets/` (`SyncUiHost` · `PendingChangesChip`) | يتراجعان لبعضهما ولا يركّبهما شيء — `sync` مطفأ أصلاً |
 | `core/platform/extensions/string_extensions.dart` | **لا يستورده أي ملف** |
+| `core/platform/storage/encryption_service.dart` (`EncryptionService` · `AesEncryptionAdapter`) | **مسجَّلٌ بالـDI ولا يحقنه شيء** — تشفيرٌ متماثل لما يُخزَّن بـ`StorageService` حين يلزم؛ والتوكن مكانُه `SecureStorageService` لا هذا |
+| `core/platform/notifications/` (`LocalNotificationsService`) | **مسجَّلٌ دائماً** (`DisabledNotificationsAdapter` حين يُطفأ `localNotifications`) **ولا يناديه شيء**: لا `initialize()` ولا ربطَ للضغطات بالقالب — يصلهما المشروع |
 | `core/foundation/extensions/num_extensions.dart` | لا مستهلكَ له خارج جولة المطوّر |
 | `core/foundation/value_objects/` | جزيرة مغلقة: الثلاثة يصدّرها الـbarrel، والـbarrel لا يستورده أحد |
 | `modules/sync/domain/sync_failure_report.dart` | **حصيلةُ إخفاقٍ بأسماء حقولها لا بنصِّ الخادم** — يكتبها منفّذُ الشريحة ويقرؤها من يعرض الطابور. مُصدَّرةٌ وبلا كاتبٍ هنا. ⚠️ **والترجمةُ عند العرض لا عند التخزين**: `last_error` يُكتب مرّةً ويُقرأ مراراً واللغةُ تتبدّل بينهما، فالمخزَّنُ **مساراتُ حقولٍ لا نثرٌ** |

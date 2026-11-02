@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:app_template/core/platform/logging/log_service.dart';
 
 /// One-shot connectivity check — no DI required, call anywhere.
 ///
@@ -22,7 +23,10 @@ abstract final class ConnectivityService {
     try {
       final results = await _connectivity.checkConnectivity();
       return !results.contains(ConnectivityResult.none);
-    } catch (_) {
+    } catch (e) {
+      // A plugin failure reads as "offline" — logged, so it is not mistaken
+      // for a real loss of network.
+      LogService.warning('Connectivity check failed: $e', tag: 'CONNECTIVITY');
       return false;
     }
   }
