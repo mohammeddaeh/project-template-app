@@ -53,9 +53,8 @@ class ActiveDevicesCubit extends SafeCubit<ActiveDevicesState> {
       case ShowError(:final message):
         emit(ActiveDevicesError(message: message));
       // Session expiry is handled centrally by the network layer — it routes to
-      // login on its own. Emitting an empty-string error here (as this cubit
-      // used to) painted a blank red state over a screen that was already being
-      // torn down.
+      // login on its own. Emitting an empty-string error here would paint a
+      // blank red state over a screen that is already being torn down.
       case NavigateToLogin():
       case Silent():
         break;

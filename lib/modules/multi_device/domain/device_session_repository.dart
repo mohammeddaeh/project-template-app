@@ -9,9 +9,9 @@ abstract interface class DeviceSessionRepository {
   /// Ends one session.
   ///
   /// Any session may end any session of the **same account** — the server
-  /// checks ownership, not seniority. The old "only the primary device may
-  /// revoke" rule was removed because it disarmed the feature in the one case
-  /// it exists for: a lost or stolen primary device.
+  /// checks ownership, not seniority. An "only the primary device may revoke"
+  /// rule would disarm the feature in the one case it exists for: a lost or
+  /// stolen primary device.
   Future<Either<Failure, void>> revokeSession(int id);
 
   /// Ends every other session, sparing the caller's own — signing yourself out

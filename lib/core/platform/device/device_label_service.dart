@@ -9,13 +9,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 ///
 /// ## Why this is not part of the multi-device module
 ///
-/// It used to be: `MultiDeviceInterceptor` rewrote the login body to add
-/// `device_info`, and that interceptor is only installed when
-/// `AppFeatures.multiDevice` is `true` — which is `false` by default. So the
-/// server stored the raw `User-Agent` for every session a default build
-/// created, and the devices screen, the moment anyone enabled it, listed
-/// `Dart/3.9 (dart:io)` three times over and could not answer the one question
-/// it exists to answer.
+/// `AppFeatures.multiDevice` is `false` by default. Gating the label on it
+/// would leave the server storing the raw `User-Agent` (`Dart/3.9 (dart:io)`)
+/// for every session, and a devices screen enabled later could not tell them
+/// apart.
 ///
 /// The label costs one platform-channel read at sign-in and is useful whether
 /// or not the client ever renders a devices list — the server-side session

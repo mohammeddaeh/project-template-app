@@ -10,7 +10,7 @@ import 'package:app_template/ui/widgets/dates/app_date_text.dart';
 /// يقرأ `context.isAr` عبر `BuildContext.locale` من `EasyLocalization`، وهذا
 /// المستودع لا يركّب `EasyLocalization` بأي اختبار (راجع التعليق بـ
 /// `test/error_boundary_test.dart`: يحتاج `SharedPreferences` عبر قناة منصّة
-/// بلا محاكاة، وتعليقٌ حقيقيّ >180 ثانية وقع فعلاً قبل هذا القرار).
+/// بلا محاكاة، فيعلّق الاختبار بلا نهاية).
 void main() {
   // مرجعٌ من مجموعة اختبارات حزمة `hijri` نفسها (نفس `hijri_date_extension_test.dart`):
   // ٢٠ مايو ٢٠٢٠ ⇔ ٢٧ رمضان ١٤٤١.

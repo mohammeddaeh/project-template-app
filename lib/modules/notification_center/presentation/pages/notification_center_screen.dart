@@ -54,8 +54,8 @@ class _NotificationCenterViewState extends State<_NotificationCenterView> {
   @override
   void initState() {
     super.initState();
-    // ضغطة «تعليم الكل مقروء» أو «مسح الكل» كانت لا تُظهر شيئاً حين يفشل
-    // الحفظ على القرص — التغيير يبدو نافذاً بالواجهة (تفاؤلياً) ثم يضيع
+    // بلا هذا الاشتراك لا تُظهر ضغطة «تعليم الكل مقروء» أو «مسح الكل» شيئاً حين
+    // يفشل الحفظ على القرص — التغيير يبدو نافذاً بالواجهة (تفاؤلياً) ثم يضيع
     // بصمتٍ عند إعادة التشغيل. راجع `NotificationCenterCubit.persistFailures`.
     _persistFailureSubscription = context
         .read<NotificationCenterCubit>()

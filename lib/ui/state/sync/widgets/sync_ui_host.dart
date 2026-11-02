@@ -103,8 +103,8 @@ class _SyncUiHostState extends State<SyncUiHost> {
 
   /// عرضُ [failure] يمرّ بـ[FailureUiMapper] لا بحقل `diagnosticMessage`
   /// مباشرةً — ذاك الحقل نصٌّ تقنيٌّ خامٌ **للتشخيص فقط** (راجع تحذير
-  /// `failure.dart` على تعريفه)، وكان يصل المستخدمَ حرفياً وبالإنجليزية غير
-  /// المترجَمة.
+  /// `failure.dart` على تعريفه)، وعرضُه يوصله المستخدمَ حرفياً وبالإنجليزية
+  /// غير المترجَمة.
   void _showFailureSnackBar(BuildContext context, Failure failure) {
     final action = FailureUiMapper.toAction(failure);
     if (action is! ShowError) return;

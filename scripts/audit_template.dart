@@ -11,8 +11,6 @@
 /// المزامنة الحرجة — صفرُ زيفٍ إيجابيٍّ ممكنٍ فيها: إمّا العلَم مفعَّلٌ وصفرُ
 /// عقودٍ مسجَّلة، أو لا.
 ///
-/// راجع `_template/roadmap.md` بند #04 للسياق الكامل.
-///
 /// تشغيل من جذر المشروع:
 ///   dart run scripts/audit_template.dart
 library;
@@ -244,7 +242,8 @@ Set<String> _projectNames() {
       .toSet();
 }
 
-/// ما يُنسخ للمشروع ويقرؤه الناس. `test/` خارجه عمداً: التواريخ هناك بيانات.
+/// ما يُنسخ للمشروع ويقرؤه الناس. `test/` خارجه عمداً: التواريخ هناك بيانات
+/// (ويُفحص لعبارات القصّة وحدها — `_phraseOnlyRoots`).
 const _shippedRoots = [
   'lib',
   'readme',
@@ -262,6 +261,22 @@ const _shippedRootFiles = ['CLAUDE.md', 'README.md'];
 /// طابعٌ زمنيّ كامل (`2026-06-21T08:00:00Z`) بمثال JSON بيانٌ لا تاريخ — يُستثنى.
 final _isoDate = RegExp(r'\b20\d\d-\d\d-\d\d\b(?!T\d)');
 
+/// عباراتٌ تحكي قصّةً بدل أن تصف الحاضر — **استشاريّة**: تُعدّ ولا تُفشل، فبعضها
+/// يرد بمعنى حاضر سليم. تُفحص بـ`test/` أيضاً، فالتعليق هناك يُقرأ كالوثيقة؛ أمّا
+/// التواريخ فبيانات اختبار هناك، فلا يُفحص التاريخ بـ`test/`.
+final _storyPhrase = RegExp(
+  [
+    'وقع فعلاً',
+    'وقع تاريخياً',
+    'حتى اكتُشف',
+    // «is used to cancel» حاضرٌ لا قصّة — فالماضي وحده.
+    r'\bused to (?:be|read|route|say|carry|throw|render|open|take|show)\b',
+    r'\bThis used\b',
+    'historical answer',
+  ].join('|'),
+);
+const _phraseOnlyRoots = ['test'];
+
 void _checkShippedHistory({required bool verbose}) {
   final names = _projectNames()..removeAll(_ownNames());
   final namePattern = RegExp(
@@ -270,7 +285,8 @@ void _checkShippedHistory({required bool verbose}) {
   );
 
   final hits = <String, List<String>>{};
-  for (final file in _shippedFiles()) {
+  final phraseHits = <String>[];
+  void scan(File file, {required bool phrasesOnly}) {
     final path = file.path.replaceAll(r'\', '/');
     final isDart = path.endsWith('.dart');
     final lines = file.readAsLinesSync();
@@ -278,11 +294,25 @@ void _checkShippedHistory({required bool verbose}) {
       final line = lines[i];
       // بالكود: التعليقات وحدها — تاريخٌ بنصٍّ حرفيّ قد يكون بياناتٍ مقصودة.
       if (isDart && !line.trimLeft().startsWith('//')) continue;
+      if (_storyPhrase.hasMatch(line)) {
+        phraseHits.add('$path:${i + 1}: ${line.trim()}');
+      }
+      if (phrasesOnly) continue;
       if (_isoDate.hasMatch(line) ||
           (names.isNotEmpty && namePattern.hasMatch(line))) {
         hits.putIfAbsent(path, () => []).add('${i + 1}: ${line.trim()}');
       }
     }
+  }
+
+  for (final file in _shippedFiles()) {
+    scan(file, phrasesOnly: false);
+  }
+  for (final file in _shippedFiles(
+    roots: _phraseOnlyRoots,
+    rootFiles: const [],
+  )) {
+    scan(file, phrasesOnly: true);
   }
 
   final sorted = hits.entries.toList()
@@ -302,15 +332,27 @@ void _checkShippedHistory({required bool verbose}) {
     '  $total سطراً بـ${hits.length} ملفاً فيه تاريخٌ أو اسمُ مشروع'
     '${verbose ? '' : ' (--verbose للأسطر)'}',
   );
+  if (verbose) {
+    for (final hit in phraseHits) {
+      print('        ${hit.length > 140 ? '${hit.substring(0, 140)}…' : hit}');
+    }
+  }
+  print(
+    '  ${phraseHits.length} سطراً بعبارة قصّة (استشاريّ، لا يُفشل)'
+    '${verbose ? '' : ' (--verbose للأسطر)'}',
+  );
   print('  (الوثيقة تصف الحاضر — التاريخ بـgit و_template/. راجع CLAUDE.md)');
 }
 
-Iterable<File> _shippedFiles() sync* {
-  for (final name in _shippedRootFiles) {
+Iterable<File> _shippedFiles({
+  List<String> roots = _shippedRoots,
+  List<String> rootFiles = _shippedRootFiles,
+}) sync* {
+  for (final name in rootFiles) {
     final file = File(name);
     if (file.existsSync()) yield file;
   }
-  for (final root in _shippedRoots) {
+  for (final root in roots) {
     final dir = Directory(root);
     if (!dir.existsSync()) continue;
     for (final entity in dir.listSync(recursive: true)) {

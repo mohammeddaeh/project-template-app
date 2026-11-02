@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-/// مدّة وcurve الحركة — صفر توكن لها قبل هذا الملف؛ كل micro-interaction
-/// كانت تُبنى بقيمة مكتوبة يدوياً بلا قرار موحَّد خلفها.
+/// مدّة وcurve الحركة — قرارٌ موحَّد لكل micro-interaction بدل قيمةٍ مكتوبة
+/// يدوياً بكل ودجة.
 abstract final class AppMotion {
   AppMotion._();
 

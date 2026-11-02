@@ -15,8 +15,7 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 /// - HTTP 4xx (except 408) — client errors, retrying is pointless
 /// - **HTTP 500 / 501 / 505** — a defect, not a wobble. The same request in one
 ///   second reproduces the same 500, so retrying buys nothing and costs the
-///   server three times the work at the moment it is already failing. This used
-///   to retry every 5xx alike.
+///   server three times the work at the moment it is already failing.
 /// - HTTP 401 — handled by [TokenRefreshInterceptor] / [AuthInterceptor]
 /// - Cancelled requests ([DioExceptionType.cancel])
 ///

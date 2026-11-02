@@ -113,8 +113,7 @@ abstract final class FailureUiMapper {
     // ── Server response failures ─────────────────────────────────────────
 
     // The wait the server asked for is appended when it sent one — it is
-    // the only actionable fact in a rate-limit refusal, and it used to be
-    // parsed and then dropped on the floor.
+    // the only actionable fact in a rate-limit refusal.
     //
     // `canRetry: false` on purpose: retrying immediately is precisely the
     // behaviour that produced the 429, and a retry button here invites the

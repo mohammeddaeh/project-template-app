@@ -4,6 +4,6 @@ abstract class AppSettings {
   static const bool enableLogging = !kReleaseMode;
 
   /// Keep Bloc observer logging off by default to avoid noisy output from
-  /// normal state transitions such as splash/refresh cubits.
+  /// normal state transitions such as refresh cubits.
   static const bool enableBlocObserverLogger = false;
 }

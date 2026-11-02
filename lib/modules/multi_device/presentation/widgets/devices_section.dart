@@ -12,7 +12,7 @@ import 'package:app_template/ui/widgets/widgets.dart';
 /// `DevicesSection()` and knows nothing about `ActiveDevicesCubit`, provides no
 /// `BlocProvider`, and imports nothing from the module's `domain/` or `data/`.
 /// That is the project's stated test for a legitimate cross-boundary widget
-/// (`lib/Features/CLAUDE.md`).
+/// (`lib/features/CLAUDE.md`).
 ///
 /// ## Why the flag is checked HERE and not by the host
 ///

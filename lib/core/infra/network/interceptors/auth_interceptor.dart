@@ -29,19 +29,12 @@ class AuthInterceptor extends Interceptor {
 
     // The reader's language goes on **every** request, signed in or not.
     //
-    // These two used to be set together inside `if (token != null)`, so an
-    // anonymous request carried no `Accept-language` at all — and the server
-    // defaults to Arabic (`core/middleware/request-context.ts`). The result:
-    // every refusal a user meets *before* they have a session came back in the
-    // wrong language. Wrong password, account pending approval, rejected,
-    // suspended, disabled, rate-limited, duplicate email on register, the
-    // whole forgot-password flow — the entire set of messages this template
-    // went to the trouble of splitting into named states, delivered in a
-    // language the user may not read, on the one screen where they have no
-    // other clue what went wrong.
-    //
-    // The backend comment asserting "the Flutter app sends this on every
-    // request" was written against this file and was never true of it.
+    // Not inside `if (token != null)`: the server defaults to Arabic
+    // (`core/middleware/request-context.ts`), so an anonymous request without
+    // it gets every pre-session refusal — wrong password, pending approval,
+    // suspended, rate-limited, duplicate email, the forgot-password flow — in
+    // a language the user may not read. The backend relies on this header
+    // being present on every request.
     options.headers['Accept-language'] = _localeProvider.languageCode;
 
     if (token != null) {

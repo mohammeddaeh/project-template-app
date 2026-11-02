@@ -17,10 +17,9 @@ enum AuthEvent {
   ///
   /// ## The distinction this event exists to make
   ///
-  /// [sessionExpired] used to cover both cases, because the refresh path caught
-  /// every exception in one `catch` and treated them alike. But "the server
-  /// refused this credential" and "this request never arrived" are opposite
-  /// facts: the first is terminal, the second clears the moment the signal does.
+  /// "The server refused this credential" ([sessionExpired]) and "this request
+  /// never arrived" (this event) are opposite facts: the first is terminal, the
+  /// second clears the moment the signal does.
   ///
   /// Conflating them signs a user out for a dropped packet. On a phone that is
   /// a nuisance; on a field device holding a queue of unsynced work it is worse

@@ -3,7 +3,7 @@ part of 'export_cubit.dart';
 /// Hand-written rather than `@freezed`, matching `ActiveDevicesState` and for
 /// the same documented reason: `lib/modules/` ships disabled by default and
 /// must not force a code-generation step on a project that never enables it.
-/// States in `lib/Features/` stay freezed.
+/// States in `lib/features/` stay freezed.
 sealed class ExportState {
   const ExportState();
 }

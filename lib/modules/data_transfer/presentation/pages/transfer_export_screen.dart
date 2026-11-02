@@ -66,11 +66,10 @@ class TransferExportScreen extends StatelessWidget {
 
   /// Offers the finished file: preview, save, share, or open.
   ///
-  /// It used to open the OS share sheet directly. The file lives in the app's
-  /// **temporary** directory, so sharing was the only way it survived at all —
-  /// and anyone who dismissed that sheet lost their export to the next cache
-  /// sweep with no way back but re-running it. Now "save to device" is a real
-  /// option, and preview lets them check the columns before doing either.
+  /// Not the OS share sheet directly: the file lives in the app's **temporary**
+  /// directory, so with sharing as the only outcome, anyone who dismissed that
+  /// sheet would lose their export to the next cache sweep. "Save to device" is
+  /// a real option, and preview lets them check the columns before doing either.
   Future<void> _deliver(BuildContext context, File file) async {
     final cubit = context.read<ExportCubit>();
     await TransferFileSheet.show(

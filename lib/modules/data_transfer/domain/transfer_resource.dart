@@ -46,11 +46,11 @@ class TransferResource extends Equatable {
 
   /// Filter controls the export screen renders, and the query keys it sends.
   ///
-  /// **Declared by the server, not guessed here.** The export screen used to
-  /// ship a hardcoded `?q=` box; the first real application named its filter
-  /// `search`, so that control sent a parameter the schema ignored and filtered
-  /// nothing — a field that looks like it works, does nothing, and reports no
-  /// error. Empty means no filter section at all.
+  /// **Declared by the server, not guessed here.** A hardcoded `?q=` box breaks
+  /// the moment an application names its filter `search`: the control sends a
+  /// parameter the schema ignores and filters nothing — a field that looks like
+  /// it works, does nothing, and reports no error. Empty means no filter
+  /// section at all.
   final List<TransferFilter> filters;
 
   /// Columns the importer will accept. The rest (`id`, `created_at`) are

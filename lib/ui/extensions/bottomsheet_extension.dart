@@ -87,8 +87,7 @@ extension ShowAppBottomSheet on BuildContext {
       showDragHandle: false,
       useSafeArea: true,
       // الارتفاع يُقيَّد داخل [BaseBottomSheet] — قيدٌ يُبنى هنا مرة واحدة لا
-      // يرى الكيبورد، ولا ينكمش معه. (وكان `double.infinity` مع `ratio >= 1.0`
-      // يعني ورقة بلا سقف إطلاقاً.)
+      // يرى الكيبورد، ولا ينكمش معه.
       builder: (_) => sheet,
     );
   }

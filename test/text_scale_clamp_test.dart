@@ -5,12 +5,12 @@ import 'package:app_template/ui/responsive/responsive.dart';
 /// The app-wide text scale clamp has a **ceiling only** — a floor crashes
 /// Material's date picker.
 ///
-/// ## What broke, and why nobody sees it
+/// ## What a floor breaks, and why nobody sees it
 ///
-/// The clamp used to be `[0.9, 1.3]`. `_DatePickerHeader` derives its own
-/// ceiling from the *current* scale (`min(currentScale, 1.05)`) and clamps
-/// again on top of ours. On a phone whose system font is shrunk, our floor
-/// raises the scale to 0.9, Material then asks for a ceiling of 0.9, and
+/// `_DatePickerHeader` derives its own ceiling from the *current* scale
+/// (`min(currentScale, 1.05)`) and clamps again on top of ours. With a floor
+/// of, say, 0.9 on a phone whose system font is shrunk, our floor raises the
+/// scale to 0.9, Material then asks for a ceiling of 0.9, and
 /// `_ClampedTextScaler` asserts `maxScale > minScale` **strictly**:
 ///
 /// ```text

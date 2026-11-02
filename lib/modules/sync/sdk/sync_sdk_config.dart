@@ -1,7 +1,7 @@
 import '../config/sync_mode.dart';
 
 class SyncSdkConfig {
-  /// Five minutes — the interval `SETUP.md` §Step 2 has always documented.
+  /// Five minutes — the interval `SETUP.md` §Step 2 documents.
   ///
   /// It lives here rather than in `SyncController` because the controller is
   /// the *consumer* of this setting: it reads whatever `SyncSettingsStore`
@@ -28,14 +28,13 @@ class SyncSdkConfig {
   ///
   /// ## Why the default is a number and not `null`
   ///
-  /// It used to be `null`, and nothing about that announced itself.
   /// `ModulesBootstrap` starts the module with `const SyncSdkConfig(enabled:
-  /// true)`, so the omitted argument stored `null`, and
-  /// `SyncController._setupPeriodic` returned at its `seconds == null` guard
-  /// **before reaching `Timer.periodic`**. `init()` still completed, the
-  /// connectivity listener was still bound, no exception was thrown and no
-  /// warning was logged — the module simply never synced on its own. Sync
-  /// happened only on a connectivity change or a manual trigger.
+  /// true)`, so a `null` default would reach `SyncController._setupPeriodic`,
+  /// which returns at its `seconds == null` guard **before reaching
+  /// `Timer.periodic`**. `init()` would still complete, the connectivity
+  /// listener would still be bound, nothing would throw or log — the module
+  /// would simply never sync on its own, only on a connectivity change or a
+  /// manual trigger.
   ///
   /// A default that silently disables the feature it configures is the wrong
   /// default. The opt-out stays available; it just has to be asked for.

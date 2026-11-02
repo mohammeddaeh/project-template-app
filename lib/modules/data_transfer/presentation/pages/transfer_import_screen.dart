@@ -49,9 +49,8 @@ class TransferImportScreen extends StatelessWidget {
             listener: (context, state) {
               // The template is offered, not pushed at the user: preview it,
               // save it, or share it. Opening the OS share sheet automatically
-              // — which this used to do — made "share" the only outcome, and
-              // the file lived in a temp directory that the next cache sweep
-              // would take.
+              // would make "share" the only outcome, and the file lives in a
+              // temp directory that the next cache sweep takes.
               if (state is ImportTemplateReady) {
                 TransferFileSheet.show(
                   context,
@@ -168,7 +167,7 @@ class _PickStep extends StatelessWidget {
 
   /// Asks which format, then downloads.
   ///
-  /// It used to take `importFormats.first` silently. CSV and XLSX are not
+  /// Never `importFormats.first` silently: CSV and XLSX are not
   /// interchangeable for the person about to fill the file in — one opens in a
   /// text editor, the other keeps dates as dates — so the choice is theirs. The
   /// sheet skips itself when the server offers only one, so the extra tap
@@ -529,8 +528,7 @@ class _ColumnRow extends StatelessWidget {
                 if (hint != null && hint.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   // The server's own explanation of what this column means —
-                  // not a sample value, which is what used to be shown here and
-                  // answered a question nobody was asking.
+                  // not a sample value (that is the example line below).
                   Text(hint, style: context.textTheme.bodySmall),
                 ],
                 if (column.example != null && column.example!.isNotEmpty) ...[

@@ -10,16 +10,10 @@ import 'package:app_template/resources/locale_keys.g.dart';
 /// The Home tab — a **deliberate placeholder**, and the first screen a signed-in
 /// user of a fresh project sees.
 ///
-/// It used to be `Text('Home — TODO')`: a hardcoded English string, on the
-/// landing screen, in a template whose own `lib/CLAUDE.md` bans hardcoded
-/// strings in capital letters. Every project generated from it inherited a
-/// rule-breaking example at the most-read location in the app, which is the
-/// worst possible place for one — a reader copies what the codebase does, not
-/// what its documentation says.
-///
-/// It stays a placeholder, because a template cannot know what an application's
-/// home screen is. It just does it correctly: localized, themed, built from the
-/// widget barrel, and pointing at the reference feature rather than at nothing.
+/// It is a placeholder because a template cannot know what an application's
+/// home screen is — but a correct one: localized, themed and built from the
+/// widget barrel. This is the most-read screen in the app, and a reader copies
+/// what the codebase does, not what its documentation says.
 ///
 /// **Replace the body wholesale** when this project has a real home.
 ///

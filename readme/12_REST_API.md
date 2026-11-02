@@ -50,7 +50,7 @@ Exception
 
 ## 1b) أعطال جهة الخادم — من الثِّقَل إلى الإغلاق
 
-**الخطأ الخادميّ ليس نوعاً واحداً، ولا يُقرأ للمستخدم بجملة واحدة.** الفارق بين «مشغول الآن» و«معطوب» هو الفارق بين زرِّ إعادة محاولة يعمل وزرٍّ لا ينجح أبداً — وقبل هذا التقسيم كان الاثنان يصلان الشاشة متطابقَين، بلا إعادة محاولة أصلاً.
+**الخطأ الخادميّ ليس نوعاً واحداً، ولا يُقرأ للمستخدم بجملة واحدة.** الفارق بين «مشغول الآن» و«معطوب» هو الفارق بين زرِّ إعادة محاولة يعمل وزرٍّ لا ينجح أبداً — ودمجُهما يُوصلهما الشاشةَ متطابقَين، بلا إعادة محاولة أصلاً.
 
 | ما يحدث فعلاً | `Failure` | يُعاد تلقائياً؟ | `canRetry` بالواجهة |
 |---|---|---|---|
@@ -62,11 +62,11 @@ Exception
 
 **ثلاث قواعد تحمل هذا الجدول:**
 
-1. **٥٠٠ لا يُعاد.** الطلب نفسه بعد ثانية يُنتج الخطأ نفسه، فالإعادة تضاعف الحمل على خادمٍ يفشل أصلاً وتؤخّر رسالة المستخدم سبع ثوانٍ بلا مقابل. `RetryInterceptor` كان يعيد **كل** ٥xx.
-2. **`Retry-After` يتقدّم على منحنى التراجع.** خادم يقول «عد بعد ٦٠ ثانية» فيعود العميل بعد ١ ثم ٢ ثم ٤ هو عميلٌ يحوّل الضغط إلى انقطاع. ويُقرأ **بصيغتيه** — الثواني والتاريخ — إذ كانت الثانية تسقط إلى `null` بصمت. وانتظارٌ يتجاوز `maxHonouredRetryAfter` (١٠ث) **لا يُنام عليه**: تظهر الرسالة فوراً بدل تجميد الطلب خلف مؤشّر تحميل.
+1. **٥٠٠ لا يُعاد.** الطلب نفسه بعد ثانية يُنتج الخطأ نفسه، فالإعادة تضاعف الحمل على خادمٍ يفشل أصلاً وتؤخّر رسالة المستخدم سبع ثوانٍ بلا مقابل. فلا يعيد `RetryInterceptor` **كل** ٥xx.
+2. **`Retry-After` يتقدّم على منحنى التراجع.** خادم يقول «عد بعد ٦٠ ثانية» فيعود العميل بعد ١ ثم ٢ ثم ٤ هو عميلٌ يحوّل الضغط إلى انقطاع. ويُقرأ **بصيغتيه** — الثواني والتاريخ — وقراءةُ الأولى وحدها تُسقط التاريخ إلى `null` بصمت. وانتظارٌ يتجاوز `maxHonouredRetryAfter` (١٠ث) **لا يُنام عليه**: تظهر الرسالة فوراً بدل تجميد الطلب خلف مؤشّر تحميل.
 3. **«لا يوجد إنترنت» تهمة، ولا تُقال إلا بدليل.** `connectionError` يصل من Dio متطابقاً في الحالتين، فيُسأل `NetworkStateMonitor`: الجهاز متصل ⇒ الخادم هو المغلق. وإن كانت الحالة `unknown` تبقى الإجابة القديمة — ادّعاءٌ غير مُثبَت على الخادم أسوأ من رسالة مبهمة.
 
-**ومن جهة الباك**: `ServiceUnavailableError` (٥٠٣، مع `Retry-After` اختياري) للصيانة والتفريغ المتعمَّد، **و`error-handler.ts` يترجم سقوط أي تبعية إلى ٥٠٣ لا ٥٠٠** — قاعدة البيانات تُعاد تشغيلها أو ينفد مجمّع اتصالاتها فيصل الخطأ كخطأ مقبس لا كـ`ApiError`، وتسميته «خطأً داخلياً» تُخبر كل مستخدم أن التطبيق معطوب في اللحظة التي كان انتظار عشر ثوانٍ يكفي فيها. تُطابَق بـ`code` لا بنصّ الرسالة.
+**ومن جهة الباك**: `ServiceUnavailableError` (٥٠٣، مع `Retry-After` اختياري) للصيانة والتفريغ المتعمَّد، **و`error-handler.ts` يترجم سقوط أي تبعية إلى ٥٠٣ لا ٥٠٠** — قاعدة البيانات تُعاد تشغيلها أو ينفد مجمّع اتصالاتها فيصل الخطأ كخطأ مقبس لا كـ`ApiError`، وتسميته «خطأً داخلياً» تُخبر كل مستخدم أن التطبيق معطوب في اللحظة التي يكفي فيها انتظار عشر ثوانٍ. تُطابَق بـ`code` لا بنصّ الرسالة.
 
 ## 2) Add a New Endpoint
 
@@ -264,8 +264,7 @@ res.fold((failure) {
 ## 8) Rules
 
 - Do not put feature models or `*_api_service.dart` in `core/`.
-- Do not throw raw `DioException` to UI — use `Failure`.
-- Do not use `ErrorModel` — removed; use `Failure` + `FailureUiMapper`.
+- Do not throw raw `DioException` to UI — use `Failure` + `FailureUiMapper`.
 
 ## 9) Quick Checklist
 
@@ -302,7 +301,6 @@ import 'package:app_template/core/failure/failure.dart';
 - Manual try/catch in repository instead of `handle()`
 - Calling DataSource from Cubit directly — must go through UseCase + Repository
 - Forgetting `build_runner` after changes to `*_api_service.dart`
-- Using `ErrorModel` (removed — use `Failure` from `core/foundation/errors/`)
 - Registering repository as concrete type — use `@LazySingleton(as: XRepository)` (not `@Singleton`)
 - Annotating `*ApiService` with `@injectable` directly — register it in `injection_module.dart` instead
 - Using `Env().config.baseUrl` — use `Env.baseUrl` (abstract final class, لا instantiation)

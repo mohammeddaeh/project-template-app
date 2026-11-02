@@ -23,10 +23,10 @@ import 'package:app_template/ui/widgets/widgets.dart';
 ///
 /// ## Why the fields are the fields they are
 ///
-/// Six rows, and they are the six `WireAccount` carries. This screen used to
-/// render phone and address off `AuthUser` fields no endpoint has ever sent, so
-/// both rows read "—" on every account forever. Adding a row here means adding
-/// the column server-side first — see the doc on [AuthUser].
+/// Six rows, and they are the six `WireAccount` carries. A row for a field the
+/// server does not send (phone, address) would read "—" on every account
+/// forever. Adding a row here means adding the column server-side first — see
+/// the doc on [AuthUser].
 ///
 /// ## Why an empty state exists at all
 ///

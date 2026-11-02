@@ -47,8 +47,8 @@ void main() {
   });
 
   test('labels come from translation keys, never hard-coded English', () {
-    // `AppThemeMode.label` كانت تردّ `'Light'` و`'Dark'` و`'System'` **وتتجاهل
-    // `context`** — نصُّ واجهةٍ مكتوبٌ بالكود (R10)، يظهر إنكليزياً بواجهةٍ عربية.
+    // `AppThemeMode.label` لا تردّ `'Light'`/`'Dark'`/`'System'` متجاهلةً
+    // `context` — ذلك نصُّ واجهةٍ مكتوبٌ بالكود (R10)، يظهر إنكليزياً بواجهةٍ عربية.
     final modes = File('lib/ui/theme/app_theme_mode.dart').readAsStringSync();
 
     expect(src, contains('LocaleKeys.themeSystem'));
@@ -57,9 +57,8 @@ void main() {
   });
 
   test('one switcher exists, not three', () {
-    // كان بالقالب ثلاثُ نسخٍ من قرارِ تصميمٍ واحد: `ThemeModeSelector` بلا
-    // مستهلك، وكتلةٌ تبني `ListTile` بيدها بشاشة الإعدادات، وهذه. وتُشدَّد
-    // إحداها يوماً ولا تُشدَّد الأخريان (R34).
+    // قرارُ تصميمٍ واحد بنسخةٍ واحدة: نسختان منه (مُبدِّلٌ ثانٍ، أو `ListTile`
+    // مبنيّةٌ باليد بشاشة الإعدادات) تُشدَّد إحداهما يوماً ولا تُشدَّد الأخرى (R34).
     final modes = File('lib/ui/theme/app_theme_mode.dart').readAsStringSync();
     expect(modes.contains('class ThemeModeSelector'), isFalse);
 

@@ -11,13 +11,10 @@ import 'package:app_template/ui/widgets/states/app_state_widget.dart';
 ///
 /// ## Why this exists
 ///
-/// Every list in this app used to render every failure the same way: a red
-/// `ErrorStateWidget`. So "the server rejected this" and "your phone has no
-/// network" produced the same panel, with the same icon, offering the same
-/// retry — and the one thing the reader could have acted on (turn the wifi
-/// back on) was the one thing the screen did not say. `lib/CLAUDE.md` has
-/// required `NoInternetWidget` for the offline case since the widget was
-/// written; nothing enforced it, so no list obeyed it.
+/// One red `ErrorStateWidget` for every failure would make "the server rejected
+/// this" and "your phone has no network" the same panel with the same retry —
+/// hiding the one thing the reader can act on (turn the wifi back on). The
+/// offline case gets its own panel (`AppStateType.noInternet`) and wording.
 ///
 /// Losing the network mid-scroll is the common case, not the exotic one, and
 /// it is the only failure where the reader — not the server, not the app — is

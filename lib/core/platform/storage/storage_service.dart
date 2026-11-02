@@ -63,8 +63,8 @@ abstract interface class StorageService {
   ///
   /// ⚠️ This is **not** a way to clear a subset. A caller that owns a prefixed
   /// namespace deletes its own keys via [keys] + [delete]; reaching for
-  /// [clear] because it is shorter signs the user out of their own settings.
-  /// `RequestCacheInterceptor.invalidateAll` used to do exactly that.
+  /// [clear] because it is shorter signs the user out of their own settings —
+  /// `RequestCacheInterceptor.invalidateAll` deletes by prefix for this reason.
   Future<void> clear();
 
   /// Returns `true` if [key] exists in the store.

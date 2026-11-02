@@ -5,7 +5,7 @@ part of 'active_devices_cubit.dart';
 ///
 /// `lib/modules/` is optional infrastructure that ships disabled by default, so
 /// it must not force a code-generation step on a project that never turns it
-/// on. Every other state in `lib/Features/` stays freezed.
+/// on. Every state in `lib/features/` stays freezed.
 sealed class ActiveDevicesState {
   const ActiveDevicesState();
 }

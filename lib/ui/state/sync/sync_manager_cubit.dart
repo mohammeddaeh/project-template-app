@@ -51,10 +51,8 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
   /// Triggers a manual sync push cycle and updates UI state.
   ///
   /// A refusal (`SyncBlockReason`) emits [SyncBlocked], never [SyncSuccess] —
-  /// `triggerManualSync` used to return `void`, so a blocked cycle (no
-  /// network, no session, waiting for wifi) and a completed one were
-  /// indistinguishable here: the badge said "up to date" while nothing had
-  /// run.
+  /// otherwise a blocked cycle (no network, no session, waiting for wifi) would
+  /// show "up to date" while nothing had run.
   Future<void> triggerSync() async {
     if (state is SyncRunning) return;
     emit(const SyncRunning());
@@ -75,7 +73,7 @@ class SyncManagerCubit extends SafeCubit<SyncManagerState> {
       );
       // النصّ الخام يبقى بالسطر أعلاه (للتشخيص) فقط — `UnknownFailure.message`
       // هو ما يعرضه `FailureUiMapper` حرفياً للمستخدم حين لا يكون فارغاً، فتمريرُ
-      // `e.toString()` هنا كان يسرّب استثناءً تقنياً خاماً غير مترجَم للواجهة.
+      // `e.toString()` هنا يسرّب استثناءً تقنياً خاماً غير مترجَم للواجهة.
       emit(const SyncFailedState(failure: UnknownFailure()));
     }
   }

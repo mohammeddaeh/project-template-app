@@ -8,12 +8,15 @@ import 'notification_tap_event.dart';
 /// • [adapters/fln_notifications_adapter.dart]  flutter_local_notifications
 /// • Add a new adapter to swap libraries — no other code changes required.
 ///
-/// ─── Setup (main.dart) ───────────────────────────────────────────────────
+/// The template calls neither of the two snippets below — a project that
+/// enables notifications adds them itself.
+///
+/// ─── Setup (the project calls it, e.g. from main.dart) ───────────────────
 /// ```dart
 /// await getIt<LocalNotificationsService>().initialize();
 /// ```
 ///
-/// ─── Tap handling (app.dart) ─────────────────────────────────────────────
+/// ─── Tap handling (the project wires it, e.g. in app.dart) ───────────────
 /// ```dart
 /// getIt<LocalNotificationsService>().onTap.listen((event) {
 ///   final data = jsonDecode(event.data ?? '{}');

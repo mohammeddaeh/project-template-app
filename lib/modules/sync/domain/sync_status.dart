@@ -82,16 +82,15 @@ enum SyncConflictStrategy {
   /// Keep the local content and make it win — by **rebasing onto the server's
   /// current version**, not by asking the server to ignore its own rules.
   ///
-  /// ## What this used to say, and why it could never work
+  /// ## Why not a force-override header
   ///
-  /// «Re-push local version with `X-Force-Override` header. Backend must
-  /// support this header.» No backend in this project ever did, and the
-  /// resulting path was a closed loop: 409 → re-queue unchanged → the same
-  /// stale base version → 409 → … until `max_retries` marked the job `failed`.
-  /// A strategy named "the client wins" ended with the client losing, five
-  /// attempts later, silently.
+  /// Re-pushing the local version with an `X-Force-Override` header needs a
+  /// server that honours it, and the backend does not. Without it the path is
+  /// a closed loop: 409 → re-queue unchanged → the same stale base version →
+  /// 409 → … until `max_retries` marks the job `failed` — "the client wins"
+  /// ending with the client losing, silently.
   ///
-  /// ## What it does now
+  /// ## What it does
   ///
   /// The 409 carries `server_version`. The resolver takes the version number
   /// from it and stamps it onto the queued payload, leaving the **content**

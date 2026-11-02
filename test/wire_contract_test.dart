@@ -44,8 +44,8 @@ import 'package:app_template/modules/multi_device/data/models/device_session_mod
 /// fails here (or the reverse) is a real disagreement, not a stale fixture.
 ///
 /// **When a payload changes, edit the fixture first.** A green suite against a
-/// fixture nobody updated is exactly the reassurance that let the original
-/// defect ship.
+/// fixture nobody updated is false reassurance: it passes while the real
+/// payload has moved on.
 Map<String, dynamic> _fixture(String name) =>
     jsonDecode(File('test/fixtures/wire/$name.json').readAsStringSync())
         as Map<String, dynamic>;
@@ -74,7 +74,7 @@ void main() {
     test('token and session_id both survive the round trip', () {
       final entity = LoginModel.fromJson(json).toEntity();
       expect(entity.token, isNotEmpty);
-      // `session_id` was parsed and discarded before this test existed.
+      // `session_id` must reach the entity, not be parsed and dropped.
       expect(entity.sessionId, 108);
     });
 
@@ -106,10 +106,9 @@ void main() {
 
     test('AuthUserModel consumes every key the server sends, and expects no '
         'others', () {
-      // The exhaustive half of the contract. `AuthUser` used to declare eight
-      // fields — first_name, last_name, phone, image, address, is_admin,
-      // mfa_enabled, rejection_reason — that no response has ever carried, so
-      // every one of them read as empty on every account forever.
+      // The exhaustive half of the contract. A field the model declares but
+      // no response carries reads as empty on every account, silently — so
+      // the key sets must match exactly in both directions.
       expect(
         json.keys.toSet(),
         {
@@ -208,9 +207,8 @@ void main() {
         'max_export_rows',
         'supports_import',
         'columns',
-        // Added after the export screen was found shipping a hardcoded `?q=`
-        // box: the first application that named its filter `search` got a
-        // control that sent an ignored parameter and filtered nothing.
+        // The export screen builds its filter controls from this list; a
+        // hardcoded parameter name would send a filter the resource ignores.
         'filters',
       });
     });

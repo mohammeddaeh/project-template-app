@@ -127,34 +127,6 @@ class _AppState extends State<App> {
     super.dispose();
   }
 
-  /// A dead session sends the user to sign-in, and nowhere else.
-  ///
-  /// This used to route to `SplashRoute` with a comment explaining that no auth
-  /// feature existed yet. One does now — and bouncing through splash re-ran the
-  /// token check that had just failed, which on a slow disk read showed the
-  /// logo for two seconds before landing on the same screen this goes to
-  /// directly.
-  ///
-  /// `replaceAll` rather than `push`: the stack behind an expired session is
-  /// screens that will refuse to load, and leaving them there means a back
-  /// gesture returns to one.
-  /// **Only a dead session sends anyone to sign in.**
-  ///
-  /// Switched exhaustively rather than acting on arrival, because this bus now
-  /// carries an event that must NOT navigate. A handler that navigates for any
-  /// event turns the first 403 over one missing permission into a sign-out in
-  /// the middle of a task. A refusal is not
-  /// an authentication failure.
-  ///
-  /// The exhaustive form is the guard: a future event added to the bus becomes
-  /// a compile error here rather than a silent sign-out.
-  ///
-  /// **And it says why.** This used to navigate and nothing else: a user
-  /// mid-task was dropped onto the sign-in screen with no explanation, which
-  /// reads as the app crashing and losing their work — the two states that
-  /// most look like a bug are the two the app knows the exact cause of. The
-  /// keys existed (`sessionRevoked` was written the day the multi-device
-  /// module landed) and simply had no call site.
   /// وجهةُ [App.startAt] كمسار.
   ///
   /// والمطابقةُ **شاملة** بقصد: وجهةٌ جديدة تصير خطأَ ترجمةٍ هنا، لا سقوطاً
@@ -165,6 +137,20 @@ class _AppState extends State<App> {
     StartupDestination.shell => const MainShellRoute(),
   };
 
+  /// **Only a dead session sends anyone to sign in** — directly, with no
+  /// intermediate screen.
+  ///
+  /// Switched exhaustively because the bus carries events that must NOT
+  /// navigate: a handler that navigates on any event turns the first 403 over
+  /// one missing permission into a sign-out mid-task. A refusal is not an
+  /// authentication failure. A new event on the bus becomes a compile error
+  /// here rather than a silent sign-out.
+  ///
+  /// `replaceAll` rather than `push`: the stack behind an expired session is
+  /// screens that will refuse to load, and a back gesture would return to one.
+  ///
+  /// **And it says why** ([_announce]): a user dropped onto sign-in with no
+  /// explanation reads it as a crash that lost their work.
   void _handleAuthEvent(AuthEvent event) {
     final String reasonKey;
 
@@ -183,8 +169,8 @@ class _AppState extends State<App> {
       case AuthEvent.sessionRefreshDeferred:
         // A refresh that never reached a server. The session is untouched and
         // the user is mid-task — navigating here would sign them out for a
-        // dropped packet, which is precisely the defect this event was split
-        // out of. The offline banner already tells them what they need.
+        // dropped packet. The offline banner already tells them what they
+        // need.
         return;
     }
 
@@ -249,7 +235,7 @@ class _AppState extends State<App> {
               //
               // `deepLinkBuilder` يُنادى بكل رسالة رابطٍ من النظام — إقلاعاً
               // بارداً عادياً، أو رابطاً حقيقياً عند الإقلاع أو والتطبيق يعمل
-              // أصلاً — لا مرّة واحدة فقط كما كان يُفترض سابقاً. القرار نفسه
+              // أصلاً — لا مرّة واحدة فقط. القرار نفسه
               // بـ`resolveDeepLink` (`routes/deep_link_resolver.dart`) كي يبقى
               // قابلاً للاختبار بمعزل عن هذه الشجرة. و`AutoRoute(initial: true)`
               // **يُحذف من الموجّه** لأنه يفوز على قرار الإقلاع العادي؛ راجع
@@ -289,7 +275,7 @@ class _AppState extends State<App> {
                   child: ResponsiveScope(
                     child: FlavorBanner(
                       // طبقاتُ الموديولات — كلٌّ يسجّل نفسه بـ[AppOverlays]،
-                      // فلا يستورد هذا الملف أيّاً منها.
+                      // فلا يستورد هذا الملف أيّاً من طبقاتها.
                       child: AppOverlayHost(
                         navigatorKey: _router.navigatorKey,
                         child: _ConnectivityLayer(
@@ -310,10 +296,8 @@ class _AppState extends State<App> {
 
 /// Mounts the app-wide offline signal over every route.
 ///
-/// [ConnectivityOverlay] and its three widgets were written, documented, and
-/// wired to a registered [ConnectivityCubit] — and then mounted nowhere. So the
-/// app's answer to "the network stopped" was whatever each individual screen
-/// happened to do about it. It is mounted once, here.
+/// [ConnectivityOverlay] is mounted once, here, so "the network stopped" has
+/// one app-wide answer instead of whatever each screen does about it.
 ///
 /// It sits inside `MaterialApp.builder` so it covers every route including
 /// dialogs and sheets, and under `Positioned.fill` because the overlay's own

@@ -24,8 +24,7 @@ class DioFailureMapper implements FailureMapper {
 
   /// Null until the composition root wires it — see
   /// [FailureMapperRegistry.useNetworkStateProbe]. When absent, a connection
-  /// error keeps its historical meaning ([NoInternetFailure]) rather than
-  /// guessing, so a project that never wires it loses nothing it had.
+  /// error maps to [NoInternetFailure] rather than guessing.
   final NetworkStateProbe? _networkState;
 
   @override
@@ -95,19 +94,17 @@ class DioFailureMapper implements FailureMapper {
       //     Here the server's message IS the answer, and swallowing it makes
       //     the action look broken: the user taps, nothing happens, no reason.
       //
-      // Only the sync shape may map to the silent failure. This used to map
-      // **every** 409 to it, which silenced every business refusal in the app —
-      // and no endpoint emits the sync shape yet.
+      // Only the sync shape may map to the silent failure; mapping every 409
+      // to it would silence every business refusal in the app.
       //
-      // ## The shape is nested, and looking only at the root missed it
+      // ## The shape is nested
       //
       // The server sends its refusals in the standard envelope, so the conflict
       // payload arrives as `{status, message, data: {server_version, …}}` —
-      // `notes.int.test.ts` asserts `conflict.body.data.server_version`. Testing
-      // only the root therefore classified every real sync 409 as a
-      // `BusinessFailure`, which is the one thing the comment above says must
-      // not happen: the engine branches on `ConflictFailure`, so the resolver,
-      // its strategies and the rebase were unreachable.
+      // `notes.int.test.ts` asserts `conflict.body.data.server_version`.
+      // Testing only the root would classify every real sync 409 as a
+      // `BusinessFailure`: the engine branches on `ConflictFailure`, so the
+      // resolver, its strategies and the rebase would be unreachable.
       //
       // Both depths are accepted: the envelope is what this backend sends, and
       // the root keeps a bare body working for any endpoint that answers that

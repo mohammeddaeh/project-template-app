@@ -27,11 +27,11 @@
 /// | Consumer | Uses |
 /// |---|---|
 /// | `modules/modules_bootstrap.dart` | `SyncSDK` · `SyncSdkConfig` |
-/// | `presentation/shared/sync/` | `SyncController` · `SyncQueueRepository` |
+/// | `ui/state/sync/` | `SyncController` · `SyncQueueRepository` |
 /// | `<feature>/data/sync/` | everything under "feature adapter" below |
 ///
-/// The reference adapter is [`lib/Features/notes/data/sync/`] — six files that
-/// import this one and nothing else from the module.
+/// The template ships no feature adapter; `SETUP.md` §Step 3 walks one through.
+/// An adapter imports this file and nothing else from the module.
 library;
 
 // ── Lifecycle ────────────────────────────────────────────────────────────────
@@ -95,7 +95,7 @@ export 'domain/sync_entity_store.dart'
 export 'domain/sync_entity_record.dart' show SyncEntityRecord;
 
 // ── Observation ──────────────────────────────────────────────────────────────
-// What `presentation/shared/sync/` needs: the pending count, and a manual
+// What `ui/state/sync/` needs: the pending count, and a manual
 // trigger. The engine itself stays internal — nothing outside starts a cycle
 // except through `SyncController`.
 export 'domain/sync_queue_repository.dart' show SyncQueueRepository;

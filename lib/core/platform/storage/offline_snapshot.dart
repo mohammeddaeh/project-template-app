@@ -8,7 +8,7 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 /// ```dart
 /// final snapshot = OfflineSnapshot<AccountOverview>(
 ///   storage: storage,
-///   key: PersistenceKeys.accountOverviewSnapshot,   // مفتاحُ مشروعك
+///   key: 'account_overview.snapshot',              // مفتاحُ مشروعك
 ///   encode: (o) => AccountOverviewModel.fromEntity(o).toJson(),
 ///   decode: (json) => AccountOverviewModel.fromJson(json).toEntity(),
 ///   tag: 'ACCOUNT',
@@ -98,7 +98,7 @@ class OfflineSnapshot<T> {
 /// لقطةُ **قائمة** — نفس العقد، وجذرُ الـJSON مصفوفة لا كائن.
 ///
 /// صنفٌ ثانٍ لا وسيطٌ منطقيّ بالأول: `jsonDecode` يُعيد `List` هنا و`Map` هناك،
-/// وتوحيدُهما كان يعني فحصَ نوعٍ عند كل قراءة بدل أن يحسمه المصرِّف.
+/// وتوحيدُهما يعني فحصَ نوعٍ عند كل قراءة بدل أن يحسمه المصرِّف.
 class OfflineListSnapshot<T> {
   const OfflineListSnapshot({
     required this.storage,

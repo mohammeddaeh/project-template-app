@@ -21,10 +21,10 @@ import 'package:app_template/modules/sync/validation/sync_contract_validator.dar
 /// > **علم الموديول يُشعله أو يُعطّله — ولا يُسقط التطبيق أبداً.**
 ///
 /// `AppFeatures.offlineSync = true` on a project that has not written its
-/// first contract used to throw out of `SyncSDK.initialize`, up through
-/// `ModulesBootstrap.initializeAll`, into `main._bootstrap()` — which runs
-/// **before `runApp`**. The observable result was an app that never rendered a
-/// frame, with nothing tying the black screen back to the flag.
+/// first contract must not throw: a throw out of `SyncSDK.initialize` travels
+/// up through `ModulesBootstrap.initializeAll` into `main._bootstrap()` — which
+/// runs **before `runApp`** — and leaves an app that never renders a frame,
+/// with nothing tying the black screen back to the flag.
 ///
 /// The distinction this file locks down: **"not configured yet" is not an
 /// error, "configured wrong" is.**

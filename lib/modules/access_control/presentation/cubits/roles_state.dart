@@ -3,7 +3,7 @@ part of 'roles_cubit.dart';
 /// Hand-written rather than `@freezed`, matching every other module state here
 /// and for the same documented reason: `lib/modules/` ships disabled by default
 /// and must not force a code-generation step on a project that never enables
-/// it. States in `lib/Features/` stay freezed.
+/// it. States in `lib/features/` stay freezed.
 sealed class RolesState {
   const RolesState();
 }

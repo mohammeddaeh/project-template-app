@@ -55,7 +55,7 @@ abstract class InjectableModule {
   /// `InternetConnectionChecker.instance` بإعداده الافتراضي (v3.0.1) يُرسل
   /// `HEAD` إلى ثلاثة APIs تجريبية عامّة — `dummyapi.online` و
   /// `jsonplaceholder.typicode.com` و`fakestoreapi.com` — ويقرأ أيَّ ردٍّ منها
-  /// «الإنترنت يعمل». وذلك كان يُسأل **قبل كل طلب** وقبل كل دورة مزامنة.
+  /// «الإنترنت يعمل». وهذا الفحص يقع **قبل كل طلب** وقبل كل دورة مزامنة.
   ///
   /// وشبكةٌ حكومية أو داخلية تحجب تلك النطاقات تجعل التطبيق **أوف‑لاين للأبد**
   /// بينما الخادم متاح تماماً — ولا مزامنة تحدث إطلاقاً. الجدول الكامل لما يخرج
@@ -133,11 +133,11 @@ abstract class InjectableModule {
   /// synchronous `getIt<SharedPreferences>()` would throw "not ready yet"
   /// instead — the same failure one word further along.
   ///
-  /// It was missing entirely until now, and the shape of that absence is worth
-  /// keeping in mind: the binding is lazy, so nothing failed at registration.
-  /// `SyncSDK.initialize` caught the throw, logged it, and disabled the module —
-  /// so `AppFeatures.offlineSync = true` produced an app that ran fully online,
-  /// with no crash, no red test and a clean `dart analyze`.
+  /// Removing it fails silently: the binding is lazy, so nothing fails at
+  /// registration. `SyncSDK.initialize` catches the throw, logs it, and
+  /// disables the module — so `AppFeatures.offlineSync = true` produces an app
+  /// that runs fully online, with no crash, no red test and a clean
+  /// `dart analyze`.
   ///
   /// This is a *second* persistence backend next to [StorageService]'s Hive box,
   /// used by the sync module alone. That duplication is recorded as ب١٢ in
@@ -308,8 +308,9 @@ abstract class InjectableModule {
   @lazySingleton
   AppRouter get router => AppRouter();
 
-  /// Registered only when [AppFeatures.localNotifications] is enabled.
-  /// Adapter: [FlnNotificationsAdapter] (flutter_local_notifications).
+  /// Always registered: [FlnNotificationsAdapter] (flutter_local_notifications)
+  /// when [AppFeatures.localNotifications] is enabled, otherwise the no-op
+  /// [DisabledNotificationsAdapter].
   /// Swap adapter here — no other code changes needed.
   @lazySingleton
   LocalNotificationsService get localNotifications =>

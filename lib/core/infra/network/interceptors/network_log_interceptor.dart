@@ -6,19 +6,14 @@ import 'package:app_template/core/platform/logging/log_service.dart';
 /// Network logging that stays readable — **one line per success, everything on
 /// failure**.
 ///
-/// ## Why this replaced the full-dump logger
+/// ## Why not a full dump
 ///
-/// The previous interceptor printed the complete request AND response — every
-/// header, the whole body — for every call. A launch produced hundreds of
-/// lines, and a real failure was two of them.
+/// Printing the complete request AND response — every header, the whole body —
+/// for every call turns a launch into hundreds of lines, and a real failure
+/// into two of them. A `401` on every launch stays unread: nobody scrolls a
+/// 400-line wall looking for a red line they have no reason to expect.
 ///
-/// That is not a cosmetic complaint. Two `401`s fired on **every single app
-/// launch** for as long as the startup translation warm-up existed, printing a
-/// `[FAILURE-MAPPER] ❌` line each time. The signal was never missing; it was
-/// unreadable. Nobody scrolls a 400-line wall looking for a red line they have
-/// no reason to expect.
-///
-/// So the fix for a missed error was not more logging. It was less:
+/// So the answer to a missed error is less logging, not more:
 ///
 /// - **Success** → one line. `✅ GET /roles?page=1 · 200 · 142ms`
 /// - **Failure** → the full picture, unabridged: method, URL, status, request

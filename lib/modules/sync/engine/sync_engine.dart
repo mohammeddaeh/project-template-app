@@ -144,7 +144,7 @@ class SyncEngine {
       await _processPushQueue(batchSize: batchSize);
       await _processPullPhase();
       // **البيانُ الذي لا جدولَ له** — لوحُ حساب، أو إعداداتٌ يملكها الخادم.
-      // وبديلُه كان `unawaited(_refreshQuietly())` بكل فتحةِ شاشة: طلبٌ لا
+      // وبديلُه `unawaited(_refreshQuietly())` بكل فتحةِ شاشة: طلبٌ لا
       // تحكمه بوّابة ولا يخنقه قفل ولا يعرف بوجوده أحد. راجع [SyncRefreshTask].
       await _processRefreshTasks();
       // Files last: the heaviest and slowest phase, and putting it first would
@@ -318,18 +318,16 @@ class SyncEngine {
 
         // **A throw here is one job's problem, not the cycle's.**
         //
-        // This call used to sit outside any `try`. An executor that threw
-        // instead of returning `Left` — which every non-2xx response does,
-        // because Dio's default `validateStatus` raises — escaped the loop,
-        // escaped `_processPushQueue`, and was caught only by the cycle-level
-        // handler in `runPendingJobs`. Three things went with it: the remaining
-        // jobs were never attempted, the pull phase never ran, and the file
-        // phase never ran — all because one write got a 500.
+        // Executors may throw instead of returning `Left` — every non-2xx
+        // response does, because Dio's default `validateStatus` raises. Left
+        // uncaught, the throw escapes the loop and `_processPushQueue` to the
+        // cycle-level handler in `runPendingJobs`: the remaining jobs, the pull
+        // phase and the file phase all skip, because one write got a 500.
         //
-        // Worse, the job itself was left untouched: no `retry_count`, no
-        // `next_retry_at`. It stayed immediately due, was picked first again
-        // next cycle, threw again, and blocked everything behind it forever —
-        // a queue with a permanently stuck head and no back-off anywhere.
+        // Worse, the job itself stays untouched: no `retry_count`, no
+        // `next_retry_at`. It stays immediately due, is picked first again next
+        // cycle, throws again, and blocks everything behind it forever — a
+        // queue with a permanently stuck head and no back-off anywhere.
         //
         // Routing the throw into `_handleJobFailure` gives it the same
         // accounting a returned `Left` gets, and `continue` moves on.
@@ -410,9 +408,8 @@ class SyncEngine {
         // **Written down, not only logged.** `LogService` output does not
         // survive the process, and a pull that has failed every cycle for a
         // week is otherwise indistinguishable from one that has nothing to do.
-        // `sync_operations_log` is the module's existing durable record and it
-        // already carries a `failed` operation; the push path has always used
-        // it and the pull path never did.
+        // `sync_operations_log` is the module's durable record and carries a
+        // `failed` operation; the push and pull paths both write to it.
         await _logQuietly(
           entityName: executor.entityName,
           entityId: '*',
@@ -524,12 +521,12 @@ class SyncEngine {
   ///
   /// ## And so is a terminal one — `failed` and `conflicted`
   ///
-  /// The guard used to ask only `isPending`, which covers the four `pending*`
-  /// states and neither terminal one. So a row whose push had exhausted its
-  /// retries, or whose 409 was waiting for a person, fell straight through and
-  /// was replaced by the server's copy and stamped `synced`. The one remaining
-  /// record of that edit was destroyed by a routine refresh, silently — not
-  /// even counted in `skipped`.
+  /// `isPending` alone covers the four `pending*` states and neither terminal
+  /// one. A guard asking only that would let a row whose push had exhausted
+  /// its retries, or whose 409 is waiting for a person, fall straight through,
+  /// be replaced by the server's copy and stamped `synced` — the one remaining
+  /// record of that edit destroyed by a routine refresh, silently, not even
+  /// counted in `skipped`.
   ///
   /// Both states are defined as *waiting for something*:
   ///
@@ -569,10 +566,9 @@ class SyncEngine {
     var skipped = 0;
 
     // Validate the page first, then read the local rows it touches **in one
-    // query**. This used to be a `getRecordByLocalId` per record: 200 point
-    // lookups for a full page, and up to 10,000 in a single first sync, each a
-    // separate round trip across the platform channel while the sync lock is
-    // held.
+    // query**. A `getRecordByLocalId` per record would mean 200 point lookups
+    // for a full page, and up to 10,000 in a single first sync, each a separate
+    // round trip across the platform channel while the sync lock is held.
     final usable = <String, Map<String, dynamic>>{};
     for (final json in records) {
       final id = json['id'] as String?;

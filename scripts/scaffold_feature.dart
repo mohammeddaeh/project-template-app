@@ -21,8 +21,6 @@
 /// - كلا العلَمين مطفأٌ افتراضياً ⇒ **صفر سؤال وصفر ملف إضافي**، نفس عقد كل
 ///   موديول بالقالب.
 ///
-/// راجع `_template/roadmap.md` بند #02 للسياق الكامل.
-///
 /// تشغيل من جذر المشروع:
 ///   `dart run scripts/scaffold_feature.dart <feature_name>`
 ///   مثال: dart run scripts/scaffold_feature.dart invoices
@@ -926,7 +924,7 @@ class _FormBody extends StatelessWidget {
 ''';
 
 // ── Sync file templates — كتابةٌ فقط حين AppFeatures.offlineSync == true ──────
-// راجع lib/modules/sync/SETUP.md §3a/§3b/§3d، و_template/roadmap.md بند #02.
+// راجع lib/modules/sync/SETUP.md §3a/§3b/§3d.
 
 const _syncFeatureContractTemplate = r'''
 import 'package:get_it/get_it.dart';
@@ -1090,7 +1088,7 @@ import 'package:app_template/features/__feature__/domain/repositories/__feature_
 import 'package:app_template/modules/sync/sync_plugin.dart';
 
 /// وُلِّد بـ`scripts/scaffold_feature.dart` — راجع `lib/modules/sync/SETUP.md`
-/// §3d وبند #02 بـ`_template/roadmap.md` للسياق الكامل.
+/// §3d.
 ///
 /// **الكتابة (create/update/delete) توليدٌ آمنٌ فعلاً — تُصفّ بلا اتصال.**
 ///
@@ -1115,7 +1113,8 @@ class SyncAware__Feature__Repository implements __Feature__Repository {
   final Uuid _uuid;
   final __Feature__FeatureContract _contract;
 
-  // TODO(sync): استبدل هذا بقراءة `SyncEntityStore.readTyped` محلّية-أولاً.
+  // TODO(sync): اقرأ محلّياً-أولاً بـ`_entityStore.readTyped` (SyncEntityStore)
+  // بمؤشّر ترقيم شاشتك (`SyncPageCursor`)، بدل العبور للشبكة.
   @override
   Future<Either<Failure, PaginationDataEntity<__Feature__Entity>>> getList(
     Get__Feature__ListParams params,

@@ -5,9 +5,9 @@ import 'package:equatable/equatable.dart';
 /// **Three values, and they are exactly the three `backend_template` ships**
 /// (`users.schema.ts` → `userStatusEnum`). That is the whole point: a client
 /// enum with values no server ever sends is a set of branches nobody can reach
-/// and nobody can test, and this file used to carry three of them
-/// (`pending_approval`, `rejected`, `suspended`) inherited from an application
-/// with an admin approval queue.
+/// and nobody can test. States such as `pending_approval` or `rejected` belong
+/// to an application with an admin approval queue, and are added the way
+/// described below.
 ///
 /// | state | what the user should do |
 /// |---|---|
@@ -52,10 +52,8 @@ enum AuthUserStatus {
 /// (`backend_template/src/features/account/dtos/account.dto.ts`). Nothing here
 /// is aspirational: a field the server does not send is a field that arrives
 /// empty on every single request, and the screen built on it reads as broken
-/// rather than as unconfigured. This file previously carried eight such fields
-/// — `first_name`, `last_name`, `phone`, `image`, `address`, `is_admin`,
-/// `mfa_enabled`, `rejection_reason` — none of which any endpoint has ever
-/// returned.
+/// rather than as unconfigured. So `first_name`, `phone`, `image`, `address`
+/// and the like are absent until the server returns them.
 ///
 /// ## This class is still meant to be edited
 ///

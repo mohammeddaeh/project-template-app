@@ -6,18 +6,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:app_template/core/infra/network/interceptors/request_cache_interceptor.dart';
 import 'package:app_template/core/platform/storage/adapters/in_memory_storage_adapter.dart';
 
-/// Regression tests for a cache that **wrote entries it could never read back**.
+/// Guards against a cache that **writes entries it can never read back**.
 ///
-/// [RequestCacheInterceptor.onRequest] did not `await` the storage read, so it
-/// compared a `Future` against `null` (never null), cast it to `String`, threw,
-/// and swallowed the throw in a bare `catch (_) {}`. Every request missed. The
-/// module behaved exactly like a cold cache — correct answers, full latency,
-/// growing storage — so nothing failed and there was no symptom to search for.
+/// If [RequestCacheInterceptor.onRequest] stops awaiting the storage read, it
+/// compares a `Future` against `null` (never null), casts it to `String`,
+/// throws, and the throw is swallowed. Every request misses, and the module
+/// behaves exactly like a cold cache — correct answers, full latency, growing
+/// storage — so nothing fails and there is no symptom to search for.
 ///
-/// `dart analyze` was clean and the whole suite was green throughout, which is
-/// the point of these tests: the only observable difference between "the cache
-/// works" and "the cache has never once worked" is a hit, so a hit is what has
-/// to be asserted.
+/// `dart analyze` stays clean and the rest of the suite stays green in that
+/// state, which is the point of these tests: the only observable difference
+/// between "the cache works" and "the cache has never once worked" is a hit,
+/// so a hit is what has to be asserted.
 void main() {
   late InMemoryStorageAdapter storage;
   late RequestCacheInterceptor interceptor;
@@ -131,8 +131,8 @@ void main() {
 
   group('invalidateAll', () {
     test('removes cached responses and NOTHING else', () async {
-      // A preference living alongside the cache in the same store — exactly
-      // what `_storage.clear()` used to destroy.
+      // A preference living alongside the cache in the same store — what a
+      // blanket `_storage.clear()` would destroy.
       await storage.writeString('app_theme_mode', 'dark');
       await storage.writeString('app_locale', 'ar');
 

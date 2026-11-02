@@ -204,7 +204,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 
-**مفاتيح JSON عقدٌ مع `backend_template`.** خطؤها لا يراه `dart analyze` (مفتاح غائب = `null` = `dynamic` سليم)، ولا `tsc`، ويبتلعه `HandleBodyResponse` فيصل المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK`. **هذا وقع فعلاً ومنع الدخول كلياً** — راجع [`_template/archive/integration_audit.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/integration_audit.md).
+**مفاتيح JSON عقدٌ مع `backend_template`.** خطؤها لا يراه `dart analyze` (مفتاح غائب = `null` = `dynamic` سليم)، ولا `tsc`، ويبتلعه `HandleBodyResponse` فيصل المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK`. **وبمسار الدخول يمنع الدخول كلياً** — راجع [`_template/archive/integration_audit.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/integration_audit.md).
 
 **عند تغيير أي مفتاح**: عدّل `test/fixtures/wire/*.json` هنا و`backend_template/src/features/*/__tests__/wire-contract.test.ts` هناك — **بنفس الـcommit**.
 
@@ -219,8 +219,8 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 - تحقق دائماً: `dart analyze lib` **و`flutter test`**
 - **وقبل أي تسليم: `dart run scripts/check_structure.dart` بلا مخالفة _جديدة_، و`dart run scripts/check_docs.dart` بلا رابطٍ معطوب**
 
-> **الأساس (`.structure_baseline.txt`) سجلُّ دَينٍ لا زرُّ تجاهل.** أُدخل الفاحصُ
-> على قالبٍ قائم فوجد ٧٢ مخالفة كلُّها سابقةٌ له؛ إصلاحُها دفعةً واحدة refactor
+> **الأساس (`.structure_baseline.txt`) سجلُّ دَينٍ لا زرُّ تجاهل.** يسجّل مخالفاتٍ
+> أقدمَ من الفاحص نفسه؛ إصلاحُها دفعةً واحدة refactor
 > واسعٌ يخالف السطرَ الأول أعلاه، وتجاهلُها يجعل الفاحص عديمَ المعنى. فالمسجَّل
 > يُعرَض ولا يُفشِل، وأيُّ مخالفةٍ **جديدة** تُفشِل — فلا يزيد الدَّين، ويُحرَق حين
 > يُلمَس الملف لسببٍ آخر.

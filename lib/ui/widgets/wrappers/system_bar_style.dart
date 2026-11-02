@@ -63,9 +63,9 @@ class SystemBarStyle extends StatelessWidget {
   /// لون الأيقونات حين يكون ثيم التطبيق **داكناً**. `null` ⇒ الافتراض (فاتحة).
   final Brightness? onDarkTheme;
 
-  /// النمط الكامل لوضعٍ بعينه — ومصدرُ الافتراض العام بـ`app.dart` أيضاً.
+  /// النمط الكامل لوضعٍ بعينه.
   ///
-  /// تمريرُ `null` للتجاوزين يعيد **حرفياً** ما كان `app.dart` يبنيه يدوياً:
+  /// تمريرُ `null` للتجاوزين يعيد **حرفياً** ما يبنيه `app.dart`:
   /// شريطان شفّافان، وأيقوناتٌ معكوسةُ الوضع.
   static SystemUiOverlayStyle resolve(
     Brightness themeBrightness, {

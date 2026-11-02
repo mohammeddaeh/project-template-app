@@ -47,11 +47,11 @@ class SyncSDK {
 
     // A module never takes the app down with it.
     //
-    // Every throw below used to escape into `ModulesBootstrap.initializeAll`,
-    // which is awaited in `main._bootstrap()` **before `runApp`** — so any
-    // failure here, including the ordinary "this project has not configured
-    // sync yet", produced an app that never rendered a frame. No screen, no
-    // message, nothing pointing back at a flag someone flipped.
+    // A throw escaping into `ModulesBootstrap`, which is awaited **before
+    // `runApp`**, would turn any failure here — including the ordinary "this
+    // project has not configured sync yet" — into an app that never renders a
+    // frame. No screen, no message, nothing pointing back at a flag someone
+    // flipped.
     //
     // The flag's contract is "turn the module on, or leave it off". Sync
     // failing to start is a disabled module, and the app is expected to keep
@@ -73,13 +73,13 @@ class SyncSDK {
 
       // **The engine starts before the repositories are swapped.**
       //
-      // The order used to be the other way round, and it left a window with no
-      // way out of it: a failure between decoration and `init()` produced
-      // repositories that queue writes into a store nothing drains. Every save
-      // would appear to succeed, forever, and nothing would ever be sent —
-      // while `GetIt` registrations, once replaced, cannot be rolled back.
+      // The other order leaves a window with no way out of it: a failure
+      // between decoration and `init()` produces repositories that queue writes
+      // into a store nothing drains. Every save would appear to succeed,
+      // forever, and nothing would ever be sent — while `GetIt` registrations,
+      // once replaced, cannot be rolled back.
       //
-      // Reversed, the same failure leaves the plain online repositories in
+      // In this order, the same failure leaves the plain online repositories in
       // place: the app behaves exactly as it does with the module switched off,
       // which is a state it is designed to work in.
       await di<SyncController>().init();

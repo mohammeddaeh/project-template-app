@@ -447,12 +447,10 @@ abstract final class AppThemeData {
   /// is the one object `context.textTheme.*` resolves against, so no screen can
   /// pick up a heading without the features.
   ///
-  /// There was briefly a second accessor — `context.ts.*` in
-  /// `presentation/theme/app_text_styles.dart` — building its own styles from
-  /// scratch. It has been deleted: it had no call site, it contradicted the
-  /// typography rule in `lib/CLAUDE.md` (`context.textTheme` only), and a
-  /// second style source is exactly how the same heading ends up rendering
-  /// differently depending on which accessor a screen happened to use.
+  /// It is the only text-style source (`lib/CLAUDE.md`: `context.textTheme`
+  /// only): a second accessor building its own styles is exactly how the same
+  /// heading ends up rendering differently depending on which one a screen
+  /// happened to use.
   static TextTheme _textTheme(
     Color primary,
     Color secondary,

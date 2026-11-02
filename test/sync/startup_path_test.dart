@@ -48,41 +48,44 @@ void main() {
     expect(di.isRegistered<SyncSettingsStore>(), isTrue);
   });
 
-  test('SyncSettingsStore resolves — the first thing SyncSDK.initialize needs', () async {
-    await registerSyncCore(di);
+  test(
+    'SyncSettingsStore resolves — the first thing SyncSDK.initialize needs',
+    () async {
+      await registerSyncCore(di);
 
-    // `SyncSDK.initialize` order:
-    //   await registerSyncCore(di);
-    //   await _applyConfig(di, config);   ← `di<SyncSettingsStore>()`, right here
-    //   await di<SyncLock>().releaseIfStale();
-    //   validator.validatePreInitialization();
-    //
-    // So this resolution is the first gate on the whole startup path. Nothing
-    // downstream — contract discovery, the engine, the decorators — is reached
-    // if it throws.
-    //
-    // The container mirrors the real one: `injection_module.dart` pre-resolves
-    // SharedPreferences during `getIt.init()`, which `preResolve: true` turns
-    // into a plain synchronous singleton holding the resolved instance
-    // (injectable `get_it_helper.dart:227-235`). Registering it the same way
-    // here — resolved value, synchronous binding — is the shape the app has.
-    //
-    // Before that registration existed this threw, and the throw was swallowed
-    // by the try/catch in `SyncSDK.initialize`: the module logged an error and
-    // disabled itself, so `AppFeatures.offlineSync = true` produced an app that
-    // ran fully online with no crash and no red test.
-    expect(di.isRegistered<SharedPreferences>(), isTrue);
+      // `SyncSDK.initialize` order:
+      //   await registerSyncCore(di);
+      //   await _applyConfig(di, config);   ← `di<SyncSettingsStore>()`, right here
+      //   await di<SyncLock>().releaseIfStale();
+      //   validator.validatePreInitialization();
+      //
+      // So this resolution is the first gate on the whole startup path. Nothing
+      // downstream — contract discovery, the engine, the decorators — is reached
+      // if it throws.
+      //
+      // The container mirrors the real one: `injection_module.dart` pre-resolves
+      // SharedPreferences during `getIt.init()`, which `preResolve: true` turns
+      // into a plain synchronous singleton holding the resolved instance
+      // (injectable `get_it_helper.dart:227-235`). Registering it the same way
+      // here — resolved value, synchronous binding — is the shape the app has.
+      //
+      // Without that registration this throws, and the throw is swallowed by
+      // the try/catch in `SyncSDK.initialize`: the module logs an error and
+      // disables itself, so `AppFeatures.offlineSync = true` produces an app that
+      // runs fully online with no crash and no red test.
+      expect(di.isRegistered<SharedPreferences>(), isTrue);
 
-    expect(
-      () => di<SyncSettingsStore>(),
-      returnsNormally,
-      reason:
-          'SharedPrefsSyncSettingsStore asks the container for SharedPreferences '
-          '(sync_bootstrap.dart:75). If this throws, the registration in '
-          'injection_module.dart is gone or is no longer @preResolve.',
-    );
-    expect(di<SyncSettingsStore>(), isA<SharedPrefsSyncSettingsStore>());
-  });
+      expect(
+        () => di<SyncSettingsStore>(),
+        returnsNormally,
+        reason:
+            'SharedPrefsSyncSettingsStore asks the container for SharedPreferences '
+            '(sync_bootstrap.dart:75). If this throws, the registration in '
+            'injection_module.dart is gone or is no longer @preResolve.',
+      );
+      expect(di<SyncSettingsStore>(), isA<SharedPrefsSyncSettingsStore>());
+    },
+  );
 
   test('production DI pre-resolves SharedPreferences before ModulesBootstrap', () {
     // The behavioural test above describes the shape; this checks the app really

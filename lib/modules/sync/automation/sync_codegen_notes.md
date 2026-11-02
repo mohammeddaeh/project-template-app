@@ -1,10 +1,9 @@
 # Sync Feature Adapter Generator (Design Contract)
 
-> ⚠️ **This document describes a planned / historical code-generation approach.
+> ⚠️ **This document describes a planned code-generation approach.
 > It is not the currently implemented runtime mechanism.** No generator, no
 > `source_gen` builder and no `generated/` output exists in this repository.
-> Feature sync adapters are written by hand — see `SETUP.md` §Step 3 and the
-> reference implementation in `lib/features/notes/data/sync/`.
+> Feature sync adapters are written by hand — see `SETUP.md` §Step 3.
 
 What the SDK *does* support today is auto-discovery of decorators and executors
 through DI: `SyncSDK.initialize` resolves every registered `SyncExecutor`,

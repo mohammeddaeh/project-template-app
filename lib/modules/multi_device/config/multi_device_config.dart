@@ -3,24 +3,24 @@
 /// ## What is deliberately absent, and why
 ///
 /// **`maxDevices = 3`** — a cap with no defined behaviour for the fourth
-/// device. Both possible meanings were worse than no cap:
+/// device. Both possible meanings are worse than no cap:
 ///
 /// - *Refuse the new sign-in*: someone holding three older devices cannot get
 ///   in from a new one, sees a refusal they cannot act on, and concludes the
 ///   account is broken. Losing three phones would lock them out entirely until
-///   an administrator intervened.
+///   an administrator intervenes.
 /// - *Evict the oldest*: safe, but it is an anti-account-sharing **business
 ///   policy**, not account security — and this template serves more than one
 ///   application. A policy belongs to the app that needs it.
 ///
-/// So the module now does what its name promises and nothing more: show where
+/// So the module does what its name promises and nothing more: show where
 /// this account is signed in, and end any of those sessions. A cap can be added
 /// later as a server-side policy without touching this screen.
 ///
 /// **`isPrimary`** — the rule that only the first-ever device may revoke
 /// others. It fails in exactly the situation the feature exists for: lose the
 /// primary phone and you can no longer revoke anything, from anywhere. Any
-/// session may now end any session **of the same account**, which the server
+/// session may end any session **of the same account**, which the server
 /// enforces by ownership rather than by seniority.
 abstract final class MultiDeviceConfig {
   // ── FCM payload types ─────────────────────────────────────────────────────

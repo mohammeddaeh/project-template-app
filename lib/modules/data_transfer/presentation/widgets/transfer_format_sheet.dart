@@ -8,8 +8,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 
 /// Asks which file format, before anything is downloaded.
 ///
-/// The template button used to take `importFormats.first` silently. That is a
-/// decision made on the user's behalf about a file they are going to open in a
+/// Taking `importFormats.first` silently would be a decision made on the user's behalf about a file they are going to open in a
 /// specific program — and the two formats are not interchangeable: CSV opens
 /// anywhere and survives being edited in a text editor, XLSX keeps real types
 /// so dates sort as dates and long numbers do not lose digits.

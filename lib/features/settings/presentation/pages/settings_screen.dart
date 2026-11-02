@@ -88,10 +88,9 @@ class _AppearanceSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionHeader(LocaleKeys.appearance.tr()),
-        // **ودجةٌ واحدة للمبدِّل — لا ثلاث.** كانت هنا كتلةٌ تبني `ListTile`
-        // بيدها، وبـ`app_theme_mode.dart` صنفٌ ثالث (`ThemeModeSelector`) بلا
-        // مستهلك، و[ThemeSwitcher] موجودةٌ ولا يركّبها أحد — ثلاثُ نسخٍ من قرارِ
-        // تصميمٍ واحد، تُشدَّد إحداها يوماً ولا تُشدَّد الأخريان (R34).
+        // **ودجةٌ واحدة للمبدِّل.** [ThemeSwitcher] هي المكتبة؛ كتلةُ `ListTile`
+        // تُبنى هنا باليد نسخةٌ ثانية من قرارِ تصميمٍ واحد، تُشدَّد إحداهما يوماً
+        // ولا تُشدَّد الأخرى (R34).
         const ThemeSwitcher(),
       ],
     );

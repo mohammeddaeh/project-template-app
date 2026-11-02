@@ -19,11 +19,10 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 ///
 /// ## No permissions here
 ///
-/// No `permissionKeys`, `isSuperAdmin` or `hasPermission()`. No endpoint has ever sent those fields, so `hasPermission()` returned
+/// No `permissionKeys`, `isSuperAdmin` or `hasPermission()`. The account
+/// response carries no such fields, so a `hasPermission()` here would return
 /// `false` for every key on every call — a gate that is always shut reads in
-/// code exactly like a gate that works. `backend_template` states that
-/// authorization is deliberately out of scope; the client now says the same
-/// thing instead of pretending otherwise.
+/// code exactly like a gate that works.
 ///
 /// **When you add RBAC**, the server issues the claims first. Then reinstate a
 /// field here and cache it beside the user with the same two-key pattern below.

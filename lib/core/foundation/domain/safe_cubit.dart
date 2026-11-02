@@ -21,21 +21,11 @@ import 'package:bloc/bloc.dart';
 ///
 /// ## Why not cancel the request instead
 ///
-/// This template used to *teach* that it did, and it did not. `core/CLAUDE.md`
-/// prescribed `close() { _useCase.cancel(); }` as **mandatory** for every
-/// paginated cubit, over a `BaseUseCase` cancellation API that had no caller
-/// anywhere in `lib/` — the token was always null and every one of those calls
-/// was a no-op. The dead API has since been deleted (see [BaseUseCase]); this
-/// paragraph stays because the lesson outlives it.
-///
-/// It matters more in a template than in any single app: a template propagates
-/// its beliefs to every project generated from it. A protection that reads as
-/// present in review and is absent at runtime ships once per project, forever.
-///
-/// And cancellation was never the right guard anyway. A response can land in
-/// the window between "body parsed" and "cubit closed" however promptly the
-/// request was aborted, so the check has to be at the `emit` — here,
-/// unconditionally, rather than in each cubit whose author remembered.
+/// [BaseUseCase] has no `cancel()`. A response can land in the window between
+/// "body parsed" and "cubit closed" however promptly the request was aborted,
+/// so the check has to be at the `emit` — here, unconditionally, rather than in
+/// each cubit whose author remembered. To abort an in-flight request, pass
+/// Dio's `CancelToken` through `Options` at the call site.
 ///
 /// ## What this deliberately does NOT do
 ///

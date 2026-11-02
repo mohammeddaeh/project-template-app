@@ -40,7 +40,7 @@ import 'package:app_template/modules/sync/integration/sync_controller.dart';
 /// [_runCycle] ليس ترفاً — هو الحدُّ الأدنى الذي بدونه يرمي أوّلُ سطر.
 ///
 /// **ولا `EasyLocalization` ولا ثيم ولا خطوط**: لا شاشةَ هنا، ولا نصَّ يُعرض.
-/// وتحميلُها كان يضيف ثوانيَ إلى مهمّةٍ يقيس النظامُ زمنَها ويعاقب طولَها.
+/// وتحميلُها يضيف ثوانيَ إلى مهمّةٍ يقيس النظامُ زمنَها ويعاقب طولَها.
 abstract final class SyncBackgroundWorker {
   /// اسمُ المهمّة الدورية — **ثابتٌ**، فإعادةُ الجدولة تستبدل ولا تُراكم.
   static const _periodicName = 'app.sync.periodic';
@@ -88,7 +88,7 @@ abstract final class SyncBackgroundWorker {
   /// **يستعجل دورةً بالخلفية** — يُنادى بعد كتابةٍ محلّية.
   ///
   /// والدوريّةُ كلَّ ربع ساعة أبطأُ من أن تكون الجوابَ الوحيد: من حفظ مسوّدةً
-  /// ثم أغلق التطبيق فوراً كان ينتظر خمسَ عشرةَ دقيقةً بلا سبب.
+  /// ثم أغلق التطبيق فوراً ينتظر بها وحدها خمسَ عشرةَ دقيقةً بلا سبب.
   static Future<void> requestOneOff() async {
     if (!isSupported) return;
     try {

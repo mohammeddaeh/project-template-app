@@ -36,9 +36,8 @@ class _FakeQueueRepository implements SyncQueueRepository {
   );
 }
 
-/// `triggerManualSync` كانت تُعيد `void` — فرفضٌ (بلا شبكة، بلا جلسة، ينتظر
-/// واي‑فاي) وإكمالٌ فعليّ كانا لا يُفرَّقان هنا: كلاهما يُنتج `SyncSuccess`.
-/// هذا هو الاختبار الذي كان سيفشل قبل الإصلاح.
+/// `triggerManualSync` تُعيد نتيجةً لا `void` — كي يُفرَّق الرفض (بلا شبكة، بلا
+/// جلسة، ينتظر واي‑فاي) عن الإكمال الفعليّ، فلا يُنتج كلاهما `SyncSuccess`.
 void main() {
   late _FakeSyncController controller;
   late _FakeQueueRepository queue;

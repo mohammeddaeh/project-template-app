@@ -235,11 +235,8 @@ abstract class PaginationCubit<E> extends SafeCubit<PaginationState<E>> {
     });
   }
 
-  // The `emit` override that used to live here (`if (isClosed) return;`) is now
-  // [SafeCubit]'s job — and that is the point of the move, not a tidy-up: the
-  // guard existed HERE ONLY, so paginated lists survived a late response while
-  // every other cubit in the app crashed on one. A protection that correct in
-  // one file and absent in twenty is an accident waiting for the next screen.
+  // No `emit` override here: the emit-after-close guard is [SafeCubit]'s, so
+  // every cubit gets it, not only paginated lists.
 
   @override
   void onChange(Change<PaginationState<E>> change) {

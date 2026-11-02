@@ -91,9 +91,7 @@ class TokenRefreshInterceptor extends Interceptor {
         //
         // The failure is still handled correctly here; the zone just also sees
         // it, and reports a refused token refresh as if the app had crashed.
-        // Surfaced by `test/sync/offline_session_test.dart`, which is the only
-        // way it was ever going to be: in the app the noise is one more line in
-        // a log that already has a real error in it.
+        // Guarded by `test/sync/offline_session_test.dart`.
         unawaited(_refreshCompleter!.future.catchError((Object _) {}));
 
         LogService.info('Starting token refresh…', tag: 'TOKEN-REFRESH');
@@ -125,18 +123,14 @@ class TokenRefreshInterceptor extends Interceptor {
   ///
   /// ## "Refused" and "never arrived" are opposite facts
   ///
-  /// This method used to clear the session for both. Every failure reaching the
-  /// `catch` above — a 401 on the refresh call, a dropped connection, a
-  /// cancelled request — took the same path: clear the token, clear the cached
-  /// user, emit [AuthEvent.sessionExpired], land the user on the login screen.
+  /// Every failure reaching the `catch` above — a 401 on the refresh call, a
+  /// dropped connection, a cancelled request — lands here. Clearing the session
+  /// for all of them would sign out a phone that lost signal between a 401 and
+  /// its renewal: the user is ejected to a login screen they cannot pass — no
+  /// network to log in with — while unsynced writes sit behind an account the
+  /// app no longer believes in.
   ///
-  /// So a phone that lost signal in the second between a 401 and its renewal was
-  /// signed out. On a device holding queued offline work that is not a
-  /// nuisance: the user is ejected to a login screen they cannot pass — no
-  /// network to log in with — while a morning's unsynced writes sit behind an
-  /// account the app no longer believes in.
-  ///
-  /// The rule now is one question: **did a server answer?**
+  /// The rule is one question: **did a server answer?**
   Future<void> _handleRefreshFailure(
     DioException err,
     ErrorInterceptorHandler handler, {

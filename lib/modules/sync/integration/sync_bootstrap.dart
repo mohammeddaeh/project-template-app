@@ -211,7 +211,7 @@ Future<void> registerSyncCore(GetIt getIt) async {
   }
   // **و`allOf` لا `getAll`** — والحارسُ `isRegistered` أمامه **يُعمي عن
   // التسجيلات المسمّاة**، و`injectable` يفرض الاسمَ لتسجيلين تحت نوعٍ واحد:
-  // فمشروعٌ بهدفَي رفعٍ لشريحتين كان يُسكت الرفعَ كلَّه بلا سطرٍ أحمر واحد.
+  // فمشروعٌ بهدفَي رفعٍ لشريحتين يُسكت معه الرفعَ كلَّه بلا سطرٍ أحمر واحد.
   // راجع `GetItGetAllOrEmpty`.
   if (!getIt.isRegistered<AttachmentUploadManager>()) {
     final targets = getIt.allOf<AttachmentUploadTarget>();

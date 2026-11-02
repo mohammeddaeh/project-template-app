@@ -11,7 +11,7 @@ import 'package:app_template/core/platform/connectivity/network_state.dart';
 ///
 /// Every case here is a state a real deployment reaches — an overloaded proxy,
 /// a maintenance window, a server that is simply switched off — and each one
-/// used to arrive at the user as the same sentence as all the others.
+/// must reach the user as its own sentence, not one generic message.
 void main() {
   final options = RequestOptions(path: '/notes');
 
@@ -101,7 +101,7 @@ void main() {
       );
     });
 
-    test('no probe wired at all → the historical answer, unchanged', () {
+    test('no probe wired at all → NoInternetFailure', () {
       const mapper = DioFailureMapper();
       expect(mapper.map(connectionError()), isA<NoInternetFailure>());
     });
@@ -128,7 +128,7 @@ void main() {
       expect(DioFailureMapper.retryAfterSeconds(header('30')), 30);
     });
 
-    test('HTTP-date — the form that used to be dropped to null', () {
+    test('HTTP-date — parsed, not dropped to null', () {
       final now = DateTime.utc(2026, 8, 16, 12, 0, 0);
       final seconds = DioFailureMapper.retryAfterSeconds(
         header('Sun, 16 Aug 2026 12:02:00 GMT'),

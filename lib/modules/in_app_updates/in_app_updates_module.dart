@@ -121,9 +121,9 @@ abstract final class InAppUpdatesModule {
         if (handled) {
           _lastPromptedSignature = signature;
         } else if (settings.downloadUrl.isNotEmpty && context.mounted) {
-          // Mark only when a real prompt is about to be shown. Previously this
-          // was stamped before checking Play/the URL, so an empty URL consumed
-          // the version forever and adding its link later did nothing.
+          // Mark only when a real prompt is about to be shown. Stamping before
+          // checking Play/the URL would let an empty URL consume the version
+          // forever, so adding its link later would do nothing.
           _lastPromptedSignature = signature;
           await _promptForUrl(context, settings);
         }
