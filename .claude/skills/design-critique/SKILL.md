@@ -219,7 +219,7 @@ Suggestion: [Fix]
 ### Match Between System & Real World Issues
 | Problem | Sign | Fix |
 |---------|------|-----|
-| Ambiguous labels | User has to guess what a button/link does | Action-oriented labels: "حفظ وترحيل" not "إرسال". See `../ux-designer/references/09-ux-writing.md` |
+| Ambiguous labels | User has to guess what a button/link does | Action-oriented labels: "حفظ وترحيل" not "إرسال". See `references/09-ux-writing.md` of the `ux-designer` skill, if installed |
 | Internal jargon | Labels use engineering terms users don't know | Replace with user-facing language — test with real users if unsure |
 | Illogical ordering | Information sequence doesn't match user's mental model | Arrange by task flow or frequency of use, not by database schema |
 
@@ -236,7 +236,7 @@ Suggestion: [Fix]
 |---------|------|-----|
 | Inconsistent patterns | Same action styled differently across pages | Audit and unify — same action = same component variant everywhere |
 | Platform convention breaks | Behavior differs from what users expect from the platform | Follow OS/browser conventions for scrolling, selection, keyboard shortcuts |
-| Design system drift | Components don't match the design system | Run `dart run scripts/check_structure.dart`; compare against `lib/shared/widgets/widgets.dart` and neighbouring screens |
+| Design system drift | Components don't match the design system | Run `dart run scripts/check_structure.dart`; compare against `lib/ui/widgets/widgets.dart` and neighbouring screens |
 
 ### Error Prevention Issues
 | Problem | Sign | Fix |
@@ -317,7 +317,7 @@ Details: [`../flutter-ui-design/SKILL.md`](../flutter-ui-design/SKILL.md) and it
 ### Standard Critique (default)
 - Full heuristic scorecard + detailed findings
 - 5-8 specific observations tied to heuristics and UX laws, with fixes
-- Consult `../ux-designer/references/01-core-principles.md` and `02-laws-of-ux.md` for depth
+- Consult the `ux-designer` skill's `references/01-core-principles.md` and `02-laws-of-ux.md` for depth, if installed
 - Use for most design review requests
 
 ### Deep Critique (comprehensive)
@@ -334,6 +334,6 @@ Details: [`../flutter-ui-design/SKILL.md`](../flutter-ui-design/SKILL.md) and it
 After a critique, route the fixes:
 
 - **Redesign or implementation**: continue in `flutter-ui-design` (its pipeline owns the Flutter build and the final consistency review)
-- **Copy**: `../ux-designer/references/09-ux-writing.md`, then the translation keys in `assets/translations/`
-- **Accessibility depth**: `../ux-designer/references/03-accessibility.md` (WCAG 2.2)
+- **Copy**: the `ux-designer` skill's `references/09-ux-writing.md` if installed, then the translation keys in `assets/translations/`
+- **Accessibility depth**: the `ux-designer` skill's `references/03-accessibility.md` (WCAG 2.2), if installed
 - **Structural compliance**: `dart run scripts/check_structure.dart` and `dart analyze lib`

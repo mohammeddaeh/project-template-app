@@ -56,15 +56,14 @@ description: Use when implementing a new Flutter screen or widget in this projec
 ### 2) Critique — قبل الكتابة، ضد الطلب لا ضد الذوق
 
 اقرأ [`anti-patterns.md`](anti-patterns.md) وقارن خطتك بقائمة "Generic UI".
-كل بند بها **مصداقٌ فعلي بالمستودع** (`login_screen.dart` الحالي) — ليس
-افتراضاً نظرياً. لو خطّتك تطابق أياً منها بلا مبرّر واعٍ (لا شاشة placeholder
-مقصودة)، عدّلها قبل الكود لا بعده.
+لو خطّتك تطابق أياً منها بلا مبرّر واعٍ (لا شاشة placeholder مقصودة)، عدّلها
+قبل الكود لا بعده.
 
 ### 3) Build
 
 نفّذ باستخدام التوكنات والودجات الموجودة فقط (راجع «القيد الصلب» أعلاه).
 ودجة مشتركة جديدة فعلاً؟ اتّبع قاعدة مكانها بـ
-[`lib/features/CLAUDE.md`](../../../lib/features/CLAUDE.md) §بنية الصفحة —
+[`lib/CLAUDE.md`](../../../lib/CLAUDE.md) §بنية الصفحة —
 تُسمّى، لا دالّة.
 
 ### 4) Review — screenshot لا افتراض

@@ -9,13 +9,12 @@
 يُقرأ هذا الملف أثناء مرحلة Critique بـ[`SKILL.md`](SKILL.md)، أو عند مراجعة
 شاشةٍ موجودة.
 
-## المصداق الحيّ بالمستودع — `login_screen.dart`
+## الشكل الذي تتجنّبه — «Generic UI»
 
-وُثِّق بالتحليل الأصلي ([`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) #16):
-`Column` عمودي واحد (عنوان → subtitle → حقلان → زرّ → صفّ) — بلا `Card`،
-بلا عمق، بلا صورة/هويّة بصرية، hierarchy من حجم الخط فقط. **الميكانيكا
-سليمة** (action hierarchy صحيح، validation صحيح) — المفقود composition لا
-صحّة. هذا المثال المرجعي لكل بند أدناه، لا افتراضٌ نظري.
+`Column` عمودي واحد (عنوان → subtitle → حقلان → زرّ → صفّ) — بلا سطحٍ يجمع، بلا
+عمق، بلا هويّة بصرية، والتراتبيّة من حجم الخط وحده. **الميكانيكا سليمة**
+(action hierarchy صحيح، validation صحيح) — والمفقود composition لا صحّة. البنود
+أدناه تصف كيف يُكسر هذا الشكل.
 
 ## علامات حمراء — لو ظهرت، ارجع لمرحلة Plan
 

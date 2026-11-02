@@ -253,6 +253,9 @@ const _shippedRoots = [
   'loadtest',
   '.claude',
   '.github',
+  // مواردُ المنصّتين تصل كل مشروع، وتعليقاتُ XML فيها تُقرأ كأيّ وثيقة.
+  'android/app/src',
+  'ios/Runner',
 ];
 const _shippedRootFiles = ['CLAUDE.md', 'README.md'];
 
@@ -317,7 +320,11 @@ Iterable<File> _shippedFiles() sync* {
           path.endsWith('.dart') ||
           path.endsWith('.ps1') ||
           path.endsWith('.yml') ||
-          path.endsWith('.js'))) {
+          path.endsWith('.js') ||
+          path.endsWith('.xml') ||
+          path.endsWith('.kt') ||
+          path.endsWith('.swift') ||
+          path.endsWith('.plist'))) {
         continue;
       }
       if (path.endsWith('.g.dart') ||
