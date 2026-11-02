@@ -1,0 +1,6 @@
+{
+  "name": "video",
+  "register": "registerVideoKit",
+  "permissions": [],
+  "platformPackages": ["video_player"]
+}

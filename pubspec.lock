@@ -1209,6 +1209,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  kit_video:
+    dependency: "direct main"
+    description:
+      path: "packages/kit_video"
+      relative: true
+    source: path
+    version: "1.0.0"
   kit_voice:
     dependency: "direct main"
     description:

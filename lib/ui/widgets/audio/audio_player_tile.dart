@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:kit_contracts/kit_contracts.dart';
 
 import 'package:app_template/core/di/injection.dart';
-import 'package:app_template/core/foundation/formatting/app_formats.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/widgets/media/playback_bar.dart';
 
 /// Plays one audio file or `https` URL — play/pause, a seek bar, and the
 /// position against the length.
@@ -91,49 +91,12 @@ class _AudioPlayerTileState extends State<AudioPlayerTile> {
         ],
       );
     }
-    // The length may be unknown at first (a fresh recording's header) and is
-    // never shorter than where playback already is.
-    final reported = _state.duration ?? _length ?? Duration.zero;
-    final position = _state.completed ? reported : _state.position;
-    final length = position > reported ? position : reported;
-    final known = reported > Duration.zero;
-    final max = length.inMilliseconds.toDouble();
-    final playing = _state.playing;
-    return Row(
-      children: [
-        IconButton(
-          tooltip: (playing ? LocaleKeys.audioPause : LocaleKeys.audioPlay)
-              .tr(),
-          onPressed: _length == null
-              ? null
-              : () => playing ? player.pause() : player.play(),
-          icon: Icon(
-            playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
-            color: colors.primary,
-          ),
-        ),
-        Expanded(
-          child: Slider(
-            value: known ? position.inMilliseconds.clamp(0, max).toDouble() : 0,
-            max: known ? max : 1,
-            onChanged: !known
-                ? null
-                : (v) => player.seek(Duration(milliseconds: v.round())),
-          ),
-        ),
-        Text(
-          known
-              ? '${AppNumberFormats.elapsed.apply(position.inSeconds)} / '
-                    '${AppNumberFormats.elapsed.apply(length.inSeconds)}'
-              : AppNumberFormats.elapsed.apply(position.inSeconds),
-          // "position / length" — RTL would swap the two around the slash.
-          textDirection: TextDirection.ltr,
-          style: context.textTheme.labelSmall?.copyWith(
-            color: colors.textSecondary,
-            fontFeatures: const [FontFeature.tabularFigures()],
-          ),
-        ),
-      ],
+    return PlaybackBar(
+      state: _state,
+      length: _length,
+      onPlay: _length == null ? null : player.play,
+      onPause: player.pause,
+      onSeek: player.seek,
     );
   }
 }

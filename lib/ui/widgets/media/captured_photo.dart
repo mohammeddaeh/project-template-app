@@ -114,6 +114,16 @@ class CapturedPhoto {
         looksLikeAudio(remotePath);
   }
 
+  /// مقطعُ فيديو — يُشغَّل داخل التطبيق حين تكون kit `video` مركّبة
+  /// (`AttachmentPreview.open`)، وبتطبيق النظام بدونها. والحكمُ كـ[isAudio].
+  bool get isVideo {
+    final mime = mimeType?.toLowerCase().trim() ?? '';
+    if (mime.isNotEmpty) return mime.startsWith('video/');
+    return looksLikeVideo(label) ||
+        looksLikeVideo(localPath) ||
+        looksLikeVideo(remotePath);
+  }
+
   /// خمس منازل ≈ متر واحد — أدقّ من ذلك أرقامٌ تُزحم السطر ولا تُقرأ.
   String get coordinatesLabel => hasCoordinates
       ? '${latitude!.toStringAsFixed(5)}, ${longitude!.toStringAsFixed(5)}'
@@ -145,6 +155,20 @@ class CapturedPhoto {
       '.wav',
       '.ogg',
       '.opus',
+    ].any(value.endsWith);
+  }
+
+  /// امتدادُ مقطع فيديو معروف بالاسم أو المسار.
+  static bool looksLikeVideo(String? name) {
+    final value = name?.toLowerCase().trim() ?? '';
+    if (value.isEmpty) return false;
+    return const [
+      '.mp4',
+      '.mov',
+      '.m4v',
+      '.webm',
+      '.3gp',
+      '.mkv',
     ].any(value.endsWith);
   }
 }

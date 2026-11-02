@@ -1057,6 +1057,10 @@ class CodegenLoader extends AssetLoader {
     "showcaseScanCode": "امسح رمزاً",
     "showcaseScanNothing": "لا شيء بعد",
     "showcaseScanText": "اختر صورة واقرأ نصّها",
+    "videoCannotPlay": "تعذّر تشغيل هذا الفيديو",
+    "showcaseVideo": "الفيديو",
+    "showcaseVideoSample": "مقطعٌ قصير من الشبكة",
+    "showcaseVideoBar": "الشريط وحده — لمشغّلٍ تبنيه أنت",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -2131,6 +2135,10 @@ class CodegenLoader extends AssetLoader {
     "showcaseScanCode": "Scan a code",
     "showcaseScanNothing": "Nothing yet",
     "showcaseScanText": "Pick an image and read its text",
+    "videoCannotPlay": "This video can't be played",
+    "showcaseVideo": "Video",
+    "showcaseVideoSample": "A short clip from the network",
+    "showcaseVideoBar": "The bar alone — for a player you build",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

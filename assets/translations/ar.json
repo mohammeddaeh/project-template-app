@@ -955,5 +955,9 @@
   "showcaseScan": "المسح",
   "showcaseScanCode": "امسح رمزاً",
   "showcaseScanNothing": "لا شيء بعد",
-  "showcaseScanText": "اختر صورة واقرأ نصّها"
+  "showcaseScanText": "اختر صورة واقرأ نصّها",
+  "videoCannotPlay": "تعذّر تشغيل هذا الفيديو",
+  "showcaseVideo": "الفيديو",
+  "showcaseVideoSample": "مقطعٌ قصير من الشبكة",
+  "showcaseVideoBar": "الشريط وحده — لمشغّلٍ تبنيه أنت"
 }

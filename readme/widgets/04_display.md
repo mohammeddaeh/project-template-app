@@ -425,3 +425,30 @@ AttachmentPreview.open(context, photo: attachment)
 
 يُثبَّت بـ`test/audio_kit_test.dart` عبر `FakeAudioRecorder`/`FakeAudioPlayback`.
 
+---
+
+## §45 · AppVideoPlayer · PlaybackBar — الفيديو وشريط التشغيل (`kit_video`)
+
+> `AppVideoPlayer` ودجةُ kit: لا ترسم شيئاً بلا `kit_video`. و`PlaybackBar` **ليست** من الـkit —
+> شريطٌ واحد لكل مشغّلٍ بالتطبيق: `AudioPlayerTile` و`AppVideoPlayer` يرسمانه، ومشغّلٌ يبنيه
+> المشروع يرسمه كذلك.
+
+```dart
+// ── مقطعٌ — ملفٌّ أو رابط https ──
+AppVideoPlayer(source: clip.localPath)
+
+// ── مرفقُ فيديو بقائمة مرفقات — يُشغَّل بورقةٍ داخل التطبيق ──
+AttachmentPreview.open(context, photo: attachment)   // CapturedPhoto.isVideo
+
+// ── الشريط وحده لمشغّلٍ خاص ──
+PlaybackBar(state: state, length: length, onPlay: play, onPause: pause, onSeek: seek)
+```
+
+| القرار | لماذا |
+|---|---|
+| **الصورة بشكلها** | `VideoInfo.aspectRatio` بعد الدوران — مقطعٌ عموديّ لا يُعصر في ١٦:٩ |
+| **لمسةٌ على الصورة تشغّل وتوقف** | الهدفُ الأكبر على الشاشة؛ وزرُّ الشريط للدقّة |
+| **شريطٌ واحد للصوت والفيديو** | الطولُ المجهول وانقلابُ الوقت بالعربية أُصلحا مرّةً — لا يُكتبان ثانيةً بكل مشغّل |
+| **مشغّلٌ لكل ودجة** | مصنعٌ بـget_it كالصوت — يُحرَّر حين تغادر الشجرة |
+
+يُثبَّت بـ`test/video_kit_test.dart` عبر `FakeVideoPlayback`.

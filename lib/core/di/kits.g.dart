@@ -9,14 +9,16 @@ import 'package:get_it/get_it.dart';
 import 'package:kit_audio/kit_audio.dart';
 import 'package:kit_ocr/kit_ocr.dart';
 import 'package:kit_scan/kit_scan.dart';
+import 'package:kit_video/kit_video.dart';
 import 'package:kit_voice/kit_voice.dart';
 
 /// The device kits this app is built with.
-const installedKits = <String>['audio', 'ocr', 'scan', 'voice'];
+const installedKits = <String>['audio', 'ocr', 'scan', 'video', 'voice'];
 
 void registerKits(GetIt getIt) {
   registerAudioKit(getIt);
   registerOcrKit(getIt);
   registerScanKit(getIt);
+  registerVideoKit(getIt);
   registerVoiceKit(getIt);
 }

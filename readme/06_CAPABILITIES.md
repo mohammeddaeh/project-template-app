@@ -116,6 +116,8 @@
 | تسجيلُ صوت · تشغيلُ صوت | `VoiceNoteRecorder` · `AudioPlayerTile` — kit `audio` | `AudioRecorder()` (record) · `AudioPlayer()` (just_audio) | C19 |
 | مسحُ رمز QR/باركود | `DeviceScan.code` — kit `scan` | `MobileScanner(` | C19 |
 | نصٌّ من صورة (لاتيني) | `DeviceScan.text` — kit `ocr` | `TextRecognizer(` (ML Kit) | C19 |
+| تشغيلُ فيديو | `AppVideoPlayer` — kit `video` | `VideoPlayerController` | C19 |
+| شريطُ تشغيل (أيّ مشغّل) | `PlaybackBar` | `Slider` + وقتٌ يُكتب باليد | 👁 |
 | إذنٌ تطلبه kit | `ensureKitReady(contract.availability, permissions)` ثم `showKitReadiness` | طلبٌ داخل الـkit · رسالةٌ لكل ودجة | 👁 |
 
 **والطرفيات الثقيلة — صوت · فيديو · مسح · كتابة يدوية · أوامر النظام — ليست هنا**:

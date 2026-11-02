@@ -971,4 +971,8 @@ abstract class LocaleKeys {
   static const showcaseScanCode = 'showcaseScanCode';
   static const showcaseScanNothing = 'showcaseScanNothing';
   static const showcaseScanText = 'showcaseScanText';
+  static const videoCannotPlay = 'videoCannotPlay';
+  static const showcaseVideo = 'showcaseVideo';
+  static const showcaseVideoSample = 'showcaseVideoSample';
+  static const showcaseVideoBar = 'showcaseVideoBar';
 }

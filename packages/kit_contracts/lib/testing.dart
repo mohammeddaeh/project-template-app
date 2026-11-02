@@ -203,3 +203,66 @@ class FakeTextRecognizer implements TextRecognizer {
     return text;
   }
 }
+
+/// A video player that moves only when told, like [FakeAudioPlayback].
+class FakeVideoPlayback implements VideoPlayback {
+  FakeVideoPlayback({
+    this.info = const VideoInfo(
+      aspectRatio: 16 / 9,
+      duration: Duration(seconds: 12),
+    ),
+  });
+
+  VideoInfo? info;
+  String? opened;
+  bool playing = false;
+  bool disposed = false;
+  final _states = StreamController<PlaybackState>.broadcast();
+
+  void emit(PlaybackState state) => _states.add(state);
+
+  @override
+  Future<VideoInfo?> open(String source) async {
+    opened = source;
+    return info;
+  }
+
+  @override
+  Widget get surface => const SizedBox.expand(key: Key('fake-video'));
+
+  @override
+  Future<void> play() async {
+    playing = true;
+    emit(
+      PlaybackState(
+        position: Duration.zero,
+        duration: info?.duration,
+        playing: true,
+      ),
+    );
+  }
+
+  @override
+  Future<void> pause() async {
+    playing = false;
+    emit(
+      PlaybackState(
+        position: Duration.zero,
+        duration: info?.duration,
+        playing: false,
+      ),
+    );
+  }
+
+  @override
+  Future<void> seek(Duration position) async {}
+
+  @override
+  Stream<PlaybackState> get states => _states.stream;
+
+  @override
+  Future<void> dispose() async {
+    disposed = true;
+    await _states.close();
+  }
+}

@@ -1,6 +1,6 @@
 # حِزَم الأجهزة (Device Kits) — الخطة
 
-> **الحالة: ◐ K0 · K1 · K2 · K3 ✅ (2026-11-01) — `voice` · `audio` · `scan` · `ocr` مركّبة بالقالب. التالي K4 video.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
+> **الحالة: ◐ K0 · K1 · K2 · K3 · K4 ✅ (2026-11-02) — `voice` · `audio` · `scan` · `ocr` · `video` مركّبة بالقالب. التالي K5 system.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
 > الهدف: الصوت والفيديو والمسح والكتابة اليدوية وأوامر النظام — **كلٌّ في حزمةٍ
 > منفصلة يركّبها المشروع حين يحتاجها**، لا تبعياتٌ تُشحن مع كل مشروع.
 
@@ -150,7 +150,7 @@ dart run scripts/kit.dart remove voice    # يزيل
 | **K1** ✅ | voice | `SpeechInput` · `SpeechOutput` · `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` · `ensureKitReady` · فصلُ «الطرفيات» بالمرآة | K0 |
 | **K2** ✅ | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات (`AttachmentPreview` · `CapturedPhoto.isAudio`) | K0 |
 | **K3** ✅ | scan · ocr | `CodeScanner` (kit `scan`) · `TextRecognizer` (kit `ocr` — انفصلت للحجم) · `DeviceScan` · ~~`DocumentScanner`~~ أُلغي | K0 |
-| **K4** | video | `VideoPlayback` · `AppVideoPlayer` · المعاينة | K0 |
+| **K4** ✅ | video | `VideoPlayback` · `AppVideoPlayer` · `PlaybackBar` المشترك · المعاينة (`CapturedPhoto.isVideo`) | K0 |
 | **K5** | system | `AppShortcuts` · `HomeWidgetBridge` · `ReviewPrompt` | K0 · deep links |
 | **K6** | ink | `InkRecognizer` · `SignaturePad` | K0 |
 
@@ -266,3 +266,12 @@ ML Kit Document Scanner وحدةٌ تُنزَّل عبر Play services: فشلت
 
 **القرار**: إلغاء الميزة الآن بدل رفع Flutter أو نسخ حزمةٍ تُصان بالقالب. يُعاد فتحه بـ`flutter_edge_detection`
 حين يُرفع Flutter، أو بـ`paper_document_scanner` حين يصل 3.44 — ويُقاس حجم OpenCV قبل القرار.
+
+### K4 — video ✅ (2026-11-02)
+
+- `video_player` 2.10.1 (`video_player_android` 2.9.5 — AGP 8.13.1 محفوظ · minSdk 24).
+- **شريطُ التشغيل استُخرج من `AudioPlayerTile`** إلى `PlaybackBar` يرسمه الصوت والفيديو — فإصلاحا K2
+  (طولٌ مجهول · انقلابُ «الموضع / الطول») يسريان على الفيديو بلا نسخ.
+- مثالُ المرآة يشغّل مقطع Flutter نفسه (`assets-for-api-docs/…/butterfly.mp4`)، ومثالٌ ثانٍ للشريط وحده
+  بمؤقّت.
+- ⬜ **التجربة على الجهاز** — الجهاز كان على تطبيقٍ آخر قيد الاستعمال.

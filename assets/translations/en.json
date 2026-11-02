@@ -955,5 +955,9 @@
   "showcaseScan": "Scanning",
   "showcaseScanCode": "Scan a code",
   "showcaseScanNothing": "Nothing yet",
-  "showcaseScanText": "Pick an image and read its text"
+  "showcaseScanText": "Pick an image and read its text",
+  "videoCannotPlay": "This video can't be played",
+  "showcaseVideo": "Video",
+  "showcaseVideoSample": "A short clip from the network",
+  "showcaseVideoBar": "The bar alone — for a player you build"
 }

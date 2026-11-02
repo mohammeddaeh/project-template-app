@@ -14,6 +14,7 @@ import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/widgets/media/captured_photo.dart';
 import 'package:app_template/ui/widgets/media/captured_photo_viewer.dart';
 import 'package:app_template/ui/widgets/audio/audio_player_tile.dart';
+import 'package:app_template/ui/widgets/video/app_video_player.dart';
 import 'package:app_template/ui/widgets/dialogs/app_bottom_sheet.dart';
 import 'package:kit_contracts/kit_contracts.dart';
 
@@ -24,6 +25,7 @@ import 'package:kit_contracts/kit_contracts.dart';
 /// | صورةٌ لها بايتات (قرصٌ أو base64) | [CapturedPhotoViewer] — تكبيرٌ وبياناتُها أسفلها |
 /// | صورةٌ يملكها الخادم | نفسُ الحوار، **والبايتاتُ تنزل داخله** — راجع `CapturedPhotoImage.download` |
 /// | تسجيلٌ صوتيّ وkit `audio` مركّبة | ورقةٌ فيها [AudioPlayerTile] — يُشغَّل بالتطبيق |
+/// | مقطعُ فيديو وkit `video` مركّبة | ورقةٌ فيها [AppVideoPlayer] — يُشغَّل بالتطبيق |
 /// | مستندٌ له بايتات (PDF · DWG · …) | يُفتح بتطبيق النظام — [FileService.open] |
 /// | مستندٌ يملكه الخادم | **يُنزَّل ثم يُفتح** — [ServerFileCache]، ومرّةً واحدة |
 /// | بلا بايتاتٍ على الجهاز | **رسالةٌ تقول لماذا** — لا حوارٌ فارغ ولا صمت |
@@ -88,6 +90,16 @@ abstract final class AttachmentPreview {
                   LocaleKeys.attachmentMissingLocally.tr(),
                 );
       }
+      return;
+    }
+
+    if (photo.isVideo && getIt.isRegistered<VideoPlayback>()) {
+      await AppBottomSheet.show<void>(
+        context,
+        title: photo.label,
+        isScrollable: false,
+        child: AppVideoPlayer(source: file.path),
+      );
       return;
     }
 
@@ -196,6 +208,9 @@ abstract final class AttachmentPreview {
         'application/pdf' => '.pdf',
         'audio/mp4' || 'audio/m4a' || 'audio/x-m4a' => '.m4a',
         'audio/mpeg' => '.mp3',
+        'video/mp4' => '.mp4',
+        'video/quicktime' => '.mov',
+        'video/webm' => '.webm',
         'audio/aac' => '.aac',
         'audio/wav' || 'audio/x-wav' => '.wav',
         'image/jpeg' || 'image/jpg' => '.jpg',

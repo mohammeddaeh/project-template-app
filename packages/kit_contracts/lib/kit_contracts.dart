@@ -11,5 +11,6 @@ export 'src/audio/audio_recorder.dart';
 export 'src/kit_availability.dart';
 export 'src/scan/code_scanner.dart';
 export 'src/scan/text_recognizer.dart';
+export 'src/video/video_playback.dart';
 export 'src/voice/speech_input.dart';
 export 'src/voice/speech_output.dart';

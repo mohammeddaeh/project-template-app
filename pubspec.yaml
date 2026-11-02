@@ -19,6 +19,8 @@ dependencies:
   #=== DEVICE KITS — dart run scripts/kit.dart (packages/) ===#
   kit_contracts:
     path: packages/kit_contracts
+  kit_video:
+    path: packages/kit_video
   kit_ocr:
     path: packages/kit_ocr
   kit_scan:

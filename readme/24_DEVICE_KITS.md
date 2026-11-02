@@ -116,6 +116,7 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 | `audio` | `AudioRecorder` · `AudioPlayback` (مصنع: مشغّلٌ لكل طالب) | `VoiceNoteRecorder` · `AudioPlayerTile` · `AttachmentPreview` يشغّل المرفق الصوتيّ بالتطبيق — [§43](widgets/04_display.md) | `microphone` |
 | `scan` | `CodeScanner` | `DeviceScan.code` — [§44](widgets/02_inputs.md) | `camera` |
 | `ocr` | `TextRecognizer` | `DeviceScan.text` — **لاتينيّ وحده، لا عربي** | — |
+| `video` | `VideoPlayback` (مصنع) | `AppVideoPlayer` · `AttachmentPreview` يشغّل مرفق الفيديو بالتطبيق — [§45](widgets/04_display.md) | — |
 
 **والحجم يقرّر الحدود** — release arm64، تطبيقُ القالب بلا kit = 30.3MB:
 
