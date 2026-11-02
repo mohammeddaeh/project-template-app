@@ -443,15 +443,17 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 
 الاختبار: `test/motion_test.dart`.
 
-### R42 · كل ودجةٍ بالمكتبة لها مثالٌ بالجولة 🔒
+### R42 · كل ودجةٍ عامّة لها مكانٌ بالجولة 🔒
 
-ما دام `lib/modules/showcase/` موجوداً، كلُّ صنفٍ عامّ بملفٍّ يصدّره `widgets.dart` يظهر
-بمثالٍ حيّ بصفحةٍ من صفحات الجولة — أو بسطرٍ مسبَّبٍ بـ`_exempt` في الاختبار.
+ما دام `lib/modules/showcase/` موجوداً، كلُّ صنفٍ عامّ بملفٍّ يصدّره `widgets.dart`، **وكلُّ
+ودجةٍ عامّة بـ`lib/ui/` و`lib/modules/`**، تظهر بالجولة: بمثالٍ حيّ، أو — لودجة موديولٍ
+تحتاج خادماً — باسمها نداءً بجانب محاكاتها بصفحة موديولها، أو بسطرٍ مسبَّبٍ بـ`_exempt`.
 
 > **لماذا**: الجولة مرآةُ القالب. ودجةٌ تُضاف للمكتبة بلا مثال تجعل المرآة تعرض أقلَّ
 > مما يملكه القالب، ولا يلاحظ أحد — فيكتبها المطوّر ثانيةً لأنه لم يرها.
 
-الاختبار: `test/modules/showcase_test.dart` — «every public class of the widget library…».
+الاختبار: `test/modules/showcase_test.dart` — «every public class of the widget library…» و
+«every public widget in lib/ui/ and lib/modules/…».
 والمشروعُ الذي يحذف الجولة يحذف اختبارها معها ([`SETUP.md`](../../lib/modules/showcase/SETUP.md)).
 
 ### R43 · حِزَم الأجهزة منفصلة — التطبيق يعرف العقد وحده 🔒
@@ -546,7 +548,7 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] R39  check_docs بلا رابطٍ معطوب
 [ ] R40  بحثتُ بـ06_CAPABILITIES قبل كتابة أداة — والناقص وُسِّع بمكانه
 [ ] R41  كل حركةٍ مدّتها من AppMotion.of(context) — صفرٌ مع «تقليل الحركة»
-[ ] R42  ودجةٌ جديدة بالمكتبة لها مثالٌ بصفحةٍ من lib/modules/showcase/
+[ ] R42  ودجةٌ عامّة جديدة (المكتبة · lib/ui · موديول) لها مكانٌ بصفحةٍ من lib/modules/showcase/
 [ ] R43  حزمةٌ بكودٍ أصليٍّ ثقيل kit بـpackages/ — و lib/ يعرف kit_contracts وحده
 [ ] R44  core/ و ui/ لا يستوردان token_inspector — المنفذ والمرحِّل و AppOverlays
 [ ] 🪤   فخٌّ جديد بمكتبة؟ علَّق عليه بموضعه + صفٌّ بجدول §🪤

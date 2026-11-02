@@ -5,6 +5,9 @@ import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
+import 'package:app_template/ui/theme/app_motion.dart';
+import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -107,7 +110,8 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
         DemoBlock(
           code:
               'AppFeatures.offlineSync · SyncManagerCubit · '
-              'SyncProgressOverlay(done:, total:)',
+              'SyncProgressOverlay(done:, total:) · '
+              'AppBar(actions: [PendingChangesChip()])',
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 220),
             // The overlay fills a Stack — here this block, in an app the page.
@@ -196,6 +200,92 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
           ),
         ),
         DemoBlock(
+          code:
+              'SyncUiHost(child: …) → '
+              'SyncStatusBanner(position: BannerPosition.top)',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                LocaleKeys.showcaseSyncBannerHint.tr(),
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colors.textMuted,
+                ),
+              ),
+              12.heightBox,
+              AnimatedSwitcher(
+                duration: AppMotion.of(context).base,
+                child: _offline
+                    ? _BannerPreview(
+                        key: const ValueKey('offline'),
+                        icon: Icons.cloud_off_rounded,
+                        message: LocaleKeys.noInternetConnection.tr(),
+                        color: colors.stateError,
+                      )
+                    : _pending > 0
+                    ? _BannerPreview(
+                        key: const ValueKey('pending'),
+                        icon: Icons.sync_rounded,
+                        message: LocaleKeys.showcaseSyncPending.tr(
+                          args: ['$_pending'],
+                        ),
+                        color: colors.statusWarningFg,
+                      )
+                    : Text(
+                        LocaleKeys.showcaseSyncBannerHidden.tr(),
+                        key: const ValueKey('hidden'),
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: colors.textMuted,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+        DemoBlock(
+          code:
+              "AttachmentsSection(entityName: 'notes', entityLocalId: …) "
+              '→ AttachmentView(attachmentId:)',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                LocaleKeys.showcaseSyncAttachmentsHint.tr(),
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colors.textMuted,
+                ),
+              ),
+              12.heightBox,
+              Row(
+                children: [
+                  for (final (icon, label, tone) in [
+                    (Icons.image_outlined, '', colors.primary),
+                    (
+                      Icons.cloud_off_rounded,
+                      LocaleKeys.attachmentOfflineUnavailable.tr(),
+                      colors.textMuted,
+                    ),
+                    (
+                      Icons.error_outline_rounded,
+                      LocaleKeys.attachmentFailed.tr(),
+                      colors.stateError,
+                    ),
+                  ]) ...[
+                    Expanded(
+                      child: _AttachmentState(
+                        icon: icon,
+                        label: label,
+                        color: tone,
+                      ),
+                    ),
+                    if (icon != Icons.error_outline_rounded) 8.widthBox,
+                  ],
+                ],
+              ),
+            ],
+          ),
+        ),
+        DemoBlock(
           code: 'lib/modules/sync/STATUS.md',
           child: Text(
             LocaleKeys.showcaseSyncRealNote.tr(),
@@ -207,4 +297,90 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
       ],
     );
   }
+}
+
+/// One of the three states [AttachmentView] resolves to — on disk, not here
+/// while offline (neutral, not an error), and a real failure.
+class _AttachmentState extends StatelessWidget {
+  const _AttachmentState({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.screen;
+    return Container(
+      height: s.size(110),
+      padding: EdgeInsets.all(s.space(6)),
+      decoration: BoxDecoration(
+        color: context.colors.bgNeutral,
+        borderRadius: AppRadius.smRadius,
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: s.size(28)),
+          if (label.isNotEmpty) ...[
+            SizedBox(height: s.space(6)),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: context.textTheme.bodySmall?.copyWith(color: color),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// What `SyncStatusBanner` draws for the simulation's state — offline, or
+/// changes waiting. The real one reads `OfflineUxCubit`, which lives with the
+/// sync module and is not built here.
+class _BannerPreview extends StatelessWidget {
+  const _BannerPreview({
+    required this.icon,
+    required this.message,
+    required this.color,
+    super.key,
+  });
+
+  final IconData icon;
+  final String message;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: AppRadius.smRadius,
+    child: ColoredBox(
+      color: color.withValues(alpha: 0.15),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            Icon(icon, size: 16, color: color),
+            8.widthBox,
+            Expanded(
+              child: Text(
+                message,
+                style: context.textTheme.labelMedium?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }

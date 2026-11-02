@@ -635,6 +635,55 @@ class CodegenLoader extends AssetLoader {
     "showcaseScreenSimWidth": "العرض المحاكى",
     "showcaseScreenThisScreen": "هذه الشاشة",
     "showcaseScreenBase": "القيمة الأساسية",
+    "showcaseScreenBuilderHint":
+        "حين يتغيّر التركيب لا الرقم وحده: عمودٌ واحد على الهاتف، وجنباً إلى جنب من اللوح فما فوق.",
+    "showcaseScreenPaneList": "القائمة",
+    "showcaseScreenPaneDetail": "التفاصيل",
+    "showcaseSyncBannerHint":
+        "اللافتة التي يضعها SyncUiHost فوق الشاشة، تتبع المفتاح أعلاه: دون اتصال، أو تغييراتٌ تنتظر الإرسال.",
+    "showcaseSyncBannerHidden": "متصلٌ ولا شيء ينتظر — اللافتة تختفي وحدها.",
+    "showcaseSyncAttachmentsHint":
+        "الحالات الثلاث التي ينتهي إليها المرفق: على الجهاز، وغير متاحٍ دون اتصال (محايدٌ — ليس خطأ)، وفشلٌ حقيقيّ بإعادة محاولة.",
+    "showcaseAccessResource": "الملاحظات",
+    "showcaseAccessMatrixHint": "علّم وألغِ للدور «{}» — والأزرار أعلاه تتبعه.",
+    "showcaseDtColTitle": "العنوان",
+    "showcaseDtColAmount": "المبلغ",
+    "showcaseDtFixHint": "اضغط خليّةً لتصحيحها، والأعداد تتبعها.",
+    "showcaseDtFailed": "تعذّر الوصول إلى الخادم",
+    "showcaseDevicesSim": "الأجهزة المرتبطة",
+    "showcaseDevicesRealNote":
+        "الشاشة الحقيقية تقرأ جلسات الحساب من الخادم، والجلسة المنهاة هناك تُرفض بأوّل طلبٍ تالٍ من جهازها.",
+    "showcaseGuardSim": "قفل الجلسة",
+    "showcaseGuardUnlocked": "مفتوح",
+    "showcaseGuardLockHint": "يُقفل التطبيق بعد {} دقائق بالخلفية — أو الآن:",
+    "showcaseGuardLockNow": "أقفل الآن",
+    "showcaseGuardAttempts": "محاولاتٌ خاطئة: {} من {}",
+    "showcaseGuardSignedOut":
+        "محاولاتٌ خاطئة كثيرة — سُجّل الخروج. أنشئ رقماً جديداً.",
+    "showcaseGuardRealNote":
+        "الموديول الحقيقي لا يحفظ إلا بصمةً مملّحة للرقم بالتخزين الآمن، ويُغلِّف القشرة بـSessionGuardGate.",
+    "showcaseNotifSim": "مركز الإشعارات",
+    "showcaseNotifTitle": "إشعار {}",
+    "showcaseNotifBody": "اضغط لتعليمه مقروءاً",
+    "showcaseNotifArrive": "وصل إشعار",
+    "showcaseNotifRealNote":
+        "القائمة الحقيقية تمتلئ وحدها من الإشعارات الواصلة والتطبيق مفتوح، وتُحفظ على الجهاز.",
+    "showcaseUpdatesSim": "تحديثات التطبيق",
+    "showcaseUpdatesInstalled": "النسخة المثبّتة",
+    "showcaseUpdatesServed": "النسخة على الخادم",
+    "showcaseUpdatesCheck": "تحقّق من التحديثات",
+    "showcaseUpdatesUpToDate": "محدَّث — لا تنبيه",
+    "showcaseUpdatesWouldOpen": "هنا تُفتح صفحة المتجر",
+    "showcaseUpdatesRealNote":
+        "على أندرويد يجرّب الموديول تحديث Google Play الأصليّ أولاً؛ وهذا الحوار ما يظهر حين يتعذّر، وعلى iOS.",
+    "showcaseInspectorSim": "مفتّش التوكن",
+    "showcaseInspectorSignIn": "دخول",
+    "showcaseInspectorRefresh": "تجديد التوكن",
+    "showcaseInspectorOffline": "بلا شبكة",
+    "showcaseInspectorRefused": "الخادم يرفض",
+    "showcaseInspectorEmpty": "لا أحداث بعد",
+    "showcaseInspectorRealNote":
+        "أداةٌ للمطوّر: زرٌّ عائم فوق كل الشاشات بنسخ التطوير، مخفيٌّ بنسخة prod — وbuild_apk.dart يعدّد آثاره قبل بناء الإصدار.",
     "showcaseFormatsPick": "اختر تاريخاً",
     "showcaseFormatsPrevDay": "اليوم السابق",
     "showcaseFormatsNextDay": "اليوم التالي",
@@ -1723,6 +1772,58 @@ class CodegenLoader extends AssetLoader {
     "showcaseScreenSimWidth": "Simulated width",
     "showcaseScreenThisScreen": "This screen",
     "showcaseScreenBase": "Base value",
+    "showcaseScreenBuilderHint":
+        "When the layout changes, not just a number: one column on a phone, side by side from a tablet up.",
+    "showcaseScreenPaneList": "List",
+    "showcaseScreenPaneDetail": "Details",
+    "showcaseSyncBannerHint":
+        "The banner SyncUiHost puts above a screen, following the switch above: offline, or changes waiting to send.",
+    "showcaseSyncBannerHidden":
+        "Online with nothing waiting — the banner hides itself.",
+    "showcaseSyncAttachmentsHint":
+        "The three states an attachment resolves to: on the device, not available offline (neutral — not an error), and a real failure with a retry.",
+    "showcaseAccessResource": "Notes",
+    "showcaseAccessMatrixHint":
+        "Tick and untick for the role «{}» — the buttons above follow.",
+    "showcaseDtColTitle": "Title",
+    "showcaseDtColAmount": "Amount",
+    "showcaseDtFixHint": "Tap a cell to fix it, and the counts follow.",
+    "showcaseDtFailed": "The server could not be reached",
+    "showcaseDevicesSim": "Linked devices",
+    "showcaseDevicesRealNote":
+        "The real screen reads the account's sessions from the server; a session ended there is refused on that device's next request.",
+    "showcaseGuardSim": "Session lock",
+    "showcaseGuardUnlocked": "Unlocked",
+    "showcaseGuardLockHint":
+        "The app locks after {} minutes in the background — or now:",
+    "showcaseGuardLockNow": "Lock now",
+    "showcaseGuardAttempts": "Wrong attempts: {} of {}",
+    "showcaseGuardSignedOut":
+        "Too many wrong attempts — signed out. Create a new PIN.",
+    "showcaseGuardRealNote":
+        "The real module keeps only a salted hash of the PIN in secure storage, and wraps the shell in SessionGuardGate.",
+    "showcaseNotifSim": "Notification center",
+    "showcaseNotifTitle": "Notification {}",
+    "showcaseNotifBody": "Tap to mark it read",
+    "showcaseNotifArrive": "A notification arrives",
+    "showcaseNotifRealNote":
+        "The real list fills itself from pushes received while the app is open, and is kept on the device.",
+    "showcaseUpdatesSim": "App updates",
+    "showcaseUpdatesInstalled": "Installed version",
+    "showcaseUpdatesServed": "Version on the server",
+    "showcaseUpdatesCheck": "Check for updates",
+    "showcaseUpdatesUpToDate": "Up to date — no prompt",
+    "showcaseUpdatesWouldOpen": "The store page would open here",
+    "showcaseUpdatesRealNote":
+        "On Android the module tries Google Play's native update first; this dialog is what shows when it cannot, and on iOS.",
+    "showcaseInspectorSim": "Token inspector",
+    "showcaseInspectorSignIn": "Sign in",
+    "showcaseInspectorRefresh": "Refresh token",
+    "showcaseInspectorOffline": "No network",
+    "showcaseInspectorRefused": "Server refuses",
+    "showcaseInspectorEmpty": "No events yet",
+    "showcaseInspectorRealNote":
+        "A developer tool: a floating button over every screen in dev builds, hidden in a prod release — and build_apk.dart lists its traces before a release build.",
     "showcaseFormatsPick": "Pick a date",
     "showcaseFormatsPrevDay": "Previous day",
     "showcaseFormatsNextDay": "Next day",

@@ -1,9 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/call_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/extensions/bottomsheet_extension.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -26,6 +28,7 @@ class _DialogsDemoState extends State<DialogsDemo> {
   String? _confirmResult;
   String? _sheetResult;
   String? _filterResult;
+  String? _baseResult;
 
   // The filter sheet edits a copy; the page keeps what was applied and hands
   // it back on the next open.
@@ -141,6 +144,31 @@ class _DialogsDemoState extends State<DialogsDemo> {
           _filterResult = LocaleKeys.showcaseDialogsFilterReset.tr();
         });
       },
+    );
+  }
+
+  /// The older sheet: an extension on [BuildContext] that wraps its content
+  /// in [BaseBottomSheet] — a list of actions here, each closing the sheet.
+  void _baseSheet() {
+    context.showAppBottomSheet(
+      title: LocaleKeys.showcaseDialogsPickTitle.tr(),
+      size: AppBottomSheetSize.compact,
+      actions: [
+        for (var n = 1; n <= 3; n++)
+          Builder(
+            builder: (sheet) => Padding(
+              padding: 8.bottomPadding,
+              child: AppButton(
+                text: _item(n),
+                variant: AppButtonVariant.outlined,
+                onTap: () {
+                  Navigator.of(sheet).pop();
+                  if (mounted) setState(() => _baseResult = _item(n));
+                },
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -279,6 +307,19 @@ class _DialogsDemoState extends State<DialogsDemo> {
               text: LocaleKeys.showcaseDialogsOpenFilter.tr(),
               variant: AppButtonVariant.tonal,
               onTap: () => _filters(a),
+            ),
+          ),
+        ),
+        DemoBlock(
+          code:
+              'context.showAppBottomSheet(title:, size: AppBottomSheetSize.compact, '
+              'actions: […]) → BaseBottomSheet',
+          child: _Result(
+            result: _baseResult,
+            child: AppButton(
+              text: LocaleKeys.showcaseDialogsOpen.tr(),
+              variant: AppButtonVariant.tonal,
+              onTap: _baseSheet,
             ),
           ),
         ),

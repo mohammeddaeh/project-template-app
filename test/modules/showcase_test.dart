@@ -90,12 +90,7 @@ void main() {
           names.add(c[1]!);
         }
       }
-      final tour = Directory('lib/modules/showcase')
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where((f) => f.path.endsWith('.dart'))
-          .map((f) => f.readAsStringSync())
-          .join('\n');
+      final tour = _tourSource();
       final missing = [
         for (final n in names)
           if (!_exempt.containsKey(n) && !RegExp('\\b$n\\b').hasMatch(tour)) n,
@@ -109,6 +104,55 @@ void main() {
       );
     },
   );
+
+  test('every public widget in lib/ui/ and lib/modules/ appears in the tour', () {
+    // The library barrel is not all there is: shared UI outside
+    // lib/ui/widgets/ and each module's widgets ship with the template too,
+    // and a mirror that skips them shows less than it has.
+    final names = <String>{};
+    for (final root in ['lib/ui', 'lib/modules']) {
+      for (final f in Directory(root).listSync(recursive: true)) {
+        final path = f.path.replaceAll(r'\', '/');
+        if (f is! File ||
+            !path.endsWith('.dart') ||
+            path.startsWith('lib/modules/showcase/') ||
+            path.endsWith('.g.dart') ||
+            path.endsWith('.freezed.dart')) {
+          continue;
+        }
+        for (final c in RegExp(
+          r'^(?:abstract |final |base )*class ([A-Z]\w*)\s+extends\s+(?:StatelessWidget|StatefulWidget)\b',
+          multiLine: true,
+        ).allMatches(f.readAsStringSync())) {
+          names.add(c[1]!);
+        }
+      }
+    }
+    final tour = _tourSource();
+    final missing = [
+      for (final n in names)
+        if (!_exempt.containsKey(n) && !RegExp('\\b$n\\b').hasMatch(tour)) n,
+    ]..sort();
+    expect(
+      missing,
+      isEmpty,
+      reason:
+          'add an example under lib/modules/showcase/presentation/pages/ '
+          '(a module page may name a server-bound widget in a DemoBlock), '
+          'or a reasoned line in _exempt',
+    );
+  });
+
+  test('every exemption names a widget that still exists', () {
+    final src = [
+      for (final root in ['lib/ui', 'lib/modules'])
+        for (final f in Directory(root).listSync(recursive: true))
+          if (f is File && f.path.endsWith('.dart')) f.readAsStringSync(),
+    ].join('\n');
+    for (final name in _exempt.keys) {
+      expect(src, matches(RegExp('class $name\\b')), reason: name);
+    }
+  });
 
   test('every playground control has its Arabic meaning', () {
     // KnobName builds the key at runtime ('showcaseKnob' + name), so neither
@@ -144,5 +188,23 @@ void main() {
   });
 }
 
-/// Library classes the tour does not show, each with its reason.
-const _exempt = <String, String>{};
+String _tourSource() => Directory('lib/modules/showcase')
+    .listSync(recursive: true)
+    .whereType<File>()
+    .where((f) => f.path.endsWith('.dart'))
+    .map((f) => f.readAsStringSync())
+    .join('\n');
+
+/// Widgets the tour does not show, each with its reason.
+const _exempt = <String, String>{
+  'ResponsiveScope':
+      'mounted once in MaterialApp.builder — every page of the tour renders '
+      'under it',
+  'AppOverlayHost':
+      'mounted once in MaterialApp.builder; it draws only the layers that '
+      'modules register',
+  'LocaleTileVariant': 'drawn by LocaleSwitcher.tile, which the tour shows',
+  'LocaleIconButtonVariant': 'drawn by LocaleSwitcher.iconButton',
+  'LocaleSegmentedVariant': 'drawn by LocaleSwitcher.segmented',
+  'LocaleTextToggleVariant': 'drawn by LocaleSwitcher.textToggle',
+};

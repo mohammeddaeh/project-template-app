@@ -1,11 +1,14 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/modules/access_control/domain/permission_catalog.dart';
+import 'package:app_template/modules/access_control/presentation/widgets/permission_matrix.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/resources/permission_keys.g.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -24,8 +27,8 @@ enum _Role { viewer, editor, admin }
 
 class _AccessSimDemoState extends State<AccessSimDemo> {
   /// The keys are the generated [PermKeys] — the same constants real code
-  /// passes to `Can`.
-  static const _grants = {
+  /// passes to `Can`. Each role's set is edited in place by the matrix below.
+  final _grants = {
     _Role.viewer: {PermKeys.notesView},
     _Role.editor: {
       PermKeys.notesView,
@@ -57,6 +60,44 @@ class _AccessSimDemoState extends State<AccessSimDemo> {
   };
 
   bool _can(String key) => _grants[_role]!.contains(key);
+
+  /// What `GET /authz/catalog` sends: one group per resource, one row per
+  /// action, each label in both languages. The server writes the labels; the
+  /// tour takes them from its own keys.
+  PermissionCatalog _catalog() {
+    LocalizedLabel label(String key) =>
+        LocalizedLabel(ar: key.tr(), en: key.tr());
+    PermissionDescriptor permission(String key, String labelKey) =>
+        PermissionDescriptor(
+          key: key,
+          action: key.split('.').last,
+          label: label(labelKey),
+          labelInferred: false,
+          implies: key == PermKeys.notesView ? const [] : [PermKeys.notesView],
+          synthetic: false,
+        );
+    return PermissionCatalog(
+      enforced: true,
+      groups: [
+        PermissionGroup(
+          resource: 'notes',
+          label: label(LocaleKeys.showcaseAccessResource),
+          labelInferred: false,
+          permissions: [
+            permission(PermKeys.notesView, LocaleKeys.showcaseAccessView),
+            permission(PermKeys.notesCreate, LocaleKeys.showcaseAdd),
+            permission(PermKeys.notesUpdate, LocaleKeys.edit),
+            permission(PermKeys.notesDelete, LocaleKeys.delete),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _toggle(String key) => setState(() {
+    final held = _grants[_role]!;
+    if (!held.remove(key)) held.add(key);
+  });
 
   static void _noop() {}
 
@@ -142,6 +183,49 @@ class _AccessSimDemoState extends State<AccessSimDemo> {
                       ),
                     ),
                   ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        DemoBlock(
+          code:
+              'AccessControlSection() → RolesScreen → RoleEditorScreen → '
+              'PermissionMatrix(catalog:, selected:, onToggle:, onToggleGroup:)',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                LocaleKeys.showcaseAccessMatrixHint.tr(
+                  args: [_roleLabel(_role)],
+                ),
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colors.textMuted,
+                ),
+              ),
+              8.heightBox,
+              // The matrix scrolls by itself — it fills a screen in the app.
+              SizedBox(
+                height: context.screen.size(380),
+                child: PermissionMatrix(
+                  catalog: _catalog(),
+                  selected: _grants[_role]!,
+                  onToggle: _toggle,
+                  onToggleGroup: (group, select) => setState(() {
+                    final keys = group.permissions.map((p) => p.key);
+                    if (select) {
+                      _grants[_role]!.addAll(keys);
+                    } else {
+                      _grants[_role]!.removeAll(keys);
+                    }
+                  }),
+                ),
+              ),
+              Text(
+                'UserAccessScreen(userId:) → PermissionMatrix(readOnly: true)',
+                textDirection: TextDirection.ltr,
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: colors.textMuted,
                 ),
               ),
             ],

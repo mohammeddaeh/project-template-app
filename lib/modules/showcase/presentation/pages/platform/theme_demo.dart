@@ -18,6 +18,27 @@ class ThemeDemo extends StatelessWidget {
         child: ThemeSwitcher(padding: EdgeInsets.zero),
       ),
       DemoBlock(code: 'LocaleSwitcher.tile', child: LocaleSwitcher.tile()),
+      DemoBlock(
+        code: 'LocaleSwitcher.iconButton',
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: LocaleSwitcher.iconButton(),
+        ),
+      ),
+      DemoBlock(
+        code: 'LocaleSwitcher.segmented',
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: LocaleSwitcher.segmented(),
+        ),
+      ),
+      DemoBlock(
+        code: 'LocaleSwitcher.textToggle',
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: LocaleSwitcher.textToggle(),
+        ),
+      ),
     ],
   );
 }

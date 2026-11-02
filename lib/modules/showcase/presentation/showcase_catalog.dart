@@ -19,7 +19,12 @@ import 'package:app_template/modules/showcase/presentation/pages/foundations/typ
 import 'package:app_template/modules/showcase/presentation/pages/modules/access_sim_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/auth_sim_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/data_transfer_sim_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/modules/devices_sim_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/modules/notifications_sim_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/modules/session_guard_sim_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sync_sim_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/modules/token_inspector_sim_demo.dart';
+import 'package:app_template/modules/showcase/presentation/pages/modules/updates_sim_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/motion/back_guard_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/motion/motion_demo.dart';
 import 'package:app_template/modules/showcase/presentation/pages/platform/connectivity_demo.dart';
@@ -249,6 +254,36 @@ abstract final class ShowcaseCatalog {
       LocaleKeys.showcaseSyncSim,
       Icons.sync,
       SyncSimDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.modules,
+      LocaleKeys.showcaseDevicesSim,
+      Icons.devices_outlined,
+      DevicesSimDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.modules,
+      LocaleKeys.showcaseGuardSim,
+      Icons.lock_outline,
+      SessionGuardSimDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.modules,
+      LocaleKeys.showcaseNotifSim,
+      Icons.notifications_outlined,
+      NotificationsSimDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.modules,
+      LocaleKeys.showcaseUpdatesSim,
+      Icons.system_update_outlined,
+      UpdatesSimDemo.new,
+    ),
+    ShowcasePage(
+      ShowcaseGroup.modules,
+      LocaleKeys.showcaseInspectorSim,
+      Icons.key_outlined,
+      TokenInspectorSimDemo.new,
     ),
     ShowcasePage(
       ShowcaseGroup.platform,

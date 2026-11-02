@@ -145,6 +145,49 @@ class _ScreenDemoState extends State<ScreenDemo> {
             ],
           ),
         ),
+        DemoBlock(
+          code: 'ResponsiveBuilder(builder: (context, screen) => …)',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              hint(LocaleKeys.showcaseScreenBuilderHint.tr()),
+              ResponsiveBuilder(
+                builder: (context, screen) {
+                  Widget pane(String label) => Container(
+                    height: 56,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: colors.primaryContainer,
+                      borderRadius: AppRadius.smRadius,
+                    ),
+                    child: Text(
+                      label,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: colors.onPrimaryContainer,
+                      ),
+                    ),
+                  );
+                  final list = pane(LocaleKeys.showcaseScreenPaneList.tr());
+                  final detail = pane(LocaleKeys.showcaseScreenPaneDetail.tr());
+                  // The composition changes, not a number: one column on a
+                  // phone, side by side from a tablet up.
+                  return screen.isTablet
+                      ? Row(
+                          children: [
+                            Expanded(child: list),
+                            8.widthBox,
+                            Expanded(flex: 2, child: detail),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [list, 8.heightBox, detail],
+                        );
+                },
+              ),
+            ],
+          ),
+        ),
         const _GapPlayground(),
         DemoBlock(
           code: 'SafeAreaWrapper(top:, bottom:, child:)',

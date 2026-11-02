@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/error/error_view.dart';
 import 'package:app_template/ui/error/failure_ui_mapper.dart';
 import 'package:app_template/ui/error/ui_action.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
+import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -148,6 +151,24 @@ class _FailuresDemoState extends State<FailuresDemo> {
           child: action is ShowError
               ? FailureStateView.compact(failure: failure, onRetry: onRetry)
               : _NothingDrawn(),
+        ),
+        DemoBlock(
+          code:
+              "context.router.push(ErrorRoute(message: …)) → ErrorView — "
+              "router.dart: '/error'",
+          child: ClipRRect(
+            borderRadius: AppRadius.mdRadius,
+            child: SizedBox(
+              height: context.screen.size(240),
+              // A whole page in a frame: its back button pops the real
+              // router, so the frame draws it without taking taps.
+              child: IgnorePointer(
+                child: ErrorView(
+                  message: action is ShowError ? action.message : null,
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );
