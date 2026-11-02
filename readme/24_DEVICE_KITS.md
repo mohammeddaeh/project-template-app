@@ -118,6 +118,9 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 | `ocr` | `TextRecognizer` | `DeviceScan.text` — **لاتينيّ وحده، لا عربي** | — |
 | `video` | `VideoPlayback` (مصنع) | `AppVideoPlayer` · `AttachmentPreview` يشغّل مرفق الفيديو بالتطبيق — [§45](widgets/04_display.md) | — |
 | `system` | `AppShortcuts` · `AppReview` | العقدان مباشرةً — §٨ | — |
+| `ink` | `InkRecognizer` (نموذجٌ لكل لغة يُنزَّل مرّة — `ar` · `en`) | `HandwritingInput` — [§46](widgets/02_inputs.md) | — |
+
+**والتوقيعُ ليس kit**: `SignaturePad` رسمٌ بـFlutter وحده — بالمكتبة، ويعمل بلا أي kit.
 
 **والحجم يقرّر الحدود** — release arm64، تطبيقُ القالب بلا kit = 30.3MB:
 
@@ -142,8 +145,10 @@ WeScan) يطلب Flutter أحدث، وتصونه يدٌ واحدة. التفصي
 ## ٨. أوامر النظام — `system`
 
 **اختصارُ الأيقونة مسارٌ لا أمر.** `AppShortcut(path: '/orders/new', title: …)` — والضغطةُ تصل
-`lib/app.dart` فيمرّرها لـ`navigatePath` **بعد أوّل إطار**: تمرّ بحرّاس الموجّه كأي رابطٍ عميق، وإقلاعٌ
-باردٌ من اختصارٍ يهبط فوق شاشة البدء لا يسابقها.
+`lib/app.dart` فيمرّرها لـ`pushPath` **فوق الشاشة الحالية**: تمرّ بحرّاس الموجّه كأي رابطٍ عميق، والرجوعُ يعيد للتطبيق.
+وإقلاعٌ باردٌ من اختصارٍ ينتظر أن يضع الموجّه شاشتَه الأولى — و`quick_actions` يسلّمه مرّتين على
+أندرويد، فالـkit يُسقط التكرار. ⛔ **لا `navigatePath`**: يعيد بناء المكدّس فيُغلق القشرة، وحارسُها
+يسأل «الخروج من التطبيق؟».
 
 ```dart
 await getIt<AppShortcuts>().setShortcuts([

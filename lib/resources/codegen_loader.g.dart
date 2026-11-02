@@ -1073,6 +1073,18 @@ class CodegenLoader extends AssetLoader {
         "المتجر متاح — قد تظهر ورقة التقييم، والمتجر يقرّر",
     "showcaseReviewUnavailable":
         "لا متجر على هذا الجهاز — لن تظهر ورقة التقييم",
+    "inkClear": "امسح",
+    "inkWriteHere": "اكتب هنا بإصبعك",
+    "inkRecognize": "حوّل الكتابة إلى نص",
+    "inkDownloadModel": "حمّل نموذج الكتابة ({}) — مرّة واحدة",
+    "inkDownloadFailed":
+        "تعذّر تحميل النموذج — يحتاج اتصالاً يصل إلى خوادم Google",
+    "inkNoMatch": "لم أتعرّف على الكتابة — اكتب بوضوح وحاول ثانيةً",
+    "inkFailed": "تعذّر التعرّف على الكتابة",
+    "showcaseInk": "الكتابة والتوقيع",
+    "showcaseSignatureHint": "وقّع هنا",
+    "showcaseSignatureSave": "احفظ التوقيع صورة",
+    "showcaseInkResult": "النص:",
   };
   static const Map<String, dynamic> _en = {
     "accessNotEnforced":
@@ -2163,6 +2175,18 @@ class CodegenLoader extends AssetLoader {
         "A store is present — the rating sheet may appear; the store decides",
     "showcaseReviewUnavailable":
         "No store on this device — the rating sheet won't appear",
+    "inkClear": "Clear",
+    "inkWriteHere": "Write here with your finger",
+    "inkRecognize": "Turn the writing into text",
+    "inkDownloadModel": "Download the handwriting model ({}) — once",
+    "inkDownloadFailed":
+        "Couldn't download the model — it needs a connection that reaches Google",
+    "inkNoMatch": "Couldn't read that — write clearly and try again",
+    "inkFailed": "Handwriting recognition failed",
+    "showcaseInk": "Handwriting & signature",
+    "showcaseSignatureHint": "Sign here",
+    "showcaseSignatureSave": "Save the signature as an image",
+    "showcaseInkResult": "Text:",
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ar": _ar,

@@ -7,6 +7,7 @@
 // kit:voice enabled textToSpeech
 import 'package:get_it/get_it.dart';
 import 'package:kit_audio/kit_audio.dart';
+import 'package:kit_ink/kit_ink.dart';
 import 'package:kit_ocr/kit_ocr.dart';
 import 'package:kit_scan/kit_scan.dart';
 import 'package:kit_system/kit_system.dart';
@@ -16,6 +17,7 @@ import 'package:kit_voice/kit_voice.dart';
 /// The device kits this app is built with.
 const installedKits = <String>[
   'audio',
+  'ink',
   'ocr',
   'scan',
   'system',
@@ -25,6 +27,7 @@ const installedKits = <String>[
 
 void registerKits(GetIt getIt) {
   registerAudioKit(getIt);
+  registerInkKit(getIt);
   registerOcrKit(getIt);
   registerScanKit(getIt);
   registerSystemKit(getIt);

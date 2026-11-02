@@ -8,6 +8,7 @@ library;
 
 export 'src/audio/audio_playback.dart';
 export 'src/audio/audio_recorder.dart';
+export 'src/ink/ink_recognizer.dart';
 export 'src/kit_availability.dart';
 export 'src/scan/code_scanner.dart';
 export 'src/scan/text_recognizer.dart';

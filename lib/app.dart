@@ -70,16 +70,12 @@ class _AppState extends State<App> {
 
     _authSub = AuthEventBus.instance.stream.listen(_handleAuthEvent);
 
-    // A launcher shortcut is a route path (`kit_system`): it goes through the
-    // router like a deep link, guards included. After the first frame, so a
-    // cold start through a shortcut lands on top of the start route rather
-    // than racing it.
+    // A launcher shortcut is a route path (`kit_system`), pushed through the
+    // router's guards like a deep link. Pushed, not navigated: navigating
+    // rebuilds the stack and pops the shell, whose back guard reads that as
+    // "exit the app?".
     if (getIt.isRegistered<AppShortcuts>()) {
-      _shortcutSub = getIt<AppShortcuts>().launches.listen(
-        (path) => WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _router.navigatePath(path),
-        ),
-      );
+      _shortcutSub = getIt<AppShortcuts>().launches.listen(_openShortcut);
     }
 
     // Started here rather than from a screen: the account must stay in step
@@ -102,6 +98,23 @@ class _AppState extends State<App> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _localeProvider.setLanguage(context.locale.languageCode);
+  }
+
+  /// On top of the start route, once the router has one: a cold start through
+  /// a shortcut arrives before the first route is placed, and a push then
+  /// lands underneath it — back would reveal a second, stray screen.
+  void _openShortcut(String path) {
+    if (_router.stack.isNotEmpty) {
+      _router.pushPath(path);
+      return;
+    }
+    void ready() {
+      if (_router.stack.isEmpty) return;
+      _router.removeListener(ready);
+      _router.pushPath(path);
+    }
+
+    _router.addListener(ready);
   }
 
   @override

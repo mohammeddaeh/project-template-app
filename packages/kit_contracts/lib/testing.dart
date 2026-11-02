@@ -302,3 +302,40 @@ class FakeAppReview implements AppReview {
     openedStoreWith = appStoreId;
   }
 }
+
+/// Answers [candidates] for any ink; the model is present when [hasIt].
+class FakeInkRecognizer implements InkRecognizer {
+  FakeInkRecognizer({
+    this.hasIt = true,
+    this.downloadSucceeds = true,
+    this.candidates = const ['hello'],
+  });
+
+  bool hasIt;
+  bool downloadSucceeds;
+  List<String>? candidates;
+  List<InkStroke>? lastInk;
+  String? lastLanguage;
+
+  @override
+  Future<KitAvailability> availability() async => const KitReady();
+
+  @override
+  Future<bool> hasModel(String languageCode) async => hasIt;
+
+  @override
+  Future<bool> downloadModel(String languageCode) async {
+    if (downloadSucceeds) hasIt = true;
+    return downloadSucceeds;
+  }
+
+  @override
+  Future<List<String>?> recognize(
+    List<InkStroke> strokes, {
+    required String languageCode,
+  }) async {
+    lastInk = strokes;
+    lastLanguage = languageCode;
+    return candidates;
+  }
+}

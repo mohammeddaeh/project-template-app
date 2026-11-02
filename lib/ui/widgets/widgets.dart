@@ -101,6 +101,8 @@ export 'wrappers/system_bar_style.dart';
 
 // Inputs
 export 'inputs/custom_text_field.dart';
+export 'inputs/handwriting_input.dart';
+export 'inputs/signature_pad.dart';
 export 'inputs/app_radio_group.dart';
 export 'inputs/app_search_bar.dart';
 export 'inputs/list_filter_bar.dart';

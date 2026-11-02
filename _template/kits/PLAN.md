@@ -1,6 +1,6 @@
 # حِزَم الأجهزة (Device Kits) — الخطة
 
-> **الحالة: ◐ K0 – K5 ✅ (2026-11-02) — `voice` · `audio` · `scan` · `ocr` · `video` · `system` مركّبة بالقالب. التالي K6 ink.** البند #17 بـ[`../roadmap.md`](../roadmap.md).
+> **الحالة: ✅ K0 – K6 (2026-11-02) — `voice` · `audio` · `scan` · `ocr` · `video` · `system` · `ink` مركّبة بالقالب. المفتوح: تجاربُ الجهاز (§٧).** البند #17 بـ[`../roadmap.md`](../roadmap.md).
 > الهدف: الصوت والفيديو والمسح والكتابة اليدوية وأوامر النظام — **كلٌّ في حزمةٍ
 > منفصلة يركّبها المشروع حين يحتاجها**، لا تبعياتٌ تُشحن مع كل مشروع.
 
@@ -151,8 +151,8 @@ dart run scripts/kit.dart remove voice    # يزيل
 | **K2** ✅ | audio | `AudioRecorder` · `AudioPlayback` · `VoiceNoteRecorder` · `AudioPlayerTile` · الربط بالمرفقات (`AttachmentPreview` · `CapturedPhoto.isAudio`) | K0 |
 | **K3** ✅ | scan · ocr | `CodeScanner` (kit `scan`) · `TextRecognizer` (kit `ocr` — انفصلت للحجم) · `DeviceScan` · ~~`DocumentScanner`~~ أُلغي | K0 |
 | **K4** ✅ | video | `VideoPlayback` · `AppVideoPlayer` · `PlaybackBar` المشترك · المعاينة (`CapturedPhoto.isVideo`) | K0 |
-| **K5** ✅ | system | `AppShortcuts` (الضغطة ⇐ `navigatePath`) · `AppReview` · ~~`HomeWidgetBridge`~~ ليس قدرةً قالبية | K0 · deep links |
-| **K6** | ink | `InkRecognizer` · `SignaturePad` | K0 |
+| **K5** ✅ | system | `AppShortcuts` (الضغطة ⇐ `pushPath`) · `AppReview` · ~~`HomeWidgetBridge`~~ ليس قدرةً قالبية | K0 · deep links |
+| **K6** ✅ | ink | `InkRecognizer` (kit) · `HandwritingInput` · `SignaturePad` + `InkController` (بالمكتبة — بلا kit) | K0 |
 
 K1…K6 مستقلّةٌ عن بعضها — **أيُّ ترتيبٍ بعد K0 يصحّ**، والمقترح أعلاه بحسب الطلب
 المتوقَّع.
@@ -269,6 +269,9 @@ ML Kit Document Scanner وحدةٌ تُنزَّل عبر Play services: فشلت
 
 ### K4 — video ✅ (2026-11-02)
 
+- ✅ **جُرِّب على الجهاز (2026-11-02)**: المقطعُ ينزل من الشبكة بإطاره الأول وطوله، واللمسةُ تشغّل،
+  والوقتُ يتقدّم والزرُّ يصير إيقافاً.
+
 - `video_player` 2.10.1 (`video_player_android` 2.9.5 — AGP 8.13.1 محفوظ · minSdk 24).
 - **شريطُ التشغيل استُخرج من `AudioPlayerTile`** إلى `PlaybackBar` يرسمه الصوت والفيديو — فإصلاحا K2
   (طولٌ مجهول · انقلابُ «الموضع / الطول») يسريان على الفيديو بلا نسخ.
@@ -279,8 +282,23 @@ ML Kit Document Scanner وحدةٌ تُنزَّل عبر Play services: فشلت
 ### K5 — system ✅ (2026-11-02)
 
 - `quick_actions` 1.1.0 · `in_app_review` 2.0.12 (Play review + `play-services-base` — طلبُ التقييم بلا متجر بلا معنى).
-- **الاختصار مسار**: `app.dart` يمرّر كلَّ ضغطةٍ لـ`navigatePath` بعد أوّل إطار، فتمرّ بحرّاس الموجّه.
+- **الاختصار مسار**: `app.dart` يمرّر كلَّ ضغطةٍ لـ`pushPath` بعد أوّل إطار، فتمرّ بحرّاس الموجّه.
   والإقلاعُ البارد من اختصار يُحفظ بالـkit حتى أوّل مستمع (مختبَر).
 - **ودجةُ الشاشة الرئيسية أُخرجت من K5**: XML أندرويد وامتدادُ WidgetKit يُكتبان لكل مشروع — قالبٌ
   يشحن ودجةً بعينها يشحن مثالاً لا قدرة.
+- ✅ **جُرِّب على الجهاز (2026-11-02)** — الاختصارُ يُسجَّل بالنظام، والإقلاعُ منه باردٌ ودافئ يفتح وجهته،
+  والرجوعُ يعيد للتطبيق. **وكشفت التجربة عطلين**:
+  ① `navigatePath` يعيد بناء المكدّس فيُغلق القشرة، وحارسُ رجوعها (`canPop: false`) يقرأ ذلك «خروجاً؟»
+  ⇐ صار `pushPath` فوق الشاشة الحالية.
+  ② **`quick_actions` يسلّم الإقلاعَ الباردَ مرّتين** (عند التهيئة ثم `onNewIntent`) فتُدفع الصفحة مرّتين
+  وتبقى نسخةٌ عالقة تحت الرجوع — ثبت بسجلّ. ⇐ الـkit يُسقط تكرار المسار نفسه خلال ثانيتين (مختبَر)،
+  و`app.dart` ينتظر أن يضع الموجّه شاشتَه الأولى قبل الدفع.
+
+### K6 — ink ✅ (2026-11-02)
+
+- `google_mlkit_digital_ink_recognition` 0.15.0 (`digital-ink-recognition` 19.0.0). **العربية مدعومة**؛ النموذج
+  يُنزَّل لكل لغة مرّةً بضغطةٍ معلَنة، و`isWifiRequired: false` لأن المستخدم طلبه للتوّ.
+- **التوقيعُ خرج من الـkit**: رسمٌ بـFlutter وحده (`SignaturePad` · `InkController.toPng`) — والقاعدة
+  «ما لا يحمل كوداً أصلياً ليس kit». والرسمُ نفسُه يغذّي المُعرِّف (نقاطٌ بأوقاتها).
+- **البناءُ الأول احتاج مستودع Google** (`digital-ink-recognition:19.0.0` غير محفوظ) — كـK2.
 - ⬜ **التجربة على الجهاز** — الجهاز كان على تطبيقٍ آخر قيد الاستعمال.

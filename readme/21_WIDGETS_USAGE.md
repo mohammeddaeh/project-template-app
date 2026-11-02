@@ -72,6 +72,7 @@
 | `VoiceNoteRecorder` · `AudioPlayerTile` | تسجيل · تشغيل · kit | [§43](widgets/04_display.md) |
 | `DeviceScan` | مسح · kit | [§44](widgets/02_inputs.md) |
 | `AppVideoPlayer` · `PlaybackBar` | فيديو · kit · شريط تشغيل مشترك | [§45](widgets/04_display.md) |
+| `SignaturePad` · `InkController` · `HandwritingInput` | توقيع · كتابة يدوية (kit) | [§46](widgets/02_inputs.md) |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 

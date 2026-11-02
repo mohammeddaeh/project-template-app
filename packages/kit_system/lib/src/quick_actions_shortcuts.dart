@@ -24,7 +24,24 @@ class QuickActionsShortcuts implements AppShortcuts {
   late final StreamController<String> _launches;
   String? _pending;
 
+  /// Android delivers a cold start twice — once when the plugin initialises,
+  /// again through `onNewIntent` — and a second push stacks the page twice.
+  /// A tap is never repeated this fast, so a repeat inside the window is the
+  /// same launch.
+  static const _sameLaunch = Duration(seconds: 2);
+  String? _lastPath;
+  DateTime? _lastAt;
+
   void _onLaunch(String path) {
+    final now = DateTime.now();
+    final last = _lastAt;
+    if (path == _lastPath &&
+        last != null &&
+        now.difference(last) < _sameLaunch) {
+      return;
+    }
+    _lastPath = path;
+    _lastAt = now;
     if (_launches.hasListener) {
       _launches.add(path);
     } else {

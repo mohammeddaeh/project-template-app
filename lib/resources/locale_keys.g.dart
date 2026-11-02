@@ -984,4 +984,15 @@ abstract class LocaleKeys {
   static const showcaseReviewStore = 'showcaseReviewStore';
   static const showcaseReviewAvailable = 'showcaseReviewAvailable';
   static const showcaseReviewUnavailable = 'showcaseReviewUnavailable';
+  static const inkClear = 'inkClear';
+  static const inkWriteHere = 'inkWriteHere';
+  static const inkRecognize = 'inkRecognize';
+  static const inkDownloadModel = 'inkDownloadModel';
+  static const inkDownloadFailed = 'inkDownloadFailed';
+  static const inkNoMatch = 'inkNoMatch';
+  static const inkFailed = 'inkFailed';
+  static const showcaseInk = 'showcaseInk';
+  static const showcaseSignatureHint = 'showcaseSignatureHint';
+  static const showcaseSignatureSave = 'showcaseSignatureSave';
+  static const showcaseInkResult = 'showcaseInkResult';
 }

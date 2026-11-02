@@ -968,5 +968,16 @@
   "showcaseReviewRequest": "Ask for a rating",
   "showcaseReviewStore": "The app's store page",
   "showcaseReviewAvailable": "A store is present — the rating sheet may appear; the store decides",
-  "showcaseReviewUnavailable": "No store on this device — the rating sheet won't appear"
+  "showcaseReviewUnavailable": "No store on this device — the rating sheet won't appear",
+  "inkClear": "Clear",
+  "inkWriteHere": "Write here with your finger",
+  "inkRecognize": "Turn the writing into text",
+  "inkDownloadModel": "Download the handwriting model ({}) — once",
+  "inkDownloadFailed": "Couldn't download the model — it needs a connection that reaches Google",
+  "inkNoMatch": "Couldn't read that — write clearly and try again",
+  "inkFailed": "Handwriting recognition failed",
+  "showcaseInk": "Handwriting & signature",
+  "showcaseSignatureHint": "Sign here",
+  "showcaseSignatureSave": "Save the signature as an image",
+  "showcaseInkResult": "Text:"
 }

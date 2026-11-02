@@ -40,6 +40,21 @@ void main() {
     await sub.cancel();
   });
 
+  test('a cold start delivered twice is one launch', () async {
+    // Android hands the launch over on initialise and again via onNewIntent.
+    final actions = _Actions();
+    final shortcuts = QuickActionsShortcuts(actions);
+    await Future<void>.delayed(Duration.zero);
+    final got = <String>[];
+    final sub = shortcuts.launches.listen(got.add);
+    actions.handler!('/welcome');
+    actions.handler!('/welcome');
+    actions.handler!('/orders');
+    await Future<void>.delayed(Duration.zero);
+    expect(got, ['/welcome', '/orders']);
+    await sub.cancel();
+  });
+
   test('a shortcut is its path, title and icon', () async {
     final actions = _Actions();
     final shortcuts = QuickActionsShortcuts(actions);

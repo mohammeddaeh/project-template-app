@@ -1,0 +1,6 @@
+{
+  "name": "ink",
+  "register": "registerInkKit",
+  "permissions": [],
+  "platformPackages": ["google_mlkit_digital_ink_recognition"]
+}

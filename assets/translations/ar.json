@@ -968,5 +968,16 @@
   "showcaseReviewRequest": "اطلب تقييم التطبيق",
   "showcaseReviewStore": "صفحة التطبيق في المتجر",
   "showcaseReviewAvailable": "المتجر متاح — قد تظهر ورقة التقييم، والمتجر يقرّر",
-  "showcaseReviewUnavailable": "لا متجر على هذا الجهاز — لن تظهر ورقة التقييم"
+  "showcaseReviewUnavailable": "لا متجر على هذا الجهاز — لن تظهر ورقة التقييم",
+  "inkClear": "امسح",
+  "inkWriteHere": "اكتب هنا بإصبعك",
+  "inkRecognize": "حوّل الكتابة إلى نص",
+  "inkDownloadModel": "حمّل نموذج الكتابة ({}) — مرّة واحدة",
+  "inkDownloadFailed": "تعذّر تحميل النموذج — يحتاج اتصالاً يصل إلى خوادم Google",
+  "inkNoMatch": "لم أتعرّف على الكتابة — اكتب بوضوح وحاول ثانيةً",
+  "inkFailed": "تعذّر التعرّف على الكتابة",
+  "showcaseInk": "الكتابة والتوقيع",
+  "showcaseSignatureHint": "وقّع هنا",
+  "showcaseSignatureSave": "احفظ التوقيع صورة",
+  "showcaseInkResult": "النص:"
 }
