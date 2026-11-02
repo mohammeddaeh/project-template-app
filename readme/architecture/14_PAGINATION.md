@@ -5,7 +5,7 @@
 
 Reusable infinite-scroll pagination for REST-backed lists.
 
-> ⬜ **ولا مرجعَ حيٌّ بالقالب.** `PaginationCubit` مبنيٌّ ومكتمل **وبلا مستهلكٍ واحد**. فأولُ قائمةٍ تبنيها هي أولُ تطبيقٍ له، وخطواتُها بـ[`04_FIRST_FEATURE.md`](04_FIRST_FEATURE.md).
+> ⬜ **ولا مرجعَ حيٌّ بالقالب.** `PaginationCubit` مبنيٌّ ومكتمل **وبلا مستهلكٍ واحد**. فأولُ قائمةٍ تبنيها هي أولُ تطبيقٍ له، وخطواتُها بـ[`04_FIRST_FEATURE.md`](../start/04_FIRST_FEATURE.md).
 >
 > الأمثلة أدناه تبقى افتراضية (`Items`/`ItemsCubit`) لأنها تشرح النمط مجرَّداً؛ لا مرجع pagination حيّاً بالقالب اليوم — أقرب مرجع REST كامل الطبقات (بلا pagination) هو `lib/modules/multi_device/` أدناه (§3).
 
@@ -148,5 +148,5 @@ PaginationBuilderWdg<MyCubit, MyEntity>(
 
 - [`11_CORE.md`](11_CORE.md) — architecture principles
 - [`12_REST_API.md`](12_REST_API.md) — REST flow
-- [`20_WIDGETS.md`](20_WIDGETS.md) — PaginationBuilderWdg placement
+- [`20_WIDGETS.md`](../ui/20_WIDGETS.md) — PaginationBuilderWdg placement
 

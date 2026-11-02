@@ -1,7 +1,7 @@
 ﻿# lib/core/CLAUDE.md — Core Architecture & API Generator
 
 > يُحمَّل عند العمل في lib/core/**
-> المرجع الكامل: `readme/11_CORE.md`
+> المرجع الكامل: `readme/architecture/11_CORE.md`
 
 ---
 
@@ -40,7 +40,7 @@ Exception (Dio/IO/unknown)
 - Repositories = `handle()` — لا try/catch يدوي
 - Cubits = `FailureUiMapper.toAction(failure)` — لا يعرف DioException
 
-> **المرجع الكامل للمسار عبر النصفين:** [`readme/13_ERROR_FLOW.md`](../../readme/13_ERROR_FLOW.md) — ترتيب الـinterceptors، 500 مقابل 503، 401 مقابل 403، وأخطاء المستخدم المتوقَّعة. **يُحدَّث مع أي تغيير هنا.**
+> **المرجع الكامل للمسار عبر النصفين:** [`readme/architecture/13_ERROR_FLOW.md`](../../readme/architecture/13_ERROR_FLOW.md) — ترتيب الـinterceptors، 500 مقابل 503، 401 مقابل 403، وأخطاء المستخدم المتوقَّعة. **يُحدَّث مع أي تغيير هنا.**
 
 ### أربع قواعد صارمة بهذا المسار
 

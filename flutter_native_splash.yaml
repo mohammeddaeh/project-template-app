@@ -18,7 +18,7 @@ flutter_native_splash:
   # `splash_icon_v31.xml`) يُولَّدان بـ`scripts/gen_splash_assets.dart`، وملفّات
   # `styles.xml` الأربعة تُحرَّر باليد. وإعادةُ التوليد من هنا **تمحوها**.
   #
-  # وأسبابُ ذلك خمسةٌ مقيسة — راجع `readme/23_STARTUP_SPLASH.md` §٣.
+  # وأسبابُ ذلك خمسةٌ مقيسة — راجع `readme/architecture/23_STARTUP_SPLASH.md` §٣.
   android: false
   ios: true
   web: false

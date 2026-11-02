@@ -5,7 +5,7 @@
 /// يُنادى — والوسمُ بتعليقٍ يُقرأ حين يُبحث عنه، لا حين يُتصفَّح.
 ///
 /// فمن يُشعل الموديول يجد مساراتِه بجواره، ومن يُطفئه لا يراها أصلاً.
-/// راجع `readme/31_MODULE_PERMISSIONS.md`.
+/// راجع `readme/modules/31_MODULE_PERMISSIONS.md`.
 abstract class AccessControlUrls {
   /// The caller's own resolved permissions. **Any signed-in account may call
   /// it** — needing a permission to discover your permissions is a circle with

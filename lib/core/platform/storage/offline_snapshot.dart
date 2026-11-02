@@ -23,7 +23,7 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 /// الرابعة تُكتب ناقصةً حارسَ الفكّ.
 ///
 /// > ⬜ **وبالقالب لا مستهلكَ له بعد** — مسجَّلٌ بجرد «المبنيّ بلا مستهلك»
-/// > (`readme/10_ARCHITECTURE.md`). وأولُ شاشةٍ تريد جواباً خارج التغطية بعد
+/// > (`readme/architecture/10_ARCHITECTURE.md`). وأولُ شاشةٍ تريد جواباً خارج التغطية بعد
 /// > انقضاء الـTTL هي أولُ تطبيقٍ له.
 ///
 /// ## وليس `RequestCacheInterceptor`

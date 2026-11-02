@@ -40,7 +40,7 @@ Future<void> main(List<String> args) async {
   _footer(
     criticalFound
         ? '❌  عُثر على فجوة حرجة — راجع القسم ٢ أعلاه'
-        : '✅  لا فجوة حرجة. النتائج الأخرى مرشَّحاتٌ للمراجعة البشرية — راجع readme/10_ARCHITECTURE.md',
+        : '✅  لا فجوة حرجة. النتائج الأخرى مرشَّحاتٌ للمراجعة البشرية — راجع readme/architecture/10_ARCHITECTURE.md',
   );
 
   if (criticalFound) exit(1);
@@ -199,12 +199,14 @@ void _checkDocSyncTable() {
   final readmeDir = Directory('readme');
   if (!readmeDir.existsSync()) return;
 
+  // بمجلداته الفرعية — وملفات `ui/widgets/` يغطّيها صفٌّ واحد (`widgets/*.md`).
   final readmeFiles =
       readmeDir
-          .listSync()
+          .listSync(recursive: true)
           .whereType<File>()
-          .where((f) => f.path.endsWith('.md'))
-          .map((f) => f.path.split(Platform.pathSeparator).last)
+          .map((f) => f.path.replaceAll(r'\', '/'))
+          .where((p) => p.endsWith('.md') && !p.contains('/widgets/'))
+          .map((p) => p.split('/').last)
           .toList()
         ..sort();
 
@@ -213,12 +215,12 @@ void _checkDocSyncTable() {
     if (!claudeContent.contains(name)) {
       missing++;
       print(
-        '  ⚠️   readme/$name غير مذكور بجدول «Mandatory Documentation Sync» بـCLAUDE.md',
+        '  ⚠️   $name (readme/) غير مذكور بجدول «Mandatory Documentation Sync» بـCLAUDE.md',
       );
     }
   }
   print(
-    '  $missing من ${readmeFiles.length} ملفاً بجذر readme/ غير مذكور بالجدول',
+    '  $missing من ${readmeFiles.length} ملفاً بـreadme/ غير مذكور بالجدول',
   );
   print(
     '  (ملفات _template/archive/ مُستثناة عمداً — تغطّيها القاعدة العامة "لا يُصان")',

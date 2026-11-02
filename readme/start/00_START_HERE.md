@@ -45,7 +45,7 @@ irm https://raw.githubusercontent.com/mohammeddaeh/project-template-app/master/s
 يستنسخ بتاريخٍ نظيف ويكتب الهوية **ويبدّل اسم حزمة Dart** ويفحص ويُنشئ أوّل commit
 **ويرفعه لمستودع GitHub يسألك عنه** — مستودعٌ فارغ، أو يُنشئه لك إن كان `gh` مثبَّتاً.
 يبقى لك من م2: الأيقونات والألوان والخطوط. **وللباك نفس الرابط** بـ
-`project-template-backend`. التفصيل: [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د.
+`project-template-backend`. التفصيل: [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §8‑د.
 
 > **عضوٌ ينضمّ لمشروعٍ قائم لا يشغّله** — يستنسخ مستودع المشروع ويبدأ من م1
 > أدناه: ملفات `.env.*.json` لا تصل مع الاستنساخ، فـ`BASE_URL` يُسلَّم له خارج git.
@@ -118,12 +118,12 @@ cd ios && pod install                 # على macOS فقط
 
 | # | الملف | لماذا الآن |
 |---|---|---|
-| 1 | [`03_RULES.md`](03_RULES.md) | القواعد الصارمة — كل واحدة تمنع عطلاً صامتاً. أهمّ ملف بالمستودع |
-| 2 | [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) | خريطة `lib/` وحدود الطبقات |
-| 3 | [`11_CORE.md`](11_CORE.md) | `core/` بطبقاته الأربع و DI |
-| 4 | [`12_REST_API.md`](12_REST_API.md) | رحلة الطلب: Page → Cubit → UseCase → Repository → Dio |
-| 5 | [`13_ERROR_FLOW.md`](13_ERROR_FLOW.md) | رحلة الخطأ عبر النصفين — وهي **ليست** انعكاس الأولى |
-| 6 | [`22_RESPONSIVE.md`](22_RESPONSIVE.md) | **قبل أن ترسم أي شيء** — كل رقمِ مقاسٍ يمرّ بـ`context.screen`، وجسدُ كل شاشة داخل `ResponsiveContentBox`. الشاشات القائمة كلُّها مبنيّةٌ عليها |
+| 1 | [`03_RULES.md`](../rules/03_RULES.md) | القواعد الصارمة — كل واحدة تمنع عطلاً صامتاً. أهمّ ملف بالمستودع |
+| 2 | [`10_ARCHITECTURE.md`](../architecture/10_ARCHITECTURE.md) | خريطة `lib/` وحدود الطبقات |
+| 3 | [`11_CORE.md`](../architecture/11_CORE.md) | `core/` بطبقاته الأربع و DI |
+| 4 | [`12_REST_API.md`](../architecture/12_REST_API.md) | رحلة الطلب: Page → Cubit → UseCase → Repository → Dio |
+| 5 | [`13_ERROR_FLOW.md`](../architecture/13_ERROR_FLOW.md) | رحلة الخطأ عبر النصفين — وهي **ليست** انعكاس الأولى |
+| 6 | [`22_RESPONSIVE.md`](../ui/22_RESPONSIVE.md) | **قبل أن ترسم أي شيء** — كل رقمِ مقاسٍ يمرّ بـ`context.screen`، وجسدُ كل شاشة داخل `ResponsiveContentBox`. الشاشات القائمة كلُّها مبنيّةٌ عليها |
 
 ثم افتح [`02_CHEATSHEET.md`](02_CHEATSHEET.md) **وأبقه مفتوحاً** — لا تحفظه.
 
@@ -142,11 +142,11 @@ cd ios && pod install                 # على macOS فقط
 والمرجع الحيّ الذي تنسخ **بنيته** حرفياً: `lib/features/auth/login/` —
 بالطبقات الثلاث كاملة.
 
-> ⚠️ **قبل أول طلب شبكة**: افتح [`03_RULES.md`](03_RULES.md) §R01 (عقد الـwire).
+> ⚠️ **قبل أول طلب شبكة**: افتح [`03_RULES.md`](../rules/03_RULES.md) §R01 (عقد الـwire).
 > خطأ حرف واحد بمفتاح JSON **لا يراه المصرِّف ولا التحليل ولا الاختبارات**، ويصل
 > المستخدمَ «حدث خطأ» بينما السيرفر يسجّل `200 OK` — وبمسار الدخول يمنع الدخول كلياً.
 
-> ⚠️ **وقبل أول شاشة**: [`22_RESPONSIVE.md`](22_RESPONSIVE.md) §٣‑ب — قالبُ
+> ⚠️ **وقبل أول شاشة**: [`22_RESPONSIVE.md`](../ui/22_RESPONSIVE.md) §٣‑ب — قالبُ
 > شاشةٍ وودجةٍ جاهز، وجدولٌ يقول لكل نوعِ رقمٍ بمَ يُكتب. شاشةٌ تُبنى بأرقامٍ ثابتة
 > تُكسر على اللوح وتختلف عن الواجهة التي تُنقل إليه شاشةً شاشةً (§٦ هناك) — وثمّة **فاحصٌ آلي** يردّ نصفَ ذلك (R37 · F37).
 
@@ -175,7 +175,7 @@ dart run scripts/build_apk.dart --flavor staging --mode release --bump minor
 - [ ] `.env.prod.json` يحمل الرابط الحقيقي لا قيمة المثال
 - [ ] `dart run scripts/sync_platform_permissions.dart` شُغّل بعد آخر تغيير بالأعلام
 
-📖 الخيارات كاملةً: [`40_SCRIPTS.md`](40_SCRIPTS.md) §2
+📖 الخيارات كاملةً: [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §2
 
 **✅ تمّت حين:** APK مُوقَّع يعمل على جهاز حقيقي مقابل بيئة staging.
 
@@ -184,7 +184,7 @@ dart run scripts/build_apk.dart --flavor staging --mode release --bump minor
 ## بعد المرحلة 5 — تشغيل موديول اختياري
 
 كل موديول بـ`lib/modules/` يُشعَل بعلَمٍ واحد بـ`AppFeatures`. **والجدولُ الواحد** — ما
-يحتاجه كلٌّ منها خارج التطبيق، وأين يُركَّب، ووثيقته: [`30_MODULES.md`](30_MODULES.md).
+يحتاجه كلٌّ منها خارج التطبيق، وأين يُركَّب، ووثيقته: [`30_MODULES.md`](../modules/30_MODULES.md).
 
 > ⚠️ **علَمٌ مُشعَل لا يكفي** — الموديول قد يحتاج نصفاً بالباك، ويفشل **صامتاً** بلاه.
 
@@ -192,4 +192,4 @@ dart run scripts/build_apk.dart --flavor staging --mode release --bump minor
 
 ## خريطة التوثيق كاملةً
 
-[`README.md`](README.md) — الفهرس، وفيه سطر لكل ملف ومتى يُقرأ.
+[`README.md`](../README.md) — الفهرس، وفيه سطر لكل ملف ومتى يُقرأ.

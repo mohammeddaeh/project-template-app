@@ -237,7 +237,7 @@ void _checkOneTextField(String path, List<String?> code) {
 
 /// C01–C17 — قدرةٌ بالقالب لا تُكتب ثانيةً: النداءُ الخامّ للحزمة يسكن غلافَه وحده.
 ///
-/// الكتالوج البشريّ بـ`readme/06_CAPABILITIES.md`، وهذا جدولُه الآليّ — **يُحدَّثان
+/// الكتالوج البشريّ بـ`readme/rules/06_CAPABILITIES.md`، وهذا جدولُه الآليّ — **يُحدَّثان
 /// معاً**. والسبب ليس الشكل: من لا يعرف أن الغلاف موجود يكتب ثانيًا بجانبه، فيفقد
 /// ما يحمله الأول (تسجيلُ الخطأ · الترجمة · العلَم الذي يُطفئ الخدمة · الاختبار).
 const _capabilities = <_Capability>[
@@ -385,7 +385,7 @@ void _checkCapabilities(String path, List<String?> code) {
   }
 }
 
-/// C18 · C19 — حِزَم الأجهزة منفصلة (`readme/24_DEVICE_KITS.md`).
+/// C18 · C19 — حِزَم الأجهزة منفصلة (`readme/modules/24_DEVICE_KITS.md`).
 ///
 /// | القاعدة | تُفشل |
 /// |---|---|
@@ -852,7 +852,7 @@ void _report({required bool statsOnly}) {
   }
 
   print('   جديدة: ${fresh.length} مخالفة.');
-  print('   القواعد: readme/05_FIGMA_TO_PAGE.md\n');
+  print('   القواعد: readme/rules/05_FIGMA_TO_PAGE.md\n');
 
   if (!statsOnly) exit(1);
 }

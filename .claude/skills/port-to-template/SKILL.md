@@ -42,7 +42,7 @@ dart run scripts/port_inventory.dart <مسار التطبيق القديم>
 
 ## ٢ · المطابقة — قبل أي سطر
 
-اقرأ [`readme/06_CAPABILITIES.md`](../../../readme/06_CAPABILITIES.md) كاملاً. لكل إشارةٍ
+اقرأ [`readme/rules/06_CAPABILITIES.md`](../../../readme/rules/06_CAPABILITIES.md) كاملاً. لكل إشارةٍ
 بالجرد، ولكل ما رأيته بالمستودع القديم، قرّر واحداً:
 
 | الحكم | المعنى | يذهب إلى |

@@ -111,7 +111,7 @@ dart run scripts/sync_flavors.dart
 
 > 📍 **وموضعُه `StartupResolver`** — يُنادى من `main()` **قبل `runApp`**، فلا
 > يرى المستخدم شاشةً مبنيّةً على بياناتٍ ستُمحى بعد لحظة.
-> راجع [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md).
+> راجع [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md).
 ## 2) التوليد والتشغيل
 
 ```bash
@@ -141,7 +141,7 @@ flutter run                 # ❌ Env.baseUrl فارغ — كل طلب يفشل 
 > عادي `dart run scripts/setup_project.dart` — يسأل عن اسم التطبيق وApplication
 > ID واسم حزمة Dart و`BASE_URL`، ويكتب كل ما يصفه §الهوية أدناه دفعة واحدة
 > (بما فيها iOS)، ثم يشغّل `sync_flavors.dart` والفحوصات النهائية تلقائياً.
-> راجع [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑د. **الفقرات أدناه تشرح ما يفعله
+> راجع [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §8‑د. **الفقرات أدناه تشرح ما يفعله
 > يدوياً** — لمن يفضّل التحكّم اليدوي أو يريد فهم الآلية.
 
 ### الهوية
@@ -183,7 +183,7 @@ cd ios && pod install          # macOS فقط
 |---|---|
 | الألوان | `lib/ui/theme/app_palette.dart` (خام) ثم `app_colors.dart` (دلالي) |
 | الخطوط | ضع الملفات بـ`assets/fonts/` ثم `dart run scripts/sync_fonts.dart` (تفاعلي) |
-| شعار شاشة الإقلاع | SVG بـ`assets/images/` ثم `dart run scripts/gen_splash_assets.dart` — راجع [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) |
+| شعار شاشة الإقلاع | SVG بـ`assets/images/` ثم `dart run scripts/gen_splash_assets.dart` — راجع [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md) |
 
 > ⚠️ **وتبديلُ الألوان يُتبَع بـ`flutter test test/color_contrast_test.dart`.**
 > الفاحص يشهد على **نسبة تباينٍ ٤٫٥:١** لكلّ زوجٍ (نصٌّ على أرضيّته) بالثيمين —
@@ -208,11 +208,11 @@ dart run scripts/check_structure.dart
 ```
 
 الثلاثةُ تمرّ ⇒ الإعداد سليم. يفشل واحدٌ منها على نسخةٍ لم تُلمس ⇒
-[`40_SCRIPTS.md`](40_SCRIPTS.md) §9.
+[`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §9.
 
 > 📐 **و`check_structure` يطبع «دَينٌ مسجَّل: N مخالفة» ولا يُفشل عليها.** المسجَّل
 > بـ`.structure_baseline.txt` دَينٌ سابقٌ للفاحص؛ المُفشِل هو المخالفةُ **الجديدة**
-> وحدها. راجع [`03_RULES.md`](03_RULES.md) §R37.
+> وحدها. راجع [`03_RULES.md`](../rules/03_RULES.md) §R37.
 
 ---
 
@@ -240,12 +240,12 @@ scripts/         سكربتات التوليد والفحص — راجع 40_SCRI
 test/            الاختبارات — flutter test
 ```
 
-الحدود بين الطبقات وقواعدها: [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) ·
-[`03_RULES.md`](03_RULES.md) §R16
+الحدود بين الطبقات وقواعدها: [`10_ARCHITECTURE.md`](../architecture/10_ARCHITECTURE.md) ·
+[`03_RULES.md`](../rules/03_RULES.md) §R16
 
 ---
 
 ## التالي
 
 المرحلة 3 من [`00_START_HERE.md`](00_START_HERE.md) — ابدأ بـ
-[`03_RULES.md`](03_RULES.md).
+[`03_RULES.md`](../rules/03_RULES.md).

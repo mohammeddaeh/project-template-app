@@ -3,7 +3,7 @@
 ///
 /// يمرّ على مستودع المشروع القديم (أي منصّة: Capacitor/Ionic · React Native ·
 /// Flutter · أندرويد/iOS أصلية) ويعدّ ما فيه، ويربط كل «إشارة» بالقدرة المقابلة
-/// بالقالب (`readme/06_CAPABILITIES.md`). الخطّة نفسها تُكتب بعده بskill
+/// بالقالب (`readme/rules/06_CAPABILITIES.md`). الخطّة نفسها تُكتب بعده بskill
 /// `port-to-template` — فهي اجتهاد، وهذا جرد.
 ///
 /// | يجرد | كيف |
@@ -134,7 +134,7 @@ void main(List<String> args) {
     ..writeln(
       '> يُقرأ قبل `docs/PORT_PLAN.md`، وكل إشارةٍ أدناه تُطابَق بقدرةٍ من',
     )
-    ..writeln('> `readme/06_CAPABILITIES.md` قبل كتابة أي أداة.')
+    ..writeln('> `readme/rules/06_CAPABILITIES.md` قبل كتابة أي أداة.')
     ..writeln()
     ..writeln('| | |')
     ..writeln('|---|---|')

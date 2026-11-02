@@ -6,20 +6,20 @@
 > **تُقرأ كـ«لماذا»، لا كـ«ما هو موجود». ولا تُصان.**
 
 ما هنا صحيحٌ **عن تاريخه** وقد لا يصف الكود اليوم. لا تبنِ عليه قراراً بلا التحقّق
-من [`../10_ARCHITECTURE.md`](../../readme/10_ARCHITECTURE.md) أولاً.
+من [`../10_ARCHITECTURE.md`](../../readme/architecture/10_ARCHITECTURE.md) أولاً.
 
 **ولا تُصحَّح هذه الملفات بتعديل صفوفها** — سجلٌّ يُعاد كتابته يفقد قيمته الوحيدة:
 أنه يقول ما كان صحيحاً حين كُتب. الانحراف يُعلَّق عليه بلافتة، لا يُمحى.
 
 | الملف | ما هو | لماذا أُرشف |
 |---|---|---|
-| [`integration_audit.md`](integration_audit.md) | تدقيق عقد الـwire بين الفرونت والباك — التدقيق 2026-08-11، الإصلاح 2026-08-12 | **سجلّ مغلق.** خمسة أعطال قاطعة، مُصلَحة ومثبَّتة باختبارات الطرفين. الدرس المستخلَص صار [`../03_RULES.md`](../../readme/03_RULES.md) §R01–R03 |
-| [`template_enhancements.md`](template_enhancements.md) | خارطة تطوير بعمودَي حالة (القالب / مشروع «قرطاس») — 130 KB | يقارن بمشروع **لا يملكه الفريق**، فمعظمه غير قابل للتصرّف. الأحكام الصالحة عامّةً نُقلت إلى [`../03_RULES.md`](../../readme/03_RULES.md) §R27–R30 |
+| [`integration_audit.md`](integration_audit.md) | تدقيق عقد الـwire بين الفرونت والباك — التدقيق 2026-08-11، الإصلاح 2026-08-12 | **سجلّ مغلق.** خمسة أعطال قاطعة، مُصلَحة ومثبَّتة باختبارات الطرفين. الدرس المستخلَص صار [`../03_RULES.md`](../../readme/rules/03_RULES.md) §R01–R03 |
+| [`template_enhancements.md`](template_enhancements.md) | خارطة تطوير بعمودَي حالة (القالب / مشروع «قرطاس») — 130 KB | يقارن بمشروع **لا يملكه الفريق**، فمعظمه غير قابل للتصرّف. الأحكام الصالحة عامّةً نُقلت إلى [`../03_RULES.md`](../../readme/rules/03_RULES.md) §R27–R30 |
 | [`realtime_design.md`](realtime_design.md) | تصميم مقترَح لـ`modules/realtime/` | **الموديول غير موجود** — لا `lib/modules/realtime/` أصلاً. مواصفة لم تُبنَ، لا وصف لكود. ولا تخلطه بـ`modules/multi_device/` المبنيّ |
 | [`sync_design_spec.md`](sync_design_spec.md) | المواصفة الهندسية لموديول المزامنة — 2098 سطراً، عشرون قسماً | **تصميمٌ سابق للتنفيذ**: يصف ما يجب أن يكون لا ما هو كائن، ويتجاوز الكود القائم بمسافة (Manifest · الخلفية · طابور التنزيل). الحالة الحقيقية بـ[`../../lib/modules/sync/PLAN.md`](../sync/PLAN.md)، والتصميم المنفَّذ بـ[`ARCHITECTURE.md`](../../lib/modules/sync/ARCHITECTURE.md) |
 | [`sync_system_guide.md`](sync_system_guide.md) | جولة تعريفية بالإنجليزية على الموديول | استوعبها [`../../lib/modules/sync/SETUP.md`](../../lib/modules/sync/SETUP.md) بنسخة مُحدَّثة تقول ما هو مبنيّ فعلاً |
 | [`multi_device_design.md`](multi_device_design.md) · [`multi_device_backend.md`](multi_device_backend.md) | تصميم `modules/multi_device/` وعقدُ باكه المقترَح — كانا `README.md` و`BACKEND.md` بجوار الموديول | **يصفان ما خُطّط لا ما بُني**: نقاطُ `/auth/devices` (المبنيّ `/auth/sessions`)، إثراءُ الدخول ببيانات الجهاز، ومعالجةُ `SESSION_REVOKED`. ما يفعله الموديول فعلاً بـ[`SETUP.md`](../../lib/modules/multi_device/SETUP.md) |
-| [`permissions_lessons.md`](permissions_lessons.md) | عثراتُ تطبيق موديول الصلاحيات على مشروعٍ فعلي، وتوصياتٌ مستقبلية | **قصصٌ لا قواعد** — القواعد المستخلصة بـ[`31_MODULE_PERMISSIONS.md`](../../readme/31_MODULE_PERMISSIONS.md) §«قواعد البناء عليه» |
+| [`permissions_lessons.md`](permissions_lessons.md) | عثراتُ تطبيق موديول الصلاحيات على مشروعٍ فعلي، وتوصياتٌ مستقبلية | **قصصٌ لا قواعد** — القواعد المستخلصة بـ[`31_MODULE_PERMISSIONS.md`](../../readme/modules/31_MODULE_PERMISSIONS.md) §«قواعد البناء عليه» |
 | [`template_backport.md`](template_backport.md) | خطّة نقل ما تعلَّمه مشروع «الأوقاف» إلى القالب — سبع موجات، جدول تتبّع بـ٥١ بنداً | **سجلّ مغلق (2026-09-09).** كل بند ✅ إلا S01 (منقول قاعدةً لا كوداً بقصد — تفصيلٌ خاصٌّ بكيانات الأوقاف). مُقاسٌ لا مُقدَّر: الاختبارات ١٩٦→٢٨٨، صفر رابطٍ مكسور، صفر مخالفة `check_structure` جديدة |
 
 ---
@@ -30,7 +30,7 @@
 |---|---|---|
 | `template_vs_qirtas.md` | 2026-08-19 | مكتوب فيه صراحةً «لا يُصان: يُعاد التدقيق ويُعاد كتابته» — لقطة لحظية تقادمت، ولا قارئ لها بفريق لا يملك المشروع المقارَن |
 | `test_scenarios_roadmap.md` | 2026-08-19 | خارطة `Features/test/` — حُذفت معها |
-| `new_developer_guide.md` | 2026-08-19 | 13 قسماً متجاورة بلا مسار. حلّ محلّها [`../00_START_HERE.md`](../../readme/00_START_HERE.md) و[`../01_SETUP.md`](../../readme/01_SETUP.md) و[`../02_CHEATSHEET.md`](../../readme/02_CHEATSHEET.md) |
+| `new_developer_guide.md` | 2026-08-19 | 13 قسماً متجاورة بلا مسار. حلّ محلّها [`../00_START_HERE.md`](../../readme/start/00_START_HERE.md) و[`../01_SETUP.md`](../../readme/start/01_SETUP.md) و[`../02_CHEATSHEET.md`](../../readme/start/02_CHEATSHEET.md) |
 
 ---
 
@@ -50,7 +50,7 @@
 
 1. **`PaginationCubit` بلا مستهلك واحد.** مبنيّ ومكتمل، بلا شاشة تركّبه ولا endpoint
    يستدعيه. أول قائمة تبنيها هي أول تطبيق له —
-   [`../04_FIRST_FEATURE.md`](../../readme/04_FIRST_FEATURE.md) هو البديل عن نسخ الشريحة.
+   [`../04_FIRST_FEATURE.md`](../../readme/start/04_FIRST_FEATURE.md) هو البديل عن نسخ الشريحة.
 
 2. **`modules/sync/` بلا محوّل feature.** المحرّك موصول، لكن
    `getAll<SyncFeatureContractBase>()` يجد صفراً. تشغيل `AppFeatures.offlineSync`
@@ -60,7 +60,7 @@
 
 3. **لا مغلَّف صفحة مُختبَر** بـ`test/wire_contract_test.dart` —
    `{items, page, limit, total, total_pages}` لم يعد يُحلَّل من استجابة حقيقية.
-   الخطوة 15 بـ[`../04_FIRST_FEATURE.md`](../../readme/04_FIRST_FEATURE.md) تُعيده.
+   الخطوة 15 بـ[`../04_FIRST_FEATURE.md`](../../readme/start/04_FIRST_FEATURE.md) تُعيده.
 
 > الثلاثة **حالة مقصودة لقالب**، لا سلسلة انقطعت بالخطأ. الجرد الكامل:
-> [`../10_ARCHITECTURE.md`](../../readme/10_ARCHITECTURE.md) §«المبنيّ بلا مستهلك».
+> [`../10_ARCHITECTURE.md`](../../readme/architecture/10_ARCHITECTURE.md) §«المبنيّ بلا مستهلك».

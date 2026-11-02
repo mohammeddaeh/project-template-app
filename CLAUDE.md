@@ -9,33 +9,33 @@
 
 | إذا كنت تبني… | اقرأ |
 |---|---|
-| ★ **أيّ أداة · تنسيق · غلاف حزمة · ودجة حالة** (تاريخ · رقم · صورة · مشاركة · سجلّ…) | [`readme/06_CAPABILITIES.md`](readme/06_CAPABILITIES.md) — **قبل أي سطر**: ما فيه مبنيٌّ ومختبَر، وكتابتُه ثانيةً يُفشلها `check_structure` (`C01…C20`). ناقصٌ؟ وسّعه بمكانه |
+| ★ **أيّ أداة · تنسيق · غلاف حزمة · ودجة حالة** (تاريخ · رقم · صورة · مشاركة · سجلّ…) | [`readme/rules/06_CAPABILITIES.md`](readme/rules/06_CAPABILITIES.md) — **قبل أي سطر**: ما فيه مبنيٌّ ومختبَر، وكتابتُه ثانيةً يُفشلها `check_structure` (`C01…C20`). ناقصٌ؟ وسّعه بمكانه |
 | **Feature** (CRUD/Form/Nav/Widget) | `lib/features/CLAUDE.md` |
 | **REST endpoint** جديد | `lib/core/CLAUDE.md` → §API |
 | **core/** أو **DI** | `lib/core/CLAUDE.md` |
 | **imports / UI rules / localization** | `lib/CLAUDE.md` |
 | **أي شيء في lib/** | `lib/CLAUDE.md` أولاً دائماً |
 | **نقل تطبيقٍ قائم إلى القالب** | skill `port-to-template` — الجرد (`port_inventory.dart`) ثم المطابقة بـ`06_CAPABILITIES.md` **قبل أي سطر**، ثم `docs/PORT_PLAN.md` |
-| **صفحة من الفيغما** (سحبٌ أو لصق) | [`readme/05_FIGMA_TO_PAGE.md`](readme/05_FIGMA_TO_PAGE.md) — إلزامي قبل أي سطر |
-| **مقاسُ شاشة · لوح · كيبورد · تكبير خط** | [`readme/22_RESPONSIVE.md`](readme/22_RESPONSIVE.md) — `context.screen`، ولا نسبةَ من ارتفاع الشاشة |
-| **صوت · فيديو · مسح · كتابة يدوية · أوامر النظام** (أي حزمة بكودٍ أصليٍّ ثقيل) | [`readme/24_DEVICE_KITS.md`](readme/24_DEVICE_KITS.md) — kit تحت `packages/` بـ`scripts/kit.dart`، و`lib/` يعرف `kit_contracts` وحده (`C18` · `C19`) |
-| **إقلاع التطبيق · شاشة البدء · شعارُها** | [`readme/23_STARTUP_SPLASH.md`](readme/23_STARTUP_SPLASH.md) — ⛔ **و`android: false` بـ`flutter_native_splash.yaml` بقرار**: موردا أندرويد متجهان باليد، وإعادةُ التوليد تمحوهما |
+| **صفحة من الفيغما** (سحبٌ أو لصق) | [`readme/rules/05_FIGMA_TO_PAGE.md`](readme/rules/05_FIGMA_TO_PAGE.md) — إلزامي قبل أي سطر |
+| **مقاسُ شاشة · لوح · كيبورد · تكبير خط** | [`readme/ui/22_RESPONSIVE.md`](readme/ui/22_RESPONSIVE.md) — `context.screen`، ولا نسبةَ من ارتفاع الشاشة |
+| **صوت · فيديو · مسح · كتابة يدوية · أوامر النظام** (أي حزمة بكودٍ أصليٍّ ثقيل) | [`readme/modules/24_DEVICE_KITS.md`](readme/modules/24_DEVICE_KITS.md) — kit تحت `packages/` بـ`scripts/kit.dart`، و`lib/` يعرف `kit_contracts` وحده (`C18` · `C19`) |
+| **إقلاع التطبيق · شاشة البدء · شعارُها** | [`readme/architecture/23_STARTUP_SPLASH.md`](readme/architecture/23_STARTUP_SPLASH.md) — ⛔ **و`android: false` بـ`flutter_native_splash.yaml` بقرار**: موردا أندرويد متجهان باليد، وإعادةُ التوليد تمحوهما |
 
 **وللمرجع البشري** — تفتحه حين تحتاج «لماذا» أو أمراً نسيته:
 
 | تحتاج | افتح |
 |---|---|
-| **أوّل يوم بالقالب** | [`readme/00_START_HERE.md`](readme/00_START_HERE.md) |
-| تجهيزَ جهازك · جعلَ القالب مشروعك | [`readme/01_SETUP.md`](readme/01_SETUP.md) |
-| أمراً · مسار import · خطوة | [`readme/02_CHEATSHEET.md`](readme/02_CHEATSHEET.md) |
-| القواعد الصارمة بأسبابها | [`readme/03_RULES.md`](readme/03_RULES.md) |
-| بناء feature كاملة خطوة بخطوة | [`readme/04_FIRST_FEATURE.md`](readme/04_FIRST_FEATURE.md) |
+| **أوّل يوم بالقالب** | [`readme/start/00_START_HERE.md`](readme/start/00_START_HERE.md) |
+| تجهيزَ جهازك · جعلَ القالب مشروعك | [`readme/start/01_SETUP.md`](readme/start/01_SETUP.md) |
+| أمراً · مسار import · خطوة | [`readme/start/02_CHEATSHEET.md`](readme/start/02_CHEATSHEET.md) |
+| القواعد الصارمة بأسبابها | [`readme/rules/03_RULES.md`](readme/rules/03_RULES.md) |
+| بناء feature كاملة خطوة بخطوة | [`readme/start/04_FIRST_FEATURE.md`](readme/start/04_FIRST_FEATURE.md) |
 | الفهرس الكامل | [`readme/README.md`](readme/README.md) |
 
 ### Features الموجودة
 
 > **لا feature تطبيقية بالقالب** — البنية التحتية وحدها، بلا مثال CRUD ولا شاشات
-> demo. أول feature يكتبها المشروع تُبنى من `readme/00_START_HERE.md`، لا بالنسخ من
+> demo. أول feature يكتبها المشروع تُبنى من `readme/start/00_START_HERE.md`، لا بالنسخ من
 > شريحة قائمة.
 >
 > ⚠️ **ومفاتيح `notes.*` بـ`permissions.lock.json` ليست feature هنا** —
@@ -48,17 +48,17 @@
 | `features/auth/` | **دورة الحساب كاملة** — login · register · logout · me · verify_email · forgot_password · change_password · profile. مقابل `/api/v1/account` و`/api/v1/auth` بالباك. **وأين تُعرض يقرّره `AppFeatures.authMode`** (`none` افتراضاً · `required` · `optional`) — يُختار عند الإنشاء بـ`setup_project.dart --auth` |
 | `features/home/` | التنقل الرئيسي — و`home_screen.dart` **placeholder مقصود** يُستبدل جسدُه كاملاً — ويعرض جولة `modules/showcase/` ما دام علَمُها مُشعَلاً. وفيه `WelcomeAnnouncer` بالقشرة: يستقبل الداخلَ حديثاً بتحيّةٍ باسمه، ويقرأ علَم `WelcomeGreeting` مرّةً واحدة (`take` تمحو). ⛔ **ولا رافعَ للراية بالقالب** — `raise()` تُنادى ممّن يعرف «متى صار الحساب جاهزاً» |
 | `features/settings/` | Theme + Language + Notifications + Version + Cache |
-| `features/startup/` | **قرارُ أوّل شاشة.** يُنادى من `main()` قبل `runApp`: يسأل `DataOriginGuard` هل أصلُ ما على الجهاز هو `Env.baseUrl`، ثم يستعيد الجلسة (حين لا يكون `authMode` هو `none`)، والقرارُ نفسُه دالّةٌ نقيّة `decideStartup`. **أوّلُ تشغيلٍ على الجهاز ⇐ `WelcomeScreen`** مرّةً واحدة (`PersistenceKeys.welcomeSeen`)، ثم الرئيسية — أو الدخول بوضع `required` بلا جلسة. ⛔ **ولا `SplashScreen`**: أوّلُ إطارٍ يرسمه فلاتر هو الوجهةُ نفسُها، فلا يرى المستخدم شعارَين — راجع [`readme/23_STARTUP_SPLASH.md`](readme/23_STARTUP_SPLASH.md) |
+| `features/startup/` | **قرارُ أوّل شاشة.** يُنادى من `main()` قبل `runApp`: يسأل `DataOriginGuard` هل أصلُ ما على الجهاز هو `Env.baseUrl`، ثم يستعيد الجلسة (حين لا يكون `authMode` هو `none`)، والقرارُ نفسُه دالّةٌ نقيّة `decideStartup`. **أوّلُ تشغيلٍ على الجهاز ⇐ `WelcomeScreen`** مرّةً واحدة (`PersistenceKeys.welcomeSeen`)، ثم الرئيسية — أو الدخول بوضع `required` بلا جلسة. ⛔ **ولا `SplashScreen`**: أوّلُ إطارٍ يرسمه فلاتر هو الوجهةُ نفسُها، فلا يرى المستخدم شعارَين — راجع [`readme/architecture/23_STARTUP_SPLASH.md`](readme/architecture/23_STARTUP_SPLASH.md) |
 
 ### Modules الاختيارية البارزة
 
 > **الجدولُ الكامل للموديولات الثلاثة عشر** — علَم · افتراض · ما يحتاجه · الوثيقة:
-> [`readme/30_MODULES.md`](readme/30_MODULES.md). أدناه أكثرُها تفصيلاً وحده.
+> [`readme/modules/30_MODULES.md`](readme/modules/30_MODULES.md). أدناه أكثرُها تفصيلاً وحده.
 
 | المسار | ما تفعله |
 |---|---|
-| `modules/data_transfer/` | **استيراد/تصدير عام — صفر Dart لكل feature.** الشاشتان تُبنيان من `GET /data-transfer/resources`، فـfeature تُعلن قابليتها بالباك تظهر بنسخة مبنية قبل وجودها. سطر الدخول: `DataTransferSheet.show(context, resource: 'notes')` — **و`'notes'` هنا اسمُ مورد بالباك لا feature بالمستودع**. علَم: `AppFeatures.dataTransfer`. ⚠️ `/export` يردّ **بايتات لا مغلّفاً** — راجع `readme/32_MODULE_DATA_TRANSFER.md` |
-| `modules/access_control/` | **صلاحيات عامة — صفر Dart لكل صلاحية.** المفتاح يُعلَن في السطر الذي يحميه بالباك (`requirePermission('notes.update')`)، ويُلمّ تلقائياً، فتظهر بطاقته في شاشة الأدوار المبنيّة من `GET /authz/catalog`. سطر الدخول: `Can(permission: PermKeys.notesDelete, child: …)` — **والمفتاح لا يُكتب نصّاً خاماً أبداً**: `PermKeys` مولَّد من `permissions.lock.json`، فمفتاحٌ يحذفه الباك يكسر البناء بدل أن يُخفي زرّاً للأبد بصمت. علَم: `AppFeatures.accessControl` + `AUTHZ_ENABLED` بالباك. ⚠️ **بوابة العميل ليست حدّ الأمان** — راجع `readme/31_MODULE_PERMISSIONS.md` |
+| `modules/data_transfer/` | **استيراد/تصدير عام — صفر Dart لكل feature.** الشاشتان تُبنيان من `GET /data-transfer/resources`، فـfeature تُعلن قابليتها بالباك تظهر بنسخة مبنية قبل وجودها. سطر الدخول: `DataTransferSheet.show(context, resource: 'notes')` — **و`'notes'` هنا اسمُ مورد بالباك لا feature بالمستودع**. علَم: `AppFeatures.dataTransfer`. ⚠️ `/export` يردّ **بايتات لا مغلّفاً** — راجع `readme/modules/32_MODULE_DATA_TRANSFER.md` |
+| `modules/access_control/` | **صلاحيات عامة — صفر Dart لكل صلاحية.** المفتاح يُعلَن في السطر الذي يحميه بالباك (`requirePermission('notes.update')`)، ويُلمّ تلقائياً، فتظهر بطاقته في شاشة الأدوار المبنيّة من `GET /authz/catalog`. سطر الدخول: `Can(permission: PermKeys.notesDelete, child: …)` — **والمفتاح لا يُكتب نصّاً خاماً أبداً**: `PermKeys` مولَّد من `permissions.lock.json`، فمفتاحٌ يحذفه الباك يكسر البناء بدل أن يُخفي زرّاً للأبد بصمت. علَم: `AppFeatures.accessControl` + `AUTHZ_ENABLED` بالباك. ⚠️ **بوابة العميل ليست حدّ الأمان** — راجع `readme/modules/31_MODULE_PERMISSIONS.md` |
 | `modules/multi_device/` | الأجهزة والجلسات النشطة. علَم: `AppFeatures.multiDevice` |
 | `modules/showcase/` | **المرآة: جولة المطوّر بتبويب الرئيسية** — سبعة فصول (أساسات · ودجات · حركة · بيانات · موديولات · منصّة · طرفيات) بأمثلةٍ حيّة، فوق كلٍّ اسمُه بالكود، والخادم محاكىً محلّياً. **كل ودجةٍ بالمكتبة لها مثالٌ هنا** (R42 — اختبارٌ يُفشل الناقص). **مُشعَل افتراضاً** (`AppFeatures.showcase`) ويُطفأ مع رئيسية المشروع — [`SETUP.md`](lib/modules/showcase/SETUP.md) |
 | `modules/sync/` | محرّك المزامنة دون اتصال. علَم: `AppFeatures.offlineSync`. يدفع ويسحب، **والمرفقات مبنيّة** (تخزين خاص · `Range` · checksum · Cache Manager)، والخلفية على أندرويد وحده. ⚠️ **وبلا محوّل feature واحد**: `getAll<SyncFeatureContractBase>()` يجد صفراً، فتشغيلُ العلَم يترك التطبيق يعمل بالكامل على الشبكة **بلا انهيار ولا تحذير**. ⚠️ بلا Manifest ولا حصّة. اقرأ [`lib/modules/sync/STATUS.md`](lib/modules/sync/STATUS.md) قبل البناء عليه |
@@ -115,29 +115,29 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 | الملف | متى يُحدَّث |
 |---|---|
 | **`readme/README.md`** | **فهرس المجلد — يُحدَّث عند إضافة/حذف/نقل أي ملف فيه، بنفس التغيير** |
-| `readme/03_RULES.md` | إضافة قاعدة صارمة أو فاحص آلي |
-| **`readme/06_CAPABILITIES.md`** | **إضافة قدرة أو غلاف بالقالب · تغيير اسم واجهةٍ عامة فيه · أي قاعدة `C##`** — ومعه جدول `_capabilities` بـ`check_structure.dart` **وإشارةٌ بـ`scripts/src/port_signals.dart`** (وكذلك لكل kit وموديول جديد) بنفس التغيير |
-| `readme/04_FIRST_FEATURE.md` | تغيير بنية الشريحة أو ترتيب التوليد |
-| `readme/05_FIGMA_TO_PAGE.md` | تغيير طريقة تصدير الفيغما · قاعدة تحويل `F##` · جدول المقابلة · **أو أي زوج لون يُفحص تباينه** |
-| `readme/10_ARCHITECTURE.md` | أي تغيير هيكلي في lib/ |
-| `readme/11_CORE.md` | تغيير core/ أو مبادئ الطبقات |
-| `readme/12_REST_API.md` | تغيير REST flow أو network |
-| `readme/13_ERROR_FLOW.md` | **ترتيب الـinterceptors · `Failure`/`FailureUiMapper` · `error-handler.ts`/`MESSAGES` · ترتيب middleware بـ`app.ts` · أي حدث بـ`AuthEventBus`** — يشمل النصفين معاً |
-| `readme/14_PAGINATION.md` | تغيير PaginationCubit أو PaginationBuilderWdg |
-| `readme/20_WIDGETS.md` | تغيير `ui/` أو `ui/widgets/` |
-| `readme/40_SCRIPTS.md` | إضافة/تعديل سكربت |
-| `readme/00_START_HERE.md` · `01_SETUP.md` | تغيير هيكل المشروع · خطوات الإعداد · onboarding |
-| `readme/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
-| `readme/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
-| **`readme/30_MODULES.md`** | **إضافة/حذف موديول · تغيير علَمه أو افتراضه أو ما يحتاجه من الباك** |
-| `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو باك `src/core/authz/` أو عقد `/api/v1/authz` |
-| `readme/33_MODULE_TOKEN_INSPECTOR.md` | تغيير `modules/token_inspector/` · `AuthSessionObserver` أو أيّ موضع نداءٍ له · `ui/overlays/` · خطوة التوكن بـ`build_apk.dart` · `C20` |
-| `readme/21_WIDGETS_USAGE.md` + `readme/widgets/*.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود — القسم بملف فئته تحت `widgets/`، وصفُّه بجدول الفهرس |
-| `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
+| `readme/rules/03_RULES.md` | إضافة قاعدة صارمة أو فاحص آلي |
+| **`readme/rules/06_CAPABILITIES.md`** | **إضافة قدرة أو غلاف بالقالب · تغيير اسم واجهةٍ عامة فيه · أي قاعدة `C##`** — ومعه جدول `_capabilities` بـ`check_structure.dart` **وإشارةٌ بـ`scripts/src/port_signals.dart`** (وكذلك لكل kit وموديول جديد) بنفس التغيير |
+| `readme/start/04_FIRST_FEATURE.md` | تغيير بنية الشريحة أو ترتيب التوليد |
+| `readme/rules/05_FIGMA_TO_PAGE.md` | تغيير طريقة تصدير الفيغما · قاعدة تحويل `F##` · جدول المقابلة · **أو أي زوج لون يُفحص تباينه** |
+| `readme/architecture/10_ARCHITECTURE.md` | أي تغيير هيكلي في lib/ |
+| `readme/architecture/11_CORE.md` | تغيير core/ أو مبادئ الطبقات |
+| `readme/architecture/12_REST_API.md` | تغيير REST flow أو network |
+| `readme/architecture/13_ERROR_FLOW.md` | **ترتيب الـinterceptors · `Failure`/`FailureUiMapper` · `error-handler.ts`/`MESSAGES` · ترتيب middleware بـ`app.ts` · أي حدث بـ`AuthEventBus`** — يشمل النصفين معاً |
+| `readme/architecture/14_PAGINATION.md` | تغيير PaginationCubit أو PaginationBuilderWdg |
+| `readme/ui/20_WIDGETS.md` | تغيير `ui/` أو `ui/widgets/` |
+| `readme/scripts/40_SCRIPTS.md` | إضافة/تعديل سكربت |
+| `readme/start/00_START_HERE.md` · `01_SETUP.md` | تغيير هيكل المشروع · خطوات الإعداد · onboarding |
+| `readme/start/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
+| `readme/modules/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
+| **`readme/modules/30_MODULES.md`** | **إضافة/حذف موديول · تغيير علَمه أو افتراضه أو ما يحتاجه من الباك** |
+| `readme/modules/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو باك `src/core/authz/` أو عقد `/api/v1/authz` |
+| `readme/modules/33_MODULE_TOKEN_INSPECTOR.md` | تغيير `modules/token_inspector/` · `AuthSessionObserver` أو أيّ موضع نداءٍ له · `ui/overlays/` · خطوة التوكن بـ`build_apk.dart` · `C20` |
+| `readme/ui/21_WIDGETS_USAGE.md` + `readme/ui/widgets/*.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود — القسم بملف فئته تحت `widgets/`، وصفُّه بجدول الفهرس |
+| `readme/ui/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |
 | `packages/README.md` | إضافة kit أو حذفها · تغيير ما توفّره أو حجمها |
-| **`readme/24_DEVICE_KITS.md`** | **أي تغيير بـ`packages/` · `scripts/kit.dart` · `kit.json` · `lib/core/di/kits.g.dart` · أو `C18`/`C19`** |
-| **`readme/23_STARTUP_SPLASH.md`** | **أي سطر بـ`main()` · `ModulesBootstrap.start`/`ready` · `StartupResolver` · `deepLinkBuilder` بـ`app.dart` · أيُّ مورد أندرويد بـ`res/drawable/splash_*` أو `values*/styles.xml` · علَم `android` بـ`flutter_native_splash.yaml`** |
-| **`readme/17_SERVED_CONTRACT.md`** | **إضافة/حذف ثابت بـ`ApiUrls` · صيرورةُ نقطةٍ مخدومة · كشفُ عقدٍ يخالف المُعلَن · إعادةُ أي شريحة محذوفة** |
+| **`readme/modules/24_DEVICE_KITS.md`** | **أي تغيير بـ`packages/` · `scripts/kit.dart` · `kit.json` · `lib/core/di/kits.g.dart` · أو `C18`/`C19`** |
+| **`readme/architecture/23_STARTUP_SPLASH.md`** | **أي سطر بـ`main()` · `ModulesBootstrap.start`/`ready` · `StartupResolver` · `deepLinkBuilder` بـ`app.dart` · أيُّ مورد أندرويد بـ`res/drawable/splash_*` أو `values*/styles.xml` · علَم `android` بـ`flutter_native_splash.yaml`** |
+| **`readme/architecture/17_SERVED_CONTRACT.md`** | **إضافة/حذف ثابت بـ`ApiUrls` · صيرورةُ نقطةٍ مخدومة · كشفُ عقدٍ يخالف المُعلَن · إعادةُ أي شريحة محذوفة** |
 | `lib/modules/sync/STATUS.md` | **أي تغيير بما يعمل أو المفتوح أو غير الموفَّر بالموديول** — يُصان قبل `ARCHITECTURE.md`، فهو ما يُقرأ قبل البناء عليه |
 | `lib/modules/sync/ARCHITECTURE.md` | تغيير مخطَّط v4 · دورة حياة حزمة أو ملف · ترتيب الدورة · شروط `SyncGate` |
 | `lib/modules/sync/SETUP.md` | تغيير خطوات التركيب · **أو أي منفذ جديد يمسّ عقد الحذف** |
@@ -160,7 +160,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 ما يُنسخ إلى المشروع (`readme/` · `lib/**/*.md` · هذا الملف · تعليقات الكود) يقول
 **ما هو موجود ولماذا**: لا تاريخ، ولا اسمَ مشروعٍ ظهر فيه العطل، ولا «كان كذلك
 حتى…». السببُ سطرٌ واحد؛ القصةُ لرسالة الـcommit أو `_template/`. الفاحص:
-`audit_template.dart` §٥ — [`readme/03_RULES.md`](readme/03_RULES.md) R38.
+`audit_template.dart` §٥ — [`readme/rules/03_RULES.md`](readme/rules/03_RULES.md) R38.
 
 ## 🧩 الـskills — مكانٌ واحد لكل skill
 
@@ -187,13 +187,13 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 | `dart run scripts/template_update.dart` | يجلب نسخةً أحدث من القالب بلا محو تعديلات المشروع (`--apply` يكتب) |
 
 **وبمستودع القالب:** الملف يُنسخ إلى `_template/feedback/<المشروع>.md` ويُطبَّق بـskill
-`apply-feedback`. التفصيل بـ[`readme/40_SCRIPTS.md`](readme/40_SCRIPTS.md) §8‑ط.
+`apply-feedback`. التفصيل بـ[`readme/scripts/40_SCRIPTS.md`](readme/scripts/40_SCRIPTS.md) §8‑ط.
 
 ## 🧟 قاعدة صارمة — تحقّق أن السلسلة موصولة **قبل** أن تبني عليها
 
 **لا تفترض أن صنفاً مبنيّاً وموثَّقاً يعمل.** افتح مستدعيه أولاً: مَن يُسجّله بالـDI؟
 مَن يُركّبه بالشجرة؟ مَن يستورده؟ لو كان الجواب «لا أحد»، فأنت أمام **سطح قالبٍ لا
-سلسلةٍ عاملة** — والجرد الكامل بـ[`readme/10_ARCHITECTURE.md`](readme/10_ARCHITECTURE.md)
+سلسلةٍ عاملة** — والجرد الكامل بـ[`readme/architecture/10_ARCHITECTURE.md`](readme/architecture/10_ARCHITECTURE.md)
 §«المبنيّ بلا مستهلك».
 
 **ولهذه القاعدة وزن خاص بمستودع قالب**: هنا، «مبنيّ بلا مستهلك» هو الوضع **الطبيعي
@@ -203,9 +203,9 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 
 | القاعدة | التفصيل |
 |---|---|
-| كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `readme/30_MODULES.md` — `scaffold_module.dart` يكتبها |
+| كل موديول بـ`lib/modules/` يُولد بثلاثة معاً | علم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صف بجدول `readme/modules/30_MODULES.md` — `scaffold_module.dart` يكتبها |
 | `✅` بأي جدول حالة تعني **«له مستهلك هنا»** | لا «الملف وصل» |
-| ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد بـ[`readme/10_ARCHITECTURE.md`](readme/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك»، أو يُحذف |
+| ما لا علم له ولا مستدعٍ | يُذكر صراحةً بالجرد بـ[`readme/architecture/10_ARCHITECTURE.md`](readme/architecture/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك»، أو يُحذف |
 
 ## ⛓️ عقد الـwire — قاعدة صارمة
 

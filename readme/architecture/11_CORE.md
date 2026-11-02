@@ -490,12 +490,12 @@ return ApiResponse(status: 'success', message: ..., data: dataJson != null ? Mod
 
 | الملف | الغرض |
 |-------|--------|
-| `readme/10_ARCHITECTURE.md` | فهرس + هيكل كامل + Future Ideas |
-| `readme/12_REST_API.md` | REST workflow + import paths + common mistakes |
-| `readme/14_PAGINATION.md` | pagination |
-| `readme/20_WIDGETS.md` | widget placement + feedback + locale |
-| `readme/40_SCRIPTS.md` | scripts + build/release + troubleshooting |
-| `readme/00_START_HERE.md` | onboarding + feedback & locale API |
+| `readme/architecture/10_ARCHITECTURE.md` | فهرس + هيكل كامل + Future Ideas |
+| `readme/architecture/12_REST_API.md` | REST workflow + import paths + common mistakes |
+| `readme/architecture/14_PAGINATION.md` | pagination |
+| `readme/ui/20_WIDGETS.md` | widget placement + feedback + locale |
+| `readme/scripts/40_SCRIPTS.md` | scripts + build/release + troubleshooting |
+| `readme/start/00_START_HERE.md` | onboarding + feedback & locale API |
 
 ---
 

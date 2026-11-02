@@ -2,7 +2,7 @@
 
 كل ما يجرّ كوداً أصلياً ثقيلاً — صوت · فيديو · كاميرا حيّة · تعرّف — يعيش هنا
 حزمةً منفصلة، **ولا يدخل التطبيق إلا حين يُركَّب**. والتطبيق لا يعرف إلا العقد
-بـ`kit_contracts/`. التفصيل كاملاً: [`readme/24_DEVICE_KITS.md`](../readme/24_DEVICE_KITS.md).
+بـ`kit_contracts/`. التفصيل كاملاً: [`readme/modules/24_DEVICE_KITS.md`](../readme/modules/24_DEVICE_KITS.md).
 
 ```bash
 dart run scripts/kit.dart list            # ما المركَّب

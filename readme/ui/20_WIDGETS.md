@@ -1,6 +1,6 @@
 # Widgets Placement Guide
 
-> **مرجع معماري:** [`11_CORE.md`](11_CORE.md)  
+> **مرجع معماري:** [`11_CORE.md`](../architecture/11_CORE.md)  
 > **يُحدَّث هذا الملف** عند تغيير قواعد توزيع الـ widgets أو مسارات `shared/`.
 
 ## Rule of Thumb
@@ -105,7 +105,7 @@ lib/
 
 ## 7) Related Docs
 
-- [`11_CORE.md`](11_CORE.md) — architecture principles
-- [`00_START_HERE.md`](00_START_HERE.md) — onboarding + feedback/locale API
-- [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) — project structure index
+- [`11_CORE.md`](../architecture/11_CORE.md) — architecture principles
+- [`00_START_HERE.md`](../start/00_START_HERE.md) — onboarding + feedback/locale API
+- [`10_ARCHITECTURE.md`](../architecture/10_ARCHITECTURE.md) — project structure index
 

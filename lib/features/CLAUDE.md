@@ -58,7 +58,7 @@ lib/features/{feature}/
 
 > **وأين تظهر يقرّره `AppFeatures.authMode`** — `none` (افتراضاً: لا دخول ولا تبويب
 > حساب) · `required` · `optional` (زائرٌ، و`AccountTab` يدعو للدخول). الشرائح كلّها
-> تبقى بالكود بالأوضاع الثلاثة. راجع `readme/23_STARTUP_SPLASH.md` §٤‑ب.
+> تبقى بالكود بالأوضاع الثلاثة. راجع `readme/architecture/23_STARTUP_SPLASH.md` §٤‑ب.
 
 ```
 features/auth/
@@ -613,7 +613,7 @@ Bone.circle(child: AvatarWidget(name: n))   // للأشكال — و`AvatarWidge
                                             // تعرفها بأنفسها
 ```
 
-القواعد الأربع: [`readme/21_WIDGETS_USAGE.md`](../../readme/21_WIDGETS_USAGE.md) §18.
+القواعد الأربع: [`readme/ui/21_WIDGETS_USAGE.md`](../../readme/ui/21_WIDGETS_USAGE.md) §18.
 
 > ⚠️ **وعائلةٌ أقدمُ ما زالت بالمكتبة** — `ShimmerLoadingWidget` و`SkeletonWidget`
 > و`skeleton_templates.dart` — يستعملها `PageLoadingIndicator` وأخواتُه من الداخل.

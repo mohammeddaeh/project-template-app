@@ -111,7 +111,7 @@ _observer.onRefreshSucceeded(grant, oldAccess: old, oldRefresh: oldRefresh);
 ```
 
 لا يسمع أحد ما لم يُشعَل `token_inspector` —
-[`readme/33_MODULE_TOKEN_INSPECTOR.md`](../../../../readme/33_MODULE_TOKEN_INSPECTOR.md).
+[`readme/modules/33_MODULE_TOKEN_INSPECTOR.md`](../../../../readme/modules/33_MODULE_TOKEN_INSPECTOR.md).
 
 ---
 

@@ -42,7 +42,7 @@ splash النظام  ← الشعارُ كاملاً على #0D3A2F   (طوال 
 ## ٢ · القناعُ الدائري — وهو الذي يقرّر مقاس الشعار
 
 **الشعار ملفٌّ يُستبدل**: `assets/images/brand/app_logo.svg` (وشرطُه بـ
-[`../assets/images/brand/README.md`](../assets/images/brand/README.md)). وكلُّ رقمٍ أدناه
+[`../assets/images/brand/README.md`](../../assets/images/brand/README.md)). وكلُّ رقمٍ أدناه
 يُشتقّ منه بـ`gen_splash_assets.dart` — لا يُكتب باليد.
 
 أندرويد 12+ يعرض الرمز داخل **لوحة ٢٨٨dp**، ويقصّه بدائرةٍ قطرُها **ثلثاها
@@ -80,7 +80,7 @@ dart run scripts/gen_splash_assets.dart
 
 ## ٣ · أندرويد **لا يُولَّد** من `flutter_native_splash`
 
-`android: false` بـ[`../flutter_native_splash.yaml`](../flutter_native_splash.yaml) — **بقرار**، وهذه أسبابه:
+`android: false` بـ[`../flutter_native_splash.yaml`](../../flutter_native_splash.yaml) — **بقرار**، وهذه أسبابه:
 
 | ما تفعله الأداة | الأثر |
 |---|---|
@@ -136,7 +136,7 @@ runApp( App(startAt: …) )                             ← أوّلُ إطار 
 
 و`StartupResolver` يأخذ `AuthSessionObserver` من الـDI ويُخبره بما قرأه من
 التخزين (`onSessionRestored`) — سطرٌ بلا منطق، لا يُنتظر ولا يغيّر الوجهة.
-راجع [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) §٢.
+راجع [`33_MODULE_TOKEN_INSPECTOR.md`](../modules/33_MODULE_TOKEN_INSPECTOR.md) §٢.
 
 وكلُّه داخل `runZonedGuarded(_bootstrap, _onError)`: خطأٌ لا يلتقطه أحد يصل
 `_onError`، فيمرّ بـ`LogService.error` (فيراه `crash_reporting` حين يُشعَل) ثم
@@ -210,7 +210,7 @@ runApp( App(startAt: …) )                             ← أوّلُ إطار 
 
 ## ٥ · كيف تصل الوجهةُ إلى الموجّه
 
-`StartupResolver.resolve()` يُعيد [`StartupDestination`](../lib/features/startup/startup_destination.dart)،
+`StartupResolver.resolve()` يُعيد [`StartupDestination`](../../lib/features/startup/startup_destination.dart)،
 ويُمرَّر إلى `App(startAt: …)`، ويتحوّل مساراً بـ`app.dart`:
 
 ```dart
@@ -223,9 +223,9 @@ routerConfig: _router.config(
 )
 ```
 
-[`resolveDeepLink`](../lib/routes/deep_link_resolver.dart) دالّةٌ
+[`resolveDeepLink`](../../lib/routes/deep_link_resolver.dart) دالّةٌ
 نقيّةٌ مستخرَجةٌ عمداً — قابلةٌ للاختبار المباشر
-([`test/deep_link_resolver_test.dart`](../test/deep_link_resolver_test.dart))
+([`test/deep_link_resolver_test.dart`](../../test/deep_link_resolver_test.dart))
 بلا تركيب `App` كاملةً. قرارُها:
 
 ```

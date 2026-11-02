@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 /// مولّد موديول اختياري جديد — يكتب الأركان الثلاثة التي يفرضها CLAUDE.md (R29)
 /// معاً دائماً لأي موديول تحت `lib/modules/`: علَم بـ`AppFeatures` · سطر
-/// تسجيل بـ`ModulesBootstrap` · صفّ بالجدول الواحد `readme/30_MODULES.md`.
+/// تسجيل بـ`ModulesBootstrap` · صفّ بالجدول الواحد `readme/modules/30_MODULES.md`.
 ///
 /// **لماذا الثلاثة معاً بأمرٍ واحد**: ركنٌ منسيّ لا يراه المصرِّف ولا
 /// الاختبارات — موديولٌ بلا سطر `ModulesBootstrap` يُصرَّف ولا يعمل، وموديولٌ
@@ -57,7 +57,7 @@ Future<void> main(List<String> args) async {
   _section('🔗  الركن ٢ — تسجيل ModulesBootstrap');
   _appendBootstrapRegistration(vars);
 
-  _section('📋  الركن ٣ — صفّ بالجدول readme/30_MODULES.md');
+  _section('📋  الركن ٣ — صفّ بالجدول readme/modules/30_MODULES.md');
   _appendModulesTableRow(vars);
 
   _section('🔎  إشارة الجرد — scripts/src/port_signals.dart');
@@ -74,7 +74,7 @@ Future<void> main(List<String> args) async {
   print(
     'التالي:\n'
     '  1. سجّل تبعيات الموديول الفعلية بـ$pluginPath (مكان TODO).\n'
-    '  2. أكمل صفّه بـreadme/30_MODULES.md — الوصف وما يحتاجه خارج التطبيق.\n'
+    '  2. أكمل صفّه بـreadme/modules/30_MODULES.md — الوصف وما يحتاجه خارج التطبيق.\n'
     '  3. لو احتاج الموديول واجهة عرض: راجع نمط modules/multi_device/ (Widget عام\n'
     '     self-contained يملك cubit داخلياً — لا يستورده المستهلك أبداً).\n'
     '  4. أضف SETUP.md بخطوات التفعيل — كل موديول قائم يحمل واحداً.\n'
@@ -186,7 +186,7 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
 }
 
 void _appendModulesTableRow(Map<String, String> vars) {
-  final file = File('readme/30_MODULES.md');
+  final file = File('readme/modules/30_MODULES.md');
   const marker = '<!-- scaffold_module: صفٌّ جديد فوق هذا السطر -->';
   final module = vars['__module__']!;
   final camel = vars['__moduleCamel__']!;
@@ -200,7 +200,7 @@ void _appendModulesTableRow(Map<String, String> vars) {
     return;
   }
   file.writeAsStringSync(content.replaceFirst(marker, '$row\n$marker'));
-  print('  ✓ readme/30_MODULES.md (الوصف وما يحتاجه لا يزالان TODO)');
+  print('  ✓ readme/modules/30_MODULES.md (الوصف وما يحتاجه لا يزالان TODO)');
 }
 
 // ── Health checks ─────────────────────────────────────────────────────────────

@@ -88,7 +88,7 @@ void main() {
 /// (`modules/sync/` ⇒ `modules/sync`).
 Set<String> _catalogKeys() {
   final keys = <String>{};
-  for (final line in File('readme/06_CAPABILITIES.md').readAsLinesSync()) {
+  for (final line in File('readme/rules/06_CAPABILITIES.md').readAsLinesSync()) {
     if (line.startsWith('## إضافة قدرة')) break;
     if (!line.startsWith('| ') || line.startsWith('| الحاجة')) continue;
     final cells = line.split('|');

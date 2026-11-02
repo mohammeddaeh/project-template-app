@@ -61,7 +61,7 @@ export 'presentation/widgets/can.dart' show AbilityContext, Can, CanMode;
 ///
 /// It stops a user being offered a button that will be refused.
 /// `requirePermission` on the server is what refuses, and it is the only thing
-/// that does. See `readme/31_MODULE_PERMISSIONS.md`.
+/// that does. See `readme/modules/31_MODULE_PERMISSIONS.md`.
 abstract final class AccessControlPlugin {
   static bool _initialized = false;
 

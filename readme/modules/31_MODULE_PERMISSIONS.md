@@ -193,7 +193,7 @@ Can(
 )
 ```
 
-الجرد الكامل لهذا التمييز موثَّق بـ[`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك».
+الجرد الكامل لهذا التمييز موثَّق بـ[`10_ARCHITECTURE.md`](../architecture/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك».
 
 ---
 

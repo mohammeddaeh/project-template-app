@@ -19,7 +19,7 @@
 ///   - إعادة توليد لوحة الألوان الكاملة (`app_palette.dart`) من لون واحد —
 ///     اللوحة اليوم تدرّج يدوي مدروس (12+ درجة)، ولا أداة بالقالب تُنتج تدرّجاً
 ///     موثوقاً من لون واحد. يبقى تبديل الألوان خطوة يدوية موثَّقة بـ
-///     `readme/01_SETUP.md`، متبوعةً بـ`flutter test test/color_contrast_test.dart`.
+///     `readme/start/01_SETUP.md`، متبوعةً بـ`flutter test test/color_contrast_test.dart`.
 ///
 /// تشغيل من جذر المشروع مباشرة بعد الاستنساخ (تفاعلي):
 ///   dart run scripts/setup_project.dart
@@ -34,7 +34,7 @@
 /// `--auth none|required|optional` يكتب `AppFeatures.authMode` (افتراضاً `none`
 /// مع `--yes`، وإلا يُسأل).
 /// `--kits voice,scan` حِزَمُ الأجهزة التي تبقى مركَّبة — وغيرُها يُزال
-/// (افتراضاً لا شيء مع `--yes`، وإلا يُسأل). `readme/24_DEVICE_KITS.md`.
+/// (افتراضاً لا شيء مع `--yes`، وإلا يُسأل). `readme/modules/24_DEVICE_KITS.md`.
 library;
 
 import 'dart:convert';
@@ -160,8 +160,8 @@ Future<void> main(List<String> args) async {
   );
 
   print(
-    'التالي: راجع readme/00_START_HERE.md لبدء أول feature فعلية.\n'
-    'لم يُلمَس: لوحة الألوان — خطوة يدوية موثَّقة بـreadme/01_SETUP.md، بقصد لا سهواً.\n',
+    'التالي: راجع readme/start/00_START_HERE.md لبدء أول feature فعلية.\n'
+    'لم يُلمَس: لوحة الألوان — خطوة يدوية موثَّقة بـreadme/start/01_SETUP.md، بقصد لا سهواً.\n',
   );
 
   if (!healthy) exit(1);
@@ -604,7 +604,7 @@ String _currentGitRef() {
 
 const _gotchas = <String, String>{
   'accessControl':
-      'يحتاج AUTHZ_ENABLED=true بالباك + إسناد دور — راجع readme/31_MODULE_PERMISSIONS.md',
+      'يحتاج AUTHZ_ENABLED=true بالباك + إسناد دور — راجع readme/modules/31_MODULE_PERMISSIONS.md',
   'dataTransfer':
       'يحتاج نصف الباك (backend_template/src/core/data-transfer/) — بدونه كل نداء 404',
   'offlineSync':

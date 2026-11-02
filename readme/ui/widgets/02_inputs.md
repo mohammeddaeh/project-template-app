@@ -226,7 +226,7 @@ if (!_formKey.validateAndReveal()) return;
 
 > **ودجتا kit**: تعملان حين تكون `kit_voice` مركّبة (`dart run scripts/kit.dart add voice`)،
 > **ولا ترسمان شيئاً بدونها** — فالشاشة تطلبهما بلا شرط، وتبقى سليمةً بمشروعٍ لم يركّبها.
-> البنية بـ[`24_DEVICE_KITS.md`](../24_DEVICE_KITS.md).
+> البنية بـ[`24_DEVICE_KITS.md`](../../modules/24_DEVICE_KITS.md).
 
 ```dart
 // ── إملاءٌ بحقل — الطريق المعتاد ──
@@ -257,7 +257,7 @@ SpeakButton(text: quote, languageCode: 'en')
 
 > **نداءاتٌ لا ودجات**: كلٌّ يطلب إذن الكاميرا بنفسه ويقول لماذا توقّف. والزرُّ يُرسم حين
 > تكون الـkit مركّبة — `DeviceScan.canScanCodes` · `canReadText`.
-> البنية بـ[`24_DEVICE_KITS.md`](../24_DEVICE_KITS.md).
+> البنية بـ[`24_DEVICE_KITS.md`](../../modules/24_DEVICE_KITS.md).
 
 ```dart
 // ── رمز QR أو باركود — ورقةٌ بالكاميرا تُغلق بأوّل رمز ──

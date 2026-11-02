@@ -30,7 +30,7 @@ const _androidPermissions = <String, List<String>>{
   //
   // فما اشتراه الإعلان: حوار أذونات لا وظيفة له، وعمليةُ `PermissionController`
   // تُشغَّل، وانتقال إضافي للخلفية — كلّه بالثواني التي تسبق فتح الكاميرا، وهي
-  // بالضبط نافذة القتل (`readme/11_CORE.md` §3.2-م).
+  // بالضبط نافذة القتل (`readme/architecture/11_CORE.md` §3.2-م).
   //
   // **والتصوير داخل العملية يأتي عبر kit** (`kit_scan` بـ`mobile_scanner`):
   // الـkit يعلن حاجته بـ`kit.json` (`"permissions": ["camera"]`) فيُشعل

@@ -60,7 +60,7 @@
 
 > 📌 **ومشروعٌ يريد فاحصاً يسأل الخادمَ الحيَّ** — لا ملفَّ تثبيتٍ ساكناً — يبني
 > سكربتاً يقارن جردَ حقوله مقابل `openapi.json` ويفشل بصوتٍ عالٍ. والنمطُ كاملاً
-> ورموزُ خروجه الثلاثة: [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑ب.
+> ورموزُ خروجه الثلاثة: [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §8‑ب.
 >
 > **والفرق بينه وبين ملفّ التثبيت جوهريّ**: هذا يقول «النموذجُ ما زال يقرأ ما
 > اتّفقنا عليه»، وذاك يقول **«والاتفاقُ ما زال قائماً»** — والثاني وحده يمسك
@@ -231,7 +231,7 @@ Figma hex → AppPalette (خام) → AppColors.light/dark (دلالي) → cont
 `radius` · `padding` · `centered` · `animate` · `adaptive`.
 
 الفاحص: `scripts/check_structure.dart` → `F35`.
-الاستعمال: [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §26.
+الاستعمال: [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §26.
 
 ---
 
@@ -278,7 +278,7 @@ s.pick(compact: 1, expanded: 2)         // ❌ if (width > 600)
 ⚠️ **وجرّب على ثلاثة قبل التسليم**: هاتف ~٣٦٠ · لوحٌ عموديّ (٨٠٠) · لوحٌ أفقيّ (١٢٨٠).
 فرعُ اللوح لا يُبنى على هاتفٍ أصلاً، فخطؤه لا يظهر إلا هناك — و`dart analyze` نظيفٌ عليه.
 
-التفصيل والقوالب: [`22_RESPONSIVE.md`](22_RESPONSIVE.md).
+التفصيل والقوالب: [`22_RESPONSIVE.md`](../ui/22_RESPONSIVE.md).
 
 ## هـ) الحدود المعمارية
 
@@ -372,7 +372,7 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 ### R26 · لا ملف توثيق خارج جدول المزامنة 👁
 
 كل ملف بـ`readme/` **يجب** أن يكون بجدول «Mandatory Documentation Sync» بـ
-[`../CLAUDE.md`](../CLAUDE.md) وبفهرس [`README.md`](README.md) معاً.
+[`../CLAUDE.md`](../../CLAUDE.md) وبفهرس [`README.md`](../README.md) معاً.
 
 > **لماذا**: ملفٌ خارج الجدول لا يُذكّر به أحد حين يتغيّر الكود، فيصف موديولاً
 > مبنيّاً بأنه «لم يُبنَ» أو مطفأً بلا أن يقول. **ولا شيء يفشل** حين تتقادم الوثيقة: التحليل نظيف،
@@ -388,17 +388,17 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 قبل استعمال أي صنف مبنيّ وموثَّق، اسأل: **مَن يُسجّله بالـDI؟ مَن يركّبه بالشجرة؟
 مَن يستورده؟** الجواب «لا أحد» ⇒ أنت أمام سطح قالبٍ لا سلسلةٍ عاملة.
 
-الجرد الكامل: [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) §«المبنيّ بلا مستهلك».
+الجرد الكامل: [`10_ARCHITECTURE.md`](../architecture/10_ARCHITECTURE.md) §«المبنيّ بلا مستهلك».
 
 ### R29 · كل موديول يُولد بأركانه معاً 👁
 
-علَم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صفّ بجدول [`30_MODULES.md`](30_MODULES.md) —
+علَم بـ`AppFeatures` · سطر بـ`ModulesBootstrap` · صفّ بجدول [`30_MODULES.md`](../modules/30_MODULES.md) —
 `scaffold_module.dart` يكتبها معاً.
 واحدٌ ناقص ⇒ كود يُشحن ولا يُشعَل ولا يُطفأ.
 
 > **وموديولٌ لا يتّسع له الإقلاع** (حوارٌ يحتاج `BuildContext`) ينقسم نصفين ولا
 > يُعفى: `initialize(di)` بـ`ModulesBootstrap` يسجّل حالته، وحارسٌ بالقشرة يعرضها —
-> مثاله `in_app_updates/` و`AppUpdateGate`. راجع [`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) §الموديولات.
+> مثاله `in_app_updates/` و`AppUpdateGate`. راجع [`10_ARCHITECTURE.md`](../architecture/10_ARCHITECTURE.md) §الموديولات.
 
 ### R30 · قاعدة مكتوبة بلا فاحص اقتراحٌ لا قاعدة 👁
 
@@ -452,7 +452,7 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 > مما يملكه القالب، ولا يلاحظ أحد — فيكتبها المطوّر ثانيةً لأنه لم يرها.
 
 الاختبار: `test/modules/showcase_test.dart` — «every public class of the widget library…».
-والمشروعُ الذي يحذف الجولة يحذف اختبارها معها ([`SETUP.md`](../lib/modules/showcase/SETUP.md)).
+والمشروعُ الذي يحذف الجولة يحذف اختبارها معها ([`SETUP.md`](../../lib/modules/showcase/SETUP.md)).
 
 ### R43 · حِزَم الأجهزة منفصلة — التطبيق يعرف العقد وحده 🔒
 
@@ -466,7 +466,7 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 > لحظةَ تُزال، بدل سطرٍ واحد يكتبه السكربت.
 
 الفاحص: `check_structure.dart` — `C18` (الاستيراد) · `C19` (حزم المنصّة). التفصيل:
-[`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
+[`24_DEVICE_KITS.md`](../modules/24_DEVICE_KITS.md).
 
 ### R44 · النواة تُخبر ولا تعرف من يسمع 🔒
 
@@ -479,7 +479,7 @@ Can(permission: 'orders.delete', child: ...)          // ❌
 > حين تُنسى، ويصير حذفُها بحثاً بستّة ملفات. وبالمنفذ، إطفاؤها علَمٌ، وحذفُها مجلّد.
 
 الفاحص: `check_structure.dart` — `C20`. التفصيل:
-[`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md).
+[`33_MODULE_TOKEN_INSPECTOR.md`](../modules/33_MODULE_TOKEN_INSPECTOR.md).
 
 ## ط) تغيير الكود
 
@@ -513,11 +513,11 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 
 | # | الفخّ | الموضع |
 |---|---|---|
-| 1 | **`GetIt.getAll<T>()` يرمي عند الفراغ** — خلافاً للداخليّ الذي يُعيد قائمةً فارغة. والفرقُ لا يظهر ما دام ثمّة تسجيلٌ واحد، فيمرّ سنينَ ثم يرمي يومَ يُحذف آخرُ منفّذ. ⛔ **و`isRegistered<T>()` ليست البديل**: تقرأ التسجيلاتِ غيرَ المسمّاة وحدها | [`core/foundation/di/get_it_all_extension.dart`](../lib/core/foundation/di/get_it_all_extension.dart) |
-| 2 | **`@LazySingleton(as: Interface)` يسجّل تحت الواجهة وحدها** — فمن يحقن الصنفَ نفسَه (لأنه يحتاج طرائقَ ليست بالعقد) ينهار **وقت التشغيل**. و`injectable` يولّد `gh<X>()` راضياً، و`dart analyze` نظيف. والنمطُ الصحيح **تسجيلان بنسخةٍ واحدة** | [`core/foundation/contracts/account_scoped_store.dart`](../lib/core/foundation/contracts/account_scoped_store.dart) |
-| 3 | **`handler.reject(err)` وسيطُها الثاني افتراضُه `false`** — فلا يمرّ الخطأ على `onError` لأيِّ معترضٍ بعده. والنتيجةُ **حجبٌ بصمتٍ تامّ**: لا سطرَ بالطرفية ولا طلبَ بـDevTools | [`core/infra/network/interceptors/internet_checker_interceptor.dart`](../lib/core/infra/network/interceptors/internet_checker_interceptor.dart) |
-| 4 | **`InternetConnectionChecker` الافتراضي يضرب ثلاثة APIs تجريبية عامّة** — فشبكةٌ تحجبها تجعل التطبيق **أوف‑لاين للأبد** والخادمُ متاح | [`core/platform/connectivity/server_reachability.dart`](../lib/core/platform/connectivity/server_reachability.dart) |
-| 5 | **`workmanager 0.9.2` يفشل عند التصريف لا عند الحلّ** إن صعد `platform_interface` إلى `0.9.4` على Flutter 3.35 — فتُثبَّت الثلاثةُ معاً | [`pubspec.yaml`](../pubspec.yaml) §`dependency_overrides` |
+| 1 | **`GetIt.getAll<T>()` يرمي عند الفراغ** — خلافاً للداخليّ الذي يُعيد قائمةً فارغة. والفرقُ لا يظهر ما دام ثمّة تسجيلٌ واحد، فيمرّ سنينَ ثم يرمي يومَ يُحذف آخرُ منفّذ. ⛔ **و`isRegistered<T>()` ليست البديل**: تقرأ التسجيلاتِ غيرَ المسمّاة وحدها | [`core/foundation/di/get_it_all_extension.dart`](../../lib/core/foundation/di/get_it_all_extension.dart) |
+| 2 | **`@LazySingleton(as: Interface)` يسجّل تحت الواجهة وحدها** — فمن يحقن الصنفَ نفسَه (لأنه يحتاج طرائقَ ليست بالعقد) ينهار **وقت التشغيل**. و`injectable` يولّد `gh<X>()` راضياً، و`dart analyze` نظيف. والنمطُ الصحيح **تسجيلان بنسخةٍ واحدة** | [`core/foundation/contracts/account_scoped_store.dart`](../../lib/core/foundation/contracts/account_scoped_store.dart) |
+| 3 | **`handler.reject(err)` وسيطُها الثاني افتراضُه `false`** — فلا يمرّ الخطأ على `onError` لأيِّ معترضٍ بعده. والنتيجةُ **حجبٌ بصمتٍ تامّ**: لا سطرَ بالطرفية ولا طلبَ بـDevTools | [`core/infra/network/interceptors/internet_checker_interceptor.dart`](../../lib/core/infra/network/interceptors/internet_checker_interceptor.dart) |
+| 4 | **`InternetConnectionChecker` الافتراضي يضرب ثلاثة APIs تجريبية عامّة** — فشبكةٌ تحجبها تجعل التطبيق **أوف‑لاين للأبد** والخادمُ متاح | [`core/platform/connectivity/server_reachability.dart`](../../lib/core/platform/connectivity/server_reachability.dart) |
+| 5 | **`workmanager 0.9.2` يفشل عند التصريف لا عند الحلّ** إن صعد `platform_interface` إلى `0.9.4` على Flutter 3.35 — فتُثبَّت الثلاثةُ معاً | [`pubspec.yaml`](../../pubspec.yaml) §`dependency_overrides` |
 
 > **والقاسمُ بينها** أنها كلَّها **تُصرَّف نظيفةً**: لا `dart analyze` يراها ولا
 > اختبارُ وحدةٍ يشكو، وأثرُها يظهر وقتَ التشغيل أو بسلوكٍ صامت. ولذلك مكانُها
@@ -552,4 +552,4 @@ dart run scripts/check_structure.dart   # بلا مخالفة جديدة
 [ ] 🪤   فخٌّ جديد بمكتبة؟ علَّق عليه بموضعه + صفٌّ بجدول §🪤
 ```
 
-الأوامر والمسارات: [`00_START_HERE.md`](00_START_HERE.md)
+الأوامر والمسارات: [`00_START_HERE.md`](../start/00_START_HERE.md)

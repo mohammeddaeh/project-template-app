@@ -1,13 +1,13 @@
 # lib/CLAUDE.md — UI Rules, Imports, Localization
 
 > يُحمَّل تلقائياً عند العمل في أي ملف داخل `lib/`.
-> **اسم الـ package:** `app_template` — بدّله مرّةً واحدة أو لا تبدّله ([`readme/01_SETUP.md`](../readme/01_SETUP.md) §٣).
+> **اسم الـ package:** `app_template` — بدّله مرّةً واحدة أو لا تبدّله ([`readme/start/01_SETUP.md`](../readme/start/01_SETUP.md) §٣).
 >
 > **هذا الملف أوامر.** «لماذا» وراء كل قاعدة أدناه — وما يقع حين تُخالَف —
-> بـ[`readme/03_RULES.md`](../readme/03_RULES.md)، مرقّمةً `R##` للاستشهاد بمراجعة
-> الكود. والمرجع السريع للأوامر والمسارات: [`readme/02_CHEATSHEET.md`](../readme/02_CHEATSHEET.md).
+> بـ[`readme/rules/03_RULES.md`](../readme/rules/03_RULES.md)، مرقّمةً `R##` للاستشهاد بمراجعة
+> الكود. والمرجع السريع للأوامر والمسارات: [`readme/start/02_CHEATSHEET.md`](../readme/start/02_CHEATSHEET.md).
 >
-> **وقبل أن تكتب أي أداة أو تنسيقاً أو غلافاً**: [`readme/06_CAPABILITIES.md`](../readme/06_CAPABILITIES.md)
+> **وقبل أن تكتب أي أداة أو تنسيقاً أو غلافاً**: [`readme/rules/06_CAPABILITIES.md`](../readme/rules/06_CAPABILITIES.md)
 > — القالب يملك التاريخ والأرقام والصور والسجلّ وخدمات المنصّة، و`check_structure`
 > يُفشل النداء الخامّ خارج غلافه (`C01…C20`).
 >
@@ -175,13 +175,13 @@ class _ProfileHeader extends StatelessWidget { ... }
 ```
 
 **أين تسكن الودجة:** يستعملها feature ثانية (أو ستفعل) ⇒ `lib/ui/widgets/<group>/`
-+ تصدير بـ`widgets.dart` + صفّ بـ`readme/21_WIDGETS_USAGE.md` + مثالٌ بصفحةٍ من
++ تصدير بـ`widgets.dart` + صفّ بـ`readme/ui/21_WIDGETS_USAGE.md` + مثالٌ بصفحةٍ من
 `lib/modules/showcase/presentation/pages/` — **الأربعة معاً** (R42: الاختبار يُفشل الناقص).
 وإلا ⇒ `lib/features/<f>/presentation/widgets/`.
 
 **والودجة العامة لا تستورد `features/…` أبداً** — تُمرَّر إليها البيانات وسائطَ.
 
-التفصيل والأسباب: [`readme/05_FIGMA_TO_PAGE.md`](../readme/05_FIGMA_TO_PAGE.md) §ز.
+التفصيل والأسباب: [`readme/rules/05_FIGMA_TO_PAGE.md`](../readme/rules/05_FIGMA_TO_PAGE.md) §ز.
 
 ---
 
@@ -219,7 +219,7 @@ body: ResponsiveContentBox(
 
 النِّسبةُ من الارتفاع **لا تتقلّص مع الكيبورد**، فتدفع الزرَّ خارج الحدّ على
 الشاشات القصيرة. والتفصيل والأسباب:
-[`readme/22_RESPONSIVE.md`](../readme/22_RESPONSIVE.md).
+[`readme/ui/22_RESPONSIVE.md`](../readme/ui/22_RESPONSIVE.md).
 
 > ⬜ **وشاشاتُ القالب لم تُنقل بعد** — الطبقة موصولة، والنقلُ شاشةً شاشةً.
 > فما تكتبه **أنت** يتبع القاعدة من أوّل سطر، وما هو قائمٌ يُنقل حين يُلمَس.
@@ -233,7 +233,7 @@ CustomTextField(controller: _c, labelText: LocaleKeys.x.tr())
 **ممنوع ❌:** `TextField(` · `TextFormField(` مباشرةً.
 
 والإملاء بالصوت وسيطٌ لا ودجة: `CustomTextField(dictation: true)` — يظهر الميكروفون
-حين تكون kit `voice` مركّبة، ولا شيء بدونها ([`readme/24_DEVICE_KITS.md`](../readme/24_DEVICE_KITS.md)).
+حين تكون kit `voice` مركّبة، ولا شيء بدونها ([`readme/modules/24_DEVICE_KITS.md`](../readme/modules/24_DEVICE_KITS.md)).
 
 ولا تغلّف الشاشة بـ`KeyboardDismissWidget` لإغلاق الكيبورد: الحقل يُغلقه بنفسه
 (`onTapOutsideDismissTheKeyboard` افتراضُها `true`). Flutter لا يفعلها على

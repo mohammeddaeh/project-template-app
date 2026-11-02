@@ -63,7 +63,7 @@ enum ArabicDigits {
 }
 
 /// **A date shape**, made of parts — the middle of three steps
-/// (`readme/06_CAPABILITIES.md` §التاريخ): the materials ([CalendarNames],
+/// (`readme/rules/06_CAPABILITIES.md` §التاريخ): the materials ([CalendarNames],
 /// [HijriDateX], [toArabicIndicDigits]) below, the named catalog
 /// (`AppDateFormats`) above, and a screen only ever names a catalog entry.
 ///

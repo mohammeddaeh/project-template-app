@@ -1,6 +1,6 @@
 # 02 — المرجع السريع
 
-> **تحتاج أداة لا أمراً؟** [`06_CAPABILITIES.md`](06_CAPABILITIES.md) — التاريخ والأرقام والصور وخدمات المنصّة.
+> **تحتاج أداة لا أمراً؟** [`06_CAPABILITIES.md`](../rules/06_CAPABILITIES.md) — التاريخ والأرقام والصور وخدمات المنصّة.
 >
 > **المكان المركزي.** نسيتَ أمراً أو مساراً أو خطوة؟ هنا، لا في خمسة ملفات.
 > **يُحدَّث** عند إضافة أمر · مسار import · widget · قيمة enum · سكربت.
@@ -69,8 +69,8 @@ dart run scripts/pull_figma.dart --node 1:57     # المعرّف بدل الا�
 dart run scripts/pull_figma.dart --all           # كل الإطارات العليا
 ```
 
-> المخرَج بـ`.figma/cache/`. القواعد: [`05_FIGMA_TO_PAGE.md`](05_FIGMA_TO_PAGE.md) ·
-> التفاصيل: [`40_SCRIPTS.md`](40_SCRIPTS.md) §7.
+> المخرَج بـ`.figma/cache/`. القواعد: [`05_FIGMA_TO_PAGE.md`](../rules/05_FIGMA_TO_PAGE.md) ·
+> التفاصيل: [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §7.
 
 ### إصدار
 
@@ -116,7 +116,7 @@ dart run build_runner build --delete-conflicting-outputs # gen_code.dart يشم�
 
 > ★ **شريحة CRUD كاملة بأمرٍ واحد**: `dart run scripts/scaffold_feature.dart <feature_name>`
 > يبني كل الطبقات أدناه دفعة واحدة (بحقلٍ تجريبي `title` تُبدّله لاحقاً) —
-> راجع [`40_SCRIPTS.md`](40_SCRIPTS.md) §8‑هـ. **الخطوات أدناه يدوية** لمن
+> راجع [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §8‑هـ. **الخطوات أدناه يدوية** لمن
 > يحتاج endpoint واحداً لا شريحة كاملة.
 
 ```
@@ -141,7 +141,7 @@ dart run build_runner build --delete-conflicting-outputs # gen_code.dart يشم�
 (`auth/*`) وحدَها، ومسارُ كلِّ شريحةٍ **يسكن شريحتَها** (`data/<name>_urls.dart`)
 لا ملفاً مركزياً يتضخّم بعقودٍ لا يقرؤها أحد.
 
-وعقدُ ما يخدمه باكُك يُكتب بـ[`17_SERVED_CONTRACT.md`](17_SERVED_CONTRACT.md) —
+وعقدُ ما يخدمه باكُك يُكتب بـ[`17_SERVED_CONTRACT.md`](../architecture/17_SERVED_CONTRACT.md) —
 **يصل فارغاً بقصد**، تملؤه بأوّل نقطةٍ تُوصَل.
 ### شاشة جديدة
 
@@ -165,7 +165,7 @@ dart run build_runner build --delete-conflicting-outputs # gen_code.dart يشم�
 ```
 1. lib/ui/widgets/<category>/my_widget.dart
 2. lib/ui/widgets/widgets.dart   ← export '<category>/my_widget.dart';
-3. readme/21_WIDGETS_USAGE.md        ← وثّق وسائطه
+3. readme/ui/21_WIDGETS_USAGE.md        ← وثّق وسائطه
 ```
 
 خاص بـfeature واحدة ⇒ `features/<f>/presentation/widgets/` بلا تصدير.
@@ -229,7 +229,7 @@ import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 
 import 'package:app_template/ui/responsive/responsive.dart';
 // context.screen → space(24) · size(115) · gutter · isTablet · pick(...)
-// ResponsiveContentBox · ResponsiveGap · ResponsiveBuilder — readme/22_RESPONSIVE.md
+// ResponsiveContentBox · ResponsiveGap · ResponsiveBuilder — readme/ui/22_RESPONSIVE.md
 
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 // 16.allPadding · 16.horizontalPadding · 4.widthBox · 4.heightBox
@@ -300,7 +300,7 @@ AppProgress.circular(value: .65, dimension: 54,
 | تجاوزات | `color` · `trackColor` · `gradient` · `strokeWidth` · `dimension` · `height` · `radius` · `padding` · `centered` · `animate` · `adaptive` |
 
 > `value: null` ⇒ غير محدّد · `value: 0.0–1.0` ⇒ محدّد ويتحرّك. نفس الويدجت.
-> التفصيل: [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §26.
+> التفصيل: [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §26.
 
 ### توسيط الأرقام — `GlyphCenter` بالشارات
 
@@ -321,13 +321,13 @@ Container(
 يُعدَّل لو تغيّر الخط.
 
 > `StepProgressIndicator` يلفّ رقمه داخلياً. التفصيل وحدودُ الاستعمال:
-> [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §27.
+> [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §27.
 
 ### حالات الشاشة — لكل حالة widget
 
 | الحالة | الأداة |
 |---|---|
-| تحميل | `MyBody.loading()` + `Skeletonized(enabled:)` — الهيكلُ هو الجسدُ نفسُه ([`21`](21_WIDGETS_USAGE.md) §18) · و`const LoadingWidget()` لما لا شكلَ له |
+| تحميل | `MyBody.loading()` + `Skeletonized(enabled:)` — الهيكلُ هو الجسدُ نفسُه ([`21`](../ui/21_WIDGETS_USAGE.md) §18) · و`const LoadingWidget()` لما لا شكلَ له |
 | فارغة | `EmptyStateWidget(titleKey: ..., icon: ...)` |
 | خطأ + إعادة | `ErrorStateWidget(messageKey: ..., onRetry: ...)` |
 | لا إنترنت | `NoInternetWidget(onRetry: ...)` |
@@ -348,7 +348,7 @@ Container(
 
 > `imageUrl: null` ⇒ انهيار وقت التشغيل. **دائماً** `url ?? ''`.
 
-المكتبة كاملةً بوسائطها: [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md)
+المكتبة كاملةً بوسائطها: [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md)
 
 ---
 
@@ -404,7 +404,7 @@ res.fold((failure) {
 | Repository | `handle()` — لا `try/catch` يدوي |
 | Cubit | `FailureUiMapper.toAction()` — لا يعرف `DioException` |
 
-المسار عبر النصفين: [`13_ERROR_FLOW.md`](13_ERROR_FLOW.md)
+المسار عبر النصفين: [`13_ERROR_FLOW.md`](../architecture/13_ERROR_FLOW.md)
 
 ---
 
@@ -420,11 +420,11 @@ res.fold((failure) {
 | `certificatePinning` | تثبيت الشهادة على Dio |
 | `localNotifications` | `FlnNotificationsAdapter` بدل المعطَّل |
 | `camera` · `microphone` · `location` · `photos` · `contacts` · `bluetooth` … | أذونات المنصّة — ثم `sync_platform_permissions.dart` |
-| `offlineSync` | ⛔ **مطفأ** — المحرّك كامل ويُشحن ساكناً: إشعالُه بلا محوّلِ شريحةٍ يترك التطبيق يعمل على الشبكة **بلا انهيارٍ ولا تحذير**. راجع [`lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) |
+| `offlineSync` | ⛔ **مطفأ** — المحرّك كامل ويُشحن ساكناً: إشعالُه بلا محوّلِ شريحةٍ يترك التطبيق يعمل على الشبكة **بلا انهيارٍ ولا تحذير**. راجع [`lib/modules/sync/SETUP.md`](../../lib/modules/sync/SETUP.md) |
 | `accessControl` · `multiDevice` | موديولات `lib/modules/` — **مطفأة** |
 | `rememberedAccounts` | صفّ الحسابات المحفوظة فوق نموذج الدخول + سؤال «احفظ بريدك؟» بعد أول دخول. **مطفأ** — هوية فقط بلا كلمة مرور، والقائمة تنجو من الخروج. راجع `RememberedAccountsRepository` |
-| `dataTransfer` | ✅ **مُشعَل** — شاشتاه تُبنيان من ردّ الخادم، فلا Dart لكل مورد. راجع [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) |
-| `tokenInspector` | أداة مطوّر: زرٌّ عائم بالتوكن والتجديد وفحص Keycloak. **لا يُرى بنسخة `prod` release** حتى مُشعَلاً، و`build_apk.dart` يعدّد ما تركتَه — `TokenInspector.mark('…')` · `TokenInspector.snapshot('…')` · `const TokenInspectorPanel()`. راجع [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) |
+| `dataTransfer` | ✅ **مُشعَل** — شاشتاه تُبنيان من ردّ الخادم، فلا Dart لكل مورد. راجع [`32_MODULE_DATA_TRANSFER.md`](../modules/32_MODULE_DATA_TRANSFER.md) |
+| `tokenInspector` | أداة مطوّر: زرٌّ عائم بالتوكن والتجديد وفحص Keycloak. **لا يُرى بنسخة `prod` release** حتى مُشعَلاً، و`build_apk.dart` يعدّد ما تركتَه — `TokenInspector.mark('…')` · `TokenInspector.snapshot('…')` · `const TokenInspectorPanel()`. راجع [`33_MODULE_TOKEN_INSPECTOR.md`](../modules/33_MODULE_TOKEN_INSPECTOR.md) |
 
 ---
 
@@ -439,7 +439,7 @@ res.fold((failure) {
 | الألوان الخام ثم الدلالية | `lib/ui/theme/app_palette.dart` → `app_colors.dart` |
 | الخطوط | `lib/core/infra/config/app_fonts.dart` |
 | قراءة البيئة | `lib/core/infra/config/env.dart` |
-| ترتيب الإقلاع · قرارُ أوّل شاشة | `lib/main.dart` + `lib/features/startup/` → [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) §٤ |
+| ترتيب الإقلاع · قرارُ أوّل شاشة | `lib/main.dart` + `lib/features/startup/` → [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md) §٤ |
 | شعارُ الإقلاع ولونُه (أندرويد) | `android/app/src/main/res/drawable/splash_*.xml` + `values/colors.xml` — **ولا يُولَّد من `flutter_native_splash`** |
 | تبويبات الغلاف الرئيسي | `lib/routes/main_shell_page.dart` |
 | مفاتيح التخزين | `lib/core/platform/storage/persistence_keys.dart` |
@@ -465,7 +465,7 @@ res.fold((failure) {
 | APK غير موجود بعد `build_apk.dart` | `.env.{flavor}.json` مفقود بالجذر |
 | الموديول مُشعَل ولا يفعل شيئاً | علَمٌ بلا نصفٍ بالباك أو بلا تسجيل DI — يفشل **صامتاً** |
 
-المزيد: [`40_SCRIPTS.md`](40_SCRIPTS.md) §7
+المزيد: [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §7
 
 ---
 
@@ -483,4 +483,4 @@ res.fold((failure) {
 > وشغّله — **إن بقي أخضر فهو يقيس اسماً لا سلوكاً**. سبعةُ اختباراتٍ بهذا
 > المستودع كانت كذلك، وكلُّها من الجذر نفسِه: مقياسٌ يُطابق أكثرَ مما يُقصد به.
 
-القواعد الصارمة كاملةً: [`03_RULES.md`](03_RULES.md)
+القواعد الصارمة كاملةً: [`03_RULES.md`](../rules/03_RULES.md)

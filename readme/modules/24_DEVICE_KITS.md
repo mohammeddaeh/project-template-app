@@ -113,13 +113,13 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 
 | الـkit | العقود | بالتطبيق | الأعلام |
 |---|---|---|---|
-| `voice` | `SpeechInput` · `SpeechOutput` | `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` — [§42](widgets/02_inputs.md) | `microphone` · `speechRecognition` · `textToSpeech` |
-| `audio` | `AudioRecorder` · `AudioPlayback` (مصنع: مشغّلٌ لكل طالب) | `VoiceNoteRecorder` · `AudioPlayerTile` · `AttachmentPreview` يشغّل المرفق الصوتيّ بالتطبيق — [§43](widgets/04_display.md) | `microphone` |
-| `scan` | `CodeScanner` | `DeviceScan.code` — [§44](widgets/02_inputs.md) | `camera` |
+| `voice` | `SpeechInput` · `SpeechOutput` | `CustomTextField(dictation:)` · `DictationButton` · `SpeakButton` — [§42](../ui/widgets/02_inputs.md) | `microphone` · `speechRecognition` · `textToSpeech` |
+| `audio` | `AudioRecorder` · `AudioPlayback` (مصنع: مشغّلٌ لكل طالب) | `VoiceNoteRecorder` · `AudioPlayerTile` · `AttachmentPreview` يشغّل المرفق الصوتيّ بالتطبيق — [§43](../ui/widgets/04_display.md) | `microphone` |
+| `scan` | `CodeScanner` | `DeviceScan.code` — [§44](../ui/widgets/02_inputs.md) | `camera` |
 | `ocr` | `TextRecognizer` | `DeviceScan.text` — **لاتينيّ وحده، لا عربي** | — |
-| `video` | `VideoPlayback` (مصنع) | `AppVideoPlayer` · `AttachmentPreview` يشغّل مرفق الفيديو بالتطبيق — [§45](widgets/04_display.md) | — |
+| `video` | `VideoPlayback` (مصنع) | `AppVideoPlayer` · `AttachmentPreview` يشغّل مرفق الفيديو بالتطبيق — [§45](../ui/widgets/04_display.md) | — |
 | `system` | `AppShortcuts` · `AppReview` | العقدان مباشرةً — §٧ | — |
-| `ink` | `InkRecognizer` (نموذجٌ لكل لغة يُنزَّل مرّة — `ar` · `en`) | `HandwritingInput` — [§46](widgets/02_inputs.md) | — |
+| `ink` | `InkRecognizer` (نموذجٌ لكل لغة يُنزَّل مرّة — `ar` · `en`) | `HandwritingInput` — [§46](../ui/widgets/02_inputs.md) | — |
 
 **والتوقيعُ ليس kit**: `SignaturePad` رسمٌ بـFlutter وحده — بالمكتبة، ويعمل بلا أي kit.
 

@@ -114,7 +114,7 @@
 **نوع النقل: نسخ.** الملفّات الستّة بلا حرفٍ يخصّ الأوقاف. ويُتبَع بـ:
 - `main.dart` ⇐ `OrientationPolicy.applyAtStartup()`
 - `app.dart` ⇐ `builder: (context, child) => ResponsiveScope(child: child!)`
-- `readme/22_RESPONSIVE.md` + قسم Responsive بـ`lib/CLAUDE.md` + `R37`/`F37`.
+- `readme/ui/22_RESPONSIVE.md` + قسم Responsive بـ`lib/CLAUDE.md` + `R37`/`F37`.
 
 ### ١‑ب · «واحدٌ لا غير» — ثلاث حالات، كلُّها بفاحص
 
@@ -576,4 +576,4 @@
 وأثبِت أنه يسقط**.
 
 > **وما بقي ليس دَيناً**: ما لم يُنقل مكتوبٌ بـ§٩ مع سببه، وما نُقل سطحاً بلا
-> مستهلكٍ مكتوبٌ بجرد [`10_ARCHITECTURE.md`](../../readme/10_ARCHITECTURE.md).
+> مستهلكٍ مكتوبٌ بجرد [`10_ARCHITECTURE.md`](../../readme/architecture/10_ARCHITECTURE.md).

@@ -16,8 +16,8 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | File | When to read / update |
 |------|----------------------|
 | [`11_CORE.md`](11_CORE.md) | **الأساس** — المبادئ، الطبقات، قواعد التعديل |
-| [`00_START_HERE.md`](00_START_HERE.md) | Onboarding، أول تشغيل، feedback & locale API |
-| [`../CLAUDE.md`](../CLAUDE.md) | جدول القرار + قانون المرآة + مزامنة التوثيق الإلزامية |
+| [`00_START_HERE.md`](../start/00_START_HERE.md) | Onboarding، أول تشغيل، feedback & locale API |
+| [`../CLAUDE.md`](../../CLAUDE.md) | جدول القرار + قانون المرآة + مزامنة التوثيق الإلزامية |
 
 ### الطبقات والأنماط
 
@@ -26,30 +26,30 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 | [`12_REST_API.md`](12_REST_API.md) | REST endpoints، مسارات الاستيراد، الأخطاء الشائعة، التوليد |
 | [`13_ERROR_FLOW.md`](13_ERROR_FLOW.md) | **مسار الخطأ كاملاً عبر النصفين** — ترتيب الـinterceptors، `Failure`→`UiAction`، `error-handler.ts`، أخطاء المستخدم المتوقَّعة |
 | [`14_PAGINATION.md`](14_PAGINATION.md) | قوائم بتمرير لا نهائي — بلا مرجع حيّ بالقالب اليوم |
-| [`20_WIDGETS.md`](20_WIDGETS.md) | **أين** يوضع الـwidget |
-| [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) | **كيف** يُستعمل كل widget — أمثلة كاملة |
-| [`../lib/core/infra/network/NETWORK.md`](../lib/core/infra/network/NETWORK.md) | الـinterceptors، الكاش، إعادة المحاولة، `TokenRefresh`، `BaseRepository` |
-| [`../lib/core/platform/PLATFORM_SERVICES.md`](../lib/core/platform/PLATFORM_SERVICES.md) | خدمات المنصّة الاختيارية — التفعيل والاستخدام |
+| [`20_WIDGETS.md`](../ui/20_WIDGETS.md) | **أين** يوضع الـwidget |
+| [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) | **كيف** يُستعمل كل widget — أمثلة كاملة |
+| [`../lib/core/infra/network/NETWORK.md`](../../lib/core/infra/network/NETWORK.md) | الـinterceptors، الكاش، إعادة المحاولة، `TokenRefresh`، `BaseRepository` |
+| [`../lib/core/platform/PLATFORM_SERVICES.md`](../../lib/core/platform/PLATFORM_SERVICES.md) | خدمات المنصّة الاختيارية — التفعيل والاستخدام |
 
 ### الموديولات الاختيارية
 
 | File | When to read / update |
 |------|----------------------|
-| [`30_MODULES.md`](30_MODULES.md) | **الجدولُ الواحد للموديولات** — علَم · افتراض · ما يحتاجه · الوثيقة |
-| [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | `modules/access_control/` + باك `src/core/authz/` — الصلاحيات |
-| [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | `modules/data_transfer/` — الاستيراد والتصدير |
-| [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) | `modules/token_inspector/` + `AuthSessionObserver` + `AppOverlays` — تتبّع التوكن على الشاشة |
+| [`30_MODULES.md`](../modules/30_MODULES.md) | **الجدولُ الواحد للموديولات** — علَم · افتراض · ما يحتاجه · الوثيقة |
+| [`31_MODULE_PERMISSIONS.md`](../modules/31_MODULE_PERMISSIONS.md) | `modules/access_control/` + باك `src/core/authz/` — الصلاحيات |
+| [`32_MODULE_DATA_TRANSFER.md`](../modules/32_MODULE_DATA_TRANSFER.md) | `modules/data_transfer/` — الاستيراد والتصدير |
+| [`33_MODULE_TOKEN_INSPECTOR.md`](../modules/33_MODULE_TOKEN_INSPECTOR.md) | `modules/token_inspector/` + `AuthSessionObserver` + `AppOverlays` — تتبّع التوكن على الشاشة |
 | [`sync_design_spec.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
-| [`../lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) | Sync — ما يعمل وما ينقص (اقرأه أولاً) |
-| [`../lib/modules/sync/SETUP.md`](../lib/modules/sync/SETUP.md) | Sync — إعداد سريع |
-| [`../lib/modules/multi_device/SETUP.md`](../lib/modules/multi_device/SETUP.md) | الأجهزة والجلسات النشطة |
+| [`../lib/modules/sync/STATUS.md`](../../lib/modules/sync/STATUS.md) | Sync — ما يعمل وما ينقص (اقرأه أولاً) |
+| [`../lib/modules/sync/SETUP.md`](../../lib/modules/sync/SETUP.md) | Sync — إعداد سريع |
+| [`../lib/modules/multi_device/SETUP.md`](../../lib/modules/multi_device/SETUP.md) | الأجهزة والجلسات النشطة |
 | `../lib/modules/*/SETUP.md` | analytics · crash_reporting · push_notifications · remote_config · in_app_updates · session_guard · notification_center · token_inspector · multi_device |
 
 ### العمليات والخارطة
 
 | File | When to read / update |
 |------|----------------------|
-| [`40_SCRIPTS.md`](40_SCRIPTS.md) | السكربتات، البناء والإصدار، التوليد، حلّ المشاكل |
+| [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) | السكربتات، البناء والإصدار، التوليد، حلّ المشاكل |
 | [`_template/archive/template_enhancements.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/template_enhancements.md) | خارطة تطوير القالب — جدول الحالة + تفاصيل كل بند |
 | [`_template/archive/integration_audit.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/integration_audit.md) | **سجلّ تاريخي** — تدقيق عقد الـwire وإصلاحه |
 | [`_template/archive/realtime_design.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/realtime_design.md) | **تصميم لم يُبنَ** — مزامنة الجلسات اللحظية بين الأجهزة. لا كود له بالقالب |
@@ -137,7 +137,7 @@ core/
 ## Optional Modules (`lib/modules/`)
 
 **الجدولُ الواحد** — العلَم · الافتراض · ما يحتاجه خارج التطبيق · أين يُركَّب · الوثيقة:
-[`30_MODULES.md`](30_MODULES.md). ونقطةُ التفعيل الوحيدة `ModulesBootstrap`.
+[`30_MODULES.md`](../modules/30_MODULES.md). ونقطةُ التفعيل الوحيدة `ModulesBootstrap`.
 
 | Module | Packages |
 |---|---|
@@ -179,7 +179,7 @@ core/
 | `modules/sync/domain/sync_media_catalog.dart` + `engine/media_prefetch_manager.dart` | **تنزيلُ الصور والملفّات** — الطورُ السادس موصولٌ بذيل الدورة وخارج القفل، ومسجَّلٌ بالـDI. وبلا جردِ شريحةٍ يسقط الطورُ بفحصٍ واحد (`allOf`) |
 | `modules/sync/domain/sync_job_explainer.dart` | **ماذا سيصل الخادمَ من هذا الصفّ وما الذي يحجز الباقي** — تنفّذه الشريحة، ويقرؤه من يعرض الطابور. مُصدَّرٌ وبلا منفّذ |
 | `modules/sync/domain/sync_refresh_task.dart` + `sync_hydration.dart` | عقدان مسجَّلان ومُصدَّران، والمحرّك ينادي الأوّل بذيل الدورة — **وبلا منفّذٍ بالقالب**. النمطان بـ`lib/modules/sync/SETUP.md` §3e و§3f |
-| `<feature>/data/sync/` (المنفذ الرابع بعقد الحذف — انظر §wire الحذف بالأسفل) | ⚠️ **صفر عقود منفَّذة اليوم.** لا feature بالقالب تكتب محوّلاً، و`getAll<SyncFeatureContractBase>()` يعيد صفراً فعلياً بكامل `lib/`، فتفعيل `AppFeatures.offlineSync` اليوم يترك التطبيق يعمل بالكامل على الشبكة **بصمت** — بلا انهيار ولا تحذير. الحالة المُحدَّثة والمرحلة المسنَدة بـ[`lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) ب١٣/ب١٤ |
+| `<feature>/data/sync/` (المنفذ الرابع بعقد الحذف — انظر §wire الحذف بالأسفل) | ⚠️ **صفر عقود منفَّذة اليوم.** لا feature بالقالب تكتب محوّلاً، و`getAll<SyncFeatureContractBase>()` يعيد صفراً فعلياً بكامل `lib/`، فتفعيل `AppFeatures.offlineSync` اليوم يترك التطبيق يعمل بالكامل على الشبكة **بصمت** — بلا انهيار ولا تحذير. الحالة المُحدَّثة والمرحلة المسنَدة بـ[`lib/modules/sync/STATUS.md`](../../lib/modules/sync/STATUS.md) ب١٣/ب١٤ |
 | `modules/access_control/presentation/pages/user_access_screen.dart` + مسار `/users/:userId/access` | **مبنيّةٌ بالكامل ولا نقطةَ دخولٍ إليها بالقالب**. تحتاج `userId` محدداً، و«من هم المستخدمون وكيف تُعرض قائمتهم» قرارٌ يخصّ كل مشروع — بناء شاشة مستخدمين هنا يُدخل بالقالب «مثال CRUD» لا مكان له فيه. المشروع يضيف زرّاً من شاشة مستخدميه الخاصة: `context.router.push(UserAccessRoute(userId: id))`، محميّاً بـ`Can(permission: PermKeys.userAccessView)`. **وشاشة الأدوار المقابلة (`RolesRoute`) عامّة فعلاً ووُصلت** بـ`AccessControlSection` بشاشة الإعدادات — الفرق أن الأدوار لا تفترض شيئاً عن نموذج المستخدمين بينما هذه الشاشة تفترض وجود واحد |
 | `platform/location/device_location_service*.dart` | خدمةُ موقعٍ خلف عقد — **مشروطةٌ بـ`AppFeatures.location`** (مطفأة افتراضاً)، فبلا العلَم لا يُسجَّل شيء. وحزمةُ `geolocator` تبقى بالتبعيات: تُحذف من `pubspec.yaml` إن كان المشروع لا يحتاج موقعاً |
 | `platform/files/private_file_ingest_service.dart` | عقدُ إدخال ملفٍّ إلى التخزين الخاصّ — بلا منفّذٍ ولا مستدعٍ |
@@ -223,7 +223,7 @@ lib/ (all of it)       → kit_contracts only — kit_<name> from lib/core/di/ki
 ```
 
 حِزَم الأجهزة خارج `lib/` بقصد: تُركَّب وتُزال بـ`scripts/kit.dart` ولا يتغيّر سطرٌ
-بالتطبيق — [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
+بالتطبيق — [`24_DEVICE_KITS.md`](../modules/24_DEVICE_KITS.md).
 
 ---
 

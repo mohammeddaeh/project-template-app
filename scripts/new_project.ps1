@@ -306,7 +306,7 @@ function Invoke-NewProject {
     Write-Host "  cd `"$Directory`""
     if (-not $BaseUrl) { Write-Host '  # put BASE_URL in .env.dev.json first' }
     Write-Host '  flutter run --flavor dev --dart-define-from-file=.env.dev.json'
-    Write-Host '  Next: readme/00_START_HERE.md, phase 3.'
+    Write-Host '  Next: readme/start/00_START_HERE.md, phase 3.'
     Write-Host ''
 }
 

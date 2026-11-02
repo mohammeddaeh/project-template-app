@@ -9,7 +9,7 @@
 /// | `test` | اختباراتُ `kit_contracts` وكلِّ kit مركَّبة (`flutter test` بالجذر لا يراها) |
 ///
 /// ⛔ **ولا يُعدَّل `lib/core/di/kits.g.dart` باليد** — هذا السكربت يكتبه كاملاً.
-/// التفصيل: `readme/24_DEVICE_KITS.md`.
+/// التفصيل: `readme/modules/24_DEVICE_KITS.md`.
 ///
 /// تشغيل من جذر المشروع:
 ///   dart run scripts/kit.dart list

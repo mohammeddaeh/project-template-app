@@ -41,7 +41,7 @@
 `scripts/pull_figma.dart` يجلب الإطار كاملاً عبر REST API — ثلاثة ملفات
 بـ`.figma/cache/`: الصورة المرسومة، وخلاصة مقروءة (hex · مقاسات · إزاحات نسبية ·
 auto-layout · نصوص)، والشجرة مُقلَّمة. التركيب والأوامر:
-[`40_SCRIPTS.md`](40_SCRIPTS.md) §7.
+[`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §7.
 
 ```bash
 dart run scripts/pull_figma.dart --list           # ما الشاشات الموجودة؟
@@ -339,7 +339,7 @@ Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, ...))
 ### F11 · `844` لا مكان فيه للوحة المفاتيح 👁
 
 إطار التصميم ارتفاعه كامل الشاشة، ولوحة المفاتيح تأكل نصفه. كل صفحة فيها حقل
-إدخال — وهي أغلب صفحات الفيغما — تلتزم هيكل النموذج بـ[`../lib/features/CLAUDE.md`](../lib/features/CLAUDE.md) §FORMS-GUIDE:
+إدخال — وهي أغلب صفحات الفيغما — تلتزم هيكل النموذج بـ[`../lib/features/CLAUDE.md`](../../lib/features/CLAUDE.md) §FORMS-GUIDE:
 
 ```dart
 Scaffold(
@@ -358,7 +358,7 @@ Scaffold(
 
 نصفُ القاعدة مفحوصٌ آلياً (F37 بـ`check_structure.dart`)، ونصفُها بالعين.
 والقاعدةُ المرقّمة: [`03_RULES.md`](03_RULES.md) §R37 · القوالب:
-[`22_RESPONSIVE.md`](22_RESPONSIVE.md) §٣‑ب.
+[`22_RESPONSIVE.md`](../ui/22_RESPONSIVE.md) §٣‑ب.
 
 ```dart
 body: ResponsiveContentBox(
@@ -383,7 +383,7 @@ body: ResponsiveContentBox(
 
 ### F12 · مقاس الخط يُقرَّب إلى السلّم — لا يُضاف إليه 🔒
 
-سلّم الأنماط بـ[`../lib/CLAUDE.md`](../lib/CLAUDE.md) §Typography مغلق. الفيغما
+سلّم الأنماط بـ[`../lib/CLAUDE.md`](../../lib/CLAUDE.md) §Typography مغلق. الفيغما
 يعطي `17px` ⇒ اختر `16` أو `18` من السلّم، **لا تُنشئ درجة سابعة عشرة**.
 
 ```dart
@@ -400,7 +400,7 @@ Theme.of(context).textTheme.bodyMedium   context.textTheme.bodyMedium
 
 ### F13 · كل نصّ عربي بالتصدير يصير مفتاحاً — بالملفّين 🔒
 
-النصّ بالتصميم **بيانٌ لا كود**. الخطوات الأربع بـ[`../lib/CLAUDE.md`](../lib/CLAUDE.md)
+النصّ بالتصميم **بيانٌ لا كود**. الخطوات الأربع بـ[`../lib/CLAUDE.md`](../../lib/CLAUDE.md)
 §Localization إلزامية، **والمفتاح يُضاف لـ`ar.json` و`en.json` معاً**:
 
 ```dart
@@ -438,9 +438,9 @@ Theme.of(context).textTheme.bodyMedium   context.textTheme.bodyMedium
 
 | الأصل | الغلاف | لماذا |
 |---|---|---|
-| **متعدّد الألوان** (شعار · رسم) | [`AppAssetImage`](../lib/ui/widgets/images/app_asset_image.dart) بلا `color` | يمرّر الأصل بألوانه كما هي |
-| **أحادي اللون** يتبع الثيم (أيقونة) | [`AppAssetImage`](../lib/ui/widgets/images/app_asset_image.dart) بـ`color:` | صبغة صريحة تتبع `context.colors` |
-| أحادي اللون بمقاس ثابت | [`SvgImageWidget`](../lib/ui/widgets/images/svg_image_widget.dart) | صبغة **إجبارية** |
+| **متعدّد الألوان** (شعار · رسم) | [`AppAssetImage`](../../lib/ui/widgets/images/app_asset_image.dart) بلا `color` | يمرّر الأصل بألوانه كما هي |
+| **أحادي اللون** يتبع الثيم (أيقونة) | [`AppAssetImage`](../../lib/ui/widgets/images/app_asset_image.dart) بـ`color:` | صبغة صريحة تتبع `context.colors` |
+| أحادي اللون بمقاس ثابت | [`SvgImageWidget`](../../lib/ui/widgets/images/svg_image_widget.dart) | صبغة **إجبارية** |
 
 > ⚠️ **`SvgImageWidget` يصبغ دائماً.** بلا `color` يقع على `colorScheme.onSurface`
 > — أي `ColorFilter.mode(..., BlendMode.srcIn)` **على كل مسار بالملف**. مرِّر عليه
@@ -472,7 +472,7 @@ route · مفاتيح ترجمة. **تصميم الفيغما يستبدل `buil
 
 ### F17 · المكتبة أولاً — لا تُعِد بناء ما هو موجود 🔒
 
-قبل كتابة أي `Container` يشبه زراً أو حقلاً، افتح [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md).
+قبل كتابة أي `Container` يشبه زراً أو حقلاً، افتح [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md).
 
 | بالتصميم | الودجة |
 |---|---|
@@ -530,7 +530,7 @@ route · مفاتيح ترجمة. **تصميم الفيغما يستبدل `buil
 والرقمان أعلاه هما ما يجعل المراجعة ممكنة أصلاً. صفحةٌ تجاوزتهما ليست خطأً
 بذاتها، بل **إشارةٌ إلى قسمٍ لم يُسمَّ بعد**.
 
-> **مثالٌ حيّ**: [`login_screen.dart`](../lib/features/auth/login/presentation/pages/login_screen.dart)
+> **مثالٌ حيّ**: [`login_screen.dart`](../../lib/features/auth/login/presentation/pages/login_screen.dart)
 > — `build()` يركّب ودجاتٍ مسمّاة (`LoginHeader` · `LoginFields` · `LoginSubmitButton` ·
 > `SignUpPrompt`)، وأطول ما فيه تعليقٌ يشرح تفرّع `pendingVerification`.
 
@@ -579,7 +579,7 @@ class _RecordHeader extends StatelessWidget { ... }
 ### F22 · الودجة العامة تُعمَّم بوسيط لا بنسخة 🔒
 
 حين يختلف تصميمٌ عن ودجة موجودة **اختلافاً حقيقياً**، الجواب واحد: **وسيط
-جديد بالودجة نفسها** + صفٌّ بـ[`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md)
+جديد بالودجة نفسها** + صفٌّ بـ[`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md)
 بنفس التغيير. لا `MyCustomButton` بجوار `PrimaryButton`.
 
 | الحالة الحقيقية | ما فُعل |
@@ -593,7 +593,7 @@ class _RecordHeader extends StatelessWidget { ... }
 
 ### F23 · اقرأ الجرد قبل أن تبني — سبعون ودجة موجودة 🔒
 
-قبل أول `Container`، افتح [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §الفهرس.
+قبل أول `Container`، افتح [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §الفهرس.
 والأكثر إغفالاً — موجودةٌ وتُعاد كتابتها باستمرار:
 
 | تبني | موجود |
@@ -637,7 +637,7 @@ AppProgress.linear(value: p, tone: AppProgressTone.accent)     // تقدّم ب�
 **والتخصيص غير ممنوع، بل مركزيّ**: `color` · `trackColor` · `gradient` ·
 `strokeWidth` · `dimension` · `height` · `radius` · `padding` · `centered` ·
 `animate` · `adaptive` — كلّها وسائط. الجدول كاملاً:
-[`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §26.
+[`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §26.
 
 ---
 
@@ -740,8 +740,8 @@ dart run scripts/pull_figma.dart --all
 | تحتاج | افتح |
 |---|---|
 | القواعد العامة `R01…R33` | [`03_RULES.md`](03_RULES.md) |
-| وسائط كل ودجة بالمكتبة | [`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) |
-| أين يوضع widget جديد | [`20_WIDGETS.md`](20_WIDGETS.md) |
-| هيكل النموذج والتحقق | [`../lib/features/CLAUDE.md`](../lib/features/CLAUDE.md) §FORMS-GUIDE |
-| سلّم الخطوط · الترجمة · الألوان | [`../lib/CLAUDE.md`](../lib/CLAUDE.md) |
-| بناء شريحة كاملة من الصفر | [`04_FIRST_FEATURE.md`](04_FIRST_FEATURE.md) |
+| وسائط كل ودجة بالمكتبة | [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) |
+| أين يوضع widget جديد | [`20_WIDGETS.md`](../ui/20_WIDGETS.md) |
+| هيكل النموذج والتحقق | [`../lib/features/CLAUDE.md`](../../lib/features/CLAUDE.md) §FORMS-GUIDE |
+| سلّم الخطوط · الترجمة · الألوان | [`../lib/CLAUDE.md`](../../lib/CLAUDE.md) |
+| بناء شريحة كاملة من الصفر | [`04_FIRST_FEATURE.md`](../start/04_FIRST_FEATURE.md) |

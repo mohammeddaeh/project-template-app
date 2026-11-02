@@ -26,7 +26,7 @@ import 'package:app_template/core/platform/storage/storage_service.dart';
 ///
 /// **Permissions live in `modules/access_control`** (`Can` · `AbilitiesStore`,
 /// fed by `GET /authz/me`), not on the user — see
-/// `readme/31_MODULE_PERMISSIONS.md`.
+/// `readme/modules/31_MODULE_PERMISSIONS.md`.
 ///
 /// ## Persistence across app restarts
 ///

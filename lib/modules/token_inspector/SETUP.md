@@ -1,7 +1,7 @@
 # `token_inspector` — SETUP
 
 > أداةُ مطوّر: التوكن والتجديد وفحص Keycloak على الشاشة. الشرح الكامل:
-> [`readme/33_MODULE_TOKEN_INSPECTOR.md`](../../../readme/33_MODULE_TOKEN_INSPECTOR.md).
+> [`readme/modules/33_MODULE_TOKEN_INSPECTOR.md`](../../../readme/modules/33_MODULE_TOKEN_INSPECTOR.md).
 
 ## التشغيل
 

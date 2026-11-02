@@ -88,7 +88,7 @@ jobs:
 
       # ⬜ NOT ADDED HERE, BY DESIGN: a step that hits your backend's live
       # `GET /openapi.json` and checks it against your own field inventory —
-      # see readme/40_SCRIPTS.md §8‑ب ("نمطٌ اختياريّ — فاحصُ عقدٍ يسأل الخادمَ
+      # see readme/scripts/40_SCRIPTS.md §8‑ب ("نمطٌ اختياريّ — فاحصُ عقدٍ يسأل الخادمَ
       # الحيّ"). That check inherently reads YOUR project's fields, so no
       # working script can ship in the template itself (it would be a dead
       # surface with nothing to check — see R28). `wire_contract_test.dart`
@@ -109,7 +109,7 @@ jobs:
       # (or already builds) `backend_template` alongside this repo, add a step
       # here: run its `print:permissions` script, then
       # `dart run scripts/gen_permission_keys.dart --verify --from ../perms.json`.
-      # See readme/31_MODULE_PERMISSIONS.md §"توصيات مستقبلية" #2.
+      # See readme/modules/31_MODULE_PERMISSIONS.md §"توصيات مستقبلية" #2.
 
       # A gate: the whole tree is formatted, and gen_code.dart formats the
       # generated lib/resources/ its generators leave unformatted. Format before pushing:

@@ -27,7 +27,7 @@
 ///
 /// يُترك مكتوباً لأنه رخيص ويصف آخر بناء بدقّة، فمن أراد سكربت تثبيت (`adb
 /// install`) أو خطوة CI ترفع الأثر يجد ما يحتاجه جاهزاً. لكن لا تعتمد على وجود
-/// مستهلك له قبل أن تفتح المجلد وتتأكّد — وهي القاعدة نفسها بـ`readme/03_RULES.md` §R28.
+/// مستهلك له قبل أن تفتح المجلد وتتأكّد — وهي القاعدة نفسها بـ`readme/rules/03_RULES.md` §R28.
 library;
 
 import 'dart:convert';
@@ -94,7 +94,7 @@ Future<void> main(List<String> args) async {
       print(
         '  ⚠️  android/key.properties missing — signed with the DEBUG key.\n'
         '     Fine for testing; a store will not accept it as an update.\n'
-        '     See readme/40_SCRIPTS.md §2 «التوقيع».',
+        '     See readme/scripts/40_SCRIPTS.md §2 «التوقيع».',
       );
     }
   }

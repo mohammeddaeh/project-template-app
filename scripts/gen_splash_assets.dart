@@ -17,7 +17,7 @@
 /// وأرقامُ ذلك مشتقّةٌ من هندسة الشعار نفسِه، فتحريرُ ملفٍّ منها يدوياً يفكّ
 /// العقد بصمت — `dart analyze` نظيف والشعارُ يقفز.
 ///
-/// راجع [`readme/23_STARTUP_SPLASH.md`](../readme/23_STARTUP_SPLASH.md).
+/// راجع [`readme/architecture/23_STARTUP_SPLASH.md`](../readme/architecture/23_STARTUP_SPLASH.md).
 library;
 
 import 'dart:io';
@@ -66,7 +66,7 @@ void main() {
   String vector(String note, num w, num h, num vw, num vh) =>
       '<?xml version="1.0" encoding="utf-8"?>\n'
       '<!-- مولَّد بـscripts/gen_splash_assets.dart من $_svgPath.\n'
-      '     **لا يُحرَّر يدوياً** — راجع readme/23_STARTUP_SPLASH.md.\n'
+      '     **لا يُحرَّر يدوياً** — راجع readme/architecture/23_STARTUP_SPLASH.md.\n'
       '     $note -->\n'
       '<vector xmlns:android="http://schemas.android.com/apk/res/android"\n'
       '    android:width="${_fmt(w)}dp"\n    android:height="${_fmt(h)}dp"\n'

@@ -17,4 +17,4 @@
 
 **و`app_logo.png`** بمقاس ١٣٢×١٣٢ بكسل (وهو مقاسه بالنقاط على iOS)، خلفيةٌ شفّافة.
 
-**وأيقونة التطبيق** ليست هنا: `assets/app_icons/` لكل flavor — راجع `readme/01_SETUP.md`.
+**وأيقونة التطبيق** ليست هنا: `assets/app_icons/` لكل flavor — راجع `readme/start/01_SETUP.md`.

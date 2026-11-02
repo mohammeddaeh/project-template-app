@@ -21,7 +21,7 @@ k6 run --env BASE_URL=http://localhost:3000/api/v1 loadtest/k6/account_cycle.js
 ```
 
 `BASE_URL` **يجب أن يتضمّن `/api/v1`** — نفس القيمة التي يقرأها التطبيق من
-`.env.{flavor}.json` (`Env.baseUrl`، راجع `readme/40_SCRIPTS.md` §3.1). كرّر
+`.env.{flavor}.json` (`Env.baseUrl`، راجع `readme/scripts/40_SCRIPTS.md` §3.1). كرّر
 التشغيل بنفس السكربت مع رابط كل مرحلة (dev/staging/prod) حين تتوفر.
 
 ⛔ **لا تُشغِّل مباشرة على production** — staging أو بيئة معزولة فقط.
@@ -32,7 +32,7 @@ k6 run --env BASE_URL=http://localhost:3000/api/v1 loadtest/k6/account_cycle.js
 
 **ليس كل feature/endpoint يحتاج k6.** السكربت يبقى يدوياً بقصد — لا تشغيلٌ
 تلقائي عند `scaffold_feature.dart` (نفس منطق عدم توليد الاختبارات، راجع
-`readme/40_SCRIPTS.md` §8‑هـ). أضف سيناريو حين ينطبق **أي** من:
+`readme/scripts/40_SCRIPTS.md` §8‑هـ). أضف سيناريو حين ينطبق **أي** من:
 
 | المعيار | مثال |
 |---|---|

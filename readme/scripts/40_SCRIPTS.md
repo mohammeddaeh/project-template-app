@@ -1,6 +1,6 @@
 # Scripts Reference
 
-> **مرجع معماري:** [`11_CORE.md`](11_CORE.md)
+> **مرجع معماري:** [`11_CORE.md`](../architecture/11_CORE.md)
 > **يُحدَّث هذا الملف** عند إضافة/تعديل/حذف سكربت في `scripts/`.
 
 كل السكربتات موجودة في `scripts/` وتُشغَّل من جذر المشروع:
@@ -33,7 +33,7 @@ dart run scripts/<script_name>.dart
 | `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
 | `svg_inline_styles.dart` | يُنزل قواعد `<style>` بملف SVG إلى سمات مباشرة — `flutter_svg` لا يطبّقها فيرسم أسود. راجع §4 |
 | `sync_platform_permissions.dart` | قراءة `AppFeatures` وتحديث أذونات Android/iOS تلقائياً |
-| **`kit.dart`** | **حِزَم الأجهزة** — `list` · `add <name>` · `remove <name>` · `test`. التركيب والإزالة بأمرٍ واحد (تبعية · تسجيل · أذونات · قواعد R8)، والجولة لا تترك فرقاً بـgit. راجع [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md) |
+| **`kit.dart`** | **حِزَم الأجهزة** — `list` · `add <name>` · `remove <name>` · `test`. التركيب والإزالة بأمرٍ واحد (تبعية · تسجيل · أذونات · قواعد R8)، والجولة لا تترك فرقاً بـgit. راجع [`24_DEVICE_KITS.md`](../modules/24_DEVICE_KITS.md) |
 | **`pull_figma.dart`** | **يسحب تصاميم الفيغما** عبر REST إلى `.figma/` — صورةٌ وخلاصةٌ مقروءة وشجرةٌ مُقلَّمة لكل إطار |
 | **القالب والمشروع بعد الإنشاء** | |
 | **`template_drift.dart`** | **ما غيّره المشروع بملفات القالب ولم يُسجَّل** — يقارن بنسخة القالب حين بدأ المشروع. راجع §8‑ط |
@@ -104,7 +104,7 @@ dart run scripts/build_apk.dart [options]
 `TokenInspectorPanel(` خارج الموديول — بملفّه وسطره. تفاعلياً يسأل `[y/N]`،
 و`N` يوقف البناء **قبل رفع الإصدار**. وبلا طرفية (CI) يُفشل، إلا مع
 `--allow-token-trace`. والنسخة لا تعرض شيئاً منها على أي حال
-([`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) §٤) — فهذا تذكيرٌ
+([`33_MODULE_TOKEN_INSPECTOR.md`](../modules/33_MODULE_TOKEN_INSPECTOR.md) §٤) — فهذا تذكيرٌ
 بالحذف، لا حارسُ أمان.
 
 **أنواع الـ bump:**
@@ -182,7 +182,7 @@ dart run scripts/sync_flavors.dart --reset   # إزالة كل شيء تابع �
 
 `--reset` يحذف مجلدات `android/app/src/{dev,staging,prod}`، ملفات `flutter_launcher_icons-*.yaml`، كتلة `productFlavors` من `build.gradle.kts`، و`.vscode/launch.json` — إعادة المشروع لوضع Flutter عادي بلا flavors. **لا يحذف ملفات `.env.*.json`** — فهي تحمل روابط حقيقية لا يولّدها شيء.
 
-> ضع أيقونات PNG بحجم 1024×1024 في المسارات المذكورة بـ `flavor_settings.json` (انظر [`assets/app_icons/README.md`](../assets/app_icons/README.md)) قبل تشغيل السكربت.
+> ضع أيقونات PNG بحجم 1024×1024 في المسارات المذكورة بـ `flavor_settings.json` (انظر [`assets/app_icons/README.md`](../../assets/app_icons/README.md)) قبل تشغيل السكربت.
 
 ### 3.1) ملفات البيئة — تُنشأ تلقائياً
 
@@ -198,7 +198,7 @@ dart run scripts/sync_flavors.dart --reset   # إزالة كل شيء تابع �
 
 **قيمة موجودة لا تُعدَّل أبداً** — التشغيل المتكرر آمن. قيمة فارغة `""` في القالب تعني مفتاحاً اختيارياً فلا يُنبَّه عليها.
 
-المصدر هو `.env.example.json` (مرفوع في git) — **أضف كل مفتاح بيئة جديد إليه**، وإلا لن يصل مَن يستنسخ المشروع. الملف الوحيد المطلوب اليوم: `BASE_URL` (يقرأه [`lib/core/infra/config/env.dart`](../lib/core/infra/config/env.dart)).
+المصدر هو `.env.example.json` (مرفوع في git) — **أضف كل مفتاح بيئة جديد إليه**، وإلا لن يصل مَن يستنسخ المشروع. الملف الوحيد المطلوب اليوم: `BASE_URL` (يقرأه [`lib/core/infra/config/env.dart`](../../lib/core/infra/config/env.dart)).
 
 فما يحتاجه المطوّر الجديد هو تشغيل السكربت ثم لصق الروابط الحقيقية في الملفات الثلاثة — السكربت يطبع أسماءها في نهاية تشغيله.
 
@@ -298,13 +298,13 @@ dart run scripts/check_structure.dart --baseline  # يثبّت الدَّين ا
 جدول `_capabilities` بأعلى الفحوص: لكل قدرةٍ بالقالب نمطُ ندائها الخامّ (`DateFormat(` ·
 `print(` · `Image.network(` · `SharePlus.instance` …) والمسارات المسموح لها به —
 غلافُها وحده. النداء خارجها يُفشل البناء ويسمّي البديل. **الجدول البشريّ المقابل**
-[`06_CAPABILITIES.md`](06_CAPABILITIES.md)، ويُحدَّثان معاً. و`lib/modules/` خارج
+[`06_CAPABILITIES.md`](../rules/06_CAPABILITIES.md)، ويُحدَّثان معاً. و`lib/modules/` خارج
 الفاحص كلّه كبقية القواعد.
 
 ### قواعد الطبقات `L##`
 
 `L01` — `@RestApi` بملفٍّ اسمُه `*_api_service.dart` وحده، لا بملف repository أو
-datasource ([`lib/features/CLAUDE.md`](../lib/features/CLAUDE.md) §Feature Structure).
+datasource ([`lib/features/CLAUDE.md`](../../lib/features/CLAUDE.md) §Feature Structure).
 
 ### الأساس (`.structure_baseline.txt`) — سجلُّ دَينٍ لا زرُّ تجاهل
 
@@ -364,7 +364,7 @@ dart run scripts/pull_figma.dart --all             # كل الإطارات ال�
 
 **الصلاحية المطلوبة**: `File content = Read-only` — لا شيء غيرها.
 
-> والقواعدُ التي يُبنى بها ما يُسحَب: [`05_FIGMA_TO_PAGE.md`](05_FIGMA_TO_PAGE.md).
+> والقواعدُ التي يُبنى بها ما يُسحَب: [`05_FIGMA_TO_PAGE.md`](../rules/05_FIGMA_TO_PAGE.md).
 
 ---
 
@@ -437,7 +437,7 @@ dart run scripts/gen_splash_assets.dart
 
 ⛔ **و`android: false` بـ`flutter_native_splash.yaml`** — بقرار: الأداةُ تمحو
 هذين الموردَين وملفّاتِ `styles.xml` الأربعة المحرَّرة باليد. الأسبابُ الخمسة
-المقيسة: [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) §٣.
+المقيسة: [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md) §٣.
 
 > **وبدّلتَ الشعار؟** بدّل الـSVG، أعد تشغيل السكربت، وحدّث `splash_background`
 > بـ`res/values/colors.xml` ليطابق أرضيةَ أوّلِ شاشةٍ يرسمها فلاتر — واختلافُ
@@ -527,10 +527,10 @@ dart run scripts/setup_project.dart --name "Inventory" --app-id com.example.inve
 1‑ب. **وضع الدخول** (`--auth`): `none` بلا دخول (الافتراضي مع `--yes`) · `required`
    الدخول إلزاميّ · `optional` زائرٌ والدخول من تبويب الحساب ⇐ `AppFeatures.authMode`
    و`authMode` بالبيان. وبـ`new_project.ps1` الوسيط `-Auth`. المعنى كاملاً بـ
-   [`23_STARTUP_SPLASH.md`](23_STARTUP_SPLASH.md) §٤‑ب.
+   [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md) §٤‑ب.
 1‑ج. **حِزَم الأجهزة** (`--kits voice,scan`): ما يبقى مركَّباً، والباقي يُزال بـ`kit.dart remove`
    — **الافتراضي لا شيء** (ومع `--yes`). مجلداتُها تبقى بـ`packages/` فتُركَّب لاحقاً
-   بأمرٍ واحد — [`24_DEVICE_KITS.md`](24_DEVICE_KITS.md).
+   بأمرٍ واحد — [`24_DEVICE_KITS.md`](../modules/24_DEVICE_KITS.md).
 2. **الوحدات الاختيارية ذات الكلفة الخارجية فقط** — `accessControl` ·
    `dataTransfer` · `offlineSync` · `multiDevice` · `inAppUpdates` ·
    `crashReporting` · `analytics` · `remoteConfig` — عبر نمط جاهز (بسيط/مؤسسي)
@@ -569,7 +569,7 @@ dart run scripts/setup_project.dart --name "Inventory" --app-id com.example.inve
 
 ⛔ **خارج نطاقه عمداً** (وليس سهواً): إعادة توليد لوحة الألوان الكاملة من لون
 واحد — التدرّج اليوم يدويّ مدروس، ولا أداة تُنتج تدرّجاً موثوقاً من قيمة واحدة.
-يبقى خطوة يدوية موثَّقة بـ[`01_SETUP.md`](01_SETUP.md).
+يبقى خطوة يدوية موثَّقة بـ[`01_SETUP.md`](../start/01_SETUP.md).
 
 ---
 
@@ -582,8 +582,8 @@ dart run scripts/scaffold_feature.dart invoices
 ```
 
 يبني شريحة CRUD كاملة تحت `lib/features/<feature_name>/` بكل الطبقات
-الموصوفة بـ[`lib/features/CLAUDE.md`](../lib/features/CLAUDE.md) §CRUD-PATTERNS
-و[`lib/core/CLAUDE.md`](../lib/core/CLAUDE.md) §API-GENERATOR — بحقلٍ تجريبي
+الموصوفة بـ[`lib/features/CLAUDE.md`](../../lib/features/CLAUDE.md) §CRUD-PATTERNS
+و[`lib/core/CLAUDE.md`](../../lib/core/CLAUDE.md) §API-GENERATOR — بحقلٍ تجريبي
 واحد (`title`) **يُصرَّف ويعمل فوراً**، لا حقولاً مخمَّنة لمشروعك.
 
 **ما يكتبه:**
@@ -612,7 +612,7 @@ total_pages}` (نفس شكل `test/wire_contract_test.dart`). طابِقه مع 
 
 | العلَم | ما يُضاف |
 |---|---|
-| `offlineSync == true` | أربعة ملفات `data/sync/`: عقد الفيتشر (`SyncFeatureContract<Entity>` بـ`toJson/fromJson/localIdOf`) · منفّذ دفعٍ (يعيد استعمال `HandleBodyResponse` نفسه، فمعالجة الخطأ — بما فيها 409 ⇐ `ConflictFailure` — موحَّدة لا مكرَّرة) · ديكور تسجيل (§3d) · `SyncAware<Feature>Repository`. **الكتابة توليدٌ آمنٌ كامل** (تُصفّ بلا اتصال فعلاً)، **والقراءة عبورٌ شبكي عمداً** (`TODO` صريح داخل الملف) — توليد قراءةٍ محلّية-أولاً بلا شريحةٍ حيّةٍ يُقتدى بها يعني مئات الأسطر غير المُتحقَّقة، وهو بالضبط الخطأ الذي يحذّر منه [`lib/modules/sync/STATUS.md`](../lib/modules/sync/STATUS.md) (توثيقٌ يدّعي اكتمالاً لم يُختبَر) |
+| `offlineSync == true` | أربعة ملفات `data/sync/`: عقد الفيتشر (`SyncFeatureContract<Entity>` بـ`toJson/fromJson/localIdOf`) · منفّذ دفعٍ (يعيد استعمال `HandleBodyResponse` نفسه، فمعالجة الخطأ — بما فيها 409 ⇐ `ConflictFailure` — موحَّدة لا مكرَّرة) · ديكور تسجيل (§3d) · `SyncAware<Feature>Repository`. **الكتابة توليدٌ آمنٌ كامل** (تُصفّ بلا اتصال فعلاً)، **والقراءة عبورٌ شبكي عمداً** (`TODO` صريح داخل الملف) — توليد قراءةٍ محلّية-أولاً بلا شريحةٍ حيّةٍ يُقتدى بها يعني مئات الأسطر غير المُتحقَّقة، وهو بالضبط الخطأ الذي يحذّر منه [`lib/modules/sync/STATUS.md`](../../lib/modules/sync/STATUS.md) (توثيقٌ يدّعي اكتمالاً لم يُختبَر) |
 | `accessControl == true` | زرّ الإضافة بالقائمة يُغلَّف بـ`Can(permission: PermKeys.<feature>Create, ...)`. **يكسر البناء عمداً** حتى يُعلن الباك المفتاح فعلياً ويُعاد `gen_permission_keys.dart` — لا تخمين صامت لاسم مفتاحٍ قد يخالف ما يفرضه الباك فعلاً |
 
 ⚠️ **فشل `dart analyze` بعد التوليد مع `accessControl == true` متوقَّعٌ ومقصود**
@@ -659,7 +659,7 @@ dart run scripts/audit_template.dart
 يُركَّب كودجة مباشرة بدل `context.router.push` لن يظهر له استخدام رغم كونه
 مستهلَكاً فعلاً (مثاله: `SettingsRoute`). **النتيجة
 مرشَّحٌ للمراجعة، لا حكمٌ قاطع** — راجع دائماً
-[`10_ARCHITECTURE.md`](10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك» قبل
+[`10_ARCHITECTURE.md`](../architecture/10_ARCHITECTURE.md) §«جرد المبنيّ بلا مستهلك» قبل
 اتخاذ أي إجراء بناءً عليه.
 
 **على القالب نفسه** يكشف الفحص ٣ `UserAccessRoute` — المسار اليتيم المُوثَّق بقصد
@@ -685,7 +685,7 @@ dart run scripts/scaffold_module.dart audit_log
    افتراضُه `false`.
 3. **التسجيل** — سطرٌ جديد بـ`modules_bootstrap.dart` (`if (AppFeatures.x)
    await XPlugin.initialize(di);`) فوق علامة `// scaffold_module:` الثابتة.
-4. **صفّ الجدول الواحد** — بـ[`30_MODULES.md`](30_MODULES.md) فوق علامته. الوصفُ وما
+4. **صفّ الجدول الواحد** — بـ[`30_MODULES.md`](../modules/30_MODULES.md) فوق علامته. الوصفُ وما
    يحتاجه خارج التطبيق يبقيان `TODO` — يدويّان بقصد، لا شيء يعرفهما قبل كتابة الموديول.
 
 لا يمسّ DI/router/freezed/ترجمة، فلا حاجة لـ`gen_code.dart` — فقط فحص صحة
@@ -859,7 +859,7 @@ kit أو موديول تحتاج إشارةً فيه، أو استثناءً ب�
 
 ## 11) Related Docs
 
-- [`00_START_HERE.md`](00_START_HERE.md) — onboarding + full structure
-- [`11_CORE.md`](11_CORE.md) — architecture principles
-- [`12_REST_API.md`](12_REST_API.md) — REST workflow
+- [`00_START_HERE.md`](../start/00_START_HERE.md) — onboarding + full structure
+- [`11_CORE.md`](../architecture/11_CORE.md) — architecture principles
+- [`12_REST_API.md`](../architecture/12_REST_API.md) — REST workflow
 

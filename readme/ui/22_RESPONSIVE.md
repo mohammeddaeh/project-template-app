@@ -3,8 +3,8 @@
 > **الأمر المختصر:** لا تقرأ `MediaQuery` بشاشة، ولا تحسب نسبةً من ارتفاعها.
 > اقرأ `context.screen`، وضع محتوى الصفحة في `ResponsiveContentBox`.
 >
-> الكود: [`lib/ui/responsive/`](../lib/ui/responsive/) · القواعد اليومية:
-> [`lib/CLAUDE.md`](../lib/CLAUDE.md) §Responsive.
+> الكود: [`lib/ui/responsive/`](../../lib/ui/responsive/) · القواعد اليومية:
+> [`lib/CLAUDE.md`](../../lib/CLAUDE.md) §Responsive.
 
 ---
 
@@ -194,7 +194,7 @@ class XCard extends StatelessWidget {
 ## ٤ · النطاق المركزي — وما يفعله وحده
 
 `ResponsiveScope` مركَّبٌ بـ`builder:` الخاص بـ`MaterialApp.router` في
-[`lib/app.dart`](../lib/app.dart) — أي **فوق كل مسارٍ وحوارٍ وورقةٍ سفلية**.
+[`lib/app.dart`](../../lib/app.dart) — أي **فوق كل مسارٍ وحوارٍ وورقةٍ سفلية**.
 وهذا موضعه الوحيد: نسخةٌ ثانية بشاشةٍ ما تعني مقياسَين بنفس التطبيق.
 
 يفعل أمرَين:

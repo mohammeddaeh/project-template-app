@@ -992,7 +992,7 @@ Features/{feature}/domain/params/{feature}_filter_params.dart  ← يطابق {m
 Features/{feature}/presentation/cubits/{feature}_cubit.dart    ← filter field + applyFilter()/clearFilter()
 Features/{feature}/presentation/pages/{feature}_list_screen.dart ← IconButton(Icons.filter_list) → AppFilterSheet.show<T>(...)
 ```
-التفاصيل الكاملة خطوة بخطوة (مع أمثلة كود كاملة وchecklist): `qirtas_backend/docs/12_REST_API.md` §6.1 (عقد الـREST) و`qirtas_app/readme/14_PAGINATION.md` §5.1 (التنفيذ بالفرونت).
+التفاصيل الكاملة خطوة بخطوة (مع أمثلة كود كاملة وchecklist): `qirtas_backend/docs/12_REST_API.md` §6.1 (عقد الـREST) و`qirtas_app/readme/architecture/14_PAGINATION.md` §5.1 (التنفيذ بالفرونت).
 
 **الاستقلالية:**
 - الباك إند: `options.orderBy` إلزامي بالنوع، لكن **القيمة الافتراضية** (`desc(table.created_at)`) تُبقي نفس سلوك اليوم لأي موديول لا يحتاج فلترة فعلية — الإلزام على مستوى التوقيع فقط، لا فرض فلترة حقيقية.
@@ -1260,7 +1260,7 @@ dio.get('/permissions', options: Options(extra: {
 shared/widgets/layout/detail_widgets.dart   ← DetailHeaderCard · DetailFact · DetailSectionHeader
 shared/widgets/layout/permissions_panel.dart ← PermissionsPanel (display/selection)
 ```
-التفاصيل الكاملة بالأمثلة: `readme/20_WIDGETS.md`. ومرآة تفاعلية بـ`WidgetLibraryDemoScreen` (قانون المرآة).
+التفاصيل الكاملة بالأمثلة: `readme/ui/20_WIDGETS.md`. ومرآة تفاعلية بـ`WidgetLibraryDemoScreen` (قانون المرآة).
 
 **الاستقلالية:**
 widgets إضافية لا تُعدِّل شيئاً. و`PermissionsPanel` يُعرِّف `PermissionItem` الخاص به عمداً بدل استيراد كيان الـfeature — `shared/` ممنوعة من استيراد `Features/`.

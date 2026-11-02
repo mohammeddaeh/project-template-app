@@ -1,7 +1,7 @@
 /// إشاراتُ الجرد — **ما يكشف قدرةً بالمشروع القديم، وما يقابلها بالقالب.**
 ///
 /// تسكن هنا لا بـ`port_inventory.dart` ليقرأها `test/port_signals_test.dart`: كلُّ
-/// صفٍّ بـ`readme/06_CAPABILITIES.md`، وكلُّ kit تحت `packages/`، وكلُّ موديولٍ تحت
+/// صفٍّ بـ`readme/rules/06_CAPABILITIES.md`، وكلُّ kit تحت `packages/`، وكلُّ موديولٍ تحت
 /// `lib/modules/`، يجب أن تغطّيه إشارةٌ هنا ([PortSignal.covers]) أو يُستثنى
 /// بسبب ([portSignalExemptions]). فقدرةٌ تُضاف إلى القالب بلا إشارة تُفشل
 /// الاختبار، بدل أن تمرّ بالنقل بلا مطابقة فتُبنى من جديد.

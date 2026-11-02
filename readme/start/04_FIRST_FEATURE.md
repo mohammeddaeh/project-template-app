@@ -18,7 +18,7 @@
 |---|---|
 | الباك يستجيب فعلاً على `/orders` | R01: عقد المفاتيح لا يُخمَّن |
 | بيدك عيّنة استجابة **حقيقية** | ستصبح `test/fixtures/wire/orders_page.json` |
-| قرأتَ [`03_RULES.md`](03_RULES.md) §R01 و§R04 و§R08 | الثلاثة تفشل صامتةً |
+| قرأتَ [`03_RULES.md`](../rules/03_RULES.md) §R01 و§R04 و§R08 | الثلاثة تفشل صامتةً |
 
 **اطلب `GET /openapi.json` من الباك** — مولَّد من نفس zod schemas التي تفرضها
 `validate()`، فهو العقد القاطع لا الوصف.
@@ -328,7 +328,7 @@ class OrdersScreen extends StatelessWidget {
 > ⚠️ **R37 — ولا رقمَ مقاسٍ خام داخل الجسد.** كل فراغٍ وحشوةٍ ومقاسِ أيقونة
 > يمرّ بـ`context.screen`: `ResponsiveGap(24)` · `s.space(16)` · `s.size(24)`.
 > شاشةٌ تُبنى بأرقامٍ ثابتة تخرج مختلفةً عن بقيّة الواجهة وتُكسر على اللوح.
-> القالبُ الكامل: [`22_RESPONSIVE.md`](22_RESPONSIVE.md) §٣‑ب.
+> القالبُ الكامل: [`22_RESPONSIVE.md`](../ui/22_RESPONSIVE.md) §٣‑ب.
 
 ```dart
 // lib/routes/router.dart
@@ -434,8 +434,8 @@ dart analyze lib          # ← No issues found
 
 | تريد | اقرأ |
 |---|---|
-| فلترة وبحث للقائمة | [`14_PAGINATION.md`](14_PAGINATION.md) · `AppFilterSheet` · `ListFilterBar` |
+| فلترة وبحث للقائمة | [`14_PAGINATION.md`](../architecture/14_PAGINATION.md) · `AppFilterSheet` · `ListFilterBar` |
 | شاشة تفاصيل تُرجع نتيجة | `lib/features/CLAUDE.md` §«شاشة التفاصيل تُرجع نوعاً» |
-| حماية الشريحة بصلاحية | [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) |
-| استيراد/تصدير لها | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) — **صفر Dart** |
+| حماية الشريحة بصلاحية | [`31_MODULE_PERMISSIONS.md`](../modules/31_MODULE_PERMISSIONS.md) |
+| استيراد/تصدير لها | [`32_MODULE_DATA_TRANSFER.md`](../modules/32_MODULE_DATA_TRANSFER.md) — **صفر Dart** |
 | عملها دون اتصال | [`30_MODULE_SYNC.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) |

@@ -396,7 +396,7 @@ AnimatedCount(value: n, format: AppNumberFormats.count)   // الشكل من ا�
 ## §43 · VoiceNoteRecorder · AudioPlayerTile — التسجيل والتشغيل (`kit_audio`)
 
 > **ودجتا kit**: تعملان حين تكون `kit_audio` مركّبة (`dart run scripts/kit.dart add audio`)،
-> **ولا ترسمان شيئاً بدونها**. البنية بـ[`24_DEVICE_KITS.md`](../24_DEVICE_KITS.md).
+> **ولا ترسمان شيئاً بدونها**. البنية بـ[`24_DEVICE_KITS.md`](../../modules/24_DEVICE_KITS.md).
 
 ```dart
 // ── ملاحظةٌ صوتية تُرفق ──

@@ -2,7 +2,7 @@
 ///
 /// نفسُ قاعدة `AccessControlUrls`: موديولٌ اختياريٌّ يملك مساراتِه، فلا يحمل
 /// `ApiUrls` ما لا يُنادى حين يكون العلَم مطفأً.
-/// راجع `readme/32_MODULE_DATA_TRANSFER.md`.
+/// راجع `readme/modules/32_MODULE_DATA_TRANSFER.md`.
 abstract class DataTransferUrls {
   /// Everything this backend can import or export, with its columns.
   ///

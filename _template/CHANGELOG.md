@@ -11,7 +11,11 @@
 
 ## غير مُصدَر
 
-- **خريطةٌ للقادم الجديد**: `README.md` بجذر المستودع (كان نصَّ Flutter الافتراضي) · `readme/30_MODULES.md`
+- ⚠️ **`readme/` بمجلدات**: `start/` (00 · 01 · 02 · 04) · `rules/` (03 · 05 · 06) · `architecture/` (10 · 11 · 12 · 13 ·
+  14 · 17 · 23) · `ui/` (20 · 21 · 22 · `widgets/`) · `modules/` (24 · 30–33) · `scripts/` (40). الأرقامُ والأسماءُ
+  كما هي، والروابطُ كلّها أُعيد حسابها. مشروعٌ يحدّث بـ`template_update` يرى الملفات محذوفةً من الجذر ومضافةً
+  بمجلداتها؛ وروابطُه الخاصة إلى `readme/NN_*.md` يكشفها `check_docs`.
+- **خريطةٌ للقادم الجديد**: `README.md` بجذر المستودع (كان نصَّ Flutter الافتراضي) · `readme/modules/30_MODULES.md`
   جدولٌ واحد للموديولات الثلاثة عشر (علَم · افتراض · ما يحتاجه خارج التطبيق · الوثيقة) يحلّ محلّ جدولَي
   `10_ARCHITECTURE` و`00_START_HERE` · `packages/README.md` · سكربتات `40_SCRIPTS.md` مجمّعةٌ بمتى تُحتاج.
   ⚠️ **مداخلُ الموديولات كلّها `<name>_plugin.dart` / `<Name>Plugin`**: `AnalyticsModule` و`CrashReportingModule`
@@ -81,7 +85,7 @@
 - **حِزَم الأجهزة — البنية (K0)**: `packages/kit_contracts` · `scripts/kit.dart`
   (`list` · `add` · `remove` · `test`) · `lib/core/di/kits.g.dart` مولَّد ويُنادى من
   `configureInjection` · `setup_project --kits` (الافتراضي لا شيء) · `C18`/`C19` · R43 ·
-  `readme/24_DEVICE_KITS.md`. لا kit بعد. **ويمسّ كل مشروع**: `kit_contracts` تبعيةُ
+  `readme/modules/24_DEVICE_KITS.md`. لا kit بعد. **ويمسّ كل مشروع**: `kit_contracts` تبعيةُ
   `path` جديدة، و`packages/` صار مملوكاً للقالب · `sync_platform_permissions` يحفظ
   إزاحة `Info.plist` فلا يترك فرقاً بلا تغيير إذن.
 - **الشريط السفلي والتباين**: نمط `expanding` يُظهر لافتة التبويب المختار (كانت الحصص المتساوية
@@ -147,7 +151,7 @@
 
 - **صيانة القالب بـ`_template/`** — الخطّة والأرشيف وملاحظات المشاريع، لا تُنسخ للمشاريع.
 - **لا تاريخ ولا اسم مشروع بما يصل المشاريع** (R38، `audit_template.dart` §٥).
-- **كتالوج القدرات** `readme/06_CAPABILITIES.md` وحارسه `C01…C17` (R40).
+- **كتالوج القدرات** `readme/rules/06_CAPABILITIES.md` وحارسه `C01…C17` (R40).
 - **أدوات التاريخ والأرقام**: محرّك أم القرى بدل حزمة `hijri` · `CalendarNames` ·
   `toArabicIndicDigits` · أوصاف `AppDateFormat`/`AppTimeFormat`/`AppNumberFormat`
   وكتالوجها · `AppDateText.format`.

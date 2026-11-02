@@ -150,7 +150,7 @@ static const bool enabled =
 
 **وقبل البناء — `build_apk.dart`**: ببناء `prod` أو `release` يعدّد العلَمَ إن كان
 مُشعَلاً، وكلَّ نداءٍ خارج الموديول بملفّه وسطره، ويسأل `[y/N]`. وبلا طرفية يُفشل،
-إلا مع `--allow-token-trace` ([`40_SCRIPTS.md`](40_SCRIPTS.md) §2). تذكيرٌ بالحذف،
+إلا مع `--allow-token-trace` ([`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §2). تذكيرٌ بالحذف،
 لا حارسُ أمان — فالنسخة صامتة أصلاً.
 
 ---
