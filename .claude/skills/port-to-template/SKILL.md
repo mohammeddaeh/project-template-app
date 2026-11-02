@@ -18,7 +18,7 @@ description: Use when porting an existing app (any stack — Capacitor/Ionic, Re
 dart run scripts/port_inventory.dart <مسار التطبيق القديم>
 ```
 
-يكتب `docs/port/inventory.md`: المنصّة · الشاشات · الـendpoints **بالـmethod** · الترجمات · الخطوط
+يكتب `docs/port/inventory.md`: المنصّة · **هويّة المتجر** · الشاشات · الـendpoints **بالـmethod** · الترجمات · الخطوط
 بأوزانها من الملف · SVG بـ`<style>` · **إشارات القدرات** وما يقابلها بالقالب. اقرأه
 كاملاً، ثم افتح ما يحتاج تفصيلاً بالمستودع القديم (عقد الـAPI · منطق المجال · الحالات
 الحدّية). الجرد يعدّ؛ لا يفهم.
@@ -102,6 +102,9 @@ dart run scripts/port_inventory.dart <مسار التطبيق القديم>
 
 ## المراحل
 ### M1 · الأساس — <معيار القبول أمرٌ يُشغَّل>
+- [ ] **هويّة المتجر من الجرد**: `applicationId` لـ`prod` بـ`flavor_settings.json` = معرّف القديم ·
+      bundle id بـiOS = القديم · `version` بـ`pubspec.yaml` رقمُ بنائه **أكبر** من القديم ·
+      **مفتاح التوقيع القديم** بيد من يرفع (خارج المستودع). أيٌّ منها خطأ ⇐ تطبيقٌ ثانٍ بالمتجر لا تحديث
 - [ ] الهوية والألوان والخطوط (`sync_fonts.dart` — الوزن من الملف)
 - [ ] الأصول (`svg_inline_styles.dart` لكل SVG بـ`<style>`) · `gen_code.dart`
 - [ ] الكتالوج: كل أشكال التاريخ والوقت والأرقام بـ`app_formats.dart`

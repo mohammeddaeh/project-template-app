@@ -791,7 +791,8 @@ dart run scripts/device_shot.dart home --ref docs/port/reference/home.png
 ```
 
 **`port_inventory`** يجرد ولا يجتهد: المنصّة (Capacitor · React · Flutter · أندرويد · iOS) ·
-الشاشات · الـendpoints **بالـmethod** (`GET /orders` — من نداءٍ باسمه أو تعليقة Retrofit أو
+**هويّة المتجر** (معرّف الحزمة · رقم البناء · إعداد التوقيع ومسارُ المفتاح، لا محتواه — ما يجب أن
+يبقى ليصل التحديث) · الشاشات · الـendpoints **بالـmethod** (`GET /orders` — من نداءٍ باسمه أو تعليقة Retrofit أو
 `fetch`، و`?` حين لا يظهر) · ملفات الترجمة · الخطوط **بوزنها من الملف** · SVG بـ`<style>` ·
 وإشاراتٍ مربوطةً بما يقابلها: قسمٌ بـ`06_CAPABILITIES.md`، أو kit تُركَّب بـ
 `scripts/kit.dart add <name>`، أو موديولٌ بـ`lib/modules/`. والإشارات تُطابَق على الكود

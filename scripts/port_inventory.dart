@@ -12,6 +12,7 @@
 /// | الشاشات | ملفاتٌ تحت `pages/` · `screens/` · `views/` أو أسماؤها `*Page`/`*Screen`/`*View` |
 /// | الـendpoints | المسار **ومعه الـmethod** حين يظهر — نداءٌ باسمه · تعليقة Retrofit · `fetch` · نصٌّ بـ`/api/` (`src/port_endpoints.dart`) |
 /// | الترجمات | ملفات JSON تحت `i18n/` · `locales/` · `translations/` وعدد مفاتيحها |
+/// | هويّة المتجر | معرّف الحزمة · رقم البناء · إعداد التوقيع ومسارُ المفتاح (لا محتواه) — `src/port_store.dart` |
 /// | الخطوط | كل `.ttf`/`.otf` ووزنه **من الملف** (`usWeightClass`) |
 /// | SVG | عددها، وما فيه `<style>` (يُرسم أسود بـflutter_svg) |
 /// | القدرات | إشاراتٌ بالكود وملفات الاعتماديات ⇐ قسمٌ بـ`06_CAPABILITIES.md` · kit · موديول — الجدول بـ`src/port_signals.dart` |
@@ -26,6 +27,7 @@ import 'dart:io';
 
 import 'src/port_endpoints.dart';
 import 'src/port_signals.dart';
+import 'src/port_store.dart';
 import 'sync_fonts.dart' show fontFileWeight;
 
 const _skip = {
@@ -80,6 +82,14 @@ void main(List<String> args) {
   ]..sort();
 
   final endpoints = extractEndpoints(contents.values);
+
+  final store = readStoreIdentity({
+    for (final f in files)
+      if (portManifestNames.contains(f.uri.pathSegments.last) ||
+          f.path.endsWith('project.pbxproj') ||
+          f.uri.pathSegments.last.startsWith('capacitor.config.'))
+        rel(f): _read(f),
+  }, files.map(rel));
 
   final translations = [
     for (final f in files)
@@ -142,6 +152,23 @@ void main(List<String> args) {
       '| ${signal.name} | ${hits.length} | ${signal.target} | ${hits.take(3).map((h) => '`$h`').join(' · ')} |',
     );
   }
+  out
+    ..writeln()
+    ..writeln('## هويّة المتجر — تبقى كما هي ليصل التحديث')
+    ..writeln()
+    ..writeln(
+      '> معرّفٌ آخر = تطبيقٌ جديد بجانب القديم · مفتاحٌ آخر = لا يُثبَّت فوقه · '
+      'رقمُ بناءٍ أصغر = `INSTALL_FAILED_VERSION_DOWNGRADE`. بالقالب: '
+      '`applicationId` لـ`prod` بـ`flavor_settings.json`، والإصدار بـ`pubspec.yaml`.',
+    )
+    ..writeln()
+    ..writeln('| | القيمة | من |')
+    ..writeln('|---|---|---|');
+  if (store.isEmpty) out.writeln('| ⚠️ لم يُعثر على شيء | — | — |');
+  for (final i in store) {
+    out.writeln('| ${i.label} | `${i.value}` | `${i.source}` |');
+  }
+
   void list(String title, Iterable<String> items, [String? note]) {
     out
       ..writeln()
