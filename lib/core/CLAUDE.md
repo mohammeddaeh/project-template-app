@@ -58,7 +58,7 @@ Exception (Dio/IO/unknown)
 ```
 1. URL → core/infra/network/rest/api_urls.dart
 2. *_api_service.dart → features/<name>/data/datasources/
-3. dart run build_runner build --delete-conflicting-outputs
+3. dart run scripts/gen_code.dart
 4. RemoteDataSource → Repository (handle()) → UseCase → Cubit
 5. لا توضع Feature ApiService أو models داخل core/
 ```
@@ -269,9 +269,7 @@ abstract class InjectableModule {
 12. presentation/cubits/{name}_cubit.dart + state
 13. presentation/pages/{name}_screen.dart
 14. translations ar.json + en.json
-15. dart run build_runner build --delete-conflicting-outputs
-16. flutter pub run easy_localization:generate -f keys ...
-    flutter pub run easy_localization:generate -f json ...
+15. dart run scripts/gen_code.dart   ← DI · router · Retrofit · freezed · الترجمة · الأصول بأمرٍ واحد
 ```
 
 ## ✅ Final Checklist

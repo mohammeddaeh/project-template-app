@@ -21,12 +21,12 @@
 | `hint` | `String?` | — | نص تلميح |
 | `validator` | `String? Function(String?)?` | — | التحقق |
 | `isFieldObscure` | `bool` | `false` | كلمة مرور |
-| `isSearch` | `bool` | `false` | أيقونة بحث + زر مسح |
+| `isFieldSearch` | `bool` | `false` | أيقونة بحث + زر مسح |
 | `ltr` | `bool` | `false` | يُجبر الإدخال LTR (أرقام / URL) |
 | `keyboardType` | `TextInputType` | `text` | — |
 | `maxLines` | `int` | `1` | متعدد الأسطر |
 | `textInputAction` | `TextInputAction` | `next` | — |
-| `onSubmitted` | `Function(String)?` | — | عند الضغط Done |
+| `onFieldSubmitted` | `Function?` — بوسيطٍ أو بدونه | — | عند الضغط Done |
 
 **Usage**
 
@@ -47,14 +47,14 @@ CustomTextField(
   labelText: LocaleKeys.password.tr(),
   isFieldObscure: true,
   textInputAction: TextInputAction.done,
-  onSubmitted: (_) => _submit(context),
+  onFieldSubmitted: (_) => _submit(context),
   validator: _validatePassword,
 )
 
 // ── بحث ──
 CustomTextField(
   controller: _searchCtrl,
-  isSearch: true,
+  isFieldSearch: true,
   hint: LocaleKeys.search.tr(),
   onChanged: (v) => context.read<MyCubit>().search(v),
 )
@@ -64,7 +64,6 @@ CustomTextField(
   controller: _notesCtrl,
   labelText: LocaleKeys.notes.tr(),
   maxLines: 4,
-  minLines: 2,
   textInputAction: TextInputAction.newline,
 )
 ```

@@ -54,12 +54,23 @@ Scaffold(
 ## §10 · AppCard — بطاقة
 
 ```dart
+final s = context.screen;
 AppCard(
-  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  padding: const EdgeInsets.all(16),
+  margin: EdgeInsets.symmetric(horizontal: s.gutter, vertical: s.space(8)),
+  padding: EdgeInsets.all(s.space(16)),
   elevation: 2,
-  onTap: () => context.router.push(OrderDetailsRoute(id: order.id)),
   child: OrderRowWidget(order: order),
+)
+```
+
+**ولا `onTap` بـ`AppCard`** — بطاقةٌ تُضغط تُلَفّ، فيبقى الردّ بمكانٍ واحد:
+
+```dart
+PressableScale(
+  child: GestureDetector(
+    onTap: () => context.router.push(OrderDetailsRoute(id: order.id)),
+    child: AppCard(child: OrderRowWidget(order: order)),
+  ),
 )
 ```
 

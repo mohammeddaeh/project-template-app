@@ -944,3 +944,22 @@ patterns" توثّق بالضبط ما وُصف هنا كـ"Generic UI") مطا�
 لا يُشحن مع كل مشروع — حزمةٌ تحت `packages/` تدخل بـ`kit.dart add` وتخرج
 بـ`remove`، والتطبيق يعرف عقدها وحده.
 
+---
+
+## أفكارٌ نُقلت من `readme/10_ARCHITECTURE.md`
+
+> نُقلت لأن الوثيقة المشحونة تصف الحاضر. **N2 · N5 · N6 مبنيّة جزئياً** (`routes/deep_link_resolver.dart` · `ui/widgets/connectivity/offline_banner.dart` · `modules/analytics/adapters/analytics_route_observer.dart`) — تُراجَع قبل البناء عليها.
+
+| # | الفكرة | الغرض | الأولوية |
+|---|--------|--------|----------|
+| N1 | **UserPreferencesService** | typed wrapper حول `StorageService` للإعدادات المستخدم (locale، theme، notifications) | 🔴 عالية |
+| N2 | **DeepLinkService** | تمرير push notification taps + URL schemes بشكل موحّد للـ router | 🔴 عالية |
+| N3 | **FormValidator utility** | استخدام Value Objects + ValidationFailure في validation مركزي لنماذج `form_builder` | 🟡 متوسطة |
+| N4 | **AppUpdateChecker** | يجمع `RemoteConfigModule` (min_version) مع `InAppUpdatesModule` في utility واحد | 🟡 متوسطة |
+| N5 | **ConnectivityBanner widget** | `shared/` widget يعرض شريط offline تلقائياً عبر `ConnectivityCubit` (انظر `readme/sync.md` لمرجع `OfflineBanner`/`OfflineConnectivityLayer` المخطَّط) | 🟡 متوسطة |
+| N6 | **AnalyticsRouteObserver** | `RouteObserver` يُسجّل screen views تلقائياً لكل route دون كود يدوي | 🟢 منخفضة |
+| N7 | **UserSession** | كيان مركزي لـ userId + token + role — يُستخدم من Crashlytics + Analytics + AuthInterceptor | 🟢 منخفضة |
+
+---
+
+

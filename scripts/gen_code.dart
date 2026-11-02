@@ -1,10 +1,11 @@
 // ignore_for_file: avoid_print
-/// توليد الكود التلقائي للمشروع (5 خطوات):
+/// توليد الكود التلقائي للمشروع (6 خطوات):
 ///   1. build_runner  — Retrofit · Freezed · Injectable · AutoRoute
 ///   2. locale_keys.g.dart   — مفاتيح EasyLocalization
 ///   3. codegen_loader.g.dart — runtime loader (CodegenLoader)
 ///   4. assets.gen.dart — مسح assets/ وتوليد صنف Assets
 ///   5. permission_keys.g.dart — مفاتيح الصلاحيات من permissions.lock.json
+///   6. dart format — على `lib/resources/` المولَّد
 ///
 /// **الاستثناء الوحيد** — `sync_fonts.dart` يبقى خارج هذه السلسلة لأنه تفاعلي:
 /// يسأل عن اسم الخط وعائلته، فلا يصلح ضمن أمر آلي يُشغَّل بالـCI.

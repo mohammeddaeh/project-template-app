@@ -126,7 +126,7 @@ PaginationBuilderWdg<MyCubit, MyEntity>(
 )
 ```
 
-> **Mirror Law:** Any new `PageLoadingStyle` value → add a segment in `TestPaginationDemoScreen` selector + live preview.
+> **Mirror Law:** Any new `PageLoadingStyle` value → add a segment in the showcase demo (`lib/modules/showcase/presentation/pages/data/pagination_demo.dart`) + live preview.
 
 ## 9) Common Mistakes
 

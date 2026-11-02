@@ -241,13 +241,11 @@ Scaffold(body: DecoratedBox(decoration: ..., child: SingleChildScrollView(...)))
 Scaffold(body: SizedBox.expand(child: DecoratedBox(decoration: ..., child: ...)))
 ```
 
-**وقع فعلاً**: شاشة الدخول شُحنت بشريطٍ كريميّ أسفل البطاقة — يبدو خلفيةً نسي
-أحدهم ضبطها، بينما الخلفية مضبوطة تماماً والقيود وحدها هي السبب. ولا
-`dart analyze` ولا `flutter test` يقول شيئاً: الشجرة سليمة، والرسم ناجح.
+والعَرَض شريطٌ بلونٍ آخر أسفل الصفحة يبدو خلفيةً لم تُضبط، والقيودُ وحدها هي
+السبب. ولا `dart analyze` ولا `flutter test` يقول شيئاً: الشجرة سليمة، والرسم ناجح.
 
 > **والقاعدة الأعمّ**: أي widget يرسم سطحاً لصفحة كاملة يُغلَّف بـ`SizedBox.expand`
-> **داخل الودجة نفسها** لا بكل صفحة تستعملها — وإلا تكرّر الخطأ مع أول مستهلك
-> ثانٍ. هكذا أُصلح `BrandBackground`.
+> **داخل الودجة نفسها** لا بكل صفحة تستعملها — وإلا تكرّر الخطأ مع أول مستهلك ثانٍ.
 
 ### F10 · لا `left`/`right` — الاتجاهيّ وحده 👁
 
@@ -536,9 +534,8 @@ route · مفاتيح ترجمة. **تصميم الفيغما يستبدل `buil
 بذاتها، بل **إشارةٌ إلى قسمٍ لم يُسمَّ بعد**.
 
 > **مثالٌ حيّ**: [`login_screen.dart`](../lib/features/auth/login/presentation/pages/login_screen.dart)
-> — `build()` فيه ٥٠ سطراً يركّب أربع ودجات، وأطول ما فيه تعليقٌ يشرح تفرّع
-> `pendingVerification`. الرسم كلّه بـ`BrandBackground` و`BrandMasthead`
-> و`SignInForm`.
+> — `build()` يركّب ودجاتٍ مسمّاة (`LoginHeader` · `LoginFields` · `LoginSubmitButton` ·
+> `SignUpPrompt`)، وأطول ما فيه تعليقٌ يشرح تفرّع `pendingVerification`.
 
 ### F20 · كل قسمٍ بصري ودجةٌ باسمها — لا دالة `_buildX()` 🔒
 
@@ -575,8 +572,8 @@ class _RecordHeader extends StatelessWidget { ... }
 | **تُوثَّق بـ** | `21_WIDGETS_USAGE.md` (إلزامي) | تعليق رأس الملف |
 
 **والترقية من الثانية إلى الأولى تحدث عند ثاني مستهلك، لا عند توقّعه.** لكن
-الحكم يسبق الكتابة حين يكون بديهياً: `BrandBackground` وُلد عاماً لأن شاشتَي
-الدخول والـsplash تستعملان الأرضية نفسها — ونسخُها يعني أرضيتَين تفترقان بصمت.
+الحكم يسبق الكتابة حين يكون بديهياً: أرضيةٌ تحتاجها شاشتان من أوّل يوم تُبنى عامّةً،
+ونسخُها يعني أرضيتَين تفترقان بصمت.
 
 > **والودجة العامة لا تعرف feature — أبداً.** لحظة أن تستورد
 > `ui/widgets/x.dart` أي `features/…` انقلب اتجاه التبعية (R16). إن احتاجت
@@ -619,8 +616,6 @@ class _RecordHeader extends StatelessWidget { ... }
 | هيكل تحميل لقائمة/بطاقة | `SkeletonListTile` · `SkeletonCard` · `SkeletonStatRow` |
 | صفّ يظهر بتدرّج داخل قائمة | `ListItemAppearWdg` |
 | سحب-للتحديث | `RefreshWrapper` |
-| أرضية الهوية الخضراء | `BrandBackground` |
-| الشعار والاسم والشعار الفرعي | `BrandMasthead` |
 
 ### F36 · حقل الإدخال واحدٌ — `CustomTextField` وحده 🔒
 
@@ -673,7 +668,7 @@ AppProgress.linear(value: p, tone: AppProgressTone.accent)     // تقدّم ب�
 **والتخصيص لم يُمنع، بل صار مركزياً**: `color` · `trackColor` · `gradient` ·
 `strokeWidth` · `dimension` · `height` · `radius` · `padding` · `centered` ·
 `animate` · `adaptive` — كلّها وسائط. الجدول كاملاً:
-[`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §33.
+[`21_WIDGETS_USAGE.md`](21_WIDGETS_USAGE.md) §26.
 
 ---
 

@@ -55,7 +55,7 @@ lib/core/di/kits.g.dart  → kit_<name>
 {
   "name": "voice",
   "register": "registerVoiceKit",
-  "permissions": ["microphone"],
+  "permissions": ["microphone", "speechRecognition", "textToSpeech"],
   "platformPackages": ["speech_to_text", "flutter_tts"]
 }
 ```
@@ -87,7 +87,8 @@ dart run scripts/kit.dart test            # اختباراتُ kit_contracts و�
 ومجلد الـkit يبقى بـ`packages/` بعد إزالتها — فتُركَّب ثانيةً بأمرٍ واحد.
 
 **وعند إنشاء مشروع**: `setup_project.dart --kits voice,scan` يُبقي المذكور ويزيل
-الباقي — **والافتراضي لا شيء**.
+الباقي — **والافتراضي لا شيء**. ومستودعُ القالب نفسه يحمل الـkits السبع مركّبةً،
+لأن جولة المطوّر (`modules/showcase/`) تعرض كلّاً منها.
 
 ## ٤. التطبيق والـkit الغائبة
 
@@ -117,7 +118,7 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 | `scan` | `CodeScanner` | `DeviceScan.code` — [§44](widgets/02_inputs.md) | `camera` |
 | `ocr` | `TextRecognizer` | `DeviceScan.text` — **لاتينيّ وحده، لا عربي** | — |
 | `video` | `VideoPlayback` (مصنع) | `AppVideoPlayer` · `AttachmentPreview` يشغّل مرفق الفيديو بالتطبيق — [§45](widgets/04_display.md) | — |
-| `system` | `AppShortcuts` · `AppReview` | العقدان مباشرةً — §٨ | — |
+| `system` | `AppShortcuts` · `AppReview` | العقدان مباشرةً — §٧ | — |
 | `ink` | `InkRecognizer` (نموذجٌ لكل لغة يُنزَّل مرّة — `ar` · `en`) | `HandwritingInput` — [§46](widgets/02_inputs.md) | — |
 
 **والتوقيعُ ليس kit**: `SignaturePad` رسمٌ بـFlutter وحده — بالمكتبة، ويعمل بلا أي kit.
@@ -129,6 +130,7 @@ if (!getIt.isRegistered<SpeechInput>()) return const SizedBox.shrink();
 | `voice` + `audio` | +0.4MB | المحرّكات من النظام |
 | `scan` | +6.5MB | نموذجُ الباركود مضمَّنٌ بالتطبيق — يعمل بلا خدمات Google وبلا شبكة |
 | `ocr` | +12MB | نموذجُ النص اللاتيني مضمَّن — **ولهذا هو kit وحده**: من يمسح الرموز لا يحمله |
+| `video` · `system` · `ink` | لم تُقَس | `ink` تُنزّل نموذجَها عند أوّل استعمال، فلا يدخل التطبيق |
 
 **ولا ماسحَ مستنداتٍ بالقالب — بقرار.** ماسحُ Google (ML Kit) وحدةٌ تُنزَّل عبر Play services ورفضها جهازُ
 التجربة حتى عبر VPN؛ والبديلُ الوحيد السليم بلا خدمات Google (`flutter_edge_detection`: OpenCV 4.13 ·
@@ -142,7 +144,7 @@ WeScan) يطلب Flutter أحدث، وتصونه يدٌ واحدة. التفصي
 الخاص به، و`dl.google.com` محجوبٌ ببعض الشبكات (حتى لإصداراتٍ موجودة). الحلّ بناءٌ واحد
 عبر VPN فيُحفظ بـ`~/.gradle` ثم يعمل بلا شبكة. ⚠️ لا تثبيتَ لإصدارٍ أقدم من الحزمة لتفاديه.
 
-## ٨. أوامر النظام — `system`
+## ٧. أوامر النظام — `system`
 
 **اختصارُ الأيقونة مسارٌ لا أمر.** `AppShortcut(path: '/orders/new', title: …)` — والضغطةُ تصل
 `lib/app.dart` فيمرّرها لـ`pushPath` **فوق الشاشة الحالية**: تمرّ بحرّاس الموجّه كأي رابطٍ عميق، والرجوعُ يعيد للتطبيق.
@@ -166,7 +168,7 @@ await getIt<AppShortcuts>().setShortcuts([
 **وودجةُ الشاشة الرئيسية ليست هنا بقصد**: تصميمُها XML أندرويد وامتدادُ WidgetKit بـiOS، **مكتوبان
 لكل مشروع** — قالبٌ يشحن ودجةً بعينها يشحن مثالاً لا قدرة.
 
-## ٧. kit جديدة
+## ٨. kit جديدة
 
 1. `packages/kit_<name>/` بـ`pubspec.yaml` (`publish_to: none` · `kit_contracts: {path: ../kit_contracts}` · `get_it`) و`kit.json` و`analysis_options.yaml` خاصٍّ بها — وإلا ورثت ملفَّ الجذر وهو يطلب `flutter_lints` الذي لا تملكه.
 2. العقد بـ`kit_contracts/lib/src/<name>/` ويُصدَّر من `kit_contracts.dart`.

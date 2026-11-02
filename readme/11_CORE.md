@@ -104,7 +104,7 @@ presentation──►  foundation + infra  (للأخطاء عبر Failure فقط
 | `platform/extensions/` | `string_extensions`, `datetime_extensions` |
 | `platform/config/` | `AppSettings` — runtime constants (kReleaseMode) |
 | `platform/locale/` | `AppLocale` — enum: arabic/english + isRtl + fromCode |
-| `platform/connectivity/` | `NetworkState`, `ConnectivityService` (static utility), `NetworkStateMonitor` (interface + impl), `NetworkStabilityProbe` (multi-ping reachability verifier � optional) |
+| `platform/connectivity/` | `NetworkState`, `ConnectivityService` (static utility), `NetworkStateMonitor` (interface + impl) |
 | `platform/permissions/` | `AppPermission`, `AppPermissionStatus`, `PermissionsService` (interface + impl) |
 | `platform/biometrics/` | `BiometricsService` (interface) + `BiometricsServiceImpl` (local_auth) |
 | `platform/clipboard/` | `ClipboardService` (interface) + `ClipboardServiceImpl` (Flutter built-in) |
@@ -374,7 +374,7 @@ features/<name>/
 
 ### بعد التعديل
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run scripts/gen_code.dart
 dart analyze lib
 ```
 
@@ -386,10 +386,10 @@ dart analyze lib
 
 ### بعد تعديل ملفات الترجمة (ar.json / en.json)
 ```bash
-flutter pub run easy_localization:generate -f keys -O lib/resources -S assets/translations -o locale_keys.g.dart
-flutter pub run easy_localization:generate -f json -O lib/resources -S assets/translations -o codegen_loader.g.dart
+dart run scripts/gen_code.dart
 ```
-الأمر الثاني إلزامي — التطبيق يستخدم `CodegenLoader` لا JSON مباشرةً.
+يولّد `locale_keys.g.dart` و`codegen_loader.g.dart` معاً — والثاني إلزامي: التطبيق
+يستخدم `CodegenLoader` لا JSON مباشرةً.
 
 ### مزامنة التوثيق (إلزامي)
 راجع القسم 0 في أعلى هذا الملف — حدّث readme المرتبط قبل إنهاء المهمة.

@@ -35,7 +35,7 @@ This template uses **Clean Architecture** with **feature-based organization**. *
 
 | File | When to read / update |
 |------|----------------------|
-| [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | `modules/access_control/` + `core/authz/` — الصلاحيات |
+| [`31_MODULE_PERMISSIONS.md`](31_MODULE_PERMISSIONS.md) | `modules/access_control/` + باك `src/core/authz/` — الصلاحيات |
 | [`32_MODULE_DATA_TRANSFER.md`](32_MODULE_DATA_TRANSFER.md) | `modules/data_transfer/` — الاستيراد والتصدير |
 | [`33_MODULE_TOKEN_INSPECTOR.md`](33_MODULE_TOKEN_INSPECTOR.md) | `modules/token_inspector/` + `AuthSessionObserver` + `AppOverlays` — تتبّع التوكن على الشاشة |
 | [`sync_design_spec.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/sync_design_spec.md) | **Offline Sync — Engineering Reference** (المرجع القاطع) |
@@ -184,9 +184,10 @@ core/
 
 | ما هو | الحالة |
 |---|---|
-| `ui/state/mutation_result.dart` | **لا يستورده شيء بالقالب** — البند #19 كان `✅` بجدول [`_template/archive/template_enhancements.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/archive/template_enhancements.md) بمعنى «الملف وصل». النمط يُغلق حين يستهلكه أول cubit طفرة هنا |
+| `ui/state/mutation_result.dart` | **لا مستهلكَ له خارج جولة المطوّر** — النمط يُغلق حين يستهلكه أول cubit طفرة بشريحة |
 | `ui/state/sync/widgets/` (`SyncUiHost` · `PendingChangesChip`) | يتراجعان لبعضهما ولا يركّبهما شيء — `sync` مطفأ أصلاً |
-| `core/foundation/extensions/num_extensions.dart` · `platform/extensions/{string,datetime}_extensions.dart` | ثلاثة ملفات **لا يستوردها أي ملف** |
+| `core/platform/extensions/string_extensions.dart` | **لا يستورده أي ملف** |
+| `core/foundation/extensions/num_extensions.dart` | لا مستهلكَ له خارج جولة المطوّر |
 | `core/foundation/value_objects/` | جزيرة مغلقة: الثلاثة يصدّرها الـbarrel، والـbarrel لا يستورده أحد |
 | `modules/sync/domain/sync_failure_report.dart` | **حصيلةُ إخفاقٍ بأسماء حقولها لا بنصِّ الخادم** — يكتبها منفّذُ الشريحة ويقرؤها من يعرض الطابور. مُصدَّرةٌ وبلا كاتبٍ هنا. ⚠️ **والترجمةُ عند العرض لا عند التخزين**: `last_error` يُكتب مرّةً ويُقرأ مراراً واللغةُ تتبدّل بينهما، فالمخزَّنُ **مساراتُ حقولٍ لا نثرٌ** |
 | `modules/sync/domain/sync_activity.dart` | **لقطةُ طور الدفع** — «الصفُّ الثالث من سبعة». تبثّها الدورةُ ولا شاشةَ تقرؤها |
@@ -278,25 +279,6 @@ Errors:
 ```bash
 # feature جديدة: أنشئ data/domain/presentation يدوياً تحت features/<name>/ ثم:
 dart run scripts/sync_platform_permissions.dart      # after changing AppFeatures flags
-dart run build_runner build --delete-conflicting-outputs
+dart run scripts/gen_code.dart
 dart analyze lib
 ```
-
----
-
-## Future Ideas Backlog
-
-> مقترحات لتحسين التيمبلت — لم تُنفَّذ بعد.
-
-| # | الفكرة | الغرض | الأولوية |
-|---|--------|--------|----------|
-| N1 | **UserPreferencesService** | typed wrapper حول `StorageService` للإعدادات المستخدم (locale، theme، notifications) | 🔴 عالية |
-| N2 | **DeepLinkService** | تمرير push notification taps + URL schemes بشكل موحّد للـ router | 🔴 عالية |
-| N3 | **FormValidator utility** | استخدام Value Objects + ValidationFailure في validation مركزي لنماذج `form_builder` | 🟡 متوسطة |
-| N4 | **AppUpdateChecker** | يجمع `RemoteConfigModule` (min_version) مع `InAppUpdatesModule` في utility واحد | 🟡 متوسطة |
-| N5 | **ConnectivityBanner widget** | `shared/` widget يعرض شريط offline تلقائياً عبر `ConnectivityCubit` (انظر `readme/sync.md` لمرجع `OfflineBanner`/`OfflineConnectivityLayer` المخطَّط) | 🟡 متوسطة |
-| N6 | **AnalyticsRouteObserver** | `RouteObserver` يُسجّل screen views تلقائياً لكل route دون كود يدوي | 🟢 منخفضة |
-| N7 | **UserSession** | كيان مركزي لـ userId + token + role — يُستخدم من Crashlytics + Analytics + AuthInterceptor | 🟢 منخفضة |
-
----
-

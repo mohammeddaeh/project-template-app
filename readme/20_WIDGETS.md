@@ -46,10 +46,10 @@ Do not put these in `core/`.
 ### Feedback — Quick Reference
 ```dart
 // استخدام (في أي Widget/Cubit):
-context.feedback.success('تمت العملية بنجاح');
-context.feedback.error('حدث خطأ');
-context.feedback.warning('تنبيه', title: 'انتبه', duration: Duration(seconds: 5));
-context.feedback.toast('رسالة خفيفة');
+context.feedback.success(LocaleKeys.saved.tr());
+context.feedback.error(message);                       // من FailureUiMapper
+context.feedback.warning(LocaleKeys.x.tr(), title: LocaleKeys.y.tr());
+context.feedback.toast(LocaleKeys.copied.tr());
 ```
 
 ### Locale Switcher — Quick Reference

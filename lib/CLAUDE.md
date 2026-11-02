@@ -9,7 +9,7 @@
 >
 > **وقبل أن تكتب أي أداة أو تنسيقاً أو غلافاً**: [`readme/06_CAPABILITIES.md`](../readme/06_CAPABILITIES.md)
 > — القالب يملك التاريخ والأرقام والصور والسجلّ وخدمات المنصّة، و`check_structure`
-> يُفشل النداء الخامّ خارج غلافه (`C01…C17`).
+> يُفشل النداء الخامّ خارج غلافه (`C01…C20`).
 >
 > **وللقرار البصري** (متى Card، أين focal point، كيف hierarchy — لا الصحّة
 > بل الجودة) راجع skill `.claude/skills/flutter-ui-design/SKILL.md`.
@@ -120,13 +120,12 @@ Figma hex → AppPalette (raw) → AppColors.light/dark (semantic) → context.c
 ```
 1. assets/translations/ar.json   ← أضف المفتاح
 2. assets/translations/en.json   ← أضف المفتاح
-3. شغّل الأمرَين:
-   flutter pub run easy_localization:generate -f keys -O lib/resources -S assets/translations -o locale_keys.g.dart
-   flutter pub run easy_localization:generate -f json -O lib/resources -S assets/translations -o codegen_loader.g.dart
+3. dart run scripts/gen_code.dart   ← يولّد locale_keys.g.dart و codegen_loader.g.dart معاً
 4. في الـ UI: LocaleKeys.myKey.tr()
 ```
 
-> لماذا أمران؟ التطبيق يقرأ من `codegen_loader.g.dart` وقت التشغيل — إهمال الأمر الثاني يجعل الترجمة تظهر كـ key.
+> لماذا ملفّان؟ التطبيق يقرأ من `codegen_loader.g.dart` وقت التشغيل — تحديثُ
+> `locale_keys.g.dart` وحده يُصرَّف ويُظهر الترجمة كـkey.
 
 **ممنوع ❌:** `Text('نص عربي')` hardcoded · `locale.languageCode == 'ar'` · مفتاح في ar.json فقط بدون en.json
 
@@ -350,8 +349,8 @@ Skeletonized(enabled: state.isLoading, child: AccountBody(...))
 | الحالة | الحل |
 |---|---|
 | صورة شخص / أفاتار | `AvatarWidget(initial: name.isNotEmpty ? name[0] : '?', imageUrl: url)` |
-| صورة محتوى من شبكة | `NetworkImageWidget(url: url ?? '')` |
-| صورة عامة مع cache | `CachedImageWidget(url: url ?? '')` |
+| صورة محتوى من شبكة | `NetworkImageWidget(imageUrl: url ?? '')` |
+| صورة عامة مع cache | `CachedImageWidget(imageUrl: url ?? '')` |
 | **مرفَق ميداني** (صورة أو ملف) | `CapturedPhotoTile` للبطاقة · `CapturedPhotoImage` للبايتات وحدها · `AttachmentPreview.open(...)` للفتح — و`canPreview` **قبل رسم الزرّ** |
 | **ملفّ يملكه الخادم** (مسارُ تخزينٍ لا رابط) | مرّره بـ`CapturedPhoto.remotePath` — لا تُنادِ `ServerFileCache` من شاشة، ولا تمرّر `download: true` لمصغَّرة: التنزيل بضغطةٍ وحدها |
 | **ممنوع ❌** | `Image.file(...)` خاماً بشاشة — يفوتها ترتيبُ المصادر و`cacheWidth`، وستُّ صورٍ بلا `cacheWidth` ≈ ٧٥ ميغابايت مقيمة **لحظةَ** تذهب العمليةُ للخلفية |

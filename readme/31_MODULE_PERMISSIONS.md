@@ -1,4 +1,4 @@
-# الصلاحيات — `modules/access_control/` + `core/authz/`
+# الصلاحيات — `modules/access_control/` + باك `src/core/authz/`
 
 > **الفكرة في سطر:** المفتاح يُعلَن في السطر الذي يحميه، والنظام يلملم القائمة بنفسه.
 > **العَلَم:** `AppFeatures.accessControl` (فلاتر) + `AUTHZ_ENABLED` (باك) — كلاهما مطفأ افتراضياً.
@@ -76,8 +76,8 @@ orders.delivery.update   →  المورد: orders   ·  الإجراء: deliver
 ## 🔑 المفاتيح مولَّدة — لا نصّ خام في Dart
 
 ```bash
-cd backend_template && npm run print:permissions > ../perms.json
-cd app_template     && dart run scripts/gen_permission_keys.dart --from ../perms.json
+cd backend_template && npm run --silent print:permissions > ../perms.json
+cd app_template     && dart run scripts/gen_permission_keys.dart --update --from ../perms.json
 ```
 
 ```dart

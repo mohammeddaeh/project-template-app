@@ -156,7 +156,7 @@ ProductsApiService productsApiService(Dio dio) => ProductsApiService(dio);
 ### Step D: Generate Retrofit code
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run scripts/gen_code.dart
 ```
 
 ## 3) RemoteDataSource Pattern

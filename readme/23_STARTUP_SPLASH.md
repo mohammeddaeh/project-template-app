@@ -42,7 +42,7 @@ splash النظام  ← الشعارُ كاملاً على #0D3A2F   (طوال 
 ### أين يُكتب اللون
 
 `android/app/src/main/res/values/colors.xml` ← `splash_background` = `#0D3A2F`،
-وهو `AppColors.bgBrand` نفسُه الذي ترسمه `BrandBackground` بشاشة الدخول.
+وهو `AppColors.bgBrand` نفسُه الذي ترسمه شاشاتُ الهوية بالتطبيق.
 **المصدران اثنان ولا ثالث** — وتغييرُ أحدهما بلا الآخر يعيد الوميض.
 
 ---

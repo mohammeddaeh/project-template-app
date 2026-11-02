@@ -9,7 +9,7 @@
 
 | إذا كنت تبني… | اقرأ |
 |---|---|
-| ★ **أيّ أداة · تنسيق · غلاف حزمة · ودجة حالة** (تاريخ · رقم · صورة · مشاركة · سجلّ…) | [`readme/06_CAPABILITIES.md`](readme/06_CAPABILITIES.md) — **قبل أي سطر**: ما فيه مبنيٌّ ومختبَر، وكتابتُه ثانيةً يُفشلها `check_structure` (`C01…C17`). ناقصٌ؟ وسّعه بمكانه |
+| ★ **أيّ أداة · تنسيق · غلاف حزمة · ودجة حالة** (تاريخ · رقم · صورة · مشاركة · سجلّ…) | [`readme/06_CAPABILITIES.md`](readme/06_CAPABILITIES.md) — **قبل أي سطر**: ما فيه مبنيٌّ ومختبَر، وكتابتُه ثانيةً يُفشلها `check_structure` (`C01…C20`). ناقصٌ؟ وسّعه بمكانه |
 | **Feature** (CRUD/Form/Nav/Widget) | `lib/features/CLAUDE.md` |
 | **REST endpoint** جديد | `lib/core/CLAUDE.md` → §API |
 | **core/** أو **DI** | `lib/core/CLAUDE.md` |
@@ -126,7 +126,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 | `readme/00_START_HERE.md` · `01_SETUP.md` | تغيير هيكل المشروع · خطوات الإعداد · onboarding |
 | `readme/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
 | `readme/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |
-| `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو `core/authz/` أو عقد `/api/v1/authz` |
+| `readme/31_MODULE_PERMISSIONS.md` | تغيير `modules/access_control/` أو باك `src/core/authz/` أو عقد `/api/v1/authz` |
 | `readme/33_MODULE_TOKEN_INSPECTOR.md` | تغيير `modules/token_inspector/` · `AuthSessionObserver` أو أيّ موضع نداءٍ له · `ui/overlays/` · خطوة التوكن بـ`build_apk.dart` · `C20` |
 | `readme/21_WIDGETS_USAGE.md` + `readme/widgets/*.md` | إضافة widget للمكتبة أو تغيير أي وسيط عام على واحد موجود — القسم بملف فئته تحت `widgets/`، وصفُّه بجدول الفهرس |
 | `readme/22_RESPONSIVE.md` | تغيير `ui/responsive/` · حدٍّ من حدود الشاشة · معامل التكبير · حدَّي تكبير الخط · **أو نقلِ شاشةٍ جديدة إلى `ResponsiveContentBox`** (جدول §٦) |

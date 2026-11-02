@@ -63,7 +63,7 @@ lib/features/{feature}/
 ```
 features/auth/
 ├── shared/           ← AuthUser · AuthUserModel · CurrentUserRepository · SessionSyncService
-├── login/            ← الشريحة المرجعية: ١٢ ملفاً بالطبقات الثلاث كاملة
+├── login/            ← الشريحة المرجعية: الطبقات الثلاث كاملة
 ├── register/         ← إنشاء الحساب — يُعيد الحساب بلا توكن، فيوجّه للدخول
 ├── logout/           ← + LogoutSection (widget عام يملك cubit داخلياً)
 ├── me/               ← GET /account/me — تحديث الهوية بالخلفية
@@ -94,7 +94,7 @@ features/auth/
 | **الرفض ليس حالة واحدة** | `login_repository_impl.dart` يفرّق حالات 403 عبر `ApiError.data['account_status']` — **لا بمطابقة نصّ الرسالة**، لأنها نثرٌ مترجَم يتغيّر بالصياغة، وصار يتغيّر بلغة كل طلب |
 | نجاحٌ لا يعني «ادخل» | `pendingVerification` نجاحٌ باعتماد الهوية وطريقٌ إلى شاشة الرمز لا إلى التطبيق — `login_screen.dart` يوثّق التفرّع |
 | التوكن بمكان واحد | `SessionRepository` بـ`core/infra/session/` — والشريحة تستدعيه، لا تُنشئ نسخة |
-| المستخدم الحالي يُخزَّن | `CurrentUserRepository` يحفظ لقطة، و`SplashCubit` يستعيدها **قبل** التنقّل — وإلا ظهرت الشاشات فارغة بعد كل إقلاع رغم صلاحية التوكن |
+| المستخدم الحالي يُخزَّن | `CurrentUserRepository` يحفظ لقطة، و`StartupResolver` يستعيدها **قبل** أوّل إطار — وإلا ظهرت الشاشات فارغة بعد كل إقلاع رغم صلاحية التوكن |
 
 ### ⛓️ عقد الـwire — القاعدة التي وُلدت من عطل حقيقي
 
@@ -406,14 +406,17 @@ import 'package:app_template/ui/feedback/feedback_extension.dart'; // ⚠️ م�
 ```dart
 Scaffold(
   resizeToAvoidBottomInset: true,
-  body: KeyboardDismissWidget(
+  body: ResponsiveContentBox(
+    width: ContentWidth.form,
     child: SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.screen.gutter),
       child: Form(key: _formKey, child: Column(children: [...])),
     ),
   ),
 )
 ```
+
+لا `KeyboardDismissWidget`: `CustomTextField` يُغلق الكيبورد بنفسه — `lib/CLAUDE.md` §Input.
 
 ## Validators
 
@@ -484,7 +487,7 @@ PrimaryButton(
 ## ✅ Checklist Form
 
 - [ ] `resizeToAvoidBottomInset: true`
-- [ ] `KeyboardDismissWidget` + `SingleChildScrollView`
+- [ ] `ResponsiveContentBox(width: ContentWidth.form)` + `SingleChildScrollView`
 - [ ] `_isLoading` + `_submitted` مُعرَّفان في الـ state
 - [ ] `Form.autovalidateMode` يعتمد على `_submitted`
 - [ ] `_submit()` تستدعي `validateAndReveal()` (لا `validate()`) ثم `unfocus()` ثم تتحقق `_isLoading`
@@ -519,7 +522,7 @@ getIt<AppRouter>().replaceAll([const LoginRoute()]);  // Session Expired
 ```dart
 // 1. @RoutePage() على الشاشة
 // 2. router.dart: customRouteWithAnimation(page: {Name}Route.page)
-// 3. dart run build_runner build --delete-conflicting-outputs
+// 3. dart run scripts/gen_code.dart
 ```
 
 ## Session Expired
@@ -548,8 +551,8 @@ PrimaryButton(text: LocaleKeys.submit.tr(), onTap: _handleSubmit,
 ## AppCard
 
 ```dart
-AppCard(child: MyContent(), margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  padding: EdgeInsets.all(16), elevation: 2, onTap: () => navigateToDetail())
+AppCard(child: MyContent(), padding: EdgeInsets.all(s.space(16)), elevation: 2)
+// بلا onTap — بطاقةٌ تُضغط تُلَفّ: PressableScale(child: GestureDetector(onTap: …, child: AppCard(…)))
 ```
 
 ## CustomTextField
@@ -558,9 +561,9 @@ AppCard(child: MyContent(), margin: EdgeInsets.symmetric(horizontal: 16, vertica
 CustomTextField(controller: _ctrl, labelText: LocaleKeys.email.tr(),
   validator: (v) => v!.isEmpty ? LocaleKeys.fieldRequired.tr() : null)
 CustomTextField(controller: _ctrl, isFieldObscure: true)           // password
-CustomTextField(controller: _ctrl, isSearch: true, onChanged: _fn) // search
+CustomTextField(controller: _ctrl, isFieldSearch: true, onChanged: _fn) // search
 CustomTextField(controller: _ctrl, keyboardType: TextInputType.phone, ltr: true)
-CustomTextField(controller: _ctrl, maxLines: 4, minLines: 2)
+CustomTextField(controller: _ctrl, maxLines: 4)
 ```
 
 ## PaginationBuilderWdg
@@ -633,12 +636,16 @@ BlocBuilder<RefreshCubit, RefreshState>(
 )
 ```
 
-## Spacing & Padding
+## Spacing & Padding — `context.screen` (R37)
 
 ```dart
-8.widthBox · 16.heightBox · 16.allPadding · 16.horizontalPadding · 16.verticalPadding
-// import: package:app_template/ui/extensions/app_padding_extension.dart
+final s = context.screen;
+SizedBox(height: s.space(16))   // أو ResponsiveGap(16)
+EdgeInsets.all(s.space(16))
+EdgeInsets.symmetric(horizontal: s.gutter)
 ```
+
+`16.heightBox` و`16.allPadding` أرقامٌ خامّة لا تتبع المقاس — ممنوعة بشاشة جديدة.
 
 ## قواعد مكان Widget
 

@@ -29,7 +29,7 @@ dart run scripts/device_shot.dart <name>      # لقطةُ جهاز + نصوصه
 dart run scripts/prune_project.dart           # ما لا يستعمله أحد (--apply يحذف المفاتيح والأصول)
 dart run scripts/check_docs.dart              # روابط .md المعطوبة — حاجب بالـCI
 dart run scripts/audit_template.dart          # تدقيق استشاري — موديولات · مسارات يتيمة · توثيق · تاريخ (--verbose)
-dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الثلاثة معاً
+dart run scripts/scaffold_module.dart <name>  # موديول اختياري جديد — الأركان الأربعة معاً
 flutter run --flavor dev --dart-define-from-file=.env.dev.json
 ```
 
@@ -242,8 +242,8 @@ import 'package:app_template/ui/feedback/feedback_extension.dart';
 
 import 'package:app_template/core/platform/storage/offline_snapshot.dart';
 // OfflineSnapshot<T> · OfflineListSnapshot<T> — «آخر نسخة معروفة» عند انقطاع
-// الشبكة. تُعرض بشرط `failure.leftUnanswered` وحده (لا شبكة · مهلة · خادم لا
-// يُبلَغ) — لا فوق رفضٍ صريح 401/403.
+// الشبكة. تُعرض حين لم يُجب خادم وحده (NoInternetFailure · TimeoutFailure ·
+// ServerUnreachableFailure) — لا فوق رفضٍ صريح 401/403.
 // **مستهلكوها**: شاشات المشروع — لا مستهلك بالقالب نفسه
 
 import 'package:app_template/ui/extensions/byte_size_extension.dart';
@@ -270,14 +270,14 @@ PrimaryButton(text: LocaleKeys.submit.tr(), onTap: _submit,
 
 CustomTextField(controller: _ctrl, labelText: '...', validator: _v)
 CustomTextField(controller: _ctrl, isFieldObscure: true)   // كلمة مرور
-CustomTextField(controller: _ctrl, isSearch: true)         // بحث
-CustomTextField(controller: _ctrl, maxLines: 4, minLines: 2)
+CustomTextField(controller: _ctrl, isFieldSearch: true)    // بحث
+CustomTextField(controller: _ctrl, maxLines: 4)            // متعدد الأسطر
 
 // قيمةٌ هي المعلومة — كبيرة ووسطاً، والعنوان يبقى بجهة البداية
 CustomTextField(controller: _ctrl, labelText: '...', textAlign: TextAlign.center,
     textStyle: context.textTheme.headlineLarge)   // التلميح يرث المقاس وحده
 
-AppCard(child: ..., onTap: ..., padding: EdgeInsets.all(16))
+AppCard(child: ..., padding: EdgeInsets.all(s.space(16)))  // بلا onTap — لُفّه بـGestureDetector
 ```
 
 ### التحميل والتقدّم — `AppProgress` وحده
@@ -343,8 +343,8 @@ Container(
 | الحالة | الأداة |
 |---|---|
 | صورة شخص | `AvatarWidget(initial: name.isNotEmpty ? name[0] : '?', imageUrl: url ?? '')` |
-| محتوى من الشبكة | `NetworkImageWidget(url: url ?? '')` |
-| مع cache | `CachedImageWidget(url: url ?? '')` |
+| محتوى من الشبكة | `NetworkImageWidget(imageUrl: url ?? '')` |
+| مع cache | `CachedImageWidget(imageUrl: url ?? '')` |
 
 > `imageUrl: null` ⇒ انهيار وقت التشغيل. **دائماً** `url ?? ''`.
 

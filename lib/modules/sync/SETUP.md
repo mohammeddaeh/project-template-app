@@ -506,7 +506,7 @@ await syncWrite(SyncWriteCommand(...));   // ٢ · صُفَّ للرفع
 ## Step 4 — Run code generation
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart run scripts/gen_code.dart
 dart analyze lib
 ```
 
@@ -824,7 +824,7 @@ rm -rf test/sync/
 #    pubspec.yaml → sqflite
 
 # 6. التحقق
-dart run build_runner build --delete-conflicting-outputs
+dart run scripts/gen_code.dart
 dart analyze lib test        # يجب أن يكون نظيفاً
 flutter test
 ```
@@ -864,7 +864,7 @@ flutter test
 - [ ] `SyncWriteGateway.write()` في كل دالة كتابة بالـrepository
 - [ ] `AttachmentUploadTarget` إن كان للكيان ملفات (Step 7)
 - [ ] `SyncUiHost` + `PendingChangesChip` على شاشات الكيانات المتزامنة
-- [ ] `dart run build_runner build` بعد كل تسجيل كيان جديد
+- [ ] `dart run scripts/gen_code.dart` بعد كل تسجيل كيان جديد
 - [ ] `AppFeatures.offlineSync = true` في إعداد التطبيق — **آخر خطوة لا أولها**
 
 **قبل الشحن:**
