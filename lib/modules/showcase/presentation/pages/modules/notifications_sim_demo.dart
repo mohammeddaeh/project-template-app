@@ -62,7 +62,7 @@ class _NotificationsSimDemoState extends State<NotificationsSimDemo> {
       children: [
         const SimNotice(),
         DemoBlock(
-          code: 'NotificationCenterScreen',
+          code: 'NotificationCenterSection() · NotificationCenterScreen',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

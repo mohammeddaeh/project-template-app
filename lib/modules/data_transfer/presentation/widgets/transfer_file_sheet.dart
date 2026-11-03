@@ -12,6 +12,7 @@ import 'package:app_template/modules/data_transfer/presentation/widgets/csv_prev
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/widgets/dialogs/app_bottom_sheet.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
 /// What to do with a file that has just been downloaded.
@@ -125,16 +126,14 @@ class TransferFileSheet extends StatelessWidget {
 
   Future<void> _preview(BuildContext context) async {
     final navigator = Navigator.of(context);
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      // Nearly full height: a table in a short sheet shows two columns and
-      // teaches nothing about whether the file is right.
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.9,
-      ),
-      builder: (_) => CsvPreviewView(file: file),
+    // The library sheet, not a raw one: its ceiling and keyboard inset are
+    // decided once (AppBottomSheet). The table scrolls itself, so the sheet
+    // does not — and takes the full ceiling, since a short sheet shows two
+    // columns and teaches nothing about whether the file is right.
+    await AppBottomSheet.show<void>(
+      context,
+      isScrollable: false,
+      child: CsvPreviewView(file: file),
     );
     if (!navigator.mounted) return;
   }

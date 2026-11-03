@@ -39,7 +39,8 @@ const AppUpdateGate(child: AppShell());
 
 ## ② iOS — App Store ID
 
-- [ ] احتفظ بـ **App Store ID** للتطبيق (يظهر في App Store Connect → App Information)
+- [ ] ضع **App Store ID** بـ`InAppUpdatesConfig.iosAppId` (`in_app_updates_config.dart`) — من
+      App Store Connect ← App Information. يُفتح حين لا يحمل الخادم `app_download_url`.
 
 ---
 

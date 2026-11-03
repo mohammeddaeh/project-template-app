@@ -138,7 +138,7 @@ class _PickStep extends StatelessWidget {
               args: [
                 resource.systemColumns
                     .map((c) => c.label(isArabic: isArabic))
-                    .join('، '),
+                    .join(LocaleKeys.listSeparator.tr()),
               ],
             ),
             style: context.textTheme.bodySmall?.copyWith(

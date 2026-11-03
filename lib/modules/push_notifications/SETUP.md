@@ -107,13 +107,13 @@ class NotificationCubit extends SafeCubit<NotificationState> {
 
 ---
 
-## ⑤ عند Logout — حذف الـ Token
+## ⑤ الخروج والدخول — تلقائيّ
 
-```dart
-await PushNotificationsPlugin.shutdown(getIt);
-// أو مباشرة:
-await getIt<PushNotificationsService>().deleteToken();
-```
+الرمزُ للحساب الداخل على الجهاز، فالموديول يسمع `SessionRepository.tokenStream`:
+**الخروج يحذف الرمز** (وإلا وصلت إشعاراتُ السابق لمن يدخل بعده)، **وأوّلُ دخولٍ بعده
+يطلب رمزاً جديداً** ويبلّغ به `onTokenRefresh`. لا سطرَ بشاشة الخروج.
+
+ولإيقاف الموديول كلّه: `await PushNotificationsPlugin.shutdown(getIt);`.
 
 ---
 

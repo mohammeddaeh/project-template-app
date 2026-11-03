@@ -18,7 +18,7 @@
 | `in_app_updates/` — تحديثٌ إجباري | `inAppUpdates` | ⬜ OFF | `/api/v1/settings` (أو ما يقابله) | `AppUpdateGate` بالقشرة | [`SETUP.md`](../../lib/modules/in_app_updates/SETUP.md) |
 | `session_guard/` — قفلٌ برقمٍ أو بصمة | `sessionGuard` | ⬜ OFF | — | `SessionGuardGate` بالقشرة | [`SETUP.md`](../../lib/modules/session_guard/SETUP.md) |
 | `push_notifications/` — إشعارات FCM | `pushNotifications` | ⬜ OFF | مشروع Firebase | — | [`SETUP.md`](../../lib/modules/push_notifications/SETUP.md) |
-| `notification_center/` — صندوق الإشعارات | `notificationCenter` | ⬜ OFF | `pushNotifications` مُشعَلاً | `NotificationCenterScreen` — يصلها المشروع | [`SETUP.md`](../../lib/modules/notification_center/SETUP.md) |
+| `notification_center/` — صندوق الإشعارات | `notificationCenter` | ⬜ OFF | `pushNotifications` مُشعَلاً | `NotificationCenterSection` بالإعدادات | [`SETUP.md`](../../lib/modules/notification_center/SETUP.md) |
 | `crash_reporting/` — تقارير الانهيار | `crashReporting` | ⬜ OFF | مشروع Firebase | — | [`SETUP.md`](../../lib/modules/crash_reporting/SETUP.md) |
 | `analytics/` — التحليلات | `analytics` | ⬜ OFF | مشروع Firebase | `AnalyticsRouteObserver` موصولٌ أصلاً | [`SETUP.md`](../../lib/modules/analytics/SETUP.md) |
 | `remote_config/` — إعداداتٌ بعيدة | `remoteConfig` | ⬜ OFF | مشروع Firebase | — | [`SETUP.md`](../../lib/modules/remote_config/SETUP.md) |

@@ -12,6 +12,7 @@ import 'package:app_template/modules/in_app_updates/data/app_update_settings_sto
 import 'package:app_template/modules/in_app_updates/domain/app_update_settings.dart';
 import 'package:app_template/modules/in_app_updates/integration/app_update_settings_refresh_task.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -191,22 +192,26 @@ abstract final class InAppUpdatesPlugin {
     final goToStore = await showDialog<bool>(
       context: context,
       barrierDismissible: !settings.forceUpdate,
-      builder: (_) => PopScope(
+      // السياقُ سياقُ الحوار لا سياقُ الشاشة: الحوار يُدفع بأقرب navigator،
+      // وإغلاقُه بسياقٍ خارجيّ داخل القشرة قد يُغلق مساراً آخر بدلاً منه.
+      builder: (dialogContext) => PopScope(
         canPop: !settings.forceUpdate,
         child: AlertDialog(
           title: Text(LocaleKeys.updateAvailableTitle.tr()),
           content: Text(LocaleKeys.updateAvailableMessage.tr()),
           actions: [
             if (!settings.forceUpdate)
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(LocaleKeys.later.tr()),
+              AppButton(
+                text: LocaleKeys.later.tr(),
+                variant: AppButtonVariant.text,
+                onTap: () => Navigator.pop(dialogContext, false),
               ),
-            TextButton(
-              onPressed: settings.forceUpdate
+            AppButton(
+              text: LocaleKeys.updateNow.tr(),
+              variant: AppButtonVariant.text,
+              onTap: settings.forceUpdate
                   ? () => _openUpdateUrl(settings.downloadUrl)
-                  : () => Navigator.pop(context, true),
-              child: Text(LocaleKeys.updateNow.tr()),
+                  : () => Navigator.pop(dialogContext, true),
             ),
           ],
         ),

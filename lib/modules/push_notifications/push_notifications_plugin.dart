@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:app_template/core/infra/session/session_repository.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/core/platform/storage/secure_storage_service.dart';
 import 'package:app_template/modules/push_notifications/adapters/fcm_push_notifications_adapter.dart';
@@ -74,15 +77,42 @@ abstract final class PushNotificationsPlugin {
     await adapter.init();
 
     di.registerSingleton<PushNotificationsService>(adapter);
+    _bindToSession(di, adapter);
 
     _initialized = true;
     LogService.info('PushNotificationsPlugin initialized', tag: 'PUSH');
+  }
+
+  static StreamSubscription<String?>? _sessionSub;
+
+  /// **The device token belongs to the account signed in on it.** A token left
+  /// behind after sign-out keeps delivering the previous user's notifications
+  /// to whoever signs in next. So it is revoked when the session ends, and a
+  /// fresh one is announced when a new session begins — on the transitions
+  /// only, not on every token refresh of the same session.
+  static void _bindToSession(GetIt di, FcmPushNotificationsAdapter adapter) {
+    if (!di.isRegistered<SessionRepository>()) return;
+    // Modules start before the cached session is read, so "signed in" is only
+    // known from the stream: a sign-out always revokes, and the first token
+    // after it is announced.
+    var announced = false;
+    _sessionSub = di<SessionRepository>().tokenStream.listen((token) {
+      if (token == null) {
+        announced = false;
+        unawaited(adapter.deleteToken());
+      } else if (!announced) {
+        announced = true;
+        unawaited(adapter.announceToken());
+      }
+    });
   }
 
   /// Removes the [PushNotificationsService] registration and resets state.
   /// Call on logout if the token must be revoked.
   static Future<void> shutdown(GetIt di) async {
     if (!_initialized) return;
+    await _sessionSub?.cancel();
+    _sessionSub = null;
     if (di.isRegistered<PushNotificationsService>()) {
       await di<PushNotificationsService>().deleteToken();
       await di.unregister<PushNotificationsService>();

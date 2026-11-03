@@ -232,18 +232,24 @@ class _Toolbar extends StatelessWidget {
             style: context.textTheme.bodySmall,
           ),
         ),
+        // Flexible + ellipsis: on a narrow phone, or with a larger system
+        // font, the chip shares the row instead of pushing past its edge.
         if (errorRowCount > 0)
-          FilterChip(
-            selected: errorsOnly,
-            avatar: Icon(
-              Icons.error_outline,
-              size: 16,
-              color: context.colors.error,
+          Flexible(
+            child: FilterChip(
+              selected: errorsOnly,
+              avatar: Icon(
+                Icons.error_outline,
+                size: 16,
+                color: context.colors.error,
+              ),
+              label: Text(
+                LocaleKeys.importOnlyProblems.tr(args: ['$errorRowCount']),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              onSelected: (_) => onToggleErrorsOnly(),
             ),
-            label: Text(
-              LocaleKeys.importOnlyProblems.tr(args: ['$errorRowCount']),
-            ),
-            onSelected: (_) => onToggleErrorsOnly(),
           ),
       ],
     ),

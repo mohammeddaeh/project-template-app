@@ -58,7 +58,6 @@ class AccountDataCleaner {
     //    صورتَه بنموذج من يليه).
     // جلسةُ الجهاز بالموديول متعدّد الأجهزة — تخصّ الحساب لا الجهاز.
     PersistenceKeys.deviceSessionId,
-    PersistenceKeys.deviceIsPrimary,
     // آخرُ تبويبٍ نشط: تفصيلٌ صغير، ودخولُ موظّفٍ على «مرفوضات» سلفه يُقرأ
     // شاشةَ غيره.
     PersistenceKeys.navLastTabIndex,

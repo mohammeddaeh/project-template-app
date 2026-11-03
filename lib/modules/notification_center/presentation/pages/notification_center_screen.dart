@@ -16,9 +16,9 @@ import 'package:app_template/ui/widgets/widgets.dart';
 /// kept for review after its toast/banner is gone.
 ///
 /// ## Mounting
-/// Only reachable when `AppFeatures.notificationCenter` is true — see
-/// `NotificationCenterPlugin`. Push it from a bell icon in the shell or from
-/// settings:
+/// `NotificationCenterSection` in settings opens it, and renders nothing when
+/// `AppFeatures.notificationCenter` is off. Another entry (a bell in the shell)
+/// pushes it the same way:
 /// ```dart
 /// Navigator.of(context).push(
 ///   MaterialPageRoute(builder: (_) => const NotificationCenterScreen()),
