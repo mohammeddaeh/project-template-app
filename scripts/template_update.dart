@@ -11,6 +11,11 @@
 /// | **كلاهما غيّره** · أو ملفٌّ بـ`projectEdited` | **تعارض**: نسخة القالب تُكتب بـ`.template_update/<المسار>`، والملف لا يُلمس |
 /// | المشروع حذفه | لا شيء — يُذكر وحسب |
 ///
+/// **ومفاتيحُ الترجمة** (`assets/translations/*.json` — ملكُ المشروع) تُقارَن مفتاحاً
+/// مفتاحاً بنفس النسخ الثلاث: الجديدُ يُضاف · ما لم يلمسه المشروع يُحدَّث · وما
+/// غيّراه كلاهما تعارضٌ تُكتب قيمةُ القالب له بـ`.template_update/` — فكودُ القالب
+/// الجديد لا يقع على `LocaleKeys` ناقص.
+///
 /// وبعد `--apply` يُكتب الـcommit الجديد بـ`.template_manifest.json`، فالتحديث
 /// التالي يبدأ منه. **وبلا `--apply` يعرض ولا يكتب شيئاً.**
 ///
@@ -23,9 +28,11 @@
 /// كل ملفٍّ بـ`.template_update/` بدمجه يدوياً ثم احذف المجلد.
 library;
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'src/template_repo.dart';
+import 'src/translation_merge.dart';
 
 const _conflictDir = '.template_update';
 
@@ -117,7 +124,9 @@ void main(List<String> args) {
     }
   }
 
-  if (actions.isEmpty) {
+  final keys = _mergeTranslations(repo, base, target, apply: apply);
+
+  if (actions.isEmpty && keys.isEmpty) {
     print('✅  لا ملفّ من ملفات القالب تغيّر بما يمسّ المشروع.\n');
   }
   for (final kind in ['يُحدَّث', 'يُضاف', 'يُحذف', 'تعارض', 'حذفه المشروع']) {
@@ -130,20 +139,73 @@ void main(List<String> args) {
     print('');
   }
 
+  if (keys.isNotEmpty) {
+    print('── مفاتيح الترجمة ──');
+    keys.forEach(print);
+    print('');
+  }
+
   if (!apply) {
     print('   عرضٌ فقط — لم يُكتب شيء. أعد التشغيل بـ--apply.\n');
     return;
   }
   manifest.writeTemplateVersion(target, repo.releaseAt(target));
   print('   ✓ .template_manifest.json ← ${target.substring(0, 7)}');
-  if (actions.containsKey('تعارض')) {
+  if (actions.containsKey('تعارض') ||
+      keys.any((line) => line.contains('تعارض'))) {
     print(
-      '   ⚠️  ${actions['تعارض']!.length} تعارضاً: نسخة القالب بـ$_conflictDir/ — ادمجها يدوياً ثم احذف المجلد.',
+      '   ⚠️  تعارض: نسخة القالب بـ$_conflictDir/ — ادمجها يدوياً ثم احذف المجلد.',
     );
   }
   print(
     '   التالي: dart run scripts/gen_code.dart · dart analyze · flutter test\n',
   );
+}
+
+/// سطرٌ لكل لغةٍ تغيّر فيها شيء — ومع [apply] يكتب ملفَّ المشروع، وقيمَ القالب
+/// المتعارضة بـ[_conflictDir] بنفس المسار.
+List<String> _mergeTranslations(
+  TemplateRepo repo,
+  String base,
+  String target, {
+  required bool apply,
+}) {
+  final dir = Directory('assets/translations');
+  if (!dir.existsSync()) return const [];
+  Map<String, dynamic>? decode(String? text) =>
+      text == null ? null : jsonDecode(text) as Map<String, dynamic>;
+
+  final out = <String>[];
+  final files = dir.listSync().whereType<File>().toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+  for (final file in files) {
+    final name = file.uri.pathSegments.last;
+    if (!name.endsWith('.json')) continue;
+    final path = 'assets/translations/$name';
+    final after = decode(repo.fileAt(target, path));
+    if (after == null) continue;
+    final result = mergeTranslations(
+      base: decode(repo.fileAt(base, path)),
+      target: after,
+      project: decode(file.readAsStringSync())!,
+    );
+    if (!result.changed && result.conflicts.isEmpty) continue;
+    out.add(
+      '   $path  +${result.added.length} مضاف · '
+      '${result.updated.length} محدَّث'
+      '${result.conflicts.isEmpty ? '' : ' · ${result.conflicts.length} تعارض: ${result.conflicts.keys.join(', ')}'}',
+    );
+    if (!apply) continue;
+    if (result.changed) {
+      file.writeAsStringSync(encodeTranslations(result.merged));
+    }
+    if (result.conflicts.isNotEmpty) {
+      File('$_conflictDir/$path')
+        ..createSync(recursive: true)
+        ..writeAsStringSync(encodeTranslations(result.conflicts));
+    }
+  }
+  return out;
 }
 
 bool _cleanTree() {

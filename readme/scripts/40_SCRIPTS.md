@@ -767,12 +767,18 @@ dart run scripts/template_update.dart [--template DIR] [--base COMMIT] [--to REF
 | **كلاهما غيّره** · أو `projectEdited` | **تعارض**: نسخة القالب بـ`.template_update/<المسار>`، والملف لا يُلمس — ادمجه يدوياً ثم احذف المجلد |
 | المشروع حذفه | لا شيء |
 
+**ومفاتيحُ الترجمة** (`assets/translations/*.json` — ملكُ المشروع) تُقارَن مفتاحاً مفتاحاً بنفس
+النسخ الثلاث (`scripts/src/translation_merge.dart`): الجديدُ يُضاف بجوار جاره بالقالب · قيمةٌ
+لم يلمسها المشروع تُحدَّث · قيمةٌ غيّرها الطرفان تبقى للمشروع، وقيمةُ القالب بـ
+`.template_update/assets/translations/<اللغة>.json` · مفتاحٌ حذفه القالب يبقى. فكودُ القالب
+الجديد لا يقع على `LocaleKeys` ناقص.
+
 **بلا `--apply` يعرض ولا يكتب.** ومع `--apply` يرفض شجرة git غير نظيفة — فالتحديث
 commitٌ واحد يُراجَع — ويكتب الـcommit الجديد بالبيان. ثم `gen_code.dart` و`analyze`
 و`flutter test`.
 
 **وما يملكه المشروع ولا يلمسه التحديث** (`main.dart` · `app.dart` · `features/` · `pubspec.yaml` ·
-الترجمات · `app_features.dart` · `android/`) — ما يُنقل منه باليد لكل إصدار بـ
+`app_features.dart` · `android/`) — ما يُنقل منه باليد لكل إصدار بـ
 [`41_UPGRADING.md`](41_UPGRADING.md).
 
 ### الحلقة كاملة
