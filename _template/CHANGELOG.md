@@ -11,6 +11,11 @@
 
 ## غير مُصدَر
 
+- **شريط «لا اتصال» لا يظهر لحظةَ الإقلاع على جهازٍ متّصل**: `OfflineUxCubit` كان يقرأ حالة المراقب
+  الأولى (`unknown`) انقطاعاً؛ صار يتبع `NetworkStateMonitor` المحقون ويتجاهل `unknown` ·
+  `SyncGate` يسأل `Connectivity` المحقون مرّةً بدل `ConnectivityService` الثابت · `test/sync/offline_ux_cubit_test.dart`.
+- **`intl` بلا `dependency_overrides`**: التجاوز إلى `^0.19.0` كان يناقض `^0.20.2` بلا سبب؛ الحلّ يقع على 0.20.2.
+
 ## 2.1.0 — 2026-11-03
 
 - **`template_update` ينقل مفاتيح الترجمة** مفتاحاً مفتاحاً (`scripts/src/translation_merge.dart` ·

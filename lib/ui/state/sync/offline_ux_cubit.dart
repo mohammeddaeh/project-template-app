@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 
 import 'package:app_template/core/foundation/errors/failure.dart';
-import 'package:app_template/core/platform/connectivity/connectivity_service.dart';
 import 'package:app_template/core/platform/connectivity/network_state_monitor.dart';
 import 'package:app_template/ui/error/ui_action.dart';
 import 'package:app_template/ui/error/failure_ui_mapper.dart';
@@ -41,15 +40,15 @@ class OfflineUxCubit extends SafeCubit<OfflineUxState> {
   StreamSubscription? _sub;
 
   /// Start watching connectivity + pending count.
+  ///
+  /// The monitor's stream opens with its current state, which is `unknown`
+  /// until its first check lands — read as offline, that flashes the offline
+  /// banner on a connected device. The cubit stays [ConnectivityUnknownState]
+  /// until a real answer arrives.
   Future<void> init() async {
-    // Determine initial state.
-    final online = await ConnectivityService.isOnline();
-    await _updateState(isOnline: online);
-
-    // Subscribe to changes.
-    _sub = _networkMonitor.stateStream.listen((state) async {
-      await _updateState(isOnline: state.isOnline);
-    });
+    _sub = _networkMonitor.stateStream
+        .where((state) => !state.isUnknown)
+        .listen((state) => _updateState(isOnline: state.isOnline));
   }
 
   Future<void> dispose() async {
@@ -71,8 +70,9 @@ class OfflineUxCubit extends SafeCubit<OfflineUxState> {
 
   /// Call after a sync cycle completes to refresh the pending count.
   Future<void> refresh() async {
-    final online = await ConnectivityService.isOnline();
-    await _updateState(isOnline: online);
+    final state = _networkMonitor.currentState;
+    if (state.isUnknown) return;
+    await _updateState(isOnline: state.isOnline);
   }
 
   /// Translate a failure from any sync operation into a [UiAction].

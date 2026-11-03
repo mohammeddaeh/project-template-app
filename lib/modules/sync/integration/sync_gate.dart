@@ -2,7 +2,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'package:app_template/core/foundation/contracts/auth_network_gateway.dart';
-import 'package:app_template/core/platform/connectivity/connectivity_service.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 
 import '../config/sync_mode.dart';
@@ -59,8 +58,8 @@ class SyncGate {
   /// fails, so the whole queue backs off exponentially for a reason that has
   /// nothing to do with any of the writes.
   ///
-  /// `ConnectivityService.isOnline` cannot answer that — it reports whether an
-  /// interface is up, and documents as much. `InternetConnectionChecker` is the
+  /// The interface list cannot answer that — it reports whether an interface
+  /// is up, nothing more. `InternetConnectionChecker` is the
   /// probe the template already uses for the same question in
   /// `InternetCheckerInterceptor`, and it is already registered in DI; this
   /// gate now asks it rather than claiming its answer.
@@ -80,15 +79,17 @@ class SyncGate {
     final token = _session.getToken();
     if (token == null || token.isEmpty) return SyncBlockReason.noSession;
 
-    // Cheap first, then real. `isOnline` rules out "no interface at all"
-    // without touching the network; only if something is up is it worth paying
-    // for a probe that actually leaves the device.
-    if (!await ConnectivityService.isOnline()) return SyncBlockReason.offline;
+    // Cheap first, then real. The interface list rules out "no interface at
+    // all" without touching the network; only if something is up is it worth
+    // paying for a probe that actually leaves the device.
+    final current = await _connectivity.checkConnectivity();
+    if (current.contains(ConnectivityResult.none)) {
+      return SyncBlockReason.offline;
+    }
     if (!await _reachability.hasConnection) return SyncBlockReason.offline;
 
     if (!settings.wifiOnly) return null;
 
-    final current = await _connectivity.checkConnectivity();
     return current.contains(ConnectivityResult.wifi)
         ? null
         : SyncBlockReason.waitingForWifi;
