@@ -340,6 +340,40 @@ class _DisplayDemoState extends State<DisplayDemo> {
             ),
           ),
         ),
+        // ── AppBentoGrid ────────────────────────────────────────────────────
+        DemoBlock(
+          code:
+              'AppBentoGrid(tiles: [BentoTile(columns: 2, rows: 2, …), '
+              'BentoTile(child: StatCard(…)), …])',
+          child: AppBentoGrid(
+            tiles: [
+              BentoTile(
+                columns: 2,
+                rows: 2,
+                child: StatCard(
+                  value: '128',
+                  labelText: LocaleKeys.showcaseDisplayItems.tr(),
+                  icon: Icons.inventory_2_outlined,
+                ),
+              ),
+              for (final value in ['12', '7'])
+                BentoTile(
+                  child: StatCard(
+                    value: value,
+                    labelText: LocaleKeys.showcaseDisplayItems.tr(),
+                  ),
+                ),
+              BentoTile(
+                columns: 2,
+                child: StatCard(
+                  value: '64',
+                  labelText: LocaleKeys.showcaseDisplayItems.tr(),
+                  icon: Icons.trending_up,
+                ),
+              ),
+            ],
+          ),
+        ),
         // ── DetailHeaderCard · DetailFact ───────────────────────────────────
         DemoPlayground(
           call: 'DetailHeaderCard',

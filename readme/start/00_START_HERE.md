@@ -89,7 +89,7 @@ flutter run --flavor dev --dart-define-from-file=.env.dev.json
 | اسم التطبيق الظاهر | `flavor_settings.json` → `displayName` لكل flavor |
 | مُعرّف التطبيق | `flavor_settings.json` → `applicationId` + `android/app/build.gradle.kts` |
 | الأيقونات | `assets/app_icons/icon_{dev,staging,prod}.png` — مربّعة 1024×1024 |
-| ألوان الثيم | `lib/ui/theme/app_palette.dart` ثم `app_colors.dart` |
+| ألوان الثيم | `palettes/standard.json` (ثم `gen_code.dart`) ثم `lib/ui/theme/app_colors.dart` |
 | الخطوط | ضع الملفات بـ`assets/fonts/` ثم `dart run scripts/sync_fonts.dart` |
 
 ```bash

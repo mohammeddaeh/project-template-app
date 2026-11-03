@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/feedback/selection_haptic.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -113,10 +114,16 @@ class AppBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
     context.locale;
+    // The current tab again is not a change, so it does not vibrate.
+    void select(int index) {
+      if (index != currentIndex) selectionHaptic();
+      onTap(index);
+    }
+
     return switch (style) {
       AppBottomBarStyle.material => NavigationBar(
         selectedIndex: currentIndex,
-        onDestinationSelected: onTap,
+        onDestinationSelected: select,
         animationDuration: AppMotion.of(context).base,
         destinations: [
           for (final item in items)
@@ -130,18 +137,18 @@ class AppBottomBar extends StatelessWidget {
       AppBottomBarStyle.floating => _FloatingBar(
         items: items,
         currentIndex: currentIndex,
-        onTap: onTap,
+        onTap: select,
       ),
       AppBottomBarStyle.expanding => _FlatBar(
         items: items,
         currentIndex: currentIndex,
-        onTap: onTap,
+        onTap: select,
         expanding: true,
       ),
       AppBottomBarStyle.minimal => _FlatBar(
         items: items,
         currentIndex: currentIndex,
-        onTap: onTap,
+        onTap: select,
         expanding: false,
       ),
     };

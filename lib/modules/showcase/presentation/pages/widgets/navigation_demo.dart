@@ -243,6 +243,29 @@ class _NavigationDemoState extends State<NavigationDemo> {
             );
           },
         ),
+        // ── AppLargeTitleView ──────────────────────────────────────────────
+        DemoBlock(
+          code:
+              'Scaffold(body: AppLargeTitleView(title: …, actions: […], '
+              'body: ListView(…)))',
+          child: _Framed(
+            height: 320,
+            child: Scaffold(
+              body: AppLargeTitleView(
+                title: LocaleKeys.showcaseNavigationInbox.tr(),
+                actions: _actions(1),
+                body: ListView.builder(
+                  itemCount: 20,
+                  itemBuilder: (_, i) => ListTile(
+                    title: Text(
+                      '${LocaleKeys.showcaseNavigationInbox.tr()} ${i + 1}',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         DemoBlock(
           code:
               'Scaffold(appBar: AppNavBar(…), body: navItems[i]'

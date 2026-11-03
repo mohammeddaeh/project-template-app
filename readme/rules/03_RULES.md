@@ -176,7 +176,7 @@ context.locale;
 ### R12 · لا لون ولا حجم خطّ خامّين 👁
 
 ```
-Figma hex → AppPalette (خام) → AppColors.light/dark (دلالي) → context.colors.X
+Figma hex → palettes/*.json ⇒ AppPalette (خام، مولَّد) → AppColors.light/dark (دلالي) → context.colors.X
 ```
 
 **ممنوع**: `Color(0xFF...)` بالـUI · `Colors.blue` · `AppPalette.X` خارج

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/feedback/selection_haptic.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -92,9 +93,16 @@ class AppRadioGroup<T> extends StatelessWidget {
             description: descriptions[entries[index].key],
             selected: entries[index].key == value,
             enabled: enabled,
-            onTap: entries[index].key == value && onDeselect != null
-                ? onDeselect!
-                : () => onChanged(entries[index].key),
+            onTap: () {
+              final key = entries[index].key;
+              // The selected row without onDeselect changes nothing.
+              if (key == value && onDeselect == null) {
+                onChanged(key);
+                return;
+              }
+              selectionHaptic();
+              key == value ? onDeselect!() : onChanged(key);
+            },
           ),
         ],
         if (footnote case final note?) ...[

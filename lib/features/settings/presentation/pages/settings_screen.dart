@@ -10,6 +10,7 @@ import 'package:app_template/features/settings/presentation/widgets/settings_abo
 import 'package:app_template/features/settings/presentation/widgets/settings_font_section.dart';
 import 'package:app_template/features/settings/presentation/widgets/settings_section_divider.dart';
 import 'package:app_template/features/settings/presentation/widgets/settings_section_header.dart';
+import 'package:app_template/features/settings/presentation/widgets/settings_theme_preset_section.dart';
 import 'package:app_template/ui/locale/locale_switcher.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -94,6 +95,8 @@ class _AppearanceSection extends StatelessWidget {
         // تُبنى هنا باليد نسخةٌ ثانية من قرارِ تصميمٍ واحد، تُشدَّد إحداهما يوماً
         // ولا تُشدَّد الأخرى (R34).
         const ThemeSwitcher(),
+        // Nothing while AppThemePresets.all holds a single preset.
+        const SettingsThemePresetSection(),
       ],
     );
   }

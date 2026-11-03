@@ -436,7 +436,8 @@ res.fold((failure) {
 | مسارات الـAPI | `lib/core/infra/network/rest/api_urls.dart` |
 | ترتيب الـinterceptors + تسجيل ApiServices | `lib/core/di/injection_module.dart` |
 | المسارات | `lib/routes/router.dart` |
-| الألوان الخام ثم الدلالية | `lib/ui/theme/app_palette.dart` → `app_colors.dart` |
+| الألوان الخام ثم الدلالية | `palettes/standard.json` → `gen_code.dart` → `lib/ui/theme/app_colors.dart` |
+| الثيمات التي يختارها المستخدم | ملفٌّ لكل ثيم بـ`palettes/` → `dart run scripts/gen_code.dart` |
 | الخطوط | `lib/core/infra/config/app_fonts.dart` |
 | قراءة البيئة | `lib/core/infra/config/env.dart` |
 | ترتيب الإقلاع · قرارُ أوّل شاشة | `lib/main.dart` + `lib/features/startup/` → [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md) §٤ |

@@ -281,6 +281,8 @@
   "templateReady": "Template ready",
   "themeDark": "Dark",
   "themeLight": "Light",
+  "themePreset": "App colors",
+  "themePresetStandard": "Standard",
   "themeSystem": "System default",
   "tooManyRequests": "Too many attempts in a short time.",
   "transferDisabled": "Import & export is turned off in this build",

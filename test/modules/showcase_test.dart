@@ -200,6 +200,12 @@ const _exempt = <String, String>{
   'ResponsiveScope':
       'mounted once in MaterialApp.builder — every page of the tour renders '
       'under it',
+  'BentoPlacement':
+      'data, not a widget — what placeBentoTiles returns; AppBentoGrid is '
+      'in the tour',
+  'ThemeReveal':
+      'mounted once in MaterialApp.builder; the ThemeSwitcher in the tour '
+      'plays it',
   'AppOverlayHost':
       'mounted once in MaterialApp.builder; it draws only the layers that '
       'modules register',

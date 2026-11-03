@@ -181,12 +181,13 @@ cd ios && pod install          # macOS فقط
 
 | ما تغيّره | كيف |
 |---|---|
-| الألوان | `lib/ui/theme/app_palette.dart` (خام) ثم `app_colors.dart` (دلالي) |
+| الألوان | `palettes/standard.json` (خام) ثم `dart run scripts/gen_code.dart` — والربطُ الدلالي بـ`lib/ui/theme/app_colors.dart` |
+| ثيمٌ ثانٍ يختاره المستخدم | انسخ `palettes/standard.json` إلى `palettes/<id>.json` وبدّل درجاته واسمه — أو انقل واحداً من `palettes/examples/` — ثم `dart run scripts/gen_code.dart` — [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §5‑ب. المنتقي يظهر بالإعدادات حين يصير الثيم اثنين |
 | الخطوط | ضع الملفات بـ`assets/fonts/` ثم `dart run scripts/sync_fonts.dart` (تفاعلي) |
 | شعار شاشة الإقلاع | SVG بـ`assets/images/` ثم `dart run scripts/gen_splash_assets.dart` — راجع [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md) |
 
 > ⚠️ **وتبديلُ الألوان يُتبَع بـ`flutter test test/color_contrast_test.dart`.**
-> الفاحص يشهد على **نسبة تباينٍ ٤٫٥:١** لكلّ زوجٍ (نصٌّ على أرضيّته) بالثيمين —
+> الفاحص يشهد على **نسبة تباينٍ ٤٫٥:١** لكلّ زوجٍ (نصٌّ على أرضيّته) بالوضعين، لكلّ ثيمٍ بـ`AppThemePresets.all` —
 > وخمسةُ أزواجٍ بالقالب كانت دون الحدّ، **أسوأُها ١٫١٧:١**: نصٌّ فاتح على أرضيّةٍ
 > فاتحة بالوضع الداكن، يُقرأ بالشاشة الساطعة بلا شيء.
 

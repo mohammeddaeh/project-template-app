@@ -281,6 +281,8 @@
   "templateReady": "القالب جاهز",
   "themeDark": "داكن",
   "themeLight": "فاتح",
+  "themePreset": "ألوان التطبيق",
+  "themePresetStandard": "الأساسية",
   "themeSystem": "تلقائي (حسب النظام)",
   "tooManyRequests": "محاولات كثيرة خلال وقت قصير.",
   "transferDisabled": "الاستيراد والتصدير معطّل في هذه النسخة",

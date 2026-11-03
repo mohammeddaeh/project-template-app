@@ -58,7 +58,6 @@ const projectEdited = <String>{
   'lib/core/infra/network/rest/api_urls.dart',
   'lib/core/di/injection_module.dart',
   'lib/core/infra/config/app_fonts.dart',
-  'lib/ui/theme/app_palette.dart',
   'lib/ui/theme/app_colors.dart',
   'lib/modules/modules_bootstrap.dart',
 };

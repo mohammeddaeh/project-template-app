@@ -288,6 +288,8 @@ abstract class LocaleKeys {
   static const templateReady = 'templateReady';
   static const themeDark = 'themeDark';
   static const themeLight = 'themeLight';
+  static const themePreset = 'themePreset';
+  static const themePresetStandard = 'themePresetStandard';
   static const themeSystem = 'themeSystem';
   static const tooManyRequests = 'tooManyRequests';
   static const transferDisabled = 'transferDisabled';

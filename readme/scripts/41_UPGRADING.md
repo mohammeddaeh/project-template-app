@@ -49,6 +49,18 @@ dart run scripts/check_structure.dart && dart run scripts/check_docs.dart
 
 ---
 
+## `3.0.0` ⇐ التالي (غير مُصدَر)
+
+| بمشروعك | البديل | ابحث |
+|---|---|---|
+| درجاتٌ عدّلتها بـ`lib/ui/theme/app_palette.dart` (حُذف) | انقلها إلى `palettes/standard.json` بالاسم نفسه، ثم `dart run scripts/gen_code.dart` | `git log -p -- lib/ui/theme/app_palette.dart` |
+| درجةٌ أضفتها إلى `AppPalette` | مفتاحٌ بـ`colors` في **كل** ملفٍّ بـ`palettes/` | `git show HEAD:lib/ui/theme/app_palette.dart` |
+| `AppPalette.x` بـ`app_colors.dart` · `AppColors.light()`/`dark()` بلا وسيط | `p.x` داخل `AppColors.light(AppPalette p)` · `AppThemePresets.fallback.light` خارجها | `git grep -n "AppPalette\." lib test` · `git grep -n "AppColors\.light()" lib test` |
+
+وأوّلُ `gen_code.dart` بعد التحديث يكتب `app_palette.g.dart`؛ قبله لا يُبنى المشروع.
+
+---
+
 ## `2.1.0` ⇐ `3.0.0`
 
 | بمشروعك | البديل | ابحث |

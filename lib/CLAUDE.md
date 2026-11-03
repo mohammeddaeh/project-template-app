@@ -108,7 +108,7 @@ context.toggleLocale();
 ## Colors — قواعد الاستخدام (صارمة)
 
 ```
-Figma hex → AppPalette (raw) → AppColors.light/dark (semantic) → context.colors.X
+Figma hex → palettes/*.json ⇒ AppPalette (raw, generated) → AppColors.light/dark (semantic) → context.colors.X
 ```
 
 **ممنوع ❌:** `Color(0xFF...)` في الـ UI · `AppPalette.X` خارج `app_colors.dart` · `Colors.blue`

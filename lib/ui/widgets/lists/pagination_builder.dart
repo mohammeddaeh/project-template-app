@@ -67,6 +67,12 @@ class _PaginationBuilderState<C extends PaginationCubit<E>, E>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    // **داخل `NestedScrollView`** (`AppLargeTitleView` · تبويباتٌ تحت ترويسة)
+    // يجب أن يمرّر هذا القائمةَ بمتحكّم الترويسة الأساسيّ، وإلا لا تنكمش
+    // الترويسة أبداً. فمتحكّمُ الـcubit لا يُركَّب، والصفحةُ التالية تُطلب من
+    // إشعارات التمرير.
+    final nested =
+        context.findAncestorWidgetOfExactType<NestedScrollView>() != null;
     return BlocBuilder<C, PaginationState<E>>(
       builder: (context, paginationState) {
         return paginationState.when(
@@ -92,48 +98,60 @@ class _PaginationBuilderState<C extends PaginationCubit<E>, E>
                 _appear.reset();
                 return paginationCubit.refresh();
               },
-              child: CustomScrollView(
-                controller: paginationCubit.scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
-                  if (widget.allItemsBuilder != null)
+              child: NotificationListener<ScrollUpdateNotification>(
+                onNotification: (n) {
+                  if (nested && n.depth == 0) {
+                    paginationCubit.onScrolled(
+                      n.metrics,
+                      towardEnd: (n.scrollDelta ?? 0) > 0,
+                    );
+                  }
+                  return false;
+                },
+                child: CustomScrollView(
+                  controller: nested ? null : paginationCubit.scrollController,
+                  primary: nested ? true : null,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                    if (widget.allItemsBuilder != null)
+                      SliverToBoxAdapter(
+                        child: widget.allItemsBuilder!(entity.data.cast<E>()),
+                      )
+                    else
+                      SliverList.separated(
+                        itemBuilder: (context, index) {
+                          _appear.observeLength(entity.data.length);
+                          final item = widget.itemBuilder!(entity.data[index]);
+                          final order = _appear.staggerFor(index);
+                          if (order == null ||
+                              widget.itemAppear == ListItemAppear.none) {
+                            return item;
+                          }
+                          return ListItemEntrance(
+                            animation: widget.itemAppear,
+                            staggerIndex: order,
+                            child: item,
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return widget.separatorWidget ??
+                              const SizedBox(height: 12);
+                        },
+                        itemCount: entity.data.length,
+                      ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 12)),
                     SliverToBoxAdapter(
-                      child: widget.allItemsBuilder!(entity.data.cast<E>()),
-                    )
-                  else
-                    SliverList.separated(
-                      itemBuilder: (context, index) {
-                        _appear.observeLength(entity.data.length);
-                        final item = widget.itemBuilder!(entity.data[index]);
-                        final order = _appear.staggerFor(index);
-                        if (order == null ||
-                            widget.itemAppear == ListItemAppear.none) {
-                          return item;
-                        }
-                        return ListItemEntrance(
-                          animation: widget.itemAppear,
-                          staggerIndex: order,
-                          child: item,
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return widget.separatorWidget ??
-                            const SizedBox(height: 12);
-                      },
-                      itemCount: entity.data.length,
+                      child: _NextPageTail(
+                        loading: loading,
+                        error: error,
+                        loadingItemWidget: widget.loadingItemWidget,
+                        onRetry: paginationCubit.getPage,
+                      ),
                     ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
-                  SliverToBoxAdapter(
-                    child: _NextPageTail(
-                      loading: loading,
-                      error: error,
-                      loadingItemWidget: widget.loadingItemWidget,
-                      onRetry: paginationCubit.getPage,
-                    ),
-                  ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
-                ],
+                    const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                  ],
+                ),
               ),
             ),
           ),

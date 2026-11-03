@@ -86,6 +86,13 @@ BlocProvider(
 )
 ```
 
+**Under a collapsing header** (`AppLargeTitleView`, or any `NestedScrollView`):
+the same `PaginationBuilder`, unchanged. It finds the `NestedScrollView` above
+it and scrolls with that view's primary controller instead of
+`cubit.scrollController` — otherwise the header never collapses — and asks for
+the next page from scroll notifications through `cubit.onScrolled(metrics,
+towardEnd:)`, the same check the controller listener runs.
+
 ## 6) Controls
 
 ```dart

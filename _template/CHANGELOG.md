@@ -11,6 +11,29 @@
 
 ## غير مُصدَر
 
+- ⚠️ **الألوان من `palettes/*.json`**: `lib/ui/theme/app_palette.dart` حُذف، و`app_palette.g.dart` يولَّد من
+  `palettes/standard.json` بـ`gen_code.dart` (خطوة `sync_palettes.dart` بعد `build_runner`) · `AppPalette` صار صنفَ
+  نسخ: `AppColors.light(palette)`/`dark(palette)` بدل `AppPalette.x` الثابت · F04 يمنع `AppPalettes.` خارج `app_colors.dart`.
+- **ثيماتٌ يختارها المستخدم**: كلُّ ملفٍّ بـ`palettes/` ثيمٌ — `AppThemePresets.all` محورٌ مستقلّ عن الوضع، يُحفظ
+  بـ`PersistenceKeys.selectedThemePresetKey`، ومنتقيه بالإعدادات (`SettingsThemePresetSection`) لا يظهر ما دام الثيم
+  واحداً · كلُّ بالتٍ بمفاتيح `standard.json` نفسها، والمخالفةُ تُفشل التوليد · `test/color_contrast_test.dart` يمرّ
+  على كل ثيم · `test/theme_preset_test.dart` · `test/palette_sync_test.dart`. ألوانٌ فقط — الزوايا والحركة ثابتة.
+- **`palettes/examples/`**: أربعُ بالتاتٍ كاملة (`sand` · `midnight` · `olive` · `ocean`) لا تُقرأ حتى تُنقل إلى
+  `palettes/` — كلٌّ يمرّ بفحص التباين بالوضعين.
+- **`AppBentoGrid`** · `BentoTile`: شبكةُ بطاقاتٍ بأحجامٍ مختلفة تتراصّ بلا فراغ، أعمدتها من عرضها
+  هي (خليّةٌ ≥ ١٥٠) وتتبع اتجاه القراءة · بجولة الـshowcase · `test/app_bento_grid_test.dart`.
+- **`AppLargeTitleView`**: عنوانٌ كبير ينكمش عند التمرير (`SliverAppBar.large` + `NestedScrollView`) جسدَ
+  `Scaffold` · `PaginationBuilder` يكشف `NestedScrollView` فوقه فيمرّر بمتحكّمه الأساسيّ ويطلب الصفحة التالية
+  بـ`PaginationCubit.onScrolled` الجديد · بجولة الـshowcase · `test/app_large_title_view_test.dart`.
+- **حركةٌ بنابض**: `AppMotion.springSnappy` · `springGentle` + `controller.springTo(target, spring)` — و`PressableScale`
+  يصغر ويرجع بهما بدل `AnimatedScale` بمدّة.
+- **اهتزازُ تغيّر الاختيار**: `selectionHaptic()` (`ui/feedback/selection_haptic.dart`) فوق `HapticService` القائم ·
+  `ChipRow` · `AppRadioGroup` · `AppBottomBar` · `ThemeSwitcher` · منتقي الثيم يهتزّون حين تتغيّر القيمة وحدها ·
+  `test/selection_haptic_test.dart`.
+- **تبديلُ الثيم والوضع بدائرةٍ تتّسع من الزرّ**: `ThemeReveal` (`ui/theme/theme_reveal.dart`) مركَّبٌ مرّةً
+  بـ`MaterialApp.builder` · `ThemeSwitcher` ومنتقي الثيم يناديان `ThemeReveal.run` · فوريٌّ مع «تقليل الحركة» ·
+  `themeAnimationDuration: Duration.zero` بـ`app.dart` كي لا يظهر تدرّجٌ لونيّ داخل الدائرة · `test/theme_reveal_test.dart`.
+
 ## 3.0.0 — 2026-11-03
 
 > **ترقيةُ مشروعٍ من 2.1.0**: [`readme/scripts/41_UPGRADING.md`](../readme/scripts/41_UPGRADING.md) §«2.1.0 ⇐ 3.0.0».

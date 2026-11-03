@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_template/ui/theme/app_colors.dart';
+import 'package:app_template/ui/theme/app_theme_presets.dart';
 
 /// **بوابةُ التباين (F07)** — كلُّ زوج (نصّ · خلفية) يمرّ بها.
 ///
@@ -28,7 +29,13 @@ void main() {
   /// ٤٫٥:١ للنصّ العاديّ — WCAG 2.1 AA.
   const bodyText = 4.5;
 
-  final themes = {'light': AppColors.light(), 'dark': AppColors.dark()};
+  // كلُّ بالتٍ بالوضعين — ملفٌّ يُضاف إلى `palettes/` يمرّ من هنا تلقائياً.
+  final themes = <String, AppColors>{
+    for (final preset in AppThemePresets.all) ...{
+      '${preset.id}/light': preset.light,
+      '${preset.id}/dark': preset.dark,
+    },
+  };
 
   themes.forEach((name, c) {
     group(name, () {
@@ -70,6 +77,24 @@ void main() {
             reason: '$label foreground on $label background',
           );
         });
+      });
+
+      test('primary reads as text, and its label reads on it', () {
+        expect(
+          contrast(c.primary, c.bgPage),
+          greaterThanOrEqualTo(bodyText),
+          reason: 'primary on bgPage',
+        );
+        expect(
+          contrast(c.primary, c.bgCard),
+          greaterThanOrEqualTo(bodyText),
+          reason: 'primary on bgCard',
+        );
+        expect(
+          contrast(c.textOnAccent, c.primary),
+          greaterThanOrEqualTo(bodyText),
+          reason: 'textOnAccent on primary',
+        );
       });
 
       test('a label on a tonal container is readable', () {

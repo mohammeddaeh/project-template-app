@@ -53,6 +53,8 @@ export 'images/avatar_widget.dart';
 
 // Layout
 export 'layout/app_nav_bar.dart';
+export 'layout/app_large_title_view.dart';
+export 'layout/app_bento_grid.dart';
 export 'layout/key_value_row.dart';
 export 'layout/app_list_tile.dart';
 export 'layout/expandable_section.dart';

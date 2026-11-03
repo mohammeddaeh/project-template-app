@@ -9,13 +9,20 @@ import 'package:injectable/injectable.dart';
 
 import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/ui/theme/app_colors.dart';
+import 'package:app_template/ui/theme/app_theme_presets.dart';
 
 @lazySingleton
 class AppTheme {
-  ThemeData lightTheme(Locale locale, AppFontOption font) =>
-      AppThemeData.light(locale, font);
-  ThemeData darkTheme(Locale locale, AppFontOption font) =>
-      AppThemeData.dark(locale, font);
+  ThemeData lightTheme(
+    Locale locale,
+    AppFontOption font, {
+    AppThemePreset? preset,
+  }) => AppThemeData.light(locale, font, preset: preset);
+  ThemeData darkTheme(
+    Locale locale,
+    AppFontOption font, {
+    AppThemePreset? preset,
+  }) => AppThemeData.dark(locale, font, preset: preset);
 
   void setThemeTo(AdaptiveThemeMode mode, BuildContext context) {
     final currentMode = AdaptiveTheme.of(context).mode;
@@ -101,14 +108,23 @@ abstract final class AppThemeData {
     );
   }
 
-  static ThemeData light(Locale locale, AppFontOption font) {
-    final appColors = AppColors.light();
+  /// [preset] غائباً = [AppThemePresets.fallback].
+  static ThemeData light(
+    Locale locale,
+    AppFontOption font, {
+    AppThemePreset? preset,
+  }) {
+    final appColors = (preset ?? AppThemePresets.fallback).light;
     final colorScheme = _colorSchemeLight(appColors);
     return _theme(colorScheme, appColors, Brightness.light, locale, font);
   }
 
-  static ThemeData dark(Locale locale, AppFontOption font) {
-    final appColors = AppColors.dark();
+  static ThemeData dark(
+    Locale locale,
+    AppFontOption font, {
+    AppThemePreset? preset,
+  }) {
+    final appColors = (preset ?? AppThemePresets.fallback).dark;
     final colorScheme = _colorSchemeDark(appColors);
     return _theme(colorScheme, appColors, Brightness.dark, locale, font);
   }

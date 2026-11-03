@@ -53,6 +53,10 @@ const _known = <String, (String, _Kind)>{
   PersistenceKeys.welcomeSeen: ('welcomeSeen', _Kind.boolean),
   PersistenceKeys.notificationsEnabled: ('notificationsEnabled', _Kind.boolean),
   PersistenceKeys.selectedFontKey: ('selectedFontKey', _Kind.string),
+  PersistenceKeys.selectedThemePresetKey: (
+    'selectedThemePresetKey',
+    _Kind.string,
+  ),
   PersistenceKeys.navLastTabIndex: ('navLastTabIndex', _Kind.integer),
   PersistenceKeys.deviceId: ('deviceId', _Kind.string),
   PersistenceKeys.dataOrigin: ('dataOrigin', _Kind.string),
