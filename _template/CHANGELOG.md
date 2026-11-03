@@ -11,6 +11,10 @@
 
 ## غير مُصدَر
 
+- **إصلاحاتٌ صغيرة من المراجعة**: فاصلٌ عربيّ كان يظهر بالإنجليزية (`listSeparator`) · حوارُ التحديث يُغلق بسياقه،
+  و`InAppUpdatesConfig.iosAppId` · رمزُ FCM يُحذف عند الخروج ويُعلَن بعد الدخول التالي · `NotificationCenterSection`
+  بالإعدادات · `multi_device` بلا `isPrimary` الميّت (⚠️ `PersistenceKeys.deviceIsPrimary` و`saveSession(isPrimary:)` حُذفا) ·
+  سكربتاتٌ برسالةٍ بدل stack trace (`scripts/src/cli.dart` · `runCli`) · `gen_permission_keys --from` بلا وضعٍ يُرفض.
 - **المرآة تغطّي كل ودجةٍ عامّة**، لا المكتبة وحدها: `lib/ui/` كلّه والموديولات. خمس صفحاتٍ جديدة بفصل
   «الموديولات» (الأجهزة · القفل · مركز الإشعارات · التحديث الإجباري · التوكن)، وصفحتا الصلاحيات والاستيراد
   تعرضان ودجاتهما الحقيقية (`PermissionMatrix` · `ImportGrid` · `ImportErrorTable` …). `showcase_test` يُفشل أيَّ

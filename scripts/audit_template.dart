@@ -16,28 +16,29 @@
 library;
 
 import 'dart:io';
+import 'src/cli.dart';
 
 Future<void> main(List<String> args) async {
-  _header('🩺  audit_template — تدقيق ذاتي للقالب');
+  header('🩺  audit_template — تدقيق ذاتي للقالب');
 
   var criticalFound = false;
 
-  _section('١) وصل الموديولات الاختيارية بإقلاعها');
+  section('١) وصل الموديولات الاختيارية بإقلاعها');
   _checkModuleWiring();
 
-  _section('٢) الفجوة الحرجة — علَمٌ مفعَّل بلا عقودٍ منفَّذة');
+  section('٢) الفجوة الحرجة — علَمٌ مفعَّل بلا عقودٍ منفَّذة');
   criticalFound |= _checkSyncContracts();
 
-  _section('٣) مسارات مسجَّلة بلا نقطة تنقّل ظاهرة');
+  section('٣) مسارات مسجَّلة بلا نقطة تنقّل ظاهرة');
   _checkRouteReachability();
 
-  _section('٤) ملفات readme/ خارج جدول التزامن بـCLAUDE.md');
+  section('٤) ملفات readme/ خارج جدول التزامن بـCLAUDE.md');
   _checkDocSyncTable();
 
-  _section('٥) تاريخٌ بالملفات التي تصل المشاريع');
+  section('٥) تاريخٌ بالملفات التي تصل المشاريع');
   _checkShippedHistory(verbose: args.contains('--verbose'));
 
-  _footer(
+  footer(
     criticalFound
         ? '❌  عُثر على فجوة حرجة — راجع القسم ٢ أعلاه'
         : '✅  لا فجوة حرجة. النتائج الأخرى مرشَّحاتٌ للمراجعة البشرية — راجع readme/architecture/10_ARCHITECTURE.md',
@@ -410,7 +411,3 @@ Iterable<File> _dartFilesUnder(String dirPath) sync* {
     if (entity is File && entity.path.endsWith('.dart')) yield entity;
   }
 }
-
-void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
-void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
-void _section(String msg) => print('\n▸ $msg');

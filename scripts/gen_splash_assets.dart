@@ -21,6 +21,8 @@
 library;
 
 import 'dart:io';
+
+import 'src/cli.dart';
 import 'dart:math';
 
 const _svgPath = 'assets/images/brand/app_logo.svg';
@@ -36,13 +38,22 @@ const _maskRatio = 0.65;
 /// مقاسُ لوحة رمز أندرويد 12+ بالـdp — من المواصفة، ولا يُملى علينا.
 const _iconCanvasDp = 288.0;
 
-void main() {
+void main() => runCli(_main);
+
+void _main() {
   final svg = File(_svgPath).readAsStringSync();
   final paths = RegExp(
     r'<path d="([^"]*)" fill="([^"]*)"',
   ).allMatches(svg).map((m) => (d: m[1]!, fill: _androidColor(m[2]!))).toList();
 
   final pts = paths.expand((p) => _points(p.d)).toList();
+  if (pts.isEmpty) {
+    die(
+      'لا مسارات بـ$_svgPath بالشكل المدعوم — `<path d="…" fill="#rrggbb">`، '
+      'الـd قبل الـfill ولونٌ مكتوبٌ بالعنصر نفسه (لا بـclass أو <style>).',
+      code: 2,
+    );
+  }
   final box = _bounds(pts);
   final circle = _smallestEnclosingCircle(pts);
 

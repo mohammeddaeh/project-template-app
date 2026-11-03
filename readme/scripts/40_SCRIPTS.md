@@ -9,7 +9,9 @@
 dart run scripts/<script_name>.dart
 ```
 
-سكربتات Dart بـ`scripts/`، و**مُطلِق PowerShell واحد** (`new_project.ps1`) — مجمّعةً بمتى تحتاجها:
+سكربتات Dart بـ`scripts/`، و**مُطلِق PowerShell واحد** (`new_project.ps1`) — مجمّعةً بمتى تحتاجها. وما تتشاركه — طباعةُ الأقسام، و`die`، و`runCli` الذي
+يحوّل خطأً متوقَّعاً (ملفٌّ غائب · JSON تالف · خادمٌ لا يُجيب) إلى سطرٍ و`exit 2` بدل stack trace —
+بـ`scripts/src/cli.dart`:
 
 | السكربت | الغرض |
 |---|---|

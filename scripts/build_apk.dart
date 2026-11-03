@@ -32,6 +32,7 @@ library;
 
 import 'dart:convert';
 import 'dart:io';
+import 'src/cli.dart';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -59,7 +60,7 @@ Future<void> main(List<String> args) async {
   final settings = _loadSettings();
   final packageId = _packageId(settings, flavor);
 
-  _header('🏗   build_apk.dart');
+  header('🏗   build_apk.dart');
   print('  flavor   : $flavor  ($packageId)');
   print('  mode     : $mode');
   print('  bump     : ${noBump ? "off (--no-bump)" : bump}');
@@ -70,7 +71,7 @@ Future<void> main(List<String> args) async {
   // مرفوعاً لبناءٍ لم يقع.
   final envFile = '.env.$flavor.json';
   if (!File(envFile).existsSync()) {
-    _die(
+    die(
       'ملف البيئة غير موجود: $envFile\n'
       '    أنشئه أولاً بـ BASE_URL والإعدادات اللازمة.',
     );
@@ -80,14 +81,14 @@ Future<void> main(List<String> args) async {
   // الخطوة 0: أداة التوكن — قبل رفع الإصدار، فالتراجع هنا لا يترك أثراً
   // ──────────────────────────────────────────────────────────────────
   if (flavor == 'prod' || mode == 'release') {
-    _section('🔑  token_inspector — sensitive traces');
+    section('🔑  token_inspector — sensitive traces');
     _checkTokenTraces(allow: allowTokenTrace);
   }
 
   // مفتاح التوقيع: **وجودُ الملف وحده** يُسأل عنه — لا يُفتح ولا يُطبع منه شيء.
   // بلاه تُوقَّع النسخة بمفتاح debug: تعمل على جهازك، ويرفضها المتجر تحديثاً.
   if (flavor == 'prod' && mode == 'release') {
-    _section('✍️   Release signing');
+    section('✍️   Release signing');
     if (File('android/key.properties').existsSync()) {
       print('  ✓ android/key.properties found — release key');
     } else {
@@ -103,7 +104,7 @@ Future<void> main(List<String> args) async {
   // الخطوة 1: flutter clean (اختياري)
   // ──────────────────────────────────────────────────────────────────
   if (clean) {
-    _section('🧹  Flutter clean');
+    section('🧹  Flutter clean');
     await _stream('flutter', ['clean']);
     await _stream('flutter', ['pub', 'get']);
   }
@@ -111,7 +112,7 @@ Future<void> main(List<String> args) async {
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 2: رفع الإصدار في pubspec.yaml
   // ──────────────────────────────────────────────────────────────────
-  _section('🏷   Version bump');
+  section('🏷   Version bump');
   if (noBump) {
     print('  skipped (--no-bump)');
   } else {
@@ -123,21 +124,21 @@ Future<void> main(List<String> args) async {
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 2.5: تحديث اسم التطبيق بالإصدار الجديد
   // ──────────────────────────────────────────────────────────────────
-  _section('📛  App name');
+  section('📛  App name');
   _updateAppName(flavor, version, settings);
 
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 3: توليد الكود
   // ──────────────────────────────────────────────────────────────────
   if (!noCodegen) {
-    _section('⚙️   Code generation');
+    section('⚙️   Code generation');
     await _stream('dart', ['run', 'scripts/gen_code.dart']);
   }
 
   // ──────────────────────────────────────────────────────────────────
   // الخطوة 4: flutter build apk
   // ──────────────────────────────────────────────────────────────────
-  _section('🔨  Flutter build apk  [$flavor · $mode]');
+  section('🔨  Flutter build apk  [$flavor · $mode]');
   await _stream('flutter', [
     'build',
     'apk',
@@ -155,7 +156,7 @@ Future<void> main(List<String> args) async {
   final rawApkFile = File(rawApkPath);
 
   if (!rawApkFile.existsSync()) {
-    _die('APK غير موجود في المسار المتوقع:\n    $rawApkPath');
+    die('APK غير موجود في المسار المتوقع:\n    $rawApkPath');
   }
 
   // إعادة التسمية: {displayName}-{mode}-{version}.apk
@@ -183,7 +184,7 @@ Future<void> main(List<String> args) async {
     }),
   );
 
-  _footer('''✅  Build complete
+  footer('''✅  Build complete
   APK     : $apkPath
   Size    : ${sizeMb.toStringAsFixed(1)} MB
   Package : $packageId
@@ -247,17 +248,17 @@ void _checkTokenTraces({required bool allow}) {
   const noTerminal =
       'token_inspector traces found and no terminal to ask.\n'
       '    Remove them, or pass --allow-token-trace.';
-  if (!stdin.hasTerminal) _die(noTerminal);
+  if (!stdin.hasTerminal) die(noTerminal);
   stdout.write('  Build anyway? [y/N] ');
   final String? answer;
   try {
     answer = stdin.readLineSync()?.trim().toLowerCase();
   } on StdinException {
     // `hasTerminal` يقول نعم أحياناً على ويندوز والمدخلُ محوَّل — فلا أحد يجيب.
-    _die(noTerminal);
+    die(noTerminal);
   }
   if (answer != 'y' && answer != 'yes') {
-    _die('Build stopped — remove the traces above.');
+    die('Build stopped — remove the traces above.');
   }
 }
 
@@ -270,7 +271,7 @@ String _readVersion() {
     r'^version:\s*(.+)$',
     multiLine: true,
   ).firstMatch(content);
-  if (match == null) _die('لم يُعثر على "version:" في $_pubspecFile');
+  if (match == null) die('لم يُعثر على "version:" في $_pubspecFile');
   return match.group(1)!.trim();
 }
 
@@ -287,7 +288,7 @@ void _bumpVersion(String bump) {
   ).firstMatch(content);
 
   if (match == null) {
-    _die(
+    die(
       'لا يمكن قراءة رقم الإصدار من $_pubspecFile\n'
       'التنسيق المتوقع: version: 1.2.3+45',
     );
@@ -373,7 +374,7 @@ void _updateAppName(
 Map<String, dynamic> _loadSettings() {
   final file = File(_settingsFile);
   if (!file.existsSync()) {
-    _die('$_settingsFile غير موجود. شغّل من جذر المشروع.');
+    die('$_settingsFile غير موجود. شغّل من جذر المشروع.');
   }
   return jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
 }
@@ -382,7 +383,7 @@ String _packageId(Map<String, dynamic> settings, String flavor) {
   final flavors = settings['flavors'] as Map<String, dynamic>;
   final cfg = flavors[flavor] as Map<String, dynamic>?;
   if (cfg == null) {
-    _die('الـ flavor "$flavor" غير موجود في $_settingsFile');
+    die('الـ flavor "$flavor" غير موجود في $_settingsFile');
   }
   return cfg['applicationId'] as String;
 }
@@ -398,40 +399,32 @@ Future<void> _stream(String exe, List<String> args) async {
     stderr.addStream(process.stderr),
   ]);
   final code = await process.exitCode;
-  if (code != 0) _die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
+  if (code != 0) die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
 }
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
 void _validateFlavor(String f) {
   if (!{'dev', 'staging', 'prod'}.contains(f)) {
-    _die('flavor غير معروف: "$f"\nالقيم المسموح بها: dev | staging | prod');
+    die('flavor غير معروف: "$f"\nالقيم المسموح بها: dev | staging | prod');
   }
 }
 
 void _validateMode(String m) {
   if (!{'debug', 'release'}.contains(m)) {
-    _die('mode غير معروف: "$m"\nالقيم المسموح بها: debug | release');
+    die('mode غير معروف: "$m"\nالقيم المسموح بها: debug | release');
   }
 }
 
 void _validateBump(String b) {
   if (!{'build', 'patch', 'minor', 'major'}.contains(b)) {
-    _die(
+    die(
       'bump غير معروف: "$b"\nالقيم المسموح بها: build | patch | minor | major',
     );
   }
 }
 
 // ── Print helpers ─────────────────────────────────────────────────────────────
-
-void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
-void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
-void _section(String msg) => print('\n▸ $msg');
-Never _die(String msg) {
-  print('\n❌  $msg\n');
-  exit(1);
-}
 
 // ── Arg parser ────────────────────────────────────────────────────────────────
 

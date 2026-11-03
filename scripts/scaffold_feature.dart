@@ -28,32 +28,33 @@ library;
 
 import 'dart:convert';
 import 'dart:io';
+import 'src/cli.dart';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
-    _die(
+    die(
       'الاستخدام: dart run scripts/scaffold_feature.dart <feature_name>\n'
       '  مثال: dart run scripts/scaffold_feature.dart invoices',
     );
   }
 
-  final feature = _toSnakeCase(args.first);
+  final feature = toSnakeCase(args.first);
   if (feature.isEmpty || !RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(feature)) {
-    _die(
+    die(
       'اسم غير صالح: "${args.first}" — أحرف صغيرة وأرقام و"_" فقط، يبدأ بحرف.',
     );
   }
 
   final vars = <String, String>{
     '__feature__': feature,
-    '__Feature__': _toPascalCase(feature),
-    '__featureCamel__': _toCamelCase(feature),
+    '__Feature__': toPascalCase(feature),
+    '__featureCamel__': toCamelCase(feature),
     '__feature-kebab__': feature.replaceAll('_', '-'),
   };
 
   final featureDir = Directory('lib/features/$feature');
   if (featureDir.existsSync()) {
-    _die(
+    die(
       'lib/features/$feature/ موجود بالفعل — احذفه أولاً إن أردت إعادة التوليد.',
     );
   }
@@ -66,7 +67,7 @@ Future<void> main(List<String> args) async {
   final offlineSync = _isFlagEnabled('offlineSync');
   final accessControl = _isFlagEnabled('accessControl');
 
-  _header('🏗️   scaffold_feature — إنشاء "${vars['__Feature__']}"');
+  header('🏗️   scaffold_feature — إنشاء "${vars['__Feature__']}"');
   if (offlineSync) {
     print(
       '  ℹ️   AppFeatures.offlineSync مُشعَل — ستُولَّد ملفات المزامنة أيضاً.',
@@ -95,24 +96,24 @@ Future<void> main(List<String> args) async {
             '          child: const Icon(Icons.add),\n'
             '        )';
 
-  _section('📁  كتابة ملفات الشريحة');
+  section('📁  كتابة ملفات الشريحة');
   for (final entry in _fileTemplates.entries) {
     _writeFile(_render(entry.key, vars), _render(entry.value, vars));
   }
 
   if (offlineSync) {
-    _section('🔄  ملفات المزامنة — AppFeatures.offlineSync');
+    section('🔄  ملفات المزامنة — AppFeatures.offlineSync');
     for (final entry in _syncFileTemplates.entries) {
       _writeFile(_render(entry.key, vars), _render(entry.value, vars));
     }
   }
 
-  _section('🔗  وصل الملفات المشتركة');
+  section('🔗  وصل الملفات المشتركة');
   _appendApiUrl(vars);
   _appendInjection(vars);
   _appendRoutes(vars);
 
-  _section('🌍  ترجمة');
+  section('🌍  ترجمة');
   _addTranslationKeys(vars, 'assets/translations/ar.json', _arTranslations);
   _addTranslationKeys(vars, 'assets/translations/en.json', _enTranslations);
 
@@ -134,7 +135,7 @@ Future<void> main(List<String> args) async {
     );
   }
 
-  _footer(
+  footer(
     healthy
         ? '✅  "${vars['__Feature__']}" جاهزة — التحليل والاختبارات نظيفة'
         : accessControl
@@ -1215,7 +1216,7 @@ void _appendApiUrl(Map<String, String> vars) {
       "  static const String ${vars['__featureCamel__']} = '/api/v1/${vars['__feature-kebab__']}';\n\n$marker";
   final content = file.readAsStringSync();
   if (!content.contains(marker)) {
-    _die('لم أجد نقطة الوصل بـ${file.path} — راجعها يدوياً.');
+    die('لم أجد نقطة الوصل بـ${file.path} — راجعها يدوياً.');
   }
   file.writeAsStringSync(content.replaceFirst(marker, line));
   print('  ✓ api_urls.dart');
@@ -1233,7 +1234,7 @@ void _appendInjection(Map<String, String> vars) {
   final newImport =
       "import 'package:app_template/features/$feature/data/datasources/${feature}_api_service.dart';\n$importMarker";
   if (!content.contains(importMarker)) {
-    _die('لم أجد نقطة إدراج الـimport بـ${file.path}.');
+    die('لم أجد نقطة إدراج الـimport بـ${file.path}.');
   }
   content = content.replaceFirst(importMarker, newImport);
 
@@ -1248,7 +1249,7 @@ $registrationMarker
   @lazySingleton
   ${featurePascal}ApiService ${camel}ApiService(Dio dio) => ${featurePascal}ApiService(dio);''';
   if (!content.contains(registrationMarker)) {
-    _die('لم أجد نقطة تسجيل ApiService بـ${file.path}.');
+    die('لم أجد نقطة تسجيل ApiService بـ${file.path}.');
   }
   content = content.replaceFirst(registrationMarker, newRegistration);
 
@@ -1266,7 +1267,7 @@ void _appendRoutes(Map<String, String> vars) {
       '$marker';
   final content = file.readAsStringSync();
   if (!content.contains(marker)) {
-    _die('لم أجد نقطة إدراج المسارات بـ${file.path}.');
+    die('لم أجد نقطة إدراج المسارات بـ${file.path}.');
   }
   file.writeAsStringSync(content.replaceFirst(marker, newRoutes));
   print(
@@ -1304,7 +1305,7 @@ void _addTranslationKeys(
 
   for (final entry in newKeys.entries) {
     if (decoded.containsKey(entry.key)) {
-      _die(
+      die(
         'المفتاح "${entry.key}" موجود بالفعل بـ$path — الشريحة أُنشئت من قبل؟',
       );
     }
@@ -1329,19 +1330,19 @@ String _encodeJsonObject(Map<String, dynamic> data) =>
 // ── Output helpers (بنمط scripts/gen_code.dart) ────────────────────────────────
 
 Future<void> _stream(String label, String exe, List<String> args) async {
-  _section(label);
+  section(label);
   final process = await Process.start(exe, args, runInShell: true);
   await Future.wait([
     stdout.addStream(process.stdout),
     stderr.addStream(process.stderr),
   ]);
   final code = await process.exitCode;
-  if (code != 0) _die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
+  if (code != 0) die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
   print('');
 }
 
 Future<bool> _runHealthChecks() async {
-  _header('🩺  فحوصات ما بعد التوليد');
+  header('🩺  فحوصات ما بعد التوليد');
   var allPassed = true;
   allPassed &= await _check('🔍  dart analyze lib', 'dart', ['analyze', 'lib']);
   allPassed &= await _check('🧪  flutter test', 'flutter', ['test']);
@@ -1353,7 +1354,7 @@ Future<bool> _runHealthChecks() async {
 }
 
 Future<bool> _check(String label, String exe, List<String> args) async {
-  _section(label);
+  section(label);
   final process = await Process.start(exe, args, runInShell: true);
   await Future.wait([
     stdout.addStream(process.stdout),
@@ -1381,33 +1382,3 @@ String _render(String template, Map<String, String> vars) {
 }
 
 // ── Case conversion ───────────────────────────────────────────────────────────
-
-String _toSnakeCase(String input) => input
-    .trim()
-    .replaceAll(RegExp(r'[\s-]+'), '_')
-    .replaceAllMapped(
-      RegExp(r'([a-z0-9])([A-Z])'),
-      (m) => '${m.group(1)}_${m.group(2)}',
-    )
-    .toLowerCase();
-
-String _toPascalCase(String snake) => snake
-    .split('_')
-    .where((w) => w.isNotEmpty)
-    .map((w) => w[0].toUpperCase() + w.substring(1))
-    .join();
-
-String _toCamelCase(String snake) {
-  final pascal = _toPascalCase(snake);
-  return pascal.isEmpty
-      ? pascal
-      : pascal[0].toLowerCase() + pascal.substring(1);
-}
-
-void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
-void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
-void _section(String msg) => print('\n▸ $msg');
-void _die(String msg) {
-  print('\n❌  $msg\n');
-  exit(1);
-}

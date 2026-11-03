@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- مولَّد بـscripts/gen_splash_assets.dart من assets/images/brand/app_logo.svg.
-     **لا يُحرَّر يدوياً** — راجع readme/23_STARTUP_SPLASH.md.
+     **لا يُحرَّر يدوياً** — راجع readme/architecture/23_STARTUP_SPLASH.md.
      رسمةُ نافذة الإطلاق — المرساةُ مركزُها، فـgravity="center" يكفي. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="132.37dp"

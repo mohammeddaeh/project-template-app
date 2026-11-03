@@ -41,12 +41,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'src/kits.dart';
+import 'src/cli.dart';
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 Future<void> main(List<String> args) async {
   final opts = _parseArgs(args);
-  _header('🚀  setup_project — إعداد مشروعك');
+  header('🚀  setup_project — إعداد مشروعك');
 
   final appName =
       opts['name'] ?? _askRequired('اسم التطبيق (يظهر تحت الأيقونة)');
@@ -109,13 +110,13 @@ Future<void> main(List<String> args) async {
     exit(0);
   }
 
-  _section('✍️   كتابة الهوية');
+  section('✍️   كتابة الهوية');
   _applyIdentity(appName: appName, appId: appId);
 
-  _section('📦  تبديل اسم حزمة Dart');
+  section('📦  تبديل اسم حزمة Dart');
   _applyPackageName(packageName);
 
-  _section('🚩  كتابة الأعلام');
+  section('🚩  كتابة الأعلام');
   _applyFeatureFlags(flags);
   _applyAuthMode(authMode);
 
@@ -128,7 +129,7 @@ Future<void> main(List<String> args) async {
     ]);
   }
 
-  _section('📄  كتابة بيان المشروع');
+  section('📄  كتابة بيان المشروع');
   _writeManifest(
     appName: appName,
     appId: appId,
@@ -145,7 +146,7 @@ Future<void> main(List<String> args) async {
 
   // بعد sync_flavors لا قبله: هو من يُنشئ ملفات البيئة من `.env.example.json`.
   if (baseUrls.isNotEmpty) {
-    _section('🌐  كتابة BASE_URL');
+    section('🌐  كتابة BASE_URL');
     _applyBaseUrls(baseUrls);
   }
 
@@ -153,7 +154,7 @@ Future<void> main(List<String> args) async {
 
   final healthy = await _runHealthChecks();
 
-  _footer(
+  footer(
     healthy
         ? '✅  المشروع جاهز — التحليل والاختبارات نظيفة'
         : '⚠️   المشروع مكتوب لكن فحصاً واحداً على الأقل فشل — راجع الإخراج أعلاه',
@@ -176,7 +177,7 @@ List<String> _kitsOrDie(String value, List<String> installed) {
   ];
   for (final n in names) {
     if (!installed.contains(n)) {
-      _die('--kits: لا kit مركَّبة باسم "$n" (${installed.join(' · ')})');
+      die('--kits: لا kit مركَّبة باسم "$n" (${installed.join(' · ')})');
     }
   }
   return names;
@@ -204,7 +205,7 @@ Map<String, String> _parseArgs(List<String> args) {
   final result = <String, String>{};
   for (var i = 0; i < args.length; i++) {
     final arg = args[i];
-    if (!arg.startsWith('--')) _die('وسيط غير متوقَّع: $arg');
+    if (!arg.startsWith('--')) die('وسيط غير متوقَّع: $arg');
     final body = arg.substring(2);
     if (body == 'yes') {
       result['yes'] = 'true';
@@ -212,12 +213,12 @@ Map<String, String> _parseArgs(List<String> args) {
     }
     final eq = body.indexOf('=');
     final key = eq == -1 ? body : body.substring(0, eq);
-    if (!_valueOptions.contains(key)) _die('وسيط مجهول: --$key');
+    if (!_valueOptions.contains(key)) die('وسيط مجهول: --$key');
     final String value;
     if (eq != -1) {
       value = body.substring(eq + 1);
     } else {
-      if (i + 1 >= args.length) _die('الوسيط --$key بلا قيمة');
+      if (i + 1 >= args.length) die('الوسيط --$key بلا قيمة');
       value = args[++i];
     }
     if (value.trim().isNotEmpty) result[key] = value.trim();
@@ -229,21 +230,21 @@ Map<String, bool> _presetOrDie(String preset) {
   const aliases = {'simple': 'بسيط', 'enterprise': 'مؤسسي'};
   final key = aliases[preset] ?? preset;
   final flags = _presets[key];
-  if (flags == null) _die('--preset غير معروف: $preset (simple · enterprise)');
+  if (flags == null) die('--preset غير معروف: $preset (simple · enterprise)');
   print('  → استُخدم نمط "$key".');
   return Map<String, bool>.from(flags);
 }
 
 String? _validAppIdOrNull(String? value) {
   if (value == null) return null;
-  if (!_appIdPattern.hasMatch(value)) _die('--app-id بصيغة غير صالحة: $value');
+  if (!_appIdPattern.hasMatch(value)) die('--app-id بصيغة غير صالحة: $value');
   return value;
 }
 
 String? _validPackageOrNull(String? value) {
   if (value == null) return null;
   final problem = _packageProblem(value);
-  if (problem != null) _die('--package: $problem');
+  if (problem != null) die('--package: $problem');
   return value;
 }
 
@@ -355,7 +356,7 @@ void _applyIdentity({required String appName, required String appId}) {
     'android/app/src/main/kotlin/com/example/app_template/MainActivity.kt',
   );
   if (!oldActivity.existsSync()) {
-    _die('لم أجد ${oldActivity.path} — هل نُقل مسبقاً؟');
+    die('لم أجد ${oldActivity.path} — هل نُقل مسبقاً؟');
   }
   final newActivity = File(
     'android/app/src/main/kotlin/${appId.replaceAll('.', '/')}/MainActivity.kt',
@@ -383,7 +384,7 @@ void _applyIdentity({required String appName, required String appId}) {
     'PRODUCT_BUNDLE_IDENTIFIER = $appId.RunnerTests;',
   );
   if (content == beforeTests) {
-    _die('لم أجد PRODUCT_BUNDLE_IDENTIFIER (RunnerTests) بـproject.pbxproj');
+    die('لم أجد PRODUCT_BUNDLE_IDENTIFIER (RunnerTests) بـproject.pbxproj');
   }
   final beforeMain = content;
   content = content.replaceAll(
@@ -391,7 +392,7 @@ void _applyIdentity({required String appName, required String appId}) {
     'PRODUCT_BUNDLE_IDENTIFIER = $appId;',
   );
   if (content == beforeMain) {
-    _die('لم أجد PRODUCT_BUNDLE_IDENTIFIER (الرئيسي) بـproject.pbxproj');
+    die('لم أجد PRODUCT_BUNDLE_IDENTIFIER (الرئيسي) بـproject.pbxproj');
   }
   pbxproj.writeAsStringSync(content);
   print('  ✓ ios/Runner.xcodeproj/project.pbxproj');
@@ -496,7 +497,7 @@ void _applyBaseUrls(Map<String, String> baseUrls) {
   for (final entry in baseUrls.entries) {
     final file = File('.env.${entry.key}.json');
     if (!file.existsSync()) {
-      _die('لم أجد ${file.path} — sync_flavors لم يُنشئه؟');
+      die('لم أجد ${file.path} — sync_flavors لم يُنشئه؟');
     }
     final env = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
     env['BASE_URL'] = entry.value;
@@ -516,7 +517,7 @@ void _applyFeatureFlags(Map<String, bool> flags) {
   for (final entry in flags.entries) {
     final pattern = RegExp('static const ${entry.key} = (true|false);');
     if (!pattern.hasMatch(content)) {
-      _die('لم أجد علَم "${entry.key}" بـapp_features.dart — هل تغيّر اسمه؟');
+      die('لم أجد علَم "${entry.key}" بـapp_features.dart — هل تغيّر اسمه؟');
     }
     content = content.replaceFirst(
       pattern,
@@ -542,7 +543,7 @@ const _authModes = <String, String>{
 String _authModeOrDie(String value) {
   // `_askChoice` يُعيد المفتاح نفسه؛ والوسيط يُكتب بالمفتاح كذلك.
   if (_authModes.containsKey(value)) return value;
-  _die('--auth غير معروف: $value (${_authModes.keys.join(' · ')})');
+  die('--auth غير معروف: $value (${_authModes.keys.join(' · ')})');
 }
 
 void _applyAuthMode(String mode) {
@@ -550,7 +551,7 @@ void _applyAuthMode(String mode) {
   final content = file.readAsStringSync();
   final pattern = RegExp(r'static const authMode = AuthMode\.\w+;');
   if (!pattern.hasMatch(content)) {
-    _die('لم أجد authMode بـapp_features.dart — هل تغيّر اسمه؟');
+    die('لم أجد authMode بـapp_features.dart — هل تغيّر اسمه؟');
   }
   file.writeAsStringSync(
     content.replaceFirst(pattern, 'static const authMode = AuthMode.$mode;'),
@@ -633,7 +634,7 @@ void _printGotchas(Map<String, bool> flags) {
 // ── Health checks ─────────────────────────────────────────────────────────────
 
 Future<bool> _runHealthChecks() async {
-  _header('🩺  فحوصات ما بعد الإعداد');
+  header('🩺  فحوصات ما بعد الإعداد');
   var allPassed = true;
 
   // الضجيج يُخفي الفشل: `pub get` يسرد ~١٦٦ حزمةً قديمة، و`flutter test` خارج
@@ -663,7 +664,7 @@ Future<bool> _check(
   List<String> args, {
   bool quietOnSuccess = false,
 }) async {
-  _section(label);
+  section(label);
   final process = await Process.start(exe, args, runInShell: true);
   final int code;
   if (quietOnSuccess) {
@@ -842,7 +843,7 @@ void _replaceOrDie(File file, String from, String to) {
     to = to.replaceAll('\n', '\r\n');
   }
   if (!content.contains(from)) {
-    _die('لم أجد النصّ المتوقَّع بـ${file.path}:\n  "$from"');
+    die('لم أجد النصّ المتوقَّع بـ${file.path}:\n  "$from"');
   }
   file.writeAsStringSync(content.replaceFirst(from, to));
 }
@@ -850,21 +851,13 @@ void _replaceOrDie(File file, String from, String to) {
 // ── Output helpers (بنمط scripts/gen_code.dart) ────────────────────────────────
 
 Future<void> _stream(String label, String exe, List<String> args) async {
-  _section(label);
+  section(label);
   final process = await Process.start(exe, args, runInShell: true);
   await Future.wait([
     stdout.addStream(process.stdout),
     stderr.addStream(process.stderr),
   ]);
   final code = await process.exitCode;
-  if (code != 0) _die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
+  if (code != 0) die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
   print('');
-}
-
-void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
-void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
-void _section(String msg) => print('\n▸ $msg');
-Never _die(String msg) {
-  print('\n❌  $msg\n');
-  exit(1);
 }

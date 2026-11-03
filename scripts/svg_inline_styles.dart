@@ -16,7 +16,11 @@ library;
 
 import 'dart:io';
 
-void main(List<String> args) {
+import 'src/cli.dart';
+
+void main(List<String> args) => runCli(() => _main(args));
+
+void _main(List<String> args) {
   if (args.isEmpty) {
     print('usage: dart run scripts/svg_inline_styles.dart <file.svg>...');
     exit(64);
