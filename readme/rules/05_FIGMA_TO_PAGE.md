@@ -611,7 +611,7 @@ class _RecordHeader extends StatelessWidget { ... }
 | تأكيد قبل حذف | `AppConfirmDialog` |
 | شارة حالة ملوّنة | `BadgeWidget` · `TagWidget` · `ChipWidget` |
 | هيكل تحميل لقائمة/بطاقة | `SkeletonListTile` · `SkeletonCard` · `SkeletonStatRow` |
-| صفّ يظهر بتدرّج داخل قائمة | `ListItemAppearWdg` |
+| صفّ يظهر بتدرّج داخل قائمة | `ListItemEntrance` |
 | سحب-للتحديث | `RefreshWrapper` |
 
 ### F35 · مؤشّر التقدّم واحدٌ — `AppProgress` وحده 🔒

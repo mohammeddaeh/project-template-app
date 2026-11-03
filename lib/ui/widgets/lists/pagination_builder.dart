@@ -10,13 +10,13 @@ import 'package:app_template/ui/state/pagination/pagination_cubit.dart';
 import 'package:app_template/ui/widgets/lists/list_appear_tracker.dart';
 import 'package:app_template/ui/widgets/lists/list_item_appear.dart';
 
-class PaginationBuilderWdg<C extends PaginationCubit<E>, E>
+class PaginationBuilder<C extends PaginationCubit<E>, E>
     extends StatefulWidget {
-  const PaginationBuilderWdg({
+  const PaginationBuilder({
     super.key,
     this.loadingItemsWidget,
-    this.itemWdg,
-    this.allItemWdg,
+    this.itemBuilder,
+    this.allItemsBuilder,
     this.separatorWidget,
     this.loadingItemWidget,
     this.notItemsMsg,
@@ -28,8 +28,8 @@ class PaginationBuilderWdg<C extends PaginationCubit<E>, E>
 
   final Widget? loadingItemsWidget;
   final Widget? loadingItemWidget;
-  final Widget Function(E)? itemWdg;
-  final Widget Function(List<E>)? allItemWdg;
+  final Widget Function(E)? itemBuilder;
+  final Widget Function(List<E>)? allItemsBuilder;
   final Widget? separatorWidget;
   final String? notItemsMsg;
 
@@ -46,12 +46,12 @@ class PaginationBuilderWdg<C extends PaginationCubit<E>, E>
   final ListItemAppear itemAppear;
 
   @override
-  State<PaginationBuilderWdg<C, E>> createState() =>
-      _PaginationBuilderWdgState<C, E>();
+  State<PaginationBuilder<C, E>> createState() =>
+      _PaginationBuilderState<C, E>();
 }
 
-class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
-    extends State<PaginationBuilderWdg<C, E>>
+class _PaginationBuilderState<C extends PaginationCubit<E>, E>
+    extends State<PaginationBuilder<C, E>>
     with AutomaticKeepAliveClientMixin {
   final _appear = ListAppearTracker();
 
@@ -97,21 +97,21 @@ class _PaginationBuilderWdgState<C extends PaginationCubit<E>, E>
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
-                  if (widget.allItemWdg != null)
+                  if (widget.allItemsBuilder != null)
                     SliverToBoxAdapter(
-                      child: widget.allItemWdg!(entity.data.cast<E>()),
+                      child: widget.allItemsBuilder!(entity.data.cast<E>()),
                     )
                   else
                     SliverList.separated(
                       itemBuilder: (context, index) {
                         _appear.observeLength(entity.data.length);
-                        final item = widget.itemWdg!(entity.data[index]);
+                        final item = widget.itemBuilder!(entity.data[index]);
                         final order = _appear.staggerFor(index);
                         if (order == null ||
                             widget.itemAppear == ListItemAppear.none) {
                           return item;
                         }
-                        return ListItemAppearWdg(
+                        return ListItemEntrance(
                           animation: widget.itemAppear,
                           staggerIndex: order,
                           child: item,

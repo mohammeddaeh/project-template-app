@@ -201,8 +201,8 @@ final portSignals = <PortSignal>[
   const PortSignal(
     'قائمة بصفحات',
     r'ion-infinite-scroll|onEndReached|InfiniteScroll|infinite-scroll|loadMore|per_page|perPage|pageSize|PagingSource',
-    '§الواجهة — PaginationCubit + PaginationBuilderWdg (14_PAGINATION.md)',
-    covers: ['PaginationCubit', 'PaginationBuilderWdg'],
+    '§الواجهة — PaginationCubit + PaginationBuilder (14_PAGINATION.md)',
+    covers: ['PaginationCubit', 'PaginationBuilder'],
   ),
   const PortSignal(
     'مقاس الشاشة',

@@ -17,7 +17,7 @@ enum PageLoadingStyle {
 
 /// مؤشر يظهر في أسفل القائمة عند تحميل الصفحة التالية.
 /// يدعم 6 أنماط احترافية مع animation ظهور/اختفاء مدمجة.
-/// استخدم كـ [PaginationBuilderWdg.loadingItemWidget].
+/// استخدم كـ [PaginationBuilder.loadingItemWidget].
 class PageLoadingIndicator extends StatefulWidget {
   const PageLoadingIndicator({
     super.key,

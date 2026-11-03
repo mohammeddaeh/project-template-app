@@ -4,10 +4,10 @@ import 'package:app_template/ui/widgets/placeholders/skeleton_templates.dart';
 import 'package:app_template/ui/widgets/placeholders/skeleton_widget.dart';
 
 /// أنماط مؤشر التحميل الأول لقائمة (قبل وصول أي بيانات) — استخدمه كـ
-/// [PaginationBuilderWdg.loadingItemsWidget]. مقابل [PageLoadingStyle] الذي
+/// [PaginationBuilder.loadingItemsWidget]. مقابل [PageLoadingStyle] الذي
 /// يتحكم بمؤشر "تحميل المزيد" آخر القائمة.
 enum InitialLoadingStyle {
-  /// دائرة تحميل بسيطة وسط الشاشة (السلوك الافتراضي الحالي لـ[PaginationBuilderWdg]).
+  /// دائرة تحميل بسيطة وسط الشاشة (السلوك الافتراضي الحالي لـ[PaginationBuilder]).
   spinner,
 
   /// هيكل مظلَّل (Shimmer) بشكل عناصر قائمة حقيقية — [SkeletonListTile] مكرّرة،

@@ -123,7 +123,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 | `readme/architecture/11_CORE.md` | تغيير core/ أو مبادئ الطبقات |
 | `readme/architecture/12_REST_API.md` | تغيير REST flow أو network |
 | `readme/architecture/13_ERROR_FLOW.md` | **ترتيب الـinterceptors · `Failure`/`FailureUiMapper` · `error-handler.ts`/`MESSAGES` · ترتيب middleware بـ`app.ts` · أي حدث بـ`AuthEventBus`** — يشمل النصفين معاً |
-| `readme/architecture/14_PAGINATION.md` | تغيير PaginationCubit أو PaginationBuilderWdg |
+| `readme/architecture/14_PAGINATION.md` | تغيير PaginationCubit أو PaginationBuilder |
 | `readme/ui/20_WIDGETS.md` | تغيير `ui/` أو `ui/widgets/` |
 | `readme/scripts/40_SCRIPTS.md` | إضافة/تعديل سكربت |
 | **`readme/scripts/41_UPGRADING.md`** | **أي بندٍ ⚠️ بـ`_template/CHANGELOG.md`** — صفٌّ بقسم الإصدار القادم: ما يكسر البناء · ما يغيّر السلوك بصمت · ملفُّ مشروعٍ يحتاج نقلاً باليد. وكل إصدار `X.0.0` قسمٌ جديد |

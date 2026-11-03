@@ -36,8 +36,8 @@ enum ListItemAppear {
 ///
 /// Honours `MediaQuery.disableAnimations`, so the OS-level "reduce motion"
 /// setting turns every list in the app static without a per-screen flag.
-class ListItemAppearWdg extends StatefulWidget {
-  const ListItemAppearWdg({
+class ListItemEntrance extends StatefulWidget {
+  const ListItemEntrance({
     super.key,
     required this.child,
     this.animation = ListItemAppear.fadeSlide,
@@ -62,10 +62,10 @@ class ListItemAppearWdg extends StatefulWidget {
   final Duration stagger;
 
   @override
-  State<ListItemAppearWdg> createState() => _ListItemAppearWdgState();
+  State<ListItemEntrance> createState() => _ListItemEntranceState();
 }
 
-class _ListItemAppearWdgState extends State<ListItemAppearWdg>
+class _ListItemEntranceState extends State<ListItemEntrance>
     with SingleTickerProviderStateMixin {
   AnimationController? _ctrl;
   Timer? _delay;

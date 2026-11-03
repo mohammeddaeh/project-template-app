@@ -24,7 +24,7 @@ lib/ui/widgets/
 
 Barrel: `lib/ui/widgets/widgets.dart`
 
-Examples: `primary_button.dart`, `custom_text_field.dart`, `pagination_builder_wdg.dart`, error/loading/empty states.
+Examples: `primary_button.dart`, `custom_text_field.dart`, `pagination_builder.dart`, error/loading/empty states.
 
 ## 3) Presentation Layer (Not Feature, Not Shared)
 
@@ -92,7 +92,7 @@ lib/
     widgets/
       layout/primary_button.dart
       inputs/custom_text_field.dart
-      lists/pagination_builder_wdg.dart
+      lists/pagination_builder.dart
     theme/
     extensions/
     error/

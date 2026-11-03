@@ -11,6 +11,15 @@
 
 ## غير مُصدَر
 
+## 3.0.0 — 2026-11-03
+
+> **ترقيةُ مشروعٍ من 2.1.0**: [`readme/scripts/41_UPGRADING.md`](../readme/scripts/41_UPGRADING.md) §«2.1.0 ⇐ 3.0.0».
+
+- ⚠️ **لا لاحقة `Wdg`**: `PaginationBuilderWdg` ⇐ `PaginationBuilder` (والملف `pagination_builder.dart`) ·
+  `ListItemAppearWdg` ⇐ `ListItemEntrance` · وسيطا `itemWdg`/`allItemWdg` ⇐ `itemBuilder`/`allItemsBuilder`. بلا
+  أسماءٍ قديمة.
+- **R05 تصف الكود**: `@freezed` إلزاميّ بـ`features/`، وحالاتُ الموديولات و`ui/state/sync/` `sealed` مكتوبةٌ
+  باليد بسببها، و`RefreshState` بلا مساواة عمداً.
 - **شريط «لا اتصال» لا يظهر لحظةَ الإقلاع على جهازٍ متّصل**: `OfflineUxCubit` كان يقرأ حالة المراقب
   الأولى (`unknown`) انقطاعاً؛ صار يتبع `NetworkStateMonitor` المحقون ويتجاهل `unknown` ·
   `SyncGate` يسأل `Connectivity` المحقون مرّةً بدل `ConnectivityService` الثابت · `test/sync/offline_ux_cubit_test.dart`.

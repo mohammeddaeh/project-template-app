@@ -62,7 +62,7 @@
 | أيقونة SVG بصفّ أو زرّ | `SvgImageWidget.icon(path, size:)` — مربّعٌ ثابت والرسم داخله — [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §34 | `SvgPicture.asset(width:, height:)` | 👁 |
 | صورة شبكة · صورة شخص · SVG · أصل | `CachedImageWidget` · `NetworkImageWidget` · `AvatarWidget` · `SvgImageWidget` · `AppAssetImage` — [`ui/widgets/images/`](../../lib/ui/widgets/images/) | `Image.network(...)` | C05 |
 | حوار · تأكيد · ورقة سفلية | `context.showCustomDialog` · `showConfirmDialog` · `showLoadingDialog` · `context.showAppBottomSheet` — [`ui/extensions/`](../../lib/ui/extensions/) | `showDialog` / `showModalBottomSheet` الإطار | 👁 |
-| قائمة مرقّمة بصفحات | `PaginationCubit` + `PaginationBuilderWdg` / `PaginatedListView` — [`14_PAGINATION.md`](../architecture/14_PAGINATION.md) | `ScrollController` يحسب نهاية القائمة | 👁 |
+| قائمة مرقّمة بصفحات | `PaginationCubit` + `PaginationBuilder` / `PaginatedListView` — [`14_PAGINATION.md`](../architecture/14_PAGINATION.md) | `ScrollController` يحسب نهاية القائمة | 👁 |
 | مقاس · مسافة · لوح · تكبير خط | `context.screen` — [`22_RESPONSIVE.md`](../ui/22_RESPONSIVE.md) | `MediaQuery.of(context).size.height * 0.3` | F37 |
 | لون · خط · زاوية · حركة · ظلّ | `context.colors.x` · `context.textTheme.x` · `AppRadius` · `AppMotion` · `AppElevation` — [`20_WIDGETS.md`](../ui/20_WIDGETS.md) §3 | `Color(0xFF…)` · `Colors.x` | F04 |
 | اتجاه حشوة أو محاذاة | `EdgeInsetsDirectional` · `AlignmentDirectional` | `EdgeInsets.only(left:)` | F10 |
@@ -73,7 +73,7 @@
 |---|---|---|---|
 | مدّة أو منحنى حركة | `AppMotion.of(context).base` (صفرٌ مع «تقليل الحركة») · `AppMotion.baseCurve` — [`ui/theme/app_motion.dart`](../../lib/ui/theme/app_motion.dart) | `Duration(milliseconds: 300)` بالشاشة | 👁 R41 |
 | انتقال الصفحات | لا شيء — الثيم: `PredictiveBack` على أندرويد (يتبع إصبع الرجوع) · Cupertino على iOS | `PageRouteBuilder` لكل شاشة | 👁 |
-| ظهور صفوف القائمة | `PaginationBuilderWdg` / `PaginatedListView` (متتالٍ افتراضاً) · `ListAppearTracker` + `ListItemAppearWdg` لقائمةٍ يدوية | `AnimationController` لكل صف | 👁 |
+| ظهور صفوف القائمة | `PaginationBuilder` / `PaginatedListView` (متتالٍ افتراضاً) · `ListAppearTracker` + `ListItemEntrance` لقائمةٍ يدوية | `AnimationController` لكل صف | 👁 |
 | من بطاقةٍ إلى تفاصيلها | `AppOpenContainer` — §35 | `Hero` + مسار مخصّص | 👁 |
 | خطوات داخل شاشة | `AppStepSwitcher` — §36 | `AnimatedSwitcher` بانزلاقٍ يدويّ | 👁 |
 | رقمٌ يتغيّر | `AnimatedCount` — §37 | `TweenAnimationBuilder` بالشاشة | 👁 |

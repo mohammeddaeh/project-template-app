@@ -49,6 +49,25 @@ dart run scripts/check_structure.dart && dart run scripts/check_docs.dart
 
 ---
 
+## `2.1.0` ⇐ `3.0.0`
+
+| بمشروعك | البديل | ابحث |
+|---|---|---|
+| `PaginationBuilderWdg` · مسار `pagination_builder_wdg.dart` | `PaginationBuilder` · `pagination_builder.dart` | `git grep -nE "PaginationBuilderWdg\|pagination_builder_wdg" lib` |
+| وسيطا `itemWdg:` · `allItemWdg:` | `itemBuilder:` · `allItemsBuilder:` | `git grep -nE "\b(itemWdg\|allItemWdg):" lib` |
+| `ListItemAppearWdg` | `ListItemEntrance` — و`ListItemAppear` يبقى اسمَ نوع الحركة | `git grep -n ListItemAppearWdg lib` |
+
+والسطرُ الواحد يصلحها كلّها:
+
+```bash
+git grep -lE "PaginationBuilderWdg|ListItemAppearWdg|pagination_builder_wdg|itemWdg|allItemWdg" lib test |
+  xargs sed -i -E 's/PaginationBuilderWdg/PaginationBuilder/g; s/ListItemAppearWdg/ListItemEntrance/g; s/pagination_builder_wdg\.dart/pagination_builder.dart/g; s/\ballItemWdg\b/allItemsBuilder/g; s/\bitemWdg\b/itemBuilder/g'
+```
+
+ولا تغييرَ سلوكٍ صامت.
+
+---
+
 ## `1.0.0` ⇐ `2.0.0`
 
 ### أ) يكسر البناء — المصرِّف يدلّك

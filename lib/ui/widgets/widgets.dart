@@ -70,7 +70,7 @@ export 'layout/primary_button.dart';
 export 'layout/detail_widgets.dart';
 
 // Lists
-export 'lists/pagination_builder_wdg.dart';
+export 'lists/pagination_builder.dart';
 export 'lists/paginated_list_view.dart';
 export 'lists/load_more_widget.dart';
 export 'lists/refresh_wrapper.dart';

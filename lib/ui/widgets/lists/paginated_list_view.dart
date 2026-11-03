@@ -67,7 +67,7 @@ class _PaginatedListViewState extends State<PaginatedListView> {
         if (order == null || widget.itemAppear == ListItemAppear.none) {
           return item;
         }
-        return ListItemAppearWdg(
+        return ListItemEntrance(
           animation: widget.itemAppear,
           staggerIndex: order,
           child: item,

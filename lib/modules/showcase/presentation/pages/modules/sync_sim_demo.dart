@@ -178,7 +178,7 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
                       )
                     else
                       for (final job in _jobs)
-                        ListItemAppearWdg(
+                        ListItemEntrance(
                           key: ValueKey(job.number),
                           child: AppListTile(
                             titleText: LocaleKeys.showcaseItem.tr(

@@ -107,7 +107,7 @@ class _DevicesSimDemoState extends State<DevicesSimDemo> {
               ),
               SizedBox(height: s.space(12)),
               for (final session in _sessions)
-                ListItemAppearWdg(
+                ListItemEntrance(
                   key: ValueKey(session.id),
                   child: Padding(
                     padding: EdgeInsets.only(bottom: s.space(12)),

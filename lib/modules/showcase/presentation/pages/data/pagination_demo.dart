@@ -15,7 +15,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
 /// The template's pagination stack — the real [PaginationCubit] and
-/// [PaginationBuilderWdg] — fed by a source on the device instead of a server.
+/// [PaginationBuilder] — fed by a source on the device instead of a server.
 class PaginationDemo extends StatefulWidget {
   const PaginationDemo({super.key});
 
@@ -71,8 +71,8 @@ class _PaginationDemoState extends State<PaginationDemo> {
       children: [
         DemoBlock(
           code:
-              'BlocProvider(create: …, child: PaginationBuilderWdg<C, E>('
-              'itemWdg: …, loadingItemWidget: PageLoadingIndicator(…)))',
+              'BlocProvider(create: …, child: PaginationBuilder<C, E>('
+              'itemBuilder: …, loadingItemWidget: PageLoadingIndicator(…)))',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -105,14 +105,14 @@ class _PaginationDemoState extends State<PaginationDemo> {
                 child: BlocProvider(
                   key: ValueKey(_run),
                   create: (_) => _DemoPaginationCubit(_source),
-                  child: PaginationBuilderWdg<_DemoPaginationCubit, int>(
+                  child: PaginationBuilder<_DemoPaginationCubit, int>(
                     contentPadding: EdgeInsets.zero,
                     separatorWidget: const SizedBox.shrink(),
                     loadingItemWidget: PageLoadingIndicator(style: _style),
                     emptyList: EmptyStateWidget(
                       titleKey: LocaleKeys.showcasePaginationNoItems,
                     ),
-                    itemWdg: (n) => AppListTile(
+                    itemBuilder: (n) => AppListTile(
                       titleText: LocaleKeys.showcaseItem.tr(args: ['$n']),
                       leadingIcon: Icons.notes_outlined,
                       dense: true,
@@ -200,7 +200,7 @@ class _PaginationDemoState extends State<PaginationDemo> {
         const DemoBlock(
           code:
               'ListAppearTracker()..observeLength(n); '
-              'staggerFor(i) → ListItemAppearWdg(staggerIndex: …)',
+              'staggerFor(i) → ListItemEntrance(staggerIndex: …)',
           child: _AppearTrackerDemo(),
         ),
       ],
@@ -243,7 +243,7 @@ class _AppearTrackerDemoState extends State<_AppearTrackerDemo> {
               final order = _appear.staggerFor(i);
               return order == null
                   ? row
-                  : ListItemAppearWdg(staggerIndex: order, child: row);
+                  : ListItemEntrance(staggerIndex: order, child: row);
             },
           ),
         ),
