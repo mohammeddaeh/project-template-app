@@ -15,11 +15,12 @@
 library;
 
 import 'dart:io';
+import 'src/cli.dart';
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 Future<void> main(List<String> args) async {
-  _header('⚙️   gen_code — code generation');
+  header('⚙️   gen_code — code generation');
 
   // 1. build_runner
   await _stream('🔨  build_runner', 'dart', [
@@ -92,14 +93,14 @@ Future<void> main(List<String> args) async {
     'lib/resources',
   ]);
 
-  _footer('✅  gen_code done');
+  footer('✅  gen_code done');
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 /// يشغّل أمراً مع إخراج حيّ في الوقت الفعلي (streaming).
 Future<void> _stream(String label, String exe, List<String> args) async {
-  _section(label);
+  section(label);
   final process = await Process.start(exe, args, runInShell: true);
 
   // أخرج stdout و stderr مباشرة — المستخدم يرى التقدم فوراً
@@ -109,14 +110,6 @@ Future<void> _stream(String label, String exe, List<String> args) async {
   ]);
 
   final code = await process.exitCode;
-  if (code != 0) _die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
+  if (code != 0) die('فشل الأمر (exit $code): $exe ${args.join(' ')}');
   print('');
-}
-
-void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
-void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
-void _section(String msg) => print('\n▸ $msg');
-void _die(String msg) {
-  print('\n❌  $msg\n');
-  exit(1);
 }

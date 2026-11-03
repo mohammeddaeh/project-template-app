@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/modules/access_control/presentation/widgets/access_control_section.dart';
 import 'package:app_template/modules/multi_device/presentation/widgets/devices_section.dart';
+import 'package:app_template/modules/notification_center/presentation/widgets/notification_center_section.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:app_template/features/settings/presentation/cubits/settings_cubit.dart';
 import 'package:app_template/features/settings/presentation/widgets/settings_about_section.dart';
@@ -58,6 +59,8 @@ class _SettingsBody extends StatelessWidget {
         _LanguageSection(),
         SettingsSectionDivider(),
         _NotificationsSection(),
+        // Nothing when AppFeatures.notificationCenter is off.
+        NotificationCenterSection(),
         SettingsSectionDivider(),
         // Renders nothing when AppFeatures.multiDevice is off — the module owns
         // that check, so this list never has to and the tile can never appear

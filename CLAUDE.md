@@ -126,6 +126,7 @@ lib/        → kit_<name>    ❌ NEVER (kit_contracts only; kits.g.dart is gene
 | `readme/architecture/14_PAGINATION.md` | تغيير PaginationCubit أو PaginationBuilderWdg |
 | `readme/ui/20_WIDGETS.md` | تغيير `ui/` أو `ui/widgets/` |
 | `readme/scripts/40_SCRIPTS.md` | إضافة/تعديل سكربت |
+| **`readme/scripts/41_UPGRADING.md`** | **أي بندٍ ⚠️ بـ`_template/CHANGELOG.md`** — صفٌّ بقسم الإصدار القادم: ما يكسر البناء · ما يغيّر السلوك بصمت · ملفُّ مشروعٍ يحتاج نقلاً باليد. وكل إصدار `X.0.0` قسمٌ جديد |
 | `readme/start/00_START_HERE.md` · `01_SETUP.md` | تغيير هيكل المشروع · خطوات الإعداد · onboarding |
 | `readme/start/02_CHEATSHEET.md` | إضافة أمر · مسار import · widget · قيمة enum · سكربت |
 | `readme/modules/32_MODULE_DATA_TRANSFER.md` | تغيير `modules/data_transfer/` أو عقد `/api/v1/data-transfer` |

@@ -25,9 +25,6 @@ abstract class PersistenceKeys {
   /// The device_session_id returned by the server after login.
   static const String deviceSessionId = 'device_session_id';
 
-  /// True if this device is the primary (first-ever login) device for the account.
-  static const String deviceIsPrimary = 'device_is_primary';
-
   // ── Navigation ────────────────────────────────────────────────────────────
   /// آخر تبويب نشط — يُحفظ فقط إذا كان NavigationConfig.persistLastTab = true
   static const String navLastTabIndex = 'nav_last_tab_index';

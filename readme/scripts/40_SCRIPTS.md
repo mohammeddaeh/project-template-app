@@ -9,7 +9,9 @@
 dart run scripts/<script_name>.dart
 ```
 
-سكربتات Dart بـ`scripts/`، و**مُطلِق PowerShell واحد** (`new_project.ps1`) — مجمّعةً بمتى تحتاجها:
+سكربتات Dart بـ`scripts/`، و**مُطلِق PowerShell واحد** (`new_project.ps1`) — مجمّعةً بمتى تحتاجها. وما تتشاركه — طباعةُ الأقسام، و`die`، و`runCli` الذي
+يحوّل خطأً متوقَّعاً (ملفٌّ غائب · JSON تالف · خادمٌ لا يُجيب) إلى سطرٍ و`exit 2` بدل stack trace —
+بـ`scripts/src/cli.dart`:
 
 | السكربت | الغرض |
 |---|---|
@@ -768,6 +770,10 @@ dart run scripts/template_update.dart [--template DIR] [--base COMMIT] [--to REF
 **بلا `--apply` يعرض ولا يكتب.** ومع `--apply` يرفض شجرة git غير نظيفة — فالتحديث
 commitٌ واحد يُراجَع — ويكتب الـcommit الجديد بالبيان. ثم `gen_code.dart` و`analyze`
 و`flutter test`.
+
+**وما يملكه المشروع ولا يلمسه التحديث** (`main.dart` · `app.dart` · `features/` · `pubspec.yaml` ·
+الترجمات · `app_features.dart` · `android/`) — ما يُنقل منه باليد لكل إصدار بـ
+[`41_UPGRADING.md`](41_UPGRADING.md).
 
 ### الحلقة كاملة
 

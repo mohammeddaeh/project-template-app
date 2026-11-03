@@ -15,6 +15,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'src/cli.dart';
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const _settingsFile = 'flavor_settings.json';
@@ -25,7 +27,9 @@ const _envFallback = <String, dynamic>{'BASE_URL': 'https://api.example.com'};
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
-void main(List<String> args) async {
+Future<void> main(List<String> args) => runCli(() => _main(args));
+
+Future<void> _main(List<String> args) async {
   if (args.contains('--reset')) {
     _reset();
     return;
@@ -101,7 +105,9 @@ Directory findFlutterRoot() {
     return candidates.first;
   }
 
-  throw Exception('Flutter project root not found');
+  throw StateError(
+    'Flutter project root not found — run from the project root.',
+  );
 }
 // ── Step 1 — load settings ────────────────────────────────────────────────────
 

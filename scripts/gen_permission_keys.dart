@@ -43,16 +43,29 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'src/cli.dart';
+
 const _lockPath = 'permissions.lock.json';
 const _outputPath = 'lib/resources/permission_keys.g.dart';
 
-Future<void> main(List<String> args) async {
+Future<void> main(List<String> args) => runCli(() => _main(args));
+
+Future<void> _main(List<String> args) async {
   final update = args.contains('--update');
   final verify = args.contains('--verify');
 
   if (update && verify) {
     stderr.writeln('❌ اختر أحدهما: --update أو --verify.');
     exitCode = 1;
+    return;
+  }
+
+  // مصدرٌ بلا وضع يُقرأ تجاهُلاً صامتاً: يولّد من القفل القديم ويبدو ناجحاً.
+  if (!update && !verify && args.any((a) => a == '--from' || a == '--url')) {
+    stderr.writeln(
+      '❌ --from/--url يحتاجان وضعاً: --update (يكتب القفل) أو --verify (يقارن).',
+    );
+    exitCode = 64;
     return;
   }
 

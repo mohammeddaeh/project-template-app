@@ -163,7 +163,7 @@ class _PermissionTile extends StatelessWidget {
         : permission.implies.isEmpty
         ? null
         : LocaleKeys.permissionImplies.tr(
-            args: [permission.implies.join('، ')],
+            args: [permission.implies.join(LocaleKeys.listSeparator.tr())],
           );
 
     return CheckboxListTile(

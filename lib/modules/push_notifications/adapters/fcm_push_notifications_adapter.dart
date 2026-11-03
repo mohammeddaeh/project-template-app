@@ -117,6 +117,10 @@ class FcmPushNotificationsAdapter implements PushNotificationsService {
     );
   }
 
+  /// يطلب رمزاً ويبلّغ به `onTokenRefresh` — بعد دخول حسابٍ جديد، حين حُذف
+  /// رمزُ السابق عند خروجه.
+  Future<void> announceToken() => _persistAndNotifyToken();
+
   Future<void> _persistAndNotifyToken() async {
     final token = await getToken();
     if (token == null) return;

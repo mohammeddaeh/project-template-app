@@ -13,59 +13,60 @@
 library;
 
 import 'dart:io';
+import 'src/cli.dart';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
-    _die(
+    die(
       'الاستخدام: dart run scripts/scaffold_module.dart <module_name>\n'
       '  مثال: dart run scripts/scaffold_module.dart audit_log',
     );
   }
 
-  final module = _toSnakeCase(args.first);
+  final module = toSnakeCase(args.first);
   if (module.isEmpty || !RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(module)) {
-    _die(
+    die(
       'اسم غير صالح: "${args.first}" — أحرف صغيرة وأرقام و"_" فقط، يبدأ بحرف.',
     );
   }
 
   final vars = <String, String>{
     '__module__': module,
-    '__Module__': _toPascalCase(module),
-    '__moduleCamel__': _toCamelCase(module),
+    '__Module__': toPascalCase(module),
+    '__moduleCamel__': toCamelCase(module),
     '__MODULE_UPPER__': module.toUpperCase(),
   };
 
   final moduleDir = Directory('lib/modules/$module');
   if (moduleDir.existsSync()) {
-    _die(
+    die(
       'lib/modules/$module/ موجود بالفعل — احذفه أولاً إن أردت إعادة التوليد.',
     );
   }
 
-  _header("🧩  scaffold_module — إنشاء \"${vars['__Module__']}Plugin\"");
+  header("🧩  scaffold_module — إنشاء \"${vars['__Module__']}Plugin\"");
 
-  _section('📁  كتابة ملفّ المدخل');
+  section('📁  كتابة ملفّ المدخل');
   final pluginPath = 'lib/modules/$module/${module}_plugin.dart';
   File(pluginPath).parent.createSync(recursive: true);
   File(pluginPath).writeAsStringSync(_render(_pluginTemplate, vars));
   print('  ✓ $pluginPath');
 
-  _section('🚩  الركن ١ — علَم AppFeatures');
+  section('🚩  الركن ١ — علَم AppFeatures');
   _appendFeatureFlag(vars);
 
-  _section('🔗  الركن ٢ — تسجيل ModulesBootstrap');
+  section('🔗  الركن ٢ — تسجيل ModulesBootstrap');
   _appendBootstrapRegistration(vars);
 
-  _section('📋  الركن ٣ — صفّ بالجدول readme/modules/30_MODULES.md');
+  section('📋  الركن ٣ — صفّ بالجدول readme/modules/30_MODULES.md');
   _appendModulesTableRow(vars);
 
-  _section('🔎  إشارة الجرد — scripts/src/port_signals.dart');
+  section('🔎  إشارة الجرد — scripts/src/port_signals.dart');
   _appendPortSignalTodo(vars);
 
   final healthy = await _runHealthChecks();
 
-  _footer(
+  footer(
     healthy
         ? '✅  "${vars['__Module__']}Plugin" جاهز — التحليل والاختبارات نظيفة'
         : '⚠️   الملفات كُتبت لكن فحصاً واحداً على الأقل فشل — راجع الإخراج أعلاه',
@@ -141,7 +142,7 @@ void _appendFeatureFlag(Map<String, String> vars) {
       "  static const ${vars['__moduleCamel__']} = false;";
   final content = file.readAsStringSync();
   if (!content.contains(marker)) {
-    _die('لم أجد نقطة الإدراج بـ${file.path} — راجعها يدوياً.');
+    die('لم أجد نقطة الإدراج بـ${file.path} — راجعها يدوياً.');
   }
   file.writeAsStringSync(content.replaceFirst(marker, addition));
   print(
@@ -162,7 +163,7 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
       "$importMarker\n"
       "import 'package:app_template/modules/$module/${module}_plugin.dart';";
   if (!content.contains(importMarker)) {
-    _die('لم أجد نقطة إدراج الـimport بـ${file.path}.');
+    die('لم أجد نقطة إدراج الـimport بـ${file.path}.');
   }
   content = content.replaceFirst(importMarker, newImport);
 
@@ -175,7 +176,7 @@ void _appendBootstrapRegistration(Map<String, String> vars) {
       '    }\n'
       '$registrationMarker';
   if (!content.contains(registrationMarker)) {
-    _die('لم أجد نقطة تسجيل الموديول بـ${file.path}.');
+    die('لم أجد نقطة تسجيل الموديول بـ${file.path}.');
   }
   content = content.replaceFirst(registrationMarker, newRegistration);
 
@@ -206,7 +207,7 @@ void _appendModulesTableRow(Map<String, String> vars) {
 // ── Health checks ─────────────────────────────────────────────────────────────
 
 Future<bool> _runHealthChecks() async {
-  _header('🩺  فحوصات ما بعد التوليد');
+  header('🩺  فحوصات ما بعد التوليد');
   var allPassed = true;
   allPassed &= await _check('🔍  dart analyze lib', 'dart', ['analyze', 'lib']);
   allPassed &= await _check('🧪  flutter test', 'flutter', ['test']);
@@ -218,7 +219,7 @@ Future<bool> _runHealthChecks() async {
 }
 
 Future<bool> _check(String label, String exe, List<String> args) async {
-  _section(label);
+  section(label);
   final process = await Process.start(exe, args, runInShell: true);
   await Future.wait([
     stdout.addStream(process.stdout),
@@ -238,36 +239,6 @@ String _render(String template, Map<String, String> vars) {
     result = result.replaceAll(entry.key, entry.value);
   }
   return result;
-}
-
-String _toSnakeCase(String input) => input
-    .trim()
-    .replaceAll(RegExp(r'[\s-]+'), '_')
-    .replaceAllMapped(
-      RegExp(r'([a-z0-9])([A-Z])'),
-      (m) => '${m.group(1)}_${m.group(2)}',
-    )
-    .toLowerCase();
-
-String _toPascalCase(String snake) => snake
-    .split('_')
-    .where((w) => w.isNotEmpty)
-    .map((w) => w[0].toUpperCase() + w.substring(1))
-    .join();
-
-String _toCamelCase(String snake) {
-  final pascal = _toPascalCase(snake);
-  return pascal.isEmpty
-      ? pascal
-      : pascal[0].toLowerCase() + pascal.substring(1);
-}
-
-void _header(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}');
-void _footer(String msg) => print('\n${'─' * 60}\n  $msg\n${'─' * 60}\n');
-void _section(String msg) => print('\n▸ $msg');
-void _die(String msg) {
-  print('\n❌  $msg\n');
-  exit(1);
 }
 
 /// كلُّ موديولٍ يحتاج إشارةً بجرد النقل أو سبباً لغيابها — `port_signals_test`

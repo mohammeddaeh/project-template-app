@@ -16,7 +16,7 @@
 | [`architecture/`](architecture/) | **كيف يعمل** | [`10_ARCHITECTURE.md`](architecture/10_ARCHITECTURE.md) بنية `lib/` وحدودها · [`11_CORE.md`](architecture/11_CORE.md) `core/` والـDI · [`12_REST_API.md`](architecture/12_REST_API.md) الشبكة · [`13_ERROR_FLOW.md`](architecture/13_ERROR_FLOW.md) من «السيرفر رفض» إلى «المستخدم قرأ» · [`14_PAGINATION.md`](architecture/14_PAGINATION.md) القوائم بصفحات · [`17_SERVED_CONTRACT.md`](architecture/17_SERVED_CONTRACT.md) ما يخدمه الباك فعلاً · [`23_STARTUP_SPLASH.md`](architecture/23_STARTUP_SPLASH.md) الإقلاع وشاشة البدء |
 | [`ui/`](ui/) | **الواجهة** | [`20_WIDGETS.md`](ui/20_WIDGETS.md) أين توضع الودجة · [`21_WIDGETS_USAGE.md`](ui/21_WIDGETS_USAGE.md) فهرسُ مكتبة الودجات، وشرحُها بـ[`widgets/`](ui/widgets/) بستّ فئات · [`22_RESPONSIVE.md`](ui/22_RESPONSIVE.md) المقاسات واللوح والكيبورد |
 | [`modules/`](modules/) | **ما يُشعَل بعلَم أو يُركَّب بأمر** | [`30_MODULES.md`](modules/30_MODULES.md) ★ الجدول الواحد للموديولات · [`31_MODULE_PERMISSIONS.md`](modules/31_MODULE_PERMISSIONS.md) الصلاحيات · [`32_MODULE_DATA_TRANSFER.md`](modules/32_MODULE_DATA_TRANSFER.md) الاستيراد والتصدير · [`33_MODULE_TOKEN_INSPECTOR.md`](modules/33_MODULE_TOKEN_INSPECTOR.md) التوكن على الشاشة · [`24_DEVICE_KITS.md`](modules/24_DEVICE_KITS.md) حِزَم الأجهزة |
-| [`scripts/`](scripts/) | **الأوامر** | [`40_SCRIPTS.md`](scripts/40_SCRIPTS.md) كل سكربت، مجمّعاً بمتى تحتاجه |
+| [`scripts/`](scripts/) | **الأوامر** | [`40_SCRIPTS.md`](scripts/40_SCRIPTS.md) كل سكربت، مجمّعاً بمتى تحتاجه · [`41_UPGRADING.md`](scripts/41_UPGRADING.md) ترقيةُ مشروعٍ قائم إلى إصدارٍ أحدث، لكل إصدار |
 
 **والأرقام ثابتة** — `03_RULES` يبقى `03_RULES` أينما ذُكر، والمجلد يجمع لا يُعيد الترقيم.
 

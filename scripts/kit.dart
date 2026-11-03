@@ -18,12 +18,16 @@ library;
 
 import 'dart:io';
 
+import 'src/cli.dart';
+
 import 'src/kits.dart';
 
 const _pubspec = 'pubspec.yaml';
 const _appFeatures = 'lib/core/platform/features/app_features.dart';
 
-Future<void> main(List<String> args) async {
+Future<void> main(List<String> args) => runCli(() => _main(args));
+
+Future<void> _main(List<String> args) async {
   final command = args.isEmpty ? 'list' : args.first;
   switch (command) {
     case 'list':
