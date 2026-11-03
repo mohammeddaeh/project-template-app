@@ -16,6 +16,7 @@ flutter run --flavor dev --dart-define-from-file=.env.dev.json
 ```
 
 ومشروعٌ جديد من القالب: `scripts/new_project.ps1` — [`readme/start/01_SETUP.md`](readme/start/01_SETUP.md).
+ومشروعٌ قائم يأخذ إصداراً أحدث: [`readme/scripts/41_UPGRADING.md`](readme/scripts/41_UPGRADING.md).
 
 ## خريطة المستودع
 

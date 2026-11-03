@@ -771,6 +771,10 @@ dart run scripts/template_update.dart [--template DIR] [--base COMMIT] [--to REF
 commitٌ واحد يُراجَع — ويكتب الـcommit الجديد بالبيان. ثم `gen_code.dart` و`analyze`
 و`flutter test`.
 
+**وما يملكه المشروع ولا يلمسه التحديث** (`main.dart` · `app.dart` · `features/` · `pubspec.yaml` ·
+الترجمات · `app_features.dart` · `android/`) — ما يُنقل منه باليد لكل إصدار بـ
+[`41_UPGRADING.md`](41_UPGRADING.md).
+
 ### الحلقة كاملة
 
 ```

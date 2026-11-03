@@ -11,6 +11,13 @@
 
 ## غير مُصدَر
 
+## 2.0.0 — 2026-11-03
+
+> **ترقيةُ مشروعٍ من 1.0.0**: [`readme/scripts/41_UPGRADING.md`](../readme/scripts/41_UPGRADING.md) §«1.0.0 ⇐ 2.0.0» —
+> كلُّ بندٍ ⚠️ أدناه صفٌّ هناك، بأمر بحثٍ وبديل.
+
+- **دليلُ الترقية** `readme/scripts/41_UPGRADING.md`: الطريق لأي إصدار، وما يكسر البناء، وما يغيّر
+  السلوك بصمت، وملفاتُ المشروع التي لا يلمسها `template_update`.
 - **إصلاحاتٌ صغيرة من المراجعة**: فاصلٌ عربيّ كان يظهر بالإنجليزية (`listSeparator`) · حوارُ التحديث يُغلق بسياقه،
   و`InAppUpdatesConfig.iosAppId` · رمزُ FCM يُحذف عند الخروج ويُعلَن بعد الدخول التالي · `NotificationCenterSection`
   بالإعدادات · `multi_device` بلا `isPrimary` الميّت (⚠️ `PersistenceKeys.deviceIsPrimary` و`saveSession(isPrimary:)` حُذفا) ·
