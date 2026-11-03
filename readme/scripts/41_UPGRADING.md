@@ -18,16 +18,19 @@
 git switch -c chore/template-upgrade
 git -C ../app_template fetch --tags
 
-# ٢) ما سيتغيّر بملفات القالب — بلا كتابة
-dart run scripts/template_update.dart --template ../app_template --to v<الإصدار>
+# ٢) ما سيتغيّر بملفات القالب ومفاتيح الترجمة — بلا كتابة
+#    سكربتُ القالب بأحدث نسخه لا نسخةُ المشروع: نسختك بعمر إصدارك، فتفوتها قدرةٌ أُضيفت
+#    بعده. و`--to` يختار الإصدارَ الذي تنتقل إليه، أيّاً كان
+git -C ../app_template pull --ff-only
+dart run ../app_template/scripts/template_update.dart --template ../app_template --to v<الإصدار>
 
 # ٣) الكتابة، ثم التعارضات بـ.template_update/ تُدمج يدوياً ويُحذف المجلد
-dart run scripts/template_update.dart --template ../app_template --to v<الإصدار> --apply
+dart run ../app_template/scripts/template_update.dart --template ../app_template --to v<الإصدار> --apply
 
 # ٤) ملفات المشروع: ما غيّره القالب فيها بين إصدارك والجديد — يُقرأ ويُنقل باليد
 git -C ../app_template diff v<إصدارك> v<الإصدار> -- \
   lib/main.dart lib/app.dart lib/routes lib/features pubspec.yaml \
-  lib/core/platform/features/app_features.dart assets/translations \
+  lib/core/platform/features/app_features.dart \
   android/app/build.gradle.kts android/app/src/main/AndroidManifest.xml .gitignore
 
 # ٥) قسمُ الإصدار أدناه، ثم
@@ -57,40 +60,17 @@ dart run scripts/check_structure.dart && dart run scripts/check_docs.dart
 | `AccountContextRefresher` | لا بديل — لا مستدعيَ له بالقالب. منفّذُك يبقى صنفاً عادياً بـ`features/` | `git grep -n AccountContextRefresher lib` |
 | `DeviceIdService.saveSession(isPrimary:, …)` · `isPrimary` · `PersistenceKeys.deviceIsPrimary` | `saveSession(deviceSessionId: …)` وحده | `git grep -nE "isPrimary\|deviceIsPrimary" lib` |
 | `leftPadding`/`rightPadding` وأخواتها بـ`app_padding_extension` | `startPadding`/`endPadding`… وتُعيد `EdgeInsetsDirectional` | `git grep -nE "(left\|right)(Padding\|Margin)" lib` |
-| مفتاح الترجمة `voiceOpenSettings` | `kitOpenSettings` | `git grep -n voiceOpenSettings` |
+| مفتاح الترجمة `voiceOpenSettings` بكود مشروعك | `kitOpenSettings` — يصل مع الترجمات، والقديم يبقى حتى تحذفه | `git grep -n voiceOpenSettings` |
 | `KitNeedsPermission(permission)` | `KitNeedsPermission([permissions])` — قائمة | `git grep -n KitNeedsPermission lib` |
 | `NavigationState`/`SettingsState` بـ`features/` (صنفان يدويّان) | `@freezed` — انقل الملفين من القالب كما هما إن لم تعدّلهما، ثم `gen_code` | الخطوة ٤ |
 | **`AppFeatures.authMode` · `.showcase` · `.speechRecognition` · `.textToSpeech` · `.tokenInspector`** غائبة | `app_features.dart` ملكُ المشروع ولا يُحدَّث: أضف الأعلام الخمسة و`enum AuthMode` من القالب. **`authMode = AuthMode.required`** إن كان مشروعك يُلزم بالدخول (افتراضُ القالب `none` — §ب) · `showcase = false` إن كانت الرئيسية رئيسيةَ مشروعك | `undefined name 'authMode'` |
-| `LocaleKeys.<مفتاح>` غائب بعشرات الأخطاء | مفاتيحُ الترجمة ملكُ المشروع: انقل ما بالقالب ولا يملكه مشروعك (الكتلة أدناه)، ثم `gen_code` | `undefined getter` على `LocaleKeys` |
 | `package:kit_contracts` لا يُحلّ · `kits.g.dart` غائب | بـ`pubspec.yaml` تحت `dependencies`: `kit_contracts: {path: packages/kit_contracts}` — ثم **`lib/core/di/kits.g.dart` بلا kit** (الكتلة أدناه) و`android/app/proguard-kits.pro` من القالب. ومنها `dart run scripts/kit.dart add <name>` لما تريد | `Target of URI doesn't exist` |
 | `animations` لا يُحلّ | `animations: ^2.1.1` بـ`dependencies` | — |
 | `StartupResolver(...)` · `LoginRepositoryImpl` · `TokenRefreshGatewayImpl` بـ`features/` | يأخذ كلٌّ `AuthSessionObserver` (والـresolver `StorageService` أيضاً)، وسطرُ إخبارٍ واحد بالموضع المناسب — انقله من الخطوة ٤. **بلا هذا يعمل التطبيق**، لكنّ `token_inspector` لا يرى شيئاً | الخطوة ٤ |
 
-**مفاتيحُ الترجمة** — يضيف ما بالقالب وحده، ولا يمسّ قيمةً كتبها المشروع (احفظه خارج
-المستودع وشغّله من جذر المشروع):
-
-```dart
-// dart run merge_translations.dart ../app_template
-import 'dart:convert';
-import 'dart:io';
-
-void main(List<String> args) {
-  for (final lang in ['ar', 'en']) {
-    final template = jsonDecode(
-      File('${args.first}/assets/translations/$lang.json').readAsStringSync(),
-    ) as Map<String, dynamic>;
-    final file = File('assets/translations/$lang.json');
-    final project = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
-    final added = [for (final k in template.keys) if (!project.containsKey(k)) k];
-    for (final k in added) {
-      project[k] = template[k];
-    }
-    final sorted = {for (final k in project.keys.toList()..sort()) k: project[k]};
-    file.writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(sorted)}\n');
-    print('$lang: +${added.length}');
-  }
-}
-```
+**مفاتيحُ الترجمة لا خطوةَ لها**: `template_update` يضيف ما بالقالب ولا يملكه المشروع
+ويحدّث ما لم يلمسه، وقيمةٌ غيّرها الطرفان تبقى للمشروع وقيمةُ القالب بـ`.template_update/`.
+لكن **بسكربت القالب** (الخطوة ٢، من `2.1.0` فأحدث) — نسخةُ مشروعٍ على `1.0.0` لا تعرف ذلك.
 
 **`lib/core/di/kits.g.dart` بلا kit** — ما يكتبه `kit.dart` حين لا يُركَّب شيء:
 

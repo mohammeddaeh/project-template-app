@@ -11,6 +11,11 @@
 
 ## غير مُصدَر
 
+## 2.1.0 — 2026-11-03
+
+- **`template_update` ينقل مفاتيح الترجمة** مفتاحاً مفتاحاً (`scripts/src/translation_merge.dart` ·
+  `test/translation_merge_test.dart`): يضيف الجديد ويحدّث ما لم يلمسه المشروع، والتعارضُ بـ`.template_update/`.
+
 ## 2.0.0 — 2026-11-03
 
 > **ترقيةُ مشروعٍ من 1.0.0**: [`readme/scripts/41_UPGRADING.md`](../readme/scripts/41_UPGRADING.md) §«1.0.0 ⇐ 2.0.0» —
