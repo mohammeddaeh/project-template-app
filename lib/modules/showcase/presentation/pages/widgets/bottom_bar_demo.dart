@@ -52,6 +52,7 @@ class BottomBarDemo extends StatelessWidget {
               AppTabTransition.values,
               AppTabTransition.fadeThrough,
             ),
+            const BoolKnob('translucent'),
             const NumberKnob(
               'tabs',
               initial: 4,
@@ -72,6 +73,7 @@ class BottomBarDemo extends StatelessWidget {
           builder: (context, k) => _PhoneFrame(
             style: k('style'),
             transition: k('transition'),
+            translucent: k('translucent'),
             items: _items(k<double>('tabs').round(), k('badge')),
           ),
         ),
@@ -89,11 +91,13 @@ class _PhoneFrame extends StatefulWidget {
   const _PhoneFrame({
     required this.style,
     required this.transition,
+    required this.translucent,
     required this.items,
   });
 
   final AppBottomBarStyle style;
   final AppTabTransition transition;
+  final bool translucent;
   final List<NavItem> items;
 
   @override
@@ -118,6 +122,7 @@ class _PhoneFrameState extends State<_PhoneFrame> {
           height: 320,
           child: Scaffold(
             backgroundColor: colors.bgPage,
+            extendBody: widget.translucent,
             body: AppTabSwitcher(
               index: index,
               transition: widget.transition,
@@ -137,6 +142,7 @@ class _PhoneFrameState extends State<_PhoneFrame> {
               currentIndex: index,
               onTap: (i) => setState(() => _index = i),
               style: widget.style,
+              translucent: widget.translucent,
             ),
           ),
         ),
@@ -151,16 +157,33 @@ class _TabBody extends StatelessWidget {
   final String labelKey;
   final IconData icon;
 
+  /// A list long enough to scroll under the bar — a translucent bar shows
+  /// nothing over an empty page.
   @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 48, color: context.colors.textMuted),
-        const SizedBox(height: 8),
-        Text(labelKey.tr(), style: context.textTheme.headlineSmall),
-      ],
-    ),
+  Widget build(BuildContext context) => ListView(
+    padding: const EdgeInsets.all(16),
+    children: [
+      Icon(icon, size: 48, color: context.colors.textMuted),
+      const SizedBox(height: 8),
+      Text(
+        labelKey.tr(),
+        style: context.textTheme.headlineSmall,
+        textAlign: TextAlign.center,
+      ),
+      for (var i = 0; i < 8; i++)
+        Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: i.isEven
+                  ? context.colors.primaryContainer
+                  : context.colors.bgCard,
+              borderRadius: AppRadius.mdRadius,
+            ),
+          ),
+        ),
+    ],
   );
 }
 
@@ -205,6 +228,19 @@ class _ApplyToApp extends StatelessWidget {
                   if (t != null) {
                     ShellAppearance.notifier.value = look.copyWith(
                       transition: t,
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 8),
+              ChipRow<bool>(
+                items: const [false, true],
+                labelResolver: (t) => 'translucent: $t',
+                selectedValue: look.translucent,
+                onSelected: (t) {
+                  if (t != null) {
+                    ShellAppearance.notifier.value = look.copyWith(
+                      translucent: t,
                     );
                   }
                 },

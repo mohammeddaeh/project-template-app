@@ -29,6 +29,7 @@ class _DialogsDemoState extends State<DialogsDemo> {
   String? _sheetResult;
   String? _filterResult;
   String? _baseResult;
+  String? _detentResult;
 
   // The filter sheet edits a copy; the page keeps what was applied and hands
   // it back on the next open.
@@ -145,6 +146,28 @@ class _DialogsDemoState extends State<DialogsDemo> {
         });
       },
     );
+  }
+
+  /// A sheet that stops at two heights — dragged below the first, it closes.
+  Future<void> _detentSheet() async {
+    final picked = await AppBottomSheet.show<int>(
+      context,
+      title: LocaleKeys.showcaseDialogsPickTitle.tr(),
+      detents: const [0.4, 0.9],
+      child: Builder(
+        builder: (sheet) => Column(
+          children: [
+            for (var n = 1; n <= 20; n++)
+              ListTile(
+                title: Text(_item(n)),
+                onTap: () => Navigator.of(sheet).pop(n),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted || picked == null) return;
+    setState(() => _detentResult = _item(picked));
   }
 
   /// The older sheet: an extension on [BuildContext] that wraps its content
@@ -307,6 +330,19 @@ class _DialogsDemoState extends State<DialogsDemo> {
               text: LocaleKeys.showcaseDialogsOpenFilter.tr(),
               variant: AppButtonVariant.tonal,
               onTap: () => _filters(a),
+            ),
+          ),
+        ),
+        DemoBlock(
+          code:
+              'AppBottomSheet.show<int>(context, detents: const [0.4, 0.9], '
+              'child: …)',
+          child: _Result(
+            result: _detentResult,
+            child: AppButton(
+              text: LocaleKeys.showcaseDialogsOpen.tr(),
+              variant: AppButtonVariant.tonal,
+              onTap: _detentSheet,
             ),
           ),
         ),

@@ -65,6 +65,14 @@ context.showAppBottomSheet(
   size: AppBottomSheetSize.large,
 );
 
+// ── ورقة بارتفاعات توقّف — تُفتح بـ٤٠٪ وتُسحب إلى ٩٠٪ ──
+await AppBottomSheet.show<void>(
+  context,
+  title: LocaleKeys.history.tr(),
+  detents: const [0.4, 0.9],
+  child: HistoryList(),
+);
+
 // ── فلترة ──
 AppFilterSheet(
   filters: activeFilters,
@@ -73,6 +81,12 @@ AppFilterSheet(
 )
 ```
 
+
+**`detents`** (نِسَبٌ تصاعدية من ارتفاع الشاشة): الورقةُ تُفتح بأولاها، وتقف
+بأقربها حين تُفلت، ولا تعلو آخرَها — **وإفلاتُها تحت الأولى يُغلقها**. الورقةُ
+كلُّها تُسحب (المقبضُ والعنوانُ مع المحتوى)، ومعها يُتجاهل `maxHeightFraction`
+و`isScrollable`: ارتفاعُها من التوقّف لا من محتواها. لقائمةٍ تُقرأ لمحةً ثم
+تُفتح كاملة؛ ولخياراتٍ قليلة تبقى الورقةُ بمقاس محتواها بلا `detents`.
 
 ---
 
@@ -133,3 +147,14 @@ ShellAppearance.notifier.value = ShellAppearance.notifier.value
 وكلُّ تبويبٍ زرٌّ مسمّى لقارئ الشاشة ولو لم تُرسم لافتته. و`AppTabSwitcher` يلفّ
 `IndexedStack` فلا يفقد تبويبٌ حالته، والاتجاه بـ`sharedAxis` يتبع لغة الواجهة.
 **والجسدُ ينتهي عند الشريط لا خلفه** (R15).
+
+**`translucent: true`** — الشريطُ بلونٍ نافذٍ قليلاً (`context.colors.bgTranslucent`،
+٩٠٪ من سطح البطاقة)، والمحتوى يمرّ تحته فيُرى من خلاله. **لونٌ لا تمويه**: لا
+يكلّف إطاراً، وتباينُه يُفحص لكل بالت فوق أسوأ ما يمرّ تحته (F07).
+
+```dart
+const ShellAppearance(style: AppBottomBarStyle.floating, translucent: true)
+```
+
+⚠️ **وهو الاستثناءُ الوحيد لـR15**: شاشةُ تبويبٍ تحدّد `padding` بنفسها أو تثبّت
+زرّاً بأسفلها تضيف `context.bottomContentInset`، وإلا اختفى آخرُها خلف الشريط.

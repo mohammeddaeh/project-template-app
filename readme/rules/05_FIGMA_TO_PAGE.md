@@ -151,6 +151,8 @@ Container(color: context.colors.bgPage)
 | «تحذير» — داكن | ٤٫٨٧:١ |
 | «خطأ» · «معلومة» — داكن | ٦٫١٣ · ٧٫٨٢:١ |
 | `onPrimaryContainer` · `onSecondaryContainer` — داكن | ٨٫٨٢ · ٨٫٦٨:١ |
+| تبويبٌ غير نشط — `textSecondary` على `bgCard` · `bgElevated` (فاتح؛ و`textMuted` هناك ٢٫٧٣:١) | ٨٫٣٣ · ٨٫١٧:١ |
+| `textPrimary` على `bgTranslucent` فوق أسوأ ما تحته (أسود للفاتح · أبيض للداكن) | ١٣٫٩٦ · ١١٫١٩:١ |
 
 **وأخطرُ ما يمسكه الوضعُ الداكن**: خلفيةٌ `XX32` ومقدّمةٌ `XXLighter` — فاتحٌ على
 فاتح، نصٌّ غيرُ مرئيّ عملياً. ولا يمسكه `dart analyze` ولا اختبارُ تخطيط: كلاهما

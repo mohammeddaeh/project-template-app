@@ -92,7 +92,7 @@ class AppTabBar extends StatefulWidget {
   /// لون التبويبة النشطة — الافتراضي: context.colors.primary
   final Color? activeColor;
 
-  /// لون التبويبات الغير نشطة — الافتراضي: context.colors.textMuted
+  /// لون التبويبات الغير نشطة — الافتراضي: context.colors.textSecondary
   final Color? inactiveColor;
 
   final int initialIndex;
@@ -144,7 +144,7 @@ class _AppTabBarState extends State<AppTabBar>
             activeIndex: _activeIndex,
             pageController: _pageController,
             activeColor: widget.activeColor ?? context.colors.primary,
-            inactiveColor: widget.inactiveColor ?? context.colors.textMuted,
+            inactiveColor: widget.inactiveColor ?? context.colors.textSecondary,
             bgColor: context.colors.bgCard,
             onTap: _onTap,
           )
@@ -152,7 +152,7 @@ class _AppTabBarState extends State<AppTabBar>
             tabs: widget.tabs,
             tabController: _tabController,
             activeColor: widget.activeColor ?? context.colors.primary,
-            inactiveColor: widget.inactiveColor ?? context.colors.textMuted,
+            inactiveColor: widget.inactiveColor ?? context.colors.textSecondary,
             onTap: _onTap,
           );
   }

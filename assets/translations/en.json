@@ -936,6 +936,7 @@
   "showcaseKnobTotalSteps": "totalSteps",
   "showcaseKnobTrailing": "trailing",
   "showcaseKnobTransition": "transition",
+  "showcaseKnobTranslucent": "translucent",
   "showcaseKnobType": "type",
   "showcaseKnobValidator": "validator",
   "showcaseKnobValue": "value",

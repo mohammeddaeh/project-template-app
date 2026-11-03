@@ -291,7 +291,7 @@ abstract final class AppThemeData {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: c.bgCard,
         selectedItemColor: scheme.primary,
-        unselectedItemColor: c.textMuted,
+        unselectedItemColor: c.textSecondary,
         selectedLabelStyle: TextStyle(
           color: scheme.primary,
           fontWeight: FontWeight.w700,
@@ -299,7 +299,7 @@ abstract final class AppThemeData {
           fontFamily: fontFamily,
         ),
         unselectedLabelStyle: TextStyle(
-          color: c.textMuted,
+          color: c.textSecondary,
           fontSize: 14,
           fontWeight: FontWeight.w400,
           fontFamily: fontFamily,
@@ -403,7 +403,7 @@ abstract final class AppThemeData {
 
       tabBarTheme: TabBarThemeData(
         labelColor: scheme.primary,
-        unselectedLabelColor: c.textMuted,
+        unselectedLabelColor: c.textSecondary,
         indicatorColor: scheme.primary,
       ),
 

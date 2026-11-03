@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/theme/app_palette.g.dart';
 
+/// كم يُرى من [AppColors.bgTranslucent] — وما بقي (١٠٪) للمحتوى تحته.
+///
+/// ٠٫٩ لا أقلّ: فوق أسوأ خلفيةٍ (أسود تحت الفاتح، أبيض تحت الداكن) يبقى
+/// النصُّ عليه بتباين ٤٫٥:١ — `test/color_contrast_test.dart` يفحصه لكل بالت.
+const _translucency = 0.9;
+
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -30,6 +36,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.bgCard,
     required this.bgElevated,
     required this.bgElevated2,
+    required this.bgTranslucent,
     required this.bgNeutral,
     required this.bgInverse,
     required this.textPrimary,
@@ -101,6 +108,10 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color bgCard;
   final Color bgElevated;
   final Color bgElevated2;
+
+  /// [bgCard] نافذاً قليلاً — لسطحٍ يمرّ المحتوى تحته (الشريط السفلي فوق
+  /// القائمة). لونٌ بلا تمويه: يبقى ثابتاً فيُفحص تباينُه، ولا يكلّف إطاراً.
+  final Color bgTranslucent;
   final Color bgNeutral;
   final Color bgInverse;
   final Color textPrimary;
@@ -196,6 +207,7 @@ class AppColors extends ThemeExtension<AppColors> {
       bgCard: p.white,
       bgElevated: p.gray50,
       bgElevated2: p.gray200,
+      bgTranslucent: p.white.withValues(alpha: _translucency),
       bgNeutral: p.gray100,
       bgInverse: p.gray900,
       textPrimary: p.gray900,
@@ -267,6 +279,7 @@ class AppColors extends ThemeExtension<AppColors> {
       bgCard: p.gray800,
       bgElevated: p.gray800,
       bgElevated2: p.gray72,
+      bgTranslucent: p.gray800.withValues(alpha: _translucency),
       bgNeutral: p.gray800,
       bgInverse: p.gray50,
       textPrimary: p.gray50,
@@ -337,6 +350,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? bgCard,
     Color? bgElevated,
     Color? bgElevated2,
+    Color? bgTranslucent,
     Color? bgNeutral,
     Color? bgInverse,
     Color? textPrimary,
@@ -405,6 +419,7 @@ class AppColors extends ThemeExtension<AppColors> {
       bgCard: bgCard ?? this.bgCard,
       bgElevated: bgElevated ?? this.bgElevated,
       bgElevated2: bgElevated2 ?? this.bgElevated2,
+      bgTranslucent: bgTranslucent ?? this.bgTranslucent,
       bgNeutral: bgNeutral ?? this.bgNeutral,
       bgInverse: bgInverse ?? this.bgInverse,
       textPrimary: textPrimary ?? this.textPrimary,
@@ -500,6 +515,7 @@ class AppColors extends ThemeExtension<AppColors> {
       bgCard: Color.lerp(bgCard, other.bgCard, t)!,
       bgElevated: Color.lerp(bgElevated, other.bgElevated, t)!,
       bgElevated2: Color.lerp(bgElevated2, other.bgElevated2, t)!,
+      bgTranslucent: Color.lerp(bgTranslucent, other.bgTranslucent, t)!,
       bgNeutral: Color.lerp(bgNeutral, other.bgNeutral, t)!,
       bgInverse: Color.lerp(bgInverse, other.bgInverse, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,

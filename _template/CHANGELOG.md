@@ -20,6 +20,14 @@
   على كل ثيم · `test/theme_preset_test.dart` · `test/palette_sync_test.dart`. ألوانٌ فقط — الزوايا والحركة ثابتة.
 - **`palettes/examples/`**: أربعُ بالتاتٍ كاملة (`sand` · `midnight` · `olive` · `ocean`) لا تُقرأ حتى تُنقل إلى
   `palettes/` — كلٌّ يمرّ بفحص التباين بالوضعين.
+- ⚠️ **التبويبُ غير النشط يُقرأ**: `textMuted` على سطح الشريط بالفاتح **٢٫٧٣:١** (دون ٤٫٥)، فصار
+  `textSecondary` (٨٫٣٣:١) بـ`AppBottomBar` و`AppTabBar` و`tabBarTheme` و`bottomNavigationBarTheme` ·
+  `test/color_contrast_test.dart` يفحص الزوج على كل سطحٍ يرسمه شريط، ويُفشل `textMuted` بملفَّي الشريطين.
+- **`ShellAppearance(translucent: true)`** · `AppBottomBar(translucent:)` · `AppColors.bgTranslucent`:
+  شريطٌ سفليّ نافذ بلا تمويه، والمحتوى يمرّ تحته — مطفأ افتراضاً، والاستثناءُ الوحيد لـR15
+  (`test/bottom_content_inset_test.dart`) · تباينُه بـ`test/color_contrast_test.dart` · بجولة الـshowcase.
+- **`AppBottomSheet.show(detents: […])`**: ورقةٌ تقف بارتفاعات توقّف (`DraggableScrollableSheet` بـ`snap`)،
+  وإفلاتُها تحت الأولى يُغلقها · بجولة الـshowcase · `test/app_bottom_sheet_detents_test.dart`.
 - **`AppBentoGrid`** · `BentoTile`: شبكةُ بطاقاتٍ بأحجامٍ مختلفة تتراصّ بلا فراغ، أعمدتها من عرضها
   هي (خليّةٌ ≥ ١٥٠) وتتبع اتجاه القراءة · بجولة الـshowcase · `test/app_bento_grid_test.dart`.
 - **`AppLargeTitleView`**: عنوانٌ كبير ينكمش عند التمرير (`SliverAppBar.large` + `NestedScrollView`) جسدَ

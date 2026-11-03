@@ -255,7 +255,7 @@ class XCard extends StatelessWidget {
 
 | العرض | الشريط | الأجهزة |
 |---|---|---|
-| < ٨٤٠ | `AppBottomBar` سفلياً — بلا `extendBody` (R15) | هاتف · **ولوحٌ عموديّ (٨٠٠)** |
+| < ٨٤٠ | `AppBottomBar` سفلياً — بلا `extendBody` إلا نافذاً (R15) | هاتف · **ولوحٌ عموديّ (٨٠٠)** |
 | ≥ ٨٤٠ | `BrandNavRail` جانبياً — و`extendBody: false` | لوحٌ أفقيّ (١٢٨٠) |
 
 ### ولماذا ٨٤٠ لا ٦٠٠

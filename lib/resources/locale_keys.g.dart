@@ -951,6 +951,7 @@ abstract class LocaleKeys {
   static const showcaseKnobTotalSteps = 'showcaseKnobTotalSteps';
   static const showcaseKnobTrailing = 'showcaseKnobTrailing';
   static const showcaseKnobTransition = 'showcaseKnobTransition';
+  static const showcaseKnobTranslucent = 'showcaseKnobTranslucent';
   static const showcaseKnobType = 'showcaseKnobType';
   static const showcaseKnobValidator = 'showcaseKnobValidator';
   static const showcaseKnobValue = 'showcaseKnobValue';
