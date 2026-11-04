@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/wrappers/pressable_scale.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// لوحة أرقامٍ للقفل المحلّي — ٠-٩ وحذفٌ للخلف. تُستعمل بشاشتي القفل والإعداد
 /// كليهما، فلا تفترض عدد الخانات (يُمرَّر [pinLength] فقط لعرض النقاط).
@@ -24,7 +25,7 @@ class PinPad extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _Dots(entered: enteredLength, total: pinLength),
-        const SizedBox(height: 32),
+        const ResponsiveGap(32),
         _Keypad(onDigit: onDigit, onBackspace: onBackspace),
       ],
     );
@@ -43,7 +44,7 @@ class _Dots extends StatelessWidget {
     children: List.generate(total, (i) {
       final filled = i < entered;
       return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6),
+        margin: EdgeInsets.symmetric(horizontal: context.screen.space(6)),
         width: 14,
         height: 14,
         decoration: BoxDecoration(
@@ -103,12 +104,17 @@ class _PinKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (label.isEmpty) return const SizedBox(width: 72, height: 64);
+    if (label.isEmpty) {
+      return SizedBox(
+        width: context.screen.size(72),
+        height: context.screen.size(64),
+      );
+    }
 
     return PressableScale(
       child: SizedBox(
-        width: 72,
-        height: 64,
+        width: context.screen.size(72),
+        height: context.screen.size(64),
         child: Material(
           color: Colors.transparent,
           child: InkWell(

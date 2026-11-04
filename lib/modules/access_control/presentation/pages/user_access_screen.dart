@@ -11,6 +11,7 @@ import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// One account's access: which roles it holds, and the exceptions on top.
 ///
@@ -77,7 +78,12 @@ class _Body extends StatelessWidget {
     final access = state.access;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+      padding: EdgeInsets.fromLTRB(
+        context.screen.space(12),
+        context.screen.space(8),
+        context.screen.space(12),
+        context.screen.space(24),
+      ),
       children: [
         if (access.isSuperAdmin)
           Card(
@@ -109,7 +115,7 @@ class _Body extends StatelessWidget {
           LocaleKeys.userAccessOverridesHint.tr(),
           style: context.textTheme.bodySmall,
         ),
-        const SizedBox(height: 8),
+        const ResponsiveGap(8),
         ...state.catalog.groups.map(
           (group) => _OverrideGroup(
             group: group,
@@ -151,7 +157,7 @@ class _OverrideGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    margin: const EdgeInsets.only(bottom: 10),
+    margin: EdgeInsets.only(bottom: context.screen.space(10)),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -219,7 +225,10 @@ class _EffectChip extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.screen.space(10),
+        vertical: context.screen.space(3),
+      ),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(10),
@@ -236,7 +245,10 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: 16, bottom: 8),
+    padding: EdgeInsets.only(
+      top: context.screen.space(16),
+      bottom: context.screen.space(8),
+    ),
     child: Text(text, style: context.textTheme.titleMedium),
   );
 }

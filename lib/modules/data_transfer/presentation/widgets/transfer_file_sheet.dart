@@ -9,11 +9,11 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/csv_preview_view.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/dialogs/app_bottom_sheet.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// What to do with a file that has just been downloaded.
 ///
@@ -56,13 +56,13 @@ class TransferFileSheet extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: 16.horizontalPadding,
+        padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(titleKey.tr(), style: context.textTheme.headlineMedium),
-            const SizedBox(height: 4),
+            const ResponsiveGap(4),
             Row(
               children: [
                 Expanded(
@@ -79,7 +79,7 @@ class TransferFileSheet extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const ResponsiveGap(12),
 
             // Preview first: it is the only action that changes nothing, and
             // the one that tells the user whether the other three are worth
@@ -117,7 +117,7 @@ class TransferFileSheet extends StatelessWidget {
                 labelKey: LocaleKeys.fileOpenExternal,
                 onTap: () => _open(context),
               ),
-            const SizedBox(height: 12),
+            const ResponsiveGap(12),
           ],
         ),
       ),

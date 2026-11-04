@@ -8,6 +8,7 @@ import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// "Where is my account signed in, and how do I stop that?"
 ///
@@ -109,7 +110,10 @@ class _List extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: cubit.load,
       child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(16),
+          vertical: context.screen.space(16),
+        ),
         children: [
           Text(
             LocaleKeys.activeDevicesSubtitle.tr(),
@@ -117,17 +121,17 @@ class _List extends StatelessWidget {
               color: context.colors.textMuted,
             ),
           ),
-          const SizedBox(height: 16),
+          const ResponsiveGap(16),
           for (final session in sessions)
             Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: EdgeInsets.only(bottom: context.screen.space(12)),
               child: _SessionCard(
                 session: session,
                 isRevoking: revokingId == session.id,
                 onRevoke: () => _confirmRevoke(context, session),
               ),
             ),
-          const SizedBox(height: 8),
+          const ResponsiveGap(8),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -145,7 +149,7 @@ class _List extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const ResponsiveGap(20),
           // The reason someone opens this screen at all. Naming the second step
           // matters: ending a session logs an intruder out, but they still know
           // the password that let them in.
@@ -157,7 +161,7 @@ class _List extends StatelessWidget {
                 size: 16,
                 color: context.colors.textMuted,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: context.screen.space(8)),
               Expanded(
                 child: Text(
                   LocaleKeys.deviceSecurityNote.tr(),
@@ -229,7 +233,7 @@ class _SessionCard extends StatelessWidget {
         : LocaleKeys.deviceUnknown.tr();
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.screen.space(16)),
       decoration: BoxDecoration(
         color: colors.bgCard,
         borderRadius: BorderRadius.circular(12),
@@ -246,7 +250,7 @@ class _SessionCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.devices_outlined, size: 20, color: colors.textMuted),
-              const SizedBox(width: 10),
+              SizedBox(width: context.screen.space(10)),
               Expanded(
                 child: Text(
                   label,
@@ -258,9 +262,9 @@ class _SessionCard extends StatelessWidget {
               ),
               if (session.isCurrent)
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.screen.space(8),
+                    vertical: context.screen.space(3),
                   ),
                   decoration: BoxDecoration(
                     color: colors.statusSuccessBg,
@@ -276,7 +280,7 @@ class _SessionCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 12),
+          const ResponsiveGap(12),
           _fact(
             context,
             LocaleKeys.deviceLastActive.tr(),
@@ -288,7 +292,7 @@ class _SessionCard extends StatelessWidget {
           // elsewhere, and offering it here would make the obvious button on
           // the obvious row do something other than what the screen is for.
           if (!session.isCurrent) ...[
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: isRevoking
@@ -310,7 +314,7 @@ class _SessionCard extends StatelessWidget {
 
   Widget _fact(BuildContext context, String label, DateTime value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: EdgeInsets.only(bottom: context.screen.space(4)),
       child: Row(
         children: [
           Text(

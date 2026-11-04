@@ -3,12 +3,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/core/platform/features/app_features.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/locale/locale_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// **The module's entire public surface for a feature screen.**
 ///
@@ -57,7 +57,7 @@ class DataTransferSheet extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: 16.horizontalPadding,
+        padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -66,12 +66,12 @@ class DataTransferSheet extends StatelessWidget {
               LocaleKeys.dataTransfer.tr(),
               style: context.textTheme.headlineMedium,
             ),
-            const SizedBox(height: 4),
+            const ResponsiveGap(4),
             Text(
               LocaleKeys.dataTransferSubtitle.tr(),
               style: context.textTheme.bodySmall,
             ),
-            const SizedBox(height: 16),
+            const ResponsiveGap(16),
             _Option(
               icon: Icons.file_download_outlined,
               label: LocaleKeys.exportTitle.tr(),
@@ -84,7 +84,7 @@ class DataTransferSheet extends StatelessWidget {
               onTap: () =>
                   _go(context, TransferImportRoute(resource: resource)),
             ),
-            const SizedBox(height: 12),
+            const ResponsiveGap(12),
           ],
         ),
       ),

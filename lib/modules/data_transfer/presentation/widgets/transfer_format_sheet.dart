@@ -2,9 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Asks which file format, before anything is downloaded.
 ///
@@ -48,13 +48,13 @@ class TransferFormatSheet extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: 16.horizontalPadding,
+        padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(titleKey.tr(), style: context.textTheme.headlineMedium),
-            const SizedBox(height: 12),
+            const ResponsiveGap(12),
             for (final format in formats)
               ListTile(
                 leading: Icon(
@@ -77,7 +77,7 @@ class TransferFormatSheet extends StatelessWidget {
                 ),
                 onTap: () => Navigator.of(context).pop(format),
               ),
-            const SizedBox(height: 12),
+            const ResponsiveGap(12),
           ],
         ),
       ),

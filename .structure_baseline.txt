@@ -3,3 +3,6 @@
 # لا يُعاد توليده لإسكات مخالفة جديدة (R30).
 # التوليد: dart run scripts/check_structure.dart --baseline
 #
+C08|lib/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart|مشاركةٌ خامّ — ShareService (#_CAPABILITIES §المنصّة)
+C14|lib/modules/data_transfer/presentation/pages/transfer_import_screen.dart|اختيار ملفٍّ خامّ — FileService (#_CAPABILITIES §المنصّة)
+C14|lib/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart|اختيار ملفٍّ خامّ — FileService (#_CAPABILITIES §المنصّة)

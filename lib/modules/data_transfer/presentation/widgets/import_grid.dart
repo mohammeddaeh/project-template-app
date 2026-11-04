@@ -6,6 +6,7 @@ import 'package:app_template/modules/data_transfer/domain/import_report.dart';
 import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The user's file, on screen, with the failing cells tinted — and editable.
 ///
@@ -221,7 +222,10 @@ class _Toolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    padding: EdgeInsets.symmetric(
+      horizontal: context.screen.space(12),
+      vertical: context.screen.space(8),
+    ),
     child: Row(
       children: [
         Expanded(
@@ -311,7 +315,9 @@ class _Header extends StatelessWidget {
                       child: InkWell(
                         onTap: () => onSort(key),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: context.screen.space(8),
+                          ),
                           child: Row(
                             children: [
                               Expanded(
@@ -339,7 +345,7 @@ class _Header extends StatelessWidget {
             ),
           ),
           // Balances the delete button in each row so columns stay aligned.
-          const SizedBox(width: 40),
+          SizedBox(width: context.screen.space(40)),
         ],
       ),
     );
@@ -432,7 +438,7 @@ class _Row extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: 40,
+            width: context.screen.size(40),
             child: IconButton(
               icon: const Icon(Icons.delete_outline, size: 18),
               tooltip: LocaleKeys.importDeleteRow.tr(),
@@ -476,7 +482,7 @@ class _Cell extends StatelessWidget {
         onTap: onTap,
         child: Container(
           alignment: AlignmentDirectional.centerStart,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: context.screen.space(8)),
           decoration: tint == null
               ? null
               : BoxDecoration(
@@ -544,7 +550,7 @@ class _CellEditorState extends State<_CellEditor> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.rowLabel, style: context.textTheme.bodySmall),
-        const SizedBox(height: 12),
+        const ResponsiveGap(12),
         // `onFieldSubmitted` as well as the button: on a phone the
         // keyboard's done key is the natural way to finish a one-cell
         // correction.
@@ -554,14 +560,14 @@ class _CellEditorState extends State<_CellEditor> {
           onFieldSubmitted: () => Navigator.of(context).pop(_controller.text),
         ),
         if (widget.error != null) ...[
-          const SizedBox(height: 12),
+          const ResponsiveGap(12),
           // The reason this cell is red, in front of the user while they
           // fix it — not on the screen they just left.
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.error_outline, size: 16, color: context.colors.error),
-              const SizedBox(width: 6),
+              SizedBox(width: context.screen.space(6)),
               Expanded(
                 child: Text(
                   widget.error!.message,

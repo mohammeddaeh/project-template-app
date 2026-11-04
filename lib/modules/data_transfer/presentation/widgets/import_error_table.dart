@@ -2,10 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/modules/data_transfer/domain/import_report.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The row-by-row problem list — the thing the review phase exists to show.
 ///
@@ -37,13 +37,13 @@ class ImportErrorTable extends StatelessWidget {
     }
 
     return ListView.separated(
-      padding: 16.horizontalPadding,
+      padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
       itemCount: report.errors.length + (report.truncatedErrors ? 1 : 0),
-      separatorBuilder: (_, _) => const SizedBox(height: 8),
+      separatorBuilder: (_, _) => const ResponsiveGap(8),
       itemBuilder: (context, index) {
         if (index == report.errors.length) {
           return Padding(
-            padding: 8.verticalPadding,
+            padding: EdgeInsets.symmetric(vertical: context.screen.space(8)),
             child: Text(
               LocaleKeys.importErrorsTruncated.tr(
                 args: ['${report.errors.length}'],
@@ -83,7 +83,7 @@ class _ErrorRow extends StatelessWidget {
             size: 18,
             color: tint,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: context.screen.space(8)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +96,7 @@ class _ErrorRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                const ResponsiveGap(2),
                 Text(
                   error.message,
                   style: context.textTheme.bodySmall,
@@ -104,7 +104,7 @@ class _ErrorRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (error.value != null && error.value!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const ResponsiveGap(4),
                   Text(
                     '"${error.value}"',
                     style: context.textTheme.bodySmall?.copyWith(
@@ -115,7 +115,7 @@ class _ErrorRow extends StatelessWidget {
                   ),
                 ],
                 if (error.duplicateOfRow != null) ...[
-                  const SizedBox(height: 4),
+                  const ResponsiveGap(4),
                   // Names the other row so the user can go delete one of the
                   // pair. "Duplicate" without saying of what is a dead end.
                   Text(

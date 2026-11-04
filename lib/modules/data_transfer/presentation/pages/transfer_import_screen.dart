@@ -15,12 +15,12 @@ import 'package:app_template/modules/data_transfer/presentation/widgets/import_g
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_format_sheet.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_failure_view.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/locale/locale_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Import, for whatever `resource` it is given — and, like the export screen,
 /// with no mention of any feature.
@@ -111,13 +111,13 @@ class _PickStep extends StatelessWidget {
     final isArabic = context.isAr;
 
     return ListView(
-      padding: 16.allPadding,
+      padding: EdgeInsets.all(context.screen.space(16)),
       children: [
         Text(
           resource.label(isArabic: isArabic),
           style: context.textTheme.headlineMedium,
         ),
-        const SizedBox(height: 16),
+        const ResponsiveGap(16),
 
         SectionTitle(titleKey: LocaleKeys.importColumnsTitle),
         Text(
@@ -127,12 +127,12 @@ class _PickStep extends StatelessWidget {
           LocaleKeys.importColumnsHint.tr(),
           style: context.textTheme.bodySmall,
         ),
-        const SizedBox(height: 12),
+        const ResponsiveGap(12),
         for (final column in resource.importableColumns)
           _ColumnRow(column: column, isArabic: isArabic),
 
         if (resource.systemColumns.isNotEmpty) ...[
-          const SizedBox(height: 16),
+          const ResponsiveGap(16),
           Text(
             LocaleKeys.importSystemColumns.tr(
               args: [
@@ -146,7 +146,7 @@ class _PickStep extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: 24),
+        const ResponsiveGap(24),
 
         AppButton(
           text: LocaleKeys.importDownloadTemplate.tr(),
@@ -155,7 +155,7 @@ class _PickStep extends StatelessWidget {
               ? null
               : () => _downloadTemplate(context, cubit, resource),
         ),
-        const SizedBox(height: 8),
+        const ResponsiveGap(8),
         PrimaryButton(
           text: LocaleKeys.importPickFile.tr(),
           isLoading: busy,
@@ -239,16 +239,16 @@ class _ReviewStep extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: 16.horizontalPadding,
+            padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 12),
+                const ResponsiveGap(12),
                 Text(
                   LocaleKeys.importReviewTitle.tr(),
                   style: context.textTheme.headlineMedium,
                 ),
-                const SizedBox(height: 4),
+                const ResponsiveGap(4),
                 // Stated plainly, because it is the whole reason this step
                 // exists. A user who thinks the import already happened will
                 // not read the errors.
@@ -258,7 +258,7 @@ class _ReviewStep extends StatelessWidget {
                     color: context.colors.statusWarningFg,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const ResponsiveGap(12),
                 Row(
                   children: [
                     Expanded(
@@ -270,7 +270,7 @@ class _ReviewStep extends StatelessWidget {
                         color: context.colors.statusSuccessFg,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: context.screen.space(12)),
                     Expanded(
                       child: StatCard(
                         labelText: LocaleKeys.importRowsInvalid.tr(
@@ -283,7 +283,7 @@ class _ReviewStep extends StatelessWidget {
                   ],
                 ),
                 if (warnings > 0) ...[
-                  const SizedBox(height: 8),
+                  const ResponsiveGap(8),
                   // Warnings are counted apart from errors on purpose: "12 rows
                   // will be skipped because they already exist" is information,
                   // not a fault, and folding it into the red number would make
@@ -318,7 +318,7 @@ class _ReviewStep extends StatelessWidget {
                   // Past the preview cap the server sends no rows. Saying so
                   // beats an empty grid that looks like a loading failure.
                   Padding(
-                    padding: 24.allPadding,
+                    padding: EdgeInsets.all(context.screen.space(24)),
                     child: EmptyStateWidget(
                       titleKey: LocaleKeys.importRowsTooMany,
                       icon: Icons.table_chart_outlined,
@@ -330,7 +330,7 @@ class _ReviewStep extends StatelessWidget {
           ),
           SafeArea(
             child: Padding(
-              padding: 16.allPadding,
+              padding: EdgeInsets.all(context.screen.space(16)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -362,7 +362,7 @@ class _ReviewStep extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   if (state.dirty) ...[
-                    const SizedBox(height: 6),
+                    const ResponsiveGap(6),
                     Text(
                       LocaleKeys.importEditedNotice.tr(),
                       style: context.textTheme.bodySmall?.copyWith(
@@ -371,7 +371,7 @@ class _ReviewStep extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ],
-                  const SizedBox(height: 8),
+                  const ResponsiveGap(8),
                   AppButton(
                     text: LocaleKeys.importStartOver.tr(),
                     variant: AppButtonVariant.text,
@@ -399,7 +399,7 @@ class _DoneStep extends StatelessWidget {
     final cubit = context.read<ImportCubit>();
 
     return Padding(
-      padding: 16.allPadding,
+      padding: EdgeInsets.all(context.screen.space(16)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -408,12 +408,12 @@ class _DoneStep extends StatelessWidget {
             size: 64,
             color: context.colors.statusSuccessFg,
           ),
-          const SizedBox(height: 16),
+          const ResponsiveGap(16),
           Text(
             LocaleKeys.importDoneTitle.tr(),
             style: context.textTheme.headlineMedium,
           ),
-          const SizedBox(height: 12),
+          const ResponsiveGap(12),
           // Every count, including the zeros: "0 skipped" is information, and
           // hiding it leaves the user wondering whether skipping happened at
           // all. `failed` is the exception — it is non-zero only when a staged
@@ -461,7 +461,7 @@ class _Busy extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const AppLoader(),
-        const SizedBox(height: 16),
+        const ResponsiveGap(16),
         Text(labelKey.tr(), style: context.textTheme.bodyMedium),
       ],
     ),
@@ -488,7 +488,7 @@ class _ColumnRow extends StatelessWidget {
     final hint = column.hint(isArabic: isArabic);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: context.screen.space(10)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -497,7 +497,7 @@ class _ColumnRow extends StatelessWidget {
             size: 18,
             color: context.colors.textMuted,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: context.screen.space(10)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,7 +512,7 @@ class _ColumnRow extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    SizedBox(width: context.screen.space(6)),
                     // A word, not an asterisk. "*" is a convention people read
                     // past; "Required" is not.
                     _Badge(
@@ -526,13 +526,13 @@ class _ColumnRow extends StatelessWidget {
                   ],
                 ),
                 if (hint != null && hint.isNotEmpty) ...[
-                  const SizedBox(height: 2),
+                  const ResponsiveGap(2),
                   // The server's own explanation of what this column means —
                   // not a sample value (that is the example line below).
                   Text(hint, style: context.textTheme.bodySmall),
                 ],
                 if (column.example != null && column.example!.isNotEmpty) ...[
-                  const SizedBox(height: 2),
+                  const ResponsiveGap(2),
                   Text(
                     LocaleKeys.importColumnExample.tr(args: [column.example!]),
                     style: context.textTheme.bodySmall?.copyWith(
@@ -570,7 +570,10 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+    padding: EdgeInsets.symmetric(
+      horizontal: context.screen.space(6),
+      vertical: context.screen.space(1),
+    ),
     decoration: BoxDecoration(
       color: color.withValues(alpha: 0.12),
       borderRadius: BorderRadius.circular(4),
