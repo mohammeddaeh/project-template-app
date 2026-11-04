@@ -12,6 +12,26 @@ final List<AppThemePreset> generatedThemePresets = [
     palette: AppPalettes.standard,
   ),
   AppThemePreset(
+    id: 'dawn',
+    nameKey: LocaleKeys.themePresetDawn,
+    palette: AppPalettes.dawn,
+  ),
+  AppThemePreset(
+    id: 'emerald',
+    nameKey: LocaleKeys.themePresetEmerald,
+    palette: AppPalettes.emerald,
+  ),
+  AppThemePreset(
+    id: 'graphite',
+    nameKey: LocaleKeys.themePresetGraphite,
+    palette: AppPalettes.graphite,
+  ),
+  AppThemePreset(
+    id: 'lilac',
+    nameKey: LocaleKeys.themePresetLilac,
+    palette: AppPalettes.lilac,
+  ),
+  AppThemePreset(
     id: 'ocean',
     nameKey: LocaleKeys.themePresetOcean,
     palette: AppPalettes.ocean,

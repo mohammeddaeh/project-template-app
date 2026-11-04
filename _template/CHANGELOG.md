@@ -18,9 +18,9 @@
   بـ`PersistenceKeys.selectedThemePresetKey`، ومنتقيه بالإعدادات (`SettingsThemePresetSection`) لا يظهر ما دام الثيم
   واحداً · كلُّ بالتٍ بمفاتيح `standard.json` نفسها، والمخالفةُ تُفشل التوليد · `test/color_contrast_test.dart` يمرّ
   على كل ثيم · `test/theme_preset_test.dart` · `test/palette_sync_test.dart`. ألوانٌ فقط — الزوايا والحركة ثابتة.
-- ⚠️ **ثلاثةُ ثيماتٍ مشحونة**: `palettes/ocean.json` و`palettes/sand.json` بجانب `standard.json`، فمنتقي «ألوان التطبيق»
-  ظاهرٌ بالإعدادات — بطاقاتٌ أفقية ترسم التطبيقَ مصغَّراً بألوان كل ثيم (`test/settings_theme_preset_section_test.dart`).
-  و`palettes/examples/` (`midnight` · `olive`) لا تُقرأ حتى تُنقل. كلٌّ يمرّ بفحص التباين بالوضعين.
+- ⚠️ **سبعُ هوياتٍ مشحونة**: `standard` · `dawn` · `emerald` · `graphite` · `lilac` · `ocean` · `sand` — كلٌّ بأرضيةٍ فاتحة
+  وداكنة مصبوغة (الرماديّاتُ كلُّها بصبغتها وبإضاءة `standard`) وأساسيٍّ وبارز، فمنتقي «ألوان التطبيق»
+  ظاهرٌ بالإعدادات — بطاقاتٌ أفقية ترسم التطبيقَ مصغَّراً بألوان كل ثيم (`test/settings_theme_preset_section_test.dart`). كلٌّ يمرّ بفحص التباين بالوضعين.
 - **`GuideOverlay` لا يُرسم خطأً**: كان يقرأ `MediaQuery` بـ`initState` فيرمي عند كل فتح — صار
   بـ`didChangeDependencies` · `test/guide_overlay_test.dart`.
 - **مقبضُ الورقة السفلية يُرى**: `dividerSubtle` على سطح الورقة ١٫٠٨:١، فصار `outlineVariant`

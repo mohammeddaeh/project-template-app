@@ -182,7 +182,7 @@ cd ios && pod install          # macOS فقط
 | ما تغيّره | كيف |
 |---|---|
 | الألوان | `palettes/standard.json` (خام) ثم `dart run scripts/gen_code.dart` — والربطُ الدلالي بـ`lib/ui/theme/app_colors.dart` |
-| ثيماتُ المستخدم | القالب يُشحن بثلاثة (`standard` · `ocean` · `sand`). ثيمٌ آخر: انسخ `palettes/standard.json` إلى `palettes/<id>.json` وبدّل درجاته واسمه — أو انقل واحداً من `palettes/examples/`. هويةٌ واحدة: احذف `ocean.json` و`sand.json`. ثم `dart run scripts/gen_code.dart` — [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §5‑ب. المنتقي يظهر بالإعدادات ما دام الثيم اثنين فأكثر |
+| ثيماتُ المستخدم | القالب يُشحن بسبع هويات (`standard` · `dawn` · `emerald` · `graphite` · `lilac` · `ocean` · `sand`). ثيمٌ آخر: انسخ `palettes/standard.json` إلى `palettes/<id>.json` وبدّل درجاته واسمه. هويةٌ واحدة: احذف ما عدا `standard.json`. ثم `dart run scripts/gen_code.dart` — [`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §5‑ب. المنتقي يظهر بالإعدادات ما دام الثيم اثنين فأكثر |
 | الخطوط | ضع الملفات بـ`assets/fonts/` ثم `dart run scripts/sync_fonts.dart` (تفاعلي) |
 | شعار شاشة الإقلاع | SVG بـ`assets/images/` ثم `dart run scripts/gen_splash_assets.dart` — راجع [`23_STARTUP_SPLASH.md`](../architecture/23_STARTUP_SPLASH.md) |
 

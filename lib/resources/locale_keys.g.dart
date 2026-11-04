@@ -290,6 +290,10 @@ abstract class LocaleKeys {
   static const themeLight = 'themeLight';
   static const themePreset = 'themePreset';
   static const themePresetStandard = 'themePresetStandard';
+  static const themePresetDawn = 'themePresetDawn';
+  static const themePresetEmerald = 'themePresetEmerald';
+  static const themePresetGraphite = 'themePresetGraphite';
+  static const themePresetLilac = 'themePresetLilac';
   static const themePresetOcean = 'themePresetOcean';
   static const themePresetSand = 'themePresetSand';
   static const themeSystem = 'themeSystem';
