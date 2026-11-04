@@ -67,7 +67,7 @@
 | `ShakeOnError` | حركة · تحقّق | [§38](widgets/01_buttons.md) |
 | `AppReorderableList<T>` | قوائم · سحب | [§39](widgets/05_states.md) |
 | `AppSwipeActions` / `SwipeAction` | قوائم · سحب | [§40](widgets/05_states.md) |
-| `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` | تنقّل · قشرة | [§41](widgets/06_navigation.md) |
+| `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` · `BrandNavRail` | تنقّل · قشرة | [§41](widgets/06_navigation.md) |
 | `DictationButton` · `SpeakButton` · `CustomTextField(dictation:)` | صوت · kit | [§42](widgets/02_inputs.md) |
 | `VoiceNoteRecorder` · `AudioPlayerTile` | تسجيل · تشغيل · kit | [§43](widgets/04_display.md) |
 | `DeviceScan` | مسح · kit | [§44](widgets/02_inputs.md) |

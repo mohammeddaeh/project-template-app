@@ -115,6 +115,7 @@ export 'inputs/form_reveal.dart';
 // Navigation
 export 'navigation/app_tab_bar.dart';
 export 'navigation/app_bottom_bar.dart';
+export 'navigation/brand_nav_rail.dart';
 export 'navigation/nav_item.dart';
 
 // Dialogs

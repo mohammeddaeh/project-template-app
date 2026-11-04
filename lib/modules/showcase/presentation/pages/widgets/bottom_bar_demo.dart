@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -80,6 +81,14 @@ class BottomBarDemo extends StatelessWidget {
         const DemoBlock(
           code: 'ShellAppearance.notifier.value = …',
           child: _ApplyToApp(),
+        ),
+        // From 840 wide the shell trades the bar for this rail — drawn here in a
+        // frame, since the page itself is phone-wide.
+        DemoBlock(
+          code:
+              'BrandNavRail(items: …, currentIndex: i, onTap: …) — '
+              'context.screen.usesSideNavigation',
+          child: _RailFrame(items: _items(4, 3)),
         ),
       ],
     );
@@ -251,4 +260,53 @@ class _ApplyToApp extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// A landscape-tablet slice: the rail beside a tab body.
+class _RailFrame extends StatefulWidget {
+  const _RailFrame({required this.items});
+
+  final List<NavItem> items;
+
+  @override
+  State<_RailFrame> createState() => _RailFrameState();
+}
+
+class _RailFrameState extends State<_RailFrame> {
+  int _index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.items[_index];
+    return ClipRRect(
+      borderRadius: AppRadius.lgRadius,
+      // The frame sits mid-page: the device's system insets are not its own.
+      child: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        removeBottom: true,
+        child: SizedBox(
+          height: context.screen.size(360),
+          child: ColoredBox(
+            color: context.colors.bgPage,
+            child: Row(
+              children: [
+                BrandNavRail(
+                  items: widget.items,
+                  currentIndex: _index,
+                  onTap: (i) => setState(() => _index = i),
+                ),
+                Expanded(
+                  child: _TabBody(
+                    labelKey: item.labelKey,
+                    icon: item.activeIcon,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
