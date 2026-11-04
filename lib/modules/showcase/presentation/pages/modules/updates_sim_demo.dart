@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/in_app_updates/domain/app_update_settings.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -97,12 +97,12 @@ class _UpdatesSimDemoState extends State<UpdatesSimDemo> {
                 value: _installed,
                 ltr: true,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               Text(
                 LocaleKeys.showcaseUpdatesServed.tr(),
                 style: context.textTheme.titleSmall,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               ChipRow<String>(
                 items: _served,
                 labelResolver: (v) => v,
@@ -110,7 +110,7 @@ class _UpdatesSimDemoState extends State<UpdatesSimDemo> {
                 onSelected: (v) => setState(() => _version = v ?? _version),
                 scrollable: false,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               AppListTile(
                 titleText: 'force_update',
                 leadingIcon: Icons.priority_high_rounded,
@@ -119,7 +119,7 @@ class _UpdatesSimDemoState extends State<UpdatesSimDemo> {
                   onChanged: (v) => setState(() => _force = v),
                 ),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               Directionality(
                 textDirection: TextDirection.ltr,
                 child: Text(
@@ -129,14 +129,14 @@ class _UpdatesSimDemoState extends State<UpdatesSimDemo> {
                   ),
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               AppButton(
                 text: LocaleKeys.showcaseUpdatesCheck.tr(),
                 leadingIcon: Icons.system_update_outlined,
                 onTap: _check,
               ),
               if (_result != null) ...[
-                8.heightBox,
+                const ResponsiveGap(8),
                 Text(
                   LocaleKeys.showcaseDialogsResult.tr(args: [_result!]),
                   textAlign: TextAlign.center,

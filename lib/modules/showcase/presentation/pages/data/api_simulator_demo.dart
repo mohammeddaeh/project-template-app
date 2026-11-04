@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/error/failure_ui_mapper.dart';
 import 'package:app_template/ui/error/ui_action.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -421,7 +421,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.only(bottom: context.screen.space(12)),
           child: Row(
             children: [
               Icon(
@@ -429,7 +429,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
                 size: 18,
                 color: context.colors.textMuted,
               ),
-              8.widthBox,
+              const ResponsiveGap.horizontal(8),
               Expanded(
                 child: Text(
                   LocaleKeys.showcaseSimulated.tr(),
@@ -454,21 +454,21 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
                 scrollable: false,
                 onSelected: (o) => _change(() => _outcome = o ?? _outcome),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               ExpandableSection(
                 titleKey: LocaleKeys.showcaseApiKnobs,
                 leading: const Icon(Icons.tune),
                 initiallyExpanded: true,
                 child: _knobs(context),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               AppButton(
                 text: LocaleKeys.showcaseApiSend.tr(),
                 leadingIcon: Icons.send_outlined,
                 isLoading: _revealed >= 0 && !done,
                 onTap: () => _send(steps.length),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               for (final (i, step) in steps.indexed)
                 _StepRow(
                   step: step,
@@ -476,7 +476,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
                   current: _revealed == i,
                 ),
               if (done) ...[
-                12.heightBox,
+                const ResponsiveGap(12),
                 switch (run.end) {
                   _End.data => _Outcomeline(LocaleKeys.showcaseApiCubit.tr()),
                   _End.cache => _Outcomeline(
@@ -535,7 +535,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
           scrollable: false,
           onSelected: (e) => _change(() => _cacheEntry = e ?? _cacheEntry),
         ),
-        12.heightBox,
+        const ResponsiveGap(12),
       ],
       // Retry.
       const _KnobLabel('RetryInterceptor(dio, maxRetries: …)'),
@@ -546,7 +546,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
         scrollable: false,
         onSelected: (n) => _change(() => _maxRetries = n ?? _maxRetries),
       ),
-      12.heightBox,
+      const ResponsiveGap(12),
       _KnobLabel(LocaleKeys.showcaseApiKnobRecover.tr()),
       ChipRow<int>(
         items: const [0, 1, 2, 3],
@@ -556,7 +556,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
         scrollable: false,
         onSelected: (n) => _change(() => _recoverOn = n ?? _recoverOn),
       ),
-      12.heightBox,
+      const ResponsiveGap(12),
       _KnobLabel(LocaleKeys.showcaseApiKnobRetryAfter.tr()),
       ChipRow<_RetryAfter>(
         items: _RetryAfter.values,
@@ -569,7 +569,7 @@ class _ApiSimulatorDemoState extends State<ApiSimulatorDemo> {
         scrollable: false,
         onSelected: (r) => _change(() => _retryAfter = r ?? _retryAfter),
       ),
-      12.heightBox,
+      const ResponsiveGap(12),
       // Token refresh.
       SwitchListTile.adaptive(
         contentPadding: EdgeInsets.zero,
@@ -606,12 +606,12 @@ class _RetryRules extends StatelessWidget {
     final colors = context.colors;
     Widget row(String label, String codes, Color tone, IconData icon) =>
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: EdgeInsets.symmetric(vertical: context.screen.space(6)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(icon, size: 18, color: tone),
-              8.widthBox,
+              const ResponsiveGap.horizontal(8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -644,7 +644,7 @@ class _RetryRules extends StatelessWidget {
             colors.error,
             Icons.block,
           ),
-          8.heightBox,
+          const ResponsiveGap(8),
           Text(
             LocaleKeys.showcaseApiRetryRulesNote.tr(),
             style: context.textTheme.bodySmall?.copyWith(
@@ -755,9 +755,9 @@ class _OriginGuardSimState extends State<_OriginGuardSim> {
               color: context.colors.textSecondary,
             ),
           ),
-          8.heightBox,
+          const ResponsiveGap(8),
           const _Code('Env.baseUrl = $_current'),
-          12.heightBox,
+          const ResponsiveGap(12),
           ChipRow<_Origin>(
             items: _Origin.values,
             labelResolver: (o) => switch (o) {
@@ -774,14 +774,14 @@ class _OriginGuardSimState extends State<_OriginGuardSim> {
               _revealed = -1;
             }),
           ),
-          12.heightBox,
+          const ResponsiveGap(12),
           AppButton(
             text: LocaleKeys.showcaseApiOriginLaunch.tr(),
             leadingIcon: Icons.power_settings_new,
             isLoading: _revealed >= 0 && !done,
             onTap: () => _launch(steps.length),
           ),
-          12.heightBox,
+          const ResponsiveGap(12),
           for (final (i, step) in steps.indexed)
             _StepRow(step: step, shown: _revealed > i, current: _revealed == i),
         ],
@@ -819,7 +819,7 @@ class _KnobLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 8),
+    padding: EdgeInsets.only(bottom: context.screen.space(8)),
     child: Text(text, style: context.textTheme.labelMedium),
   );
 }
@@ -853,7 +853,7 @@ class _StepRow extends StatelessWidget {
       opacity: shown || current ? 1 : 0.35,
       duration: AppMotion.of(context).base,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding: EdgeInsets.symmetric(vertical: context.screen.space(6)),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -863,7 +863,7 @@ class _StepRow extends StatelessWidget {
                   ? const AppProgress.circular(size: AppProgressSize.sm)
                   : Icon(icon, size: 20, color: tone),
             ),
-            12.widthBox,
+            const ResponsiveGap.horizontal(12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -903,7 +903,7 @@ class _Outcomeline extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       Icon(Icons.arrow_forward, size: 18, color: context.colors.textSecondary),
-      8.widthBox,
+      const ResponsiveGap.horizontal(8),
       Expanded(child: Text(text, style: context.textTheme.bodyMedium)),
     ],
   );

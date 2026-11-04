@@ -58,7 +58,9 @@ const _generatedSuffixes = [
 
 /// الموديولات تُفحص كباقي `lib/` — يُشحن كلٌّ منها مع كل مشروع. وجولةُ الـshowcase
 /// خارجها: صفحاتُها تبني ما تعرضه بيدها (صيغةُ تاريخٍ تُركَّب لتُرى كيف تُركَّب).
-const _skipDirs = ['lib/resources/', 'lib/modules/showcase/', 'lib/routes/'];
+/// إلا F38: مسافاتُها كمسافات أيّ شاشة، والجولةُ مثالٌ يُنسخ منه.
+const _skipDirs = ['lib/resources/', 'lib/routes/'];
+const _showcaseDir = 'lib/modules/showcase/';
 
 const _baselineFile = '.structure_baseline.txt';
 
@@ -96,6 +98,11 @@ void main(List<String> args) {
 
     final raw = file.readAsLinesSync();
     final code = _stripComments(raw);
+
+    if (path.startsWith(_showcaseDir)) {
+      _checkRawSpacing(path, code);
+      continue;
+    }
 
     _checkNoRawColors(path, code);
     _checkNoBuildMethods(path, code);
@@ -657,7 +664,7 @@ void _checkResponsiveNumbers(String path, List<String?> code) {
 /// بـ`readme/ui/22_RESPONSIVE.md` §٣‑ب: `ResponsiveGap(24)` · `s.space(16)` ·
 /// `s.size(108)` · `s.gutter`.
 ///
-/// يُفحص `features/` و`modules/` و`ui/` (والـshowcase خارج الفاحص كلِّه — `_skipDirs`).
+/// يُفحص `features/` و`modules/` و`ui/` — والـshowcase معها (F38 وحده يبلغها).
 /// وخارجه طبقةُ المقاس نفسُها وتعريفُ الثيم (حشواتُ المكوّنات الافتراضية) وتعريفُ الامتدادات.
 /// والصفرُ والكسورُ دون الواحد ليست مسافة (`SizedBox(height: 0.5)` خطّ).
 final _rawGap = RegExp(

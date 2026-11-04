@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -15,7 +15,7 @@ class DemoBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 16),
+    padding: EdgeInsets.only(bottom: context.screen.space(16)),
     child: AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -30,7 +30,7 @@ class DemoBlock extends StatelessWidget {
               ),
             ),
           ),
-          12.heightBox,
+          const ResponsiveGap(12),
           child,
         ],
       ),

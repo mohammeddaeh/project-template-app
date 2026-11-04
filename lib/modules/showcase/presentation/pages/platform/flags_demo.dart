@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -83,7 +84,7 @@ class FlagsDemo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: EdgeInsets.only(bottom: context.screen.space(16)),
           child: Text(
             LocaleKeys.showcaseFlagsHint.tr(),
             style: context.textTheme.bodySmall?.copyWith(
@@ -116,7 +117,7 @@ class FlagsDemo extends StatelessWidget {
                 Text(titleKey.tr(), style: context.textTheme.headlineSmall),
                 for (final (name, on) in flags)
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: EdgeInsets.only(top: context.screen.space(8)),
                     child: Row(
                       children: [
                         Expanded(

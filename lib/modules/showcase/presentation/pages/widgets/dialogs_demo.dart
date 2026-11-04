@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/call_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/extensions/bottomsheet_extension.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -180,7 +180,7 @@ class _DialogsDemoState extends State<DialogsDemo> {
         for (var n = 1; n <= 3; n++)
           Builder(
             builder: (sheet) => Padding(
-              padding: 8.bottomPadding,
+              padding: EdgeInsets.only(bottom: context.screen.space(8)),
               child: AppButton(
                 text: _item(n),
                 variant: AppButtonVariant.outlined,
@@ -375,7 +375,7 @@ class _Result extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     children: [
       child,
-      12.heightBox,
+      const ResponsiveGap(12),
       Text(
         LocaleKeys.showcaseDialogsResult.tr(
           args: [result ?? LocaleKeys.showcaseDialogsNoResult.tr()],

@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:kit_contracts/kit_contracts.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/kit_notice.dart';
@@ -37,7 +38,7 @@ class VideoDemo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(LocaleKeys.showcaseVideoSample.tr(), style: caption),
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               const AppVideoPlayer(source: _sample),
             ],
           ),

@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/foundation/value_objects/email.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -165,10 +165,10 @@ class _InputsDemoState extends State<InputsDemo> {
                     validator: k('validator'),
                   ),
                   if (obscure && lines != null) ...[
-                    8.heightBox,
+                    const ResponsiveGap(8),
                     _note(LocaleKeys.showcaseInputsObscureOneLine.tr()),
                   ],
-                  12.heightBox,
+                  const ResponsiveGap(12),
                   AppButton(
                     text: LocaleKeys.showcaseInputsValidate.tr(),
                     variant: AppButtonVariant.tonal,
@@ -177,7 +177,7 @@ class _InputsDemoState extends State<InputsDemo> {
                     ),
                   ),
                   if (_fieldValid != null) ...[
-                    8.heightBox,
+                    const ResponsiveGap(8),
                     _note(
                       _fieldValid!
                           ? LocaleKeys.showcaseInputsValid.tr()
@@ -378,7 +378,7 @@ class _InputsDemoState extends State<InputsDemo> {
                 onClear: () => setState(() => _searched = null),
               ),
               if (_searched != null) ...[
-                8.heightBox,
+                const ResponsiveGap(8),
                 _note(LocaleKeys.showcaseInputsSearched.tr(args: [_searched!])),
               ],
             ],
@@ -424,9 +424,9 @@ class _InputsDemoState extends State<InputsDemo> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _note(LocaleKeys.showcaseInputsNextHint.tr()),
-              12.heightBox,
+              const ResponsiveGap(12),
               CustomTextField(labelText: LocaleKeys.showcaseInputsTitle.tr()),
-              12.heightBox,
+              const ResponsiveGap(12),
               // Focusable, yet "next" walks past them: only the fields' nodes
               // carry the InputFocusNode tag.
               ChipRow<int>(
@@ -435,9 +435,9 @@ class _InputsDemoState extends State<InputsDemo> {
                 selectedValue: _chip,
                 onSelected: (v) => setState(() => _chip = v),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               CustomTextField(labelText: LocaleKeys.showcaseName.tr()),
-              12.heightBox,
+              const ResponsiveGap(12),
               CustomTextField(
                 labelText: LocaleKeys.password.tr(),
                 isFieldObscure: true,
@@ -454,13 +454,13 @@ class _InputsDemoState extends State<InputsDemo> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _note(LocaleKeys.showcaseInputsRevealHint.tr()),
-                12.heightBox,
+                const ResponsiveGap(12),
                 CustomTextField(
                   labelText: LocaleKeys.showcaseInputsTitle.tr(),
                   showRequired: true,
                   validator: _requiredValidator,
                 ),
-                12.heightBox,
+                const ResponsiveGap(12),
                 AppSelectField<int>(
                   items: _items,
                   labelResolver: _item,
@@ -471,21 +471,21 @@ class _InputsDemoState extends State<InputsDemo> {
                       v == null ? LocaleKeys.fieldRequired.tr() : null,
                   onChanged: (v) => setState(() => _revealSelected = v),
                 ),
-                12.heightBox,
+                const ResponsiveGap(12),
                 CustomTextField(
                   labelText: LocaleKeys.showcaseInputsBody.tr(),
                   showRequired: true,
                   maxLines: 3,
                   validator: _requiredValidator,
                 ),
-                12.heightBox,
+                const ResponsiveGap(12),
                 AppButton(
                   text: LocaleKeys.save.tr(),
                   onTap: () =>
                       setState(() => _revealOk = _reveal.validateAndReveal()),
                 ),
                 if (_revealOk) ...[
-                  8.heightBox,
+                  const ResponsiveGap(8),
                   _note(
                     LocaleKeys.showcaseInputsValid.tr(),
                     color: context.colors.statusSuccessFg,

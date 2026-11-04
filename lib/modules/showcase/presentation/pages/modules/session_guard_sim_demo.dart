@@ -6,7 +6,6 @@ import 'package:app_template/modules/session_guard/session_guard_config.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -163,7 +162,7 @@ class _SessionGuardSimDemoState extends State<SessionGuardSimDemo> {
                             color: colors.textMuted,
                           ),
                         ),
-                        12.heightBox,
+                        const ResponsiveGap(12),
                         AppButton(
                           text: LocaleKeys.showcaseGuardLockNow.tr(),
                           leadingIcon: Icons.lock_outline,
@@ -208,7 +207,7 @@ class _SessionGuardSimDemoState extends State<SessionGuardSimDemo> {
                   color: colors.textMuted,
                 ),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               AppButton(
                 text: LocaleKeys.showcaseReplay.tr(),
                 variant: AppButtonVariant.text,

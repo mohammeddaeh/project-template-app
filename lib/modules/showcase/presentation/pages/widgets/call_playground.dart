@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -39,7 +39,7 @@ class _CallPlaygroundState extends State<CallPlayground> {
     final args = CallArgs._(widget.knobs, _values);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: context.screen.space(16)),
       child: AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -52,7 +52,7 @@ class _CallPlaygroundState extends State<CallPlayground> {
                   borderRadius: AppRadius.smRadius,
                 ),
                 child: Padding(
-                  padding: 12.allPadding,
+                  padding: EdgeInsets.all(context.screen.space(12)),
                   child: Text(
                     widget.code(args),
                     style: context.textTheme.bodySmall?.copyWith(
@@ -63,11 +63,11 @@ class _CallPlaygroundState extends State<CallPlayground> {
                 ),
               ),
             ),
-            16.heightBox,
+            const ResponsiveGap(16),
             widget.builder(context, args),
-            16.heightBox,
+            const ResponsiveGap(16),
             const DividerWidget(),
-            8.heightBox,
+            const ResponsiveGap(8),
             Directionality(
               textDirection: TextDirection.ltr,
               child: Column(
@@ -75,7 +75,9 @@ class _CallPlaygroundState extends State<CallPlayground> {
                 children: [
                   for (final k in widget.knobs)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        vertical: context.screen.space(4),
+                      ),
                       child: k.buildControl(
                         context,
                         _values[k.name],
@@ -168,7 +170,7 @@ class OptionalNumberKnob extends Knob<double?> {
           ),
         ),
         SizedBox(
-          width: 40,
+          width: context.screen.size(40),
           child: Text(codeOf(v), style: context.textTheme.bodySmall),
         ),
       ],

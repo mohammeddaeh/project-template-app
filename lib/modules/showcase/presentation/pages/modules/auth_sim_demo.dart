@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/app_feedback_service.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
@@ -139,7 +139,7 @@ class _AuthSimDemoState extends State<AuthSimDemo> {
             color: context.colors.textMuted,
           ),
         ),
-        12.heightBox,
+        const ResponsiveGap(12),
         CustomTextField(
           controller: _email,
           labelText: LocaleKeys.eMail.tr(),
@@ -149,7 +149,7 @@ class _AuthSimDemoState extends State<AuthSimDemo> {
           showRequired: true,
           validator: _validateEmail,
         ),
-        16.heightBox,
+        const ResponsiveGap(16),
         CustomTextField(
           controller: _pass,
           labelText: LocaleKeys.password.tr(),
@@ -161,7 +161,7 @@ class _AuthSimDemoState extends State<AuthSimDemo> {
               (v == null || v.isEmpty) ? LocaleKeys.fieldRequired.tr() : null,
         ),
         if (_error != null) ...[
-          12.heightBox,
+          const ResponsiveGap(12),
           Text(
             _error!,
             style: context.textTheme.bodySmall?.copyWith(
@@ -169,7 +169,7 @@ class _AuthSimDemoState extends State<AuthSimDemo> {
             ),
           ),
         ],
-        16.heightBox,
+        const ResponsiveGap(16),
         PrimaryButton(
           text: LocaleKeys.login.tr(),
           isLoading: _loading,
@@ -189,7 +189,7 @@ class _AuthSimDemoState extends State<AuthSimDemo> {
         Row(
           children: [
             AvatarWidget(initial: name.isEmpty ? '?' : name[0].toUpperCase()),
-            12.widthBox,
+            const ResponsiveGap.horizontal(12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +210,7 @@ class _AuthSimDemoState extends State<AuthSimDemo> {
             ),
           ],
         ),
-        16.heightBox,
+        const ResponsiveGap(16),
         AppButton(
           text: LocaleKeys.logOut.tr(),
           variant: AppButtonVariant.outlined,

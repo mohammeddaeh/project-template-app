@@ -8,7 +8,6 @@ import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/playground_tokens.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -81,7 +80,7 @@ class _DisplayDemoState extends State<DisplayDemo> {
             ChoiceKnob<double?>('margin', const {
               'null': null,
               'EdgeInsets.zero': 0,
-              'const EdgeInsets.all(24)': 24,
+              'EdgeInsets.all(context.screen.space(24))': 24,
             }, apiDefaultCode: 'null'),
             ChoiceKnob<double?>('elevation', const {
               'null': null,
@@ -169,7 +168,7 @@ class _DisplayDemoState extends State<DisplayDemo> {
                   enabled: k('enabled'),
                   showDivider: k('showDivider'),
                 ),
-                8.heightBox,
+                const ResponsiveGap(8),
                 Text(
                   LocaleKeys.showcaseDisplayTaps.tr(args: ['$_taps']),
                   textAlign: TextAlign.center,
@@ -332,7 +331,7 @@ class _DisplayDemoState extends State<DisplayDemo> {
             const BoolKnob('isLoading'),
           ],
           builder: (context, k) => SizedBox(
-            width: 200,
+            width: context.screen.size(200),
             child: StatCard(
               value: k('value'),
               labelText: k('labelText'),
@@ -556,7 +555,7 @@ class _DisplayDemoState extends State<DisplayDemo> {
                   tone: StatusTone.info,
                 ),
               ),
-              16.heightBox,
+              const ResponsiveGap(16),
               SectionTitle(
                 titleKey: LocaleKeys.showcaseDisplayDetails,
                 padding: EdgeInsets.zero,

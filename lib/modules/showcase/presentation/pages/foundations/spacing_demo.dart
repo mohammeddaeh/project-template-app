@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_colors.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
@@ -82,14 +81,14 @@ class SpacingDemo extends StatelessWidget {
             );
             if (k<bool>('vertical')) {
               return SizedBox(
-                height: 96,
+                height: context.screen.size(96),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     block(48, 96),
-                    12.widthBox,
+                    const ResponsiveGap.horizontal(12),
                     divider,
-                    12.widthBox,
+                    const ResponsiveGap.horizontal(12),
                     block(48, 96),
                   ],
                 ),
@@ -146,7 +145,7 @@ class SpacingDemo extends StatelessWidget {
             ),
           ],
           builder: (context, k) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: EdgeInsets.symmetric(vertical: context.screen.space(16)),
             child: DashedDivider(
               color: _colorOf(context.colors, k('color')),
               dashWidth: k('dashWidth'),
@@ -237,8 +236,8 @@ class _SpacingPickerState extends State<_SpacingPicker> {
     final marked = ColoredBox(
       color: colors.feedbackWarning,
       child: vertical
-          ? SizedBox(width: 48, child: gap)
-          : SizedBox(height: 32, child: gap),
+          ? SizedBox(width: context.screen.size(48), child: gap)
+          : SizedBox(height: context.screen.size(32), child: gap),
     );
 
     return DemoBlock(
@@ -247,7 +246,7 @@ class _SpacingPickerState extends State<_SpacingPicker> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
-            height: 96,
+            height: context.screen.size(96),
             child: Center(
               child: vertical
                   ? Column(
@@ -260,12 +259,12 @@ class _SpacingPickerState extends State<_SpacingPicker> {
                     ),
             ),
           ),
-          8.heightBox,
+          const ResponsiveGap(8),
           _Caption(
             // The design number in the name, carried to this screen.
             '${context.screen.space(double.parse(_name.replaceAll(RegExp(r'[^0-9]'), ''))).toStringAsFixed(0)} px',
           ),
-          8.heightBox,
+          const ResponsiveGap(8),
           Directionality(
             textDirection: TextDirection.ltr,
             child: ChipRow<String>(
@@ -325,11 +324,11 @@ class _RadiusPickerState extends State<_RadiusPicker> {
               ),
             ),
           ),
-          8.heightBox,
+          const ResponsiveGap(8),
           Center(
             child: _Caption('AppRadius.$_name = ${value.toStringAsFixed(0)}'),
           ),
-          8.heightBox,
+          const ResponsiveGap(8),
           Directionality(
             textDirection: TextDirection.ltr,
             child: ChipRow<String>(

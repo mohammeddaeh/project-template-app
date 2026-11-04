@@ -5,13 +5,13 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/foundation/contracts/pagination_data_entity.dart';
 import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/app_feedback_service.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/state/mutation_result.dart';
@@ -94,7 +94,7 @@ class _StateLog extends StatelessWidget {
               size: 18,
               color: colors.textMuted,
             ),
-            8.widthBox,
+            const ResponsiveGap.horizontal(8),
             Expanded(
               child: Text(
                 LocaleKeys.showcaseCubitsLog.tr(),
@@ -107,7 +107,7 @@ class _StateLog extends StatelessWidget {
             ),
           ],
         ),
-        4.heightBox,
+        const ResponsiveGap(4),
         Container(
           height: 168,
           decoration: BoxDecoration(
@@ -117,7 +117,7 @@ class _StateLog extends StatelessWidget {
           child: lines.isEmpty
               ? Center(
                   child: Padding(
-                    padding: 12.allPadding,
+                    padding: EdgeInsets.all(context.screen.space(12)),
                     child: Text(
                       LocaleKeys.showcaseCubitsLogEmpty.tr(),
                       textAlign: TextAlign.center,
@@ -132,7 +132,7 @@ class _StateLog extends StatelessWidget {
                   textDirection: TextDirection.ltr,
                   child: ListView.builder(
                     primary: false,
-                    padding: 8.allPadding,
+                    padding: EdgeInsets.all(context.screen.space(8)),
                     itemCount: lines.length,
                     itemBuilder: (context, i) =>
                         _LogRow(lines[lines.length - 1 - i]),
@@ -161,7 +161,7 @@ class _LogRow extends StatelessWidget {
     };
     final style = context.textTheme.bodySmall;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(2)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -172,16 +172,16 @@ class _LogRow extends StatelessWidget {
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
-          8.widthBox,
+          const ResponsiveGap.horizontal(8),
           Padding(
-            padding: const EdgeInsets.only(top: 2),
+            padding: EdgeInsets.only(top: context.screen.space(2)),
             child: Icon(
               icon,
               size: line.tone == _Tone.state ? 8 : 14,
               color: tone,
             ),
           ),
-          8.widthBox,
+          const ResponsiveGap.horizontal(8),
           Expanded(
             child: Text(
               line.text,
@@ -204,7 +204,7 @@ class _Intro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
+    padding: EdgeInsets.only(bottom: context.screen.space(12)),
     child: Text(
       text,
       style: context.textTheme.bodySmall?.copyWith(
@@ -223,7 +223,7 @@ class _Current extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12),
+    padding: EdgeInsets.symmetric(vertical: context.screen.space(12)),
     child: Row(
       children: [
         Text(
@@ -232,7 +232,7 @@ class _Current extends StatelessWidget {
             color: context.colors.textMuted,
           ),
         ),
-        8.widthBox,
+        const ResponsiveGap.horizontal(8),
         Expanded(
           child: Directionality(
             textDirection: TextDirection.ltr,
@@ -245,7 +245,7 @@ class _Current extends StatelessWidget {
             ),
           ),
         ),
-        if (trailing != null) ...[8.widthBox, trailing!],
+        if (trailing != null) ...[const ResponsiveGap.horizontal(8), trailing!],
       ],
     ),
   );
@@ -442,7 +442,7 @@ class _SafeCubitSectionState extends State<_SafeCubitSection>
                     ),
             ],
           ),
-          8.heightBox,
+          const ResponsiveGap(8),
           _Intro(LocaleKeys.showcaseCubitsLeaveHint.tr()),
           log(),
         ],
@@ -543,7 +543,7 @@ class _MutationSectionState extends State<_MutationSection>
             onSelected: (k) => setState(() => _outcome = k ?? _outcome),
           ),
         ),
-        12.heightBox,
+        const ResponsiveGap(12),
         BlocBuilder<_SaveCubit, bool>(
           bloc: _cubit,
           builder: (context, saving) => Row(
@@ -554,7 +554,7 @@ class _MutationSectionState extends State<_MutationSection>
                 isLoading: saving,
                 onTap: () => _save(_outcome),
               ),
-              12.widthBox,
+              const ResponsiveGap.horizontal(12),
               Expanded(
                 child: Text(
                   LocaleKeys.showcaseCubitsSaid.tr(args: ['$_said']),
@@ -567,7 +567,7 @@ class _MutationSectionState extends State<_MutationSection>
           ),
         ),
         if (_asking) ...[
-          12.heightBox,
+          const ResponsiveGap(12),
           Row(
             children: [
               Expanded(
@@ -585,7 +585,7 @@ class _MutationSectionState extends State<_MutationSection>
             ],
           ),
         ],
-        12.heightBox,
+        const ResponsiveGap(12),
         log(),
       ],
     ),
@@ -650,7 +650,7 @@ class _RefreshSectionState extends State<_RefreshSection>
                 _cubit.refresh();
               },
             ),
-            12.widthBox,
+            const ResponsiveGap.horizontal(12),
             Expanded(
               child: Text(
                 LocaleKeys.showcaseCubitsRebuilds.tr(args: ['$_rebuilds']),
@@ -661,7 +661,7 @@ class _RefreshSectionState extends State<_RefreshSection>
             ),
           ],
         ),
-        12.heightBox,
+        const ResponsiveGap(12),
         log(),
       ],
     ),
@@ -803,7 +803,7 @@ class _PaginationSectionState extends State<_PaginationSection>
             ],
           ),
         ),
-        12.heightBox,
+        const ResponsiveGap(12),
         log(),
       ],
     ),

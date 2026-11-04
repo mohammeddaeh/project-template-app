@@ -4,11 +4,11 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:kit_contracts/kit_contracts.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/kit_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -56,7 +56,7 @@ class _InkDemoState extends State<InkDemo> {
                 controller: _signature,
                 hint: LocaleKeys.showcaseSignatureHint.tr(),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               AppButton(
                 text: LocaleKeys.showcaseSignatureSave.tr(),
                 variant: AppButtonVariant.outlined,
@@ -64,9 +64,9 @@ class _InkDemoState extends State<InkDemo> {
                 onTap: _save,
               ),
               if (png != null) ...[
-                8.heightBox,
+                const ResponsiveGap(8),
                 SizedBox(
-                  height: 96,
+                  height: context.screen.size(96),
                   child: CapturedPhotoImage(
                     photo: CapturedPhoto(bytes: png, mimeType: 'image/png'),
                     fit: BoxFit.contain,
@@ -88,7 +88,7 @@ class _InkDemoState extends State<InkDemo> {
                 ),
               ),
               if (_written.isNotEmpty) ...[
-                8.heightBox,
+                const ResponsiveGap(8),
                 Text(
                   '${LocaleKeys.showcaseInkResult.tr()} $_written',
                   style: context.textTheme.bodyMedium,

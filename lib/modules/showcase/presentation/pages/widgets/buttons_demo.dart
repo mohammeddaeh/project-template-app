@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -54,7 +54,7 @@ class ButtonsDemo extends StatelessWidget {
                 ? context.colors.bgBrand
                 : Colors.transparent,
             child: Padding(
-              padding: 12.allPadding,
+              padding: EdgeInsets.all(context.screen.space(12)),
               child: AppButton(
                 text: k('text'),
                 variant: k('variant'),

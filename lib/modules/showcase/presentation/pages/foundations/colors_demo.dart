@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_colors.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -126,7 +126,7 @@ class ColorsDemo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: EdgeInsets.only(bottom: context.screen.space(16)),
           child: Text(
             LocaleKeys.showcaseColorsHint.tr(),
             style: context.textTheme.bodySmall?.copyWith(
@@ -141,7 +141,7 @@ class ColorsDemo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(titleKey.tr(), style: context.textTheme.headlineSmall),
-                12.heightBox,
+                const ResponsiveGap(12),
                 // As many 96-wide columns as fit, stretched to fill the row.
                 LayoutBuilder(
                   builder: (context, box) {
@@ -188,7 +188,7 @@ class _Swatch extends StatelessWidget {
             border: Border.all(color: context.colors.borderSubtle),
           ),
         ),
-        4.heightBox,
+        const ResponsiveGap(4),
         Directionality(
           textDirection: TextDirection.ltr,
           child: Text(

@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/playground_tokens.dart';
 import 'package:app_template/resources/assets.gen.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -87,7 +87,7 @@ class _StatesDemoState extends State<StatesDemo> {
                   AppProgress.circular(value: 0.65),
                 ],
               ),
-              SizedBox(height: 16),
+              ResponsiveGap(16),
               AppProgress.linear(value: 0.4),
             ],
           ),
@@ -110,7 +110,7 @@ class _StatesDemoState extends State<StatesDemo> {
                 child: Row(
                   children: [
                     AvatarWidget(initial: name),
-                    12.widthBox,
+                    const ResponsiveGap.horizontal(12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +119,7 @@ class _StatesDemoState extends State<StatesDemo> {
                             name,
                             style: context.textTheme.titleSmall,
                           ),
-                          4.heightBox,
+                          const ResponsiveGap(4),
                           ShimmerText(
                             LocaleKeys.showcaseDisplaySubtitle.tr(),
                             style: context.textTheme.bodySmall,
@@ -199,7 +199,7 @@ class _StatesDemoState extends State<StatesDemo> {
             }, apiDefaultCode: 'null'),
           ],
           builder: (context, k) => SizedBox(
-            height: 300,
+            height: context.screen.size(300),
             child: AppStateWidget(
               type: k('type'),
               titleKey: k('titleKey'),
@@ -225,7 +225,10 @@ class _StatesDemoState extends State<StatesDemo> {
                 selectedValue: _shortcut,
                 onSelected: (s) => setState(() => _shortcut = s ?? _shortcut),
               ),
-              SizedBox(height: 220, child: _shortcutFor(_shortcut)),
+              SizedBox(
+                height: context.screen.size(220),
+                child: _shortcutFor(_shortcut),
+              ),
             ],
           ),
         ),
@@ -233,11 +236,11 @@ class _StatesDemoState extends State<StatesDemo> {
           code: 'RetryWidget(onRetry: …)',
           child: Center(child: RetryWidget(onRetry: _retried)),
         ),
-        const DemoBlock(
+        DemoBlock(
           code: 'PlaceholderScreen(titleKey: …, icon: …)',
           child: SizedBox(
-            height: 300,
-            child: PlaceholderScreen(
+            height: context.screen.size(300),
+            child: const PlaceholderScreen(
               titleKey: LocaleKeys.showcaseDisplayTitle,
               icon: Icons.construction_outlined,
             ),
@@ -254,7 +257,7 @@ class _StatesDemoState extends State<StatesDemo> {
             children: [
               for (final debug in [true, false]) ...[
                 SizedBox(
-                  height: 180,
+                  height: context.screen.size(180),
                   child: ErrorFallback(
                     debugOverride: debug,
                     details: FlutterErrorDetails(
@@ -264,7 +267,7 @@ class _StatesDemoState extends State<StatesDemo> {
                     ),
                   ),
                 ),
-                8.heightBox,
+                const ResponsiveGap(8),
               ],
             ],
           ),
@@ -368,7 +371,7 @@ class _SkeletonPlaygroundState extends State<_SkeletonPlayground> {
         _padding(),
       ],
       builder: (context, k) => SizedBox(
-        width: 160,
+        width: context.screen.size(160),
         child: SkeletonGridItem(
           aspectRatio: k('aspectRatio'),
           padding: _pad(k),
@@ -472,7 +475,7 @@ class _SkeletonPlaygroundState extends State<_SkeletonPlayground> {
           onSelected: (s) => setState(() => _kind = s ?? _kind),
         ),
       ),
-      8.heightBox,
+      const ResponsiveGap(8),
       // A new kind is a new set of controls — start it afresh.
       KeyedSubtree(key: ValueKey(_kind), child: _playground()),
     ],

@@ -5,11 +5,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/foundation/contracts/pagination_data_entity.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/state/pagination/pagination_cubit.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -99,9 +99,9 @@ class _PaginationDemoState extends State<PaginationDemo> {
                   _run++;
                 }),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               SizedBox(
-                height: 360,
+                height: context.screen.size(360),
                 child: BlocProvider(
                   key: ValueKey(_run),
                   create: (_) => _DemoPaginationCubit(_source),
@@ -153,7 +153,7 @@ class _PaginationDemoState extends State<PaginationDemo> {
                 onSelected: (t) => setState(() => _tail = t ?? _tail),
               ),
               if (_tail == _Tail.end) ...[
-                8.heightBox,
+                const ResponsiveGap(8),
                 ChipRow<ListEndMarker>(
                   items: ListEndMarker.values,
                   labelResolver: (m) => m.name,
@@ -161,7 +161,7 @@ class _PaginationDemoState extends State<PaginationDemo> {
                   onSelected: (m) => setState(() => _marker = m ?? _marker),
                 ),
               ],
-              8.heightBox,
+              const ResponsiveGap(8),
               NextPageStatus(
                 isLoading: _tail == _Tail.loading,
                 style: _style,
@@ -180,7 +180,7 @@ class _PaginationDemoState extends State<PaginationDemo> {
               'itemCount: …, onLoadMore: …, hasMore: …, '
               'loadingWidget: LoadMoreWidget()))',
           child: SizedBox(
-            height: 260,
+            height: context.screen.size(260),
             child: RefreshWrapper(
               onRefresh: _refreshSimple,
               child: PaginatedListView(
@@ -230,7 +230,7 @@ class _AppearTrackerDemoState extends State<_AppearTrackerDemo> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: 220,
+          height: context.screen.size(220),
           child: ListView.builder(
             key: ValueKey(_run),
             itemCount: _count,
@@ -247,7 +247,7 @@ class _AppearTrackerDemoState extends State<_AppearTrackerDemo> {
             },
           ),
         ),
-        8.heightBox,
+        const ResponsiveGap(8),
         AppButton(
           text: '${LocaleKeys.showcaseAdd.tr()} +5',
           variant: AppButtonVariant.tonal,

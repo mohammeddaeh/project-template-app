@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/foundation/formatting/app_formats.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/extensions/date_picker_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -264,7 +264,7 @@ class _FormatsDemoState extends State<FormatsDemo> {
                   value: _h24,
                   onChanged: (v) => setState(() => _h24 = v),
                 ),
-                8.heightBox,
+                const ResponsiveGap(8),
                 _Results(
                   code: '.apply($h, $m, language: …, h24: $_h24)',
                   ar: f.apply(h, m, language: 'ar', h24: _h24),
@@ -302,7 +302,7 @@ class _FormatsDemoState extends State<FormatsDemo> {
                   ltr: true,
                   onChanged: (_) => setState(() {}),
                 ),
-                12.heightBox,
+                const ResponsiveGap(12),
                 _Results(
                   code: '.apply(${n ?? '…'}, language: …)',
                   ar: n == null ? '—' : f.apply(n, language: 'ar'),
@@ -330,7 +330,7 @@ class _FormatsDemoState extends State<FormatsDemo> {
                   decimals: 2,
                   onChanged: (v) => setState(() => _km = v),
                 ),
-                8.heightBox,
+                const ResponsiveGap(8),
                 _Results(
                   code:
                       '.apply(${_km.toStringAsFixed(2)}) → '
@@ -364,7 +364,7 @@ class _FormatsDemoState extends State<FormatsDemo> {
                   divisions: 240,
                   onChanged: (v) => setState(() => _seconds = v),
                 ),
-                8.heightBox,
+                const ResponsiveGap(8),
                 _Results(
                   code: '.apply($s)',
                   current: Text(
@@ -416,7 +416,9 @@ class _FormatsDemoState extends State<FormatsDemo> {
                 children: [
                   for (final (name, value) in rows)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        vertical: context.screen.space(4),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -468,10 +470,10 @@ class _Results extends StatelessWidget {
     // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
     context.locale;
     Widget line(String tag, String text, TextDirection dir) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(2)),
       child: Row(
         children: [
-          SizedBox(width: 28, child: _Code(tag)),
+          SizedBox(width: context.screen.size(28), child: _Code(tag)),
           Expanded(
             child: Directionality(
               textDirection: dir,
@@ -486,12 +488,12 @@ class _Results extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _Code(code),
-        6.heightBox,
+        const ResponsiveGap(6),
         if (ar != null) line('ar', ar!, TextDirection.rtl),
         if (en != null) line('en', en!, TextDirection.ltr),
         if (current != null) ...[
           if (ar != null) ...[
-            8.heightBox,
+            const ResponsiveGap(8),
             Text(
               LocaleKeys.showcaseFormatsCurrent.tr(),
               style: context.textTheme.labelSmall?.copyWith(
@@ -529,7 +531,7 @@ class _SliderRow extends StatelessWidget {
     textDirection: TextDirection.ltr,
     child: Row(
       children: [
-        SizedBox(width: 56, child: _Code(name)),
+        SizedBox(width: context.screen.size(56), child: _Code(name)),
         Expanded(
           child: Slider.adaptive(
             value: value,
@@ -539,7 +541,7 @@ class _SliderRow extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: 44,
+          width: context.screen.size(44),
           child: Text(
             value.toStringAsFixed(decimals),
             style: context.textTheme.bodySmall,

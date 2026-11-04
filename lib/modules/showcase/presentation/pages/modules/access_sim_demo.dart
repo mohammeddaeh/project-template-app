@@ -7,7 +7,6 @@ import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/resources/permission_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -131,7 +130,7 @@ class _AccessSimDemoState extends State<AccessSimDemo> {
                 selectedValue: _role,
                 onSelected: (r) => setState(() => _role = r ?? _role),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               ChipRow<bool>(
                 items: const [false, true],
                 labelResolver: (d) => d ? 'CanMode.disable' : 'CanMode.hide',
@@ -139,7 +138,7 @@ class _AccessSimDemoState extends State<AccessSimDemo> {
                 onSelected: (d) => setState(() => _disable = d ?? _disable),
                 scrollable: false,
               ),
-              16.heightBox,
+              const ResponsiveGap(16),
               AnimatedSize(
                 duration: motion.base,
                 alignment: AlignmentDirectional.topStart,
@@ -203,7 +202,7 @@ class _AccessSimDemoState extends State<AccessSimDemo> {
                   color: colors.textMuted,
                 ),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               // The matrix scrolls by itself — it fills a screen in the app.
               SizedBox(
                 height: context.screen.size(380),
@@ -260,7 +259,7 @@ class _AccessSimDemoState extends State<AccessSimDemo> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.shield_outlined, color: colors.statusWarningFg),
-              8.widthBox,
+              const ResponsiveGap.horizontal(8),
               Expanded(
                 child: Text(
                   LocaleKeys.showcaseAccessNotSecurity.tr(),

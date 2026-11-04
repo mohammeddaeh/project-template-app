@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
@@ -130,7 +129,7 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
                         onChanged: _flushing ? null : _setOffline,
                       ),
                     ),
-                    8.heightBox,
+                    const ResponsiveGap(8),
                     Wrap(
                       spacing: 16,
                       runSpacing: 8,
@@ -160,7 +159,7 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
                         ),
                       ],
                     ),
-                    12.heightBox,
+                    const ResponsiveGap(12),
                     AppButton(
                       text: LocaleKeys.showcaseAdd.tr(),
                       variant: AppButtonVariant.tonal,
@@ -168,7 +167,7 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
                       isEnabled: !_flushing,
                       onTap: _add,
                     ),
-                    12.heightBox,
+                    const ResponsiveGap(12),
                     if (_jobs.isEmpty)
                       Text(
                         LocaleKeys.showcaseSyncEmpty.tr(),
@@ -212,7 +211,7 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
                   color: colors.textMuted,
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               AnimatedSwitcher(
                 duration: AppMotion.of(context).base,
                 child: _offline
@@ -255,7 +254,7 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
                   color: colors.textMuted,
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Row(
                 children: [
                   for (final (icon, label, tone) in [
@@ -278,7 +277,8 @@ class _SyncSimDemoState extends State<SyncSimDemo> {
                         color: tone,
                       ),
                     ),
-                    if (icon != Icons.error_outline_rounded) 8.widthBox,
+                    if (icon != Icons.error_outline_rounded)
+                      const ResponsiveGap.horizontal(8),
                   ],
                 ],
               ),
@@ -364,11 +364,14 @@ class _BannerPreview extends StatelessWidget {
     child: ColoredBox(
       color: color.withValues(alpha: 0.15),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(16),
+          vertical: context.screen.space(8),
+        ),
         child: Row(
           children: [
             Icon(icon, size: 16, color: color),
-            8.widthBox,
+            const ResponsiveGap.horizontal(8),
             Expanded(
               child: Text(
                 message,
