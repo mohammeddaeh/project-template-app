@@ -15,6 +15,7 @@ import 'package:app_template/ui/locale/locale_switcher.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage(name: 'SettingsRoute')
@@ -51,27 +52,31 @@ class _SettingsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        _AppearanceSection(),
-        SettingsSectionDivider(),
-        SettingsFontSection(),
-        SettingsSectionDivider(),
-        _LanguageSection(),
-        SettingsSectionDivider(),
-        _NotificationsSection(),
-        // Nothing when AppFeatures.notificationCenter is off.
-        NotificationCenterSection(),
-        SettingsSectionDivider(),
-        // Renders nothing when AppFeatures.multiDevice is off — the module owns
-        // that check, so this list never has to and the tile can never appear
-        // without the dependencies behind it.
-        DevicesSection(),
-        // Same guarantee, same reason: nothing when AppFeatures.accessControl
-        // is off, and hidden from an account without `roles.view` when it is on.
-        AccessControlSection(),
-        SettingsAboutSection(),
-      ],
+    return ResponsiveContentBox(
+      width: ContentWidth.content,
+      horizontalPadding: false,
+      child: ListView(
+        children: const [
+          _AppearanceSection(),
+          SettingsSectionDivider(),
+          SettingsFontSection(),
+          SettingsSectionDivider(),
+          _LanguageSection(),
+          SettingsSectionDivider(),
+          _NotificationsSection(),
+          // Nothing when AppFeatures.notificationCenter is off.
+          NotificationCenterSection(),
+          SettingsSectionDivider(),
+          // Renders nothing when AppFeatures.multiDevice is off — the module owns
+          // that check, so this list never has to and the tile can never appear
+          // without the dependencies behind it.
+          DevicesSection(),
+          // Same guarantee, same reason: nothing when AppFeatures.accessControl
+          // is off, and hidden from an account without `roles.view` when it is on.
+          AccessControlSection(),
+          SettingsAboutSection(),
+        ],
+      ),
     );
   }
 }

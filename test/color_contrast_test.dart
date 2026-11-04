@@ -98,6 +98,22 @@ void main() {
         );
       });
 
+      test('muted text is still text: readable on page, card and sheet', () {
+        // Captions, hints, timestamps, the line under a title — 158 places
+        // draw in it. Fixed here once, not in each of them.
+        for (final (label, ground) in [
+          ('bgPage', c.bgPage),
+          ('bgCard', c.bgCard),
+          ('bgElevated', c.bgElevated),
+        ]) {
+          expect(
+            contrast(c.textMuted, ground),
+            greaterThanOrEqualTo(bodyText),
+            reason: 'textMuted on $label',
+          );
+        }
+      });
+
       test('an idle tab reads on every surface a bar draws', () {
         // Bottom bar, tab bar: the labels a user scans to find a tab. Muted
         // grey reads as a design choice and measures well under 4.5:1.
