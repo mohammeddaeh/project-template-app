@@ -6,6 +6,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/media/attachment_preview.dart';
 import 'package:app_template/ui/widgets/media/captured_photo.dart';
 import 'package:app_template/ui/widgets/media/captured_photo_image.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// **الصورة الميدانية بالتطبيق كلّه** — مصغَّرةٌ يُطبع فوقها ما يُثبتها.
 ///
@@ -140,7 +141,10 @@ class _MetaStrip extends StatelessWidget {
       end: 0,
       bottom: 0,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(7),
+          vertical: context.screen.space(5),
+        ),
         color: colors.scrim.withValues(alpha: .72),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/locale/locale.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 @RoutePage(name: 'ErrorRoute')
 class ErrorView extends StatelessWidget {
@@ -38,13 +39,13 @@ class ErrorView extends StatelessWidget {
         height: context.sh,
         width: context.sw,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: EdgeInsets.symmetric(horizontal: context.screen.space(15)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.error_outline, color: context.colors.error, size: 40),
-              const SizedBox(height: 10),
+              const ResponsiveGap(10),
               AppText(
                 _displayText,
                 style: context.textTheme.bodyMedium,

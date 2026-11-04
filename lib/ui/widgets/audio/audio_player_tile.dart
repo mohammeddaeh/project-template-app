@@ -8,6 +8,7 @@ import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/media/playback_bar.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Plays one audio file or `https` URL — play/pause, a seek bar, and the
 /// position against the length.
@@ -79,7 +80,7 @@ class _AudioPlayerTileState extends State<AudioPlayerTile> {
       return Row(
         children: [
           Icon(Icons.music_off_outlined, color: colors.textMuted),
-          const SizedBox(width: 8),
+          SizedBox(width: context.screen.space(8)),
           Expanded(
             child: Text(
               LocaleKeys.audioCannotPlay.tr(),

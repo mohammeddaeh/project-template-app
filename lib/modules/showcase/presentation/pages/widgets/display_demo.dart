@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/clipboard/clipboard_service.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
@@ -70,12 +71,13 @@ class _DisplayDemoState extends State<DisplayDemo> {
           call: 'AppCard',
           knobs: [
             EnumKnob('variant', AppCardVariant.values, AppCardVariant.card),
-            ChoiceKnob<double>('padding', const {
-              'const EdgeInsets.all(16)': 16,
+            // null is the card's own 16, carried to the screen like the rest.
+            ChoiceKnob<double?>('padding', const {
+              'null': null,
               'EdgeInsets.zero': 0,
-              'const EdgeInsets.all(8)': 8,
-              'const EdgeInsets.all(24)': 24,
-            }, apiDefaultCode: 'const EdgeInsets.all(16)'),
+              'EdgeInsets.all(s.space(8))': 8,
+              'EdgeInsets.all(s.space(24))': 24,
+            }, apiDefaultCode: 'null'),
             ChoiceKnob<double?>('margin', const {
               'null': null,
               'EdgeInsets.zero': 0,
@@ -91,9 +93,12 @@ class _DisplayDemoState extends State<DisplayDemo> {
           trailingCode: const ['child: Text(…)'],
           builder: (context, k) {
             final margin = k<double?>('margin');
+            final padding = k<double?>('padding');
             return AppCard(
               variant: k('variant'),
-              padding: EdgeInsets.all(k('padding')),
+              padding: padding == null
+                  ? null
+                  : EdgeInsets.all(context.screen.space(padding)),
               margin: margin == null ? null : EdgeInsets.all(margin),
               elevation: k('elevation'),
               child: Text(LocaleKeys.showcaseDisplaySubtitle.tr()),

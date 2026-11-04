@@ -16,6 +16,7 @@ import 'package:app_template/ui/feedback/kit_readiness_feedback.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/widgets/layout/app_button.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Records a voice note: a button, then the running time and the input level,
 /// with finish and discard.
@@ -151,7 +152,7 @@ class _VoiceNoteRecorderState extends State<VoiceNoteRecorder> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: EdgeInsets.symmetric(horizontal: context.screen.space(12)),
           child: Text(
             AppNumberFormats.elapsed.apply(_clock.elapsed.inSeconds),
             style: context.textTheme.labelLarge?.copyWith(

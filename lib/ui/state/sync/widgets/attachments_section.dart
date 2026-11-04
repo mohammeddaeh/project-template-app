@@ -10,6 +10,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
 import 'attachment_view.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Photos and files for one row — **the entire cost of giving a feature
 /// attachments on screen.**
@@ -138,7 +139,7 @@ class _AttachmentsSectionState extends State<AttachmentsSection> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const ResponsiveGap(8),
         if (_records.isEmpty)
           Text(
             LocaleKeys.attachmentsEmpty.tr(),

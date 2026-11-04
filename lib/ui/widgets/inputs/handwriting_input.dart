@@ -7,6 +7,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/widgets/inputs/signature_pad.dart';
 import 'package:app_template/ui/widgets/layout/app_button.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Write by hand, get text: a [SignaturePad] and a button that hands the ink
 /// to `kit_ink` and passes the likeliest reading to [onText].
@@ -91,7 +92,7 @@ class _HandwritingInputState extends State<HandwritingInput> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SignaturePad(controller: _ink, hint: LocaleKeys.inkWriteHere.tr()),
-        const SizedBox(height: 8),
+        const ResponsiveGap(8),
         if (hasModel == false)
           AppButton(
             text: LocaleKeys.inkDownloadModel.tr(args: [_language]),

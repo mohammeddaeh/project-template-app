@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Chip متحرك يظهر أسفل [OfflineBanner] مع عداد تنازلي لإعادة المحاولة.
 /// widget مستقل — يأخذ [seconds] كمعامل.
@@ -70,7 +71,10 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.screen.space(16),
+        vertical: context.screen.space(8),
+      ),
       decoration: BoxDecoration(
         color: context.colors.bgCard,
         borderRadius: BorderRadius.circular(20),
@@ -86,7 +90,7 @@ class _Chip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const AppProgress.circular(size: AppProgressSize.xs, dimension: 14),
-          const SizedBox(width: 8),
+          SizedBox(width: context.screen.space(8)),
           Text(
             '${LocaleKeys.reconnecting.tr()} ${seconds}s',
             style: context.textTheme.bodySmall?.copyWith(

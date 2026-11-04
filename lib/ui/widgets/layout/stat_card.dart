@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// بطاقة إحصائية مضغوطة للوحات التحكم.
 ///
@@ -66,7 +67,7 @@ class StatCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.screen.space(16)),
           decoration: BoxDecoration(
             border: Border.all(color: colors.borderSubtle),
             borderRadius: BorderRadius.circular(12),
@@ -79,14 +80,14 @@ class StatCard extends StatelessWidget {
                   children: [
                     if (icon != null) ...[
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: EdgeInsets.all(context.screen.space(8)),
                         decoration: BoxDecoration(
                           color: accent.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(icon, size: 20, color: accent),
                       ),
-                      const SizedBox(height: 12),
+                      const ResponsiveGap(12),
                     ],
                     Text(
                       value,
@@ -95,7 +96,7 @@ class StatCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const ResponsiveGap(4),
                     Text(
                       labelStr,
                       style: textTheme.bodySmall?.copyWith(
@@ -128,7 +129,7 @@ class _StatCardSkeleton extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
         ),
-        const SizedBox(height: 8),
+        const ResponsiveGap(8),
         Container(
           width: 100,
           height: 12,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/feedback/selection_haptic.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 ///  AppRadioGroup — قائمة اختيارٍ واحد، صفٌّ لكل خيار
@@ -163,7 +164,12 @@ class _RadioRow<T> extends StatelessWidget {
             duration: const Duration(milliseconds: 180),
             curve: Curves.easeOut,
             constraints: const BoxConstraints(minHeight: 48),
-            padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 11),
+            padding: EdgeInsetsDirectional.fromSTEB(
+              context.screen.space(14),
+              context.screen.space(11),
+              context.screen.space(14),
+              context.screen.space(11),
+            ),
             decoration: BoxDecoration(
               color: background,
               borderRadius: BorderRadius.circular(_radius),
@@ -178,7 +184,7 @@ class _RadioRow<T> extends StatelessWidget {
                   size: 20,
                   color: selected ? colors.primary : colors.textMuted,
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: context.screen.space(10)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +204,7 @@ class _RadioRow<T> extends StatelessWidget {
                         ),
                       ),
                       if (description case final text?) ...[
-                        const SizedBox(height: 2),
+                        const ResponsiveGap(2),
                         Text(
                           text,
                           maxLines: 2,

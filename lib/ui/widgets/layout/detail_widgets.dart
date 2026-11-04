@@ -17,10 +17,10 @@ import 'dart:ui' as ui;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/layout/app_card.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -73,7 +73,7 @@ class DetailFact extends StatelessWidget {
     final text = hasValue ? value!.trim() : LocaleKeys.notSpecified.tr();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(8)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -89,7 +89,7 @@ class DetailFact extends StatelessWidget {
             ),
             child: Icon(icon, size: 17, color: colors.iconSubtle),
           ),
-          12.widthBox,
+          SizedBox(width: context.screen.space(12)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +102,7 @@ class DetailFact extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                const ResponsiveGap(2),
                 Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
@@ -123,7 +123,7 @@ class DetailFact extends StatelessWidget {
                   ),
                 ),
                 if (hint != null) ...[
-                  const SizedBox(height: 2),
+                  const ResponsiveGap(2),
                   Text(
                     hint!,
                     style: context.textTheme.bodySmall?.copyWith(
@@ -207,7 +207,7 @@ class DetailHeaderCard extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(context.screen.space(16)),
             decoration: BoxDecoration(
               color: colors.bgNeutral,
               borderRadius: const BorderRadius.vertical(
@@ -218,7 +218,7 @@ class DetailHeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 leading,
-                14.widthBox,
+                SizedBox(width: context.screen.space(14)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,7 +232,7 @@ class DetailHeaderCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (subtitle != null) ...[
-                        const SizedBox(height: 2),
+                        const ResponsiveGap(2),
                         Text(
                           subtitle!,
                           style: context.textTheme.bodySmall?.copyWith(
@@ -243,7 +243,7 @@ class DetailHeaderCard extends StatelessWidget {
                         ),
                       ],
                       if (tags.isNotEmpty) ...[
-                        const SizedBox(height: 8),
+                        const ResponsiveGap(8),
                         Wrap(spacing: 6, runSpacing: 6, children: tags),
                       ],
                     ],
@@ -255,7 +255,12 @@ class DetailHeaderCard extends StatelessWidget {
           ),
           if (facts.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+              padding: EdgeInsets.fromLTRB(
+                context.screen.space(16),
+                context.screen.space(4),
+                context.screen.space(16),
+                context.screen.space(8),
+              ),
               child: Column(
                 children: [
                   for (var i = 0; i < facts.length; i++) ...[
@@ -267,7 +272,12 @@ class DetailHeaderCard extends StatelessWidget {
             ),
           if (footer != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: EdgeInsets.fromLTRB(
+                context.screen.space(16),
+                0,
+                context.screen.space(16),
+                context.screen.space(16),
+              ),
               child: footer!,
             ),
         ],
@@ -306,7 +316,7 @@ class DetailSectionHeader extends StatelessWidget {
     final colors = context.colors;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: context.screen.space(10)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -319,7 +329,7 @@ class DetailSectionHeader extends StatelessWidget {
             ),
             child: Icon(icon, size: 17, color: colors.onPrimaryContainer),
           ),
-          10.widthBox,
+          SizedBox(width: context.screen.space(10)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,7 +343,7 @@ class DetailSectionHeader extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (subtitle != null) ...[
-                  const SizedBox(height: 2),
+                  const ResponsiveGap(2),
                   Text(
                     subtitle!,
                     style: context.textTheme.bodySmall?.copyWith(
@@ -345,7 +355,10 @@ class DetailSectionHeader extends StatelessWidget {
               ],
             ),
           ),
-          if (trailing != null) ...[8.widthBox, trailing!],
+          if (trailing != null) ...[
+            SizedBox(width: context.screen.space(8)),
+            trailing!,
+          ],
         ],
       ),
     );

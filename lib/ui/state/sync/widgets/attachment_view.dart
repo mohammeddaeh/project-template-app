@@ -9,6 +9,7 @@ import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/modules/sync/sync_plugin.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Renders one attachment, resolving it through the three-state access path.
 ///
@@ -170,9 +171,11 @@ class _Placeholder extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: color, size: 28),
-            const SizedBox(height: 6),
+            const ResponsiveGap(6),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(12),
+              ),
               child: Text(
                 label,
                 textAlign: TextAlign.center,

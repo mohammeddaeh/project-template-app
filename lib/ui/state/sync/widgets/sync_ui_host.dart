@@ -9,6 +9,7 @@ import 'package:app_template/ui/error/ui_action.dart';
 import '../offline_ux_cubit.dart';
 import '../sync_manager_cubit.dart';
 import 'sync_status_banner.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Wraps a screen with all sync-aware UI scaffolding:
 /// - [SyncStatusBanner] at the top (offline / pending changes)
@@ -162,10 +163,11 @@ class _ConflictResolutionSheet extends StatelessWidget {
     final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 24,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        left: context.screen.space(24),
+        right: context.screen.space(24),
+        top: context.screen.space(24),
+        bottom:
+            MediaQuery.of(context).viewInsets.bottom + context.screen.space(24),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -174,20 +176,20 @@ class _ConflictResolutionSheet extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.sync_problem_rounded, color: theme.colorScheme.error),
-              const SizedBox(width: 8),
+              SizedBox(width: context.screen.space(8)),
               Text(
                 LocaleKeys.syncConflictTitle.tr(),
                 style: theme.textTheme.titleMedium,
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const ResponsiveGap(12),
           Text(
             LocaleKeys.syncConflictBody.tr(args: [conflict.entityName]),
             style: theme.textTheme.bodyMedium,
           ),
           if (conflict.conflictFields.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             Text(
               LocaleKeys.syncConflictFields.tr(
                 args: [
@@ -199,7 +201,7 @@ class _ConflictResolutionSheet extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 20),
+          const ResponsiveGap(20),
           Row(
             children: [
               Expanded(
@@ -209,7 +211,7 @@ class _ConflictResolutionSheet extends StatelessWidget {
                   label: Text(LocaleKeys.syncKeepServer.tr()),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: context.screen.space(12)),
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () => onResolve(true),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/placeholders/skeleton_scope.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// النبرة الدلالية لشارة حالة — لا لونها.
 ///
@@ -48,7 +49,10 @@ class StatusChip extends StatelessWidget {
     return Bone(
       radius: 20,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(11),
+          vertical: context.screen.space(6),
+        ),
         decoration: BoxDecoration(
           color: background,
           // نصف قطر ٢٠ — كبسولة كاملة بارتفاع ٢٦، كما بالتصميم.

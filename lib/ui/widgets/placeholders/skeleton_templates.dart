@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/placeholders/shimmer_loading_widget.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 // Internal box — colored rectangle / circle with no shimmer of its own.
 // Shimmer is supplied by the parent template's ShimmerLoadingWidget.
@@ -52,13 +53,17 @@ class SkeletonListTile extends StatelessWidget {
     return ShimmerLoadingWidget(
       child: Padding(
         padding:
-            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding ??
+            EdgeInsets.symmetric(
+              horizontal: context.screen.space(16),
+              vertical: context.screen.space(10),
+            ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (showAvatar) ...[
               const _Box(width: 44, height: 44, circle: true),
-              const SizedBox(width: 12),
+              SizedBox(width: context.screen.space(12)),
             ],
             Expanded(
               child: Column(
@@ -67,11 +72,11 @@ class SkeletonListTile extends StatelessWidget {
                 children: [
                   const _Box(width: double.infinity, height: 13),
                   if (lines >= 2) ...[
-                    const SizedBox(height: 6),
+                    const ResponsiveGap(6),
                     const _Box(width: 140, height: 11),
                   ],
                   if (lines >= 3) ...[
-                    const SizedBox(height: 6),
+                    const ResponsiveGap(6),
                     const _Box(width: 100, height: 10),
                   ],
                 ],
@@ -116,7 +121,11 @@ class SkeletonCard extends StatelessWidget {
     return ShimmerLoadingWidget(
       child: Padding(
         padding:
-            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding ??
+            EdgeInsets.symmetric(
+              horizontal: context.screen.space(16),
+              vertical: context.screen.space(8),
+            ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: ColoredBox(
@@ -133,17 +142,17 @@ class SkeletonCard extends StatelessWidget {
                     ).colorScheme.surfaceContainerHighest,
                   ),
                 Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: EdgeInsets.all(context.screen.space(12)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const _Box(width: double.infinity, height: 14),
                       if (lines >= 2) ...[
-                        const SizedBox(height: 8),
+                        const ResponsiveGap(8),
                         const _Box(width: 200, height: 12),
                       ],
                       if (lines >= 3) ...[
-                        const SizedBox(height: 6),
+                        const ResponsiveGap(6),
                         const _Box(width: 150, height: 12),
                       ],
                     ],
@@ -182,7 +191,7 @@ class SkeletonGridItem extends StatelessWidget {
     final color = Theme.of(context).colorScheme.surfaceContainerHighest;
     return ShimmerLoadingWidget(
       child: Padding(
-        padding: padding ?? const EdgeInsets.all(8),
+        padding: padding ?? EdgeInsets.all(context.screen.space(8)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -195,9 +204,9 @@ class SkeletonGridItem extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             const _Box(width: double.infinity, height: 12),
-            const SizedBox(height: 5),
+            const ResponsiveGap(5),
             const _Box(width: 80, height: 11),
           ],
         ),
@@ -235,21 +244,25 @@ class SkeletonProfile extends StatelessWidget {
     return ShimmerLoadingWidget(
       child: Padding(
         padding:
-            padding ?? const EdgeInsets.symmetric(vertical: 24, horizontal: 48),
+            padding ??
+            EdgeInsets.symmetric(
+              vertical: context.screen.space(24),
+              horizontal: context.screen.space(48),
+            ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Center(
               child: _Box(width: diameter, height: diameter, circle: true),
             ),
-            const SizedBox(height: 16),
+            const ResponsiveGap(16),
             const Center(child: _Box(width: 180, height: 14)),
             if (lines >= 2) ...[
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               const Center(child: _Box(width: 120, height: 12)),
             ],
             if (lines >= 3) ...[
-              const SizedBox(height: 6),
+              const ResponsiveGap(6),
               const Center(child: _Box(width: 90, height: 11)),
             ],
           ],
@@ -281,16 +294,20 @@ class SkeletonStatRow extends StatelessWidget {
     return ShimmerLoadingWidget(
       child: Padding(
         padding:
-            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding ??
+            EdgeInsets.symmetric(
+              horizontal: context.screen.space(16),
+              vertical: context.screen.space(12),
+            ),
         child: Row(
           children: [
             for (int i = 0; i < count; i++) ...[
-              if (i > 0) const SizedBox(width: 12),
+              if (i > 0) SizedBox(width: context.screen.space(12)),
               const Expanded(
                 child: Column(
                   children: [
                     _Box(width: double.infinity, height: 20),
-                    SizedBox(height: 6),
+                    ResponsiveGap(6),
                     _Box(width: double.infinity, height: 12),
                   ],
                 ),

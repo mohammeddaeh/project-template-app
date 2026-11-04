@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The two shapes a card can take.
 enum AppCardVariant {
@@ -24,7 +25,7 @@ class AppCard extends StatelessWidget {
     super.key,
     required this.child,
     this.margin,
-    this.padding = const EdgeInsets.all(16),
+    this.padding,
     this.elevation,
     this.clipBehavior = Clip.antiAlias,
     this.variant = AppCardVariant.card,
@@ -32,15 +33,22 @@ class AppCard extends StatelessWidget {
 
   final Widget child;
   final EdgeInsetsGeometry? margin;
-  final EdgeInsetsGeometry padding;
+
+  /// افتراضاً ١٦ بمقاس التصميم.
+  final EdgeInsetsGeometry? padding;
   final double? elevation;
   final Clip clipBehavior;
   final AppCardVariant variant;
 
   @override
   Widget build(BuildContext context) {
+    final padding = this.padding ?? EdgeInsets.all(context.screen.space(16));
     final resolvedMargin =
-        margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+        margin ??
+        EdgeInsets.symmetric(
+          horizontal: context.screen.space(16),
+          vertical: context.screen.space(8),
+        );
 
     if (variant == AppCardVariant.container) {
       return Padding(

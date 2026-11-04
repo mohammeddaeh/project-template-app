@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/widgets/lists/list_appear_tracker.dart';
 import 'package:app_template/ui/widgets/lists/list_item_appear.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 class PaginatedListView extends StatefulWidget {
   const PaginatedListView({
@@ -48,9 +49,9 @@ class _PaginatedListViewState extends State<PaginatedListView> {
               (_) => widget.onLoadMore!(),
             );
             return widget.loadingWidget ??
-                const AppProgress.circular(
+                AppProgress.circular(
                   centered: true,
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(context.screen.space(16)),
                 );
           }
           return const SizedBox.shrink();

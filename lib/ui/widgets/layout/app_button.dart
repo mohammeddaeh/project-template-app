@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// نوع زر موحَّد يحدد اللون والأسلوب البصري.
 enum AppButtonVariant {
@@ -267,7 +268,7 @@ class _ButtonLabel extends StatelessWidget {
     children: [
       if (leadingIcon != null) ...[
         Icon(leadingIcon, size: 18, color: color),
-        const SizedBox(width: 6),
+        SizedBox(width: context.screen.space(6)),
       ],
       // A label longer than the button (a long translation, a large text
       // scale) ends in an ellipsis instead of overflowing the button.

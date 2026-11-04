@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import '../../../resources/assets.dart';
 import '../images/app_asset_image.dart';
 import '../voice/dictation_button.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// عقدةُ تركيزٍ **موسومة** — بها وحدها يعرف الحقلُ من هو الحقلُ التالي.
 ///
@@ -44,7 +45,7 @@ class CustomTextField extends StatefulWidget {
     this.maxLength,
     this.backgroundColor,
     this.inputFormatters,
-    this.scrollPadding = const EdgeInsets.only(bottom: 120),
+    this.scrollPadding,
   });
 
   final TextEditingController? controller;
@@ -84,7 +85,8 @@ class CustomTextField extends StatefulWidget {
 
   /// مسافة التمرير لضمان ظهور الحقل فوق الكيبورد.
   /// القيمة الافتراضية 120 كافية لمعظم الشاشات.
-  final EdgeInsets scrollPadding;
+  /// افتراضاً ١٢٠ بمقاس التصميم تحت الحقل حين يُمرَّر إليه.
+  final EdgeInsets? scrollPadding;
 
   /// عقدةٌ يملكها المستدعي. وحين تُمرَّر، **يسقط المشيُ إلى الحقل التالي**
   /// ويحلّ محلَّه إغلاقُ الكيبورد: العقدةُ الخارجية ليست [InputFocusNode]،
@@ -227,7 +229,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           ),
                     ),
                     if (widget.showOption) ...[
-                      const SizedBox(width: 5),
+                      SizedBox(width: context.screen.space(5)),
                       Text(
                         "(${LocaleKeys.option.tr()})",
                         style: context.textTheme.bodyMedium?.copyWith(
@@ -238,7 +240,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       ),
                     ],
                     if (widget.showRequired) ...[
-                      const SizedBox(width: 5),
+                      SizedBox(width: context.screen.space(5)),
                       Text(
                         "*",
                         style: context.textTheme.bodyMedium?.copyWith(
@@ -251,7 +253,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ),
               if (widget.labelText != null &&
                   (widget.labelText?.isNotEmpty ?? false))
-                const SizedBox(height: 8),
+                const ResponsiveGap(8),
               Flexible(
                 child: Builder(
                   builder: (_) {
@@ -265,7 +267,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                               color: widget.backgroundColor!,
                             ),
                       child: TextFormField(
-                        scrollPadding: widget.scrollPadding,
+                        scrollPadding:
+                            widget.scrollPadding ??
+                            EdgeInsets.only(bottom: context.screen.space(120)),
                         inputFormatters: widget.inputFormatters,
                         maxLength: widget.maxLength,
                         controller: widget.controller,
@@ -311,14 +315,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           ),
                           contentPadding:
                               _obscure && (state.value?.isNotEmpty ?? false)
-                              ? const EdgeInsets.only(
-                                  top: 20,
-                                  left: 16,
-                                  right: 16,
+                              ? EdgeInsets.only(
+                                  top: context.screen.space(20),
+                                  left: context.screen.space(16),
+                                  right: context.screen.space(16),
                                 )
-                              : const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                  horizontal: 16,
+                              : EdgeInsets.symmetric(
+                                  vertical: context.screen.space(12),
+                                  horizontal: context.screen.space(16),
                                 ),
                           enabledBorder: state.hasError
                               ? errorBorder
@@ -369,7 +373,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                               : widget.suffix != null || _dictates
                               ? Padding(
                                   padding: EdgeInsetsDirectional.only(
-                                    end: _dictates ? 4 : 16,
+                                    end: _dictates
+                                        ? context.screen.space(4)
+                                        : context.screen.space(16),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -404,7 +410,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   },
                 ),
               ),
-              if (state.hasError) const SizedBox(height: 8),
+              if (state.hasError) const ResponsiveGap(8),
               Offstage(
                 offstage: !state.hasError,
                 child: Row(

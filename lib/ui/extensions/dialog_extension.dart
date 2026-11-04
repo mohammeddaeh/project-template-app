@@ -8,6 +8,7 @@ import 'package:app_template/ui/widgets/misc/app_text.dart';
 import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 extension DialogContextExtension on BuildContext {
   Future<void> showLoadingDialog() {
@@ -20,7 +21,7 @@ extension DialogContextExtension on BuildContext {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const AppProgress.circular(size: AppProgressSize.xs),
-            const SizedBox(width: 10),
+            SizedBox(width: screen.space(10)),
             AppText(LocaleKeys.loading, style: textTheme.bodyMedium),
           ],
         ),
@@ -53,10 +54,10 @@ extension DialogContextExtension on BuildContext {
               child: Container(
                 width: width,
                 clipBehavior: Clip.antiAlias,
-                margin: const EdgeInsets.symmetric(horizontal: 24),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
+                margin: EdgeInsets.symmetric(horizontal: screen.space(24)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: screen.space(12),
+                  vertical: screen.space(12),
                 ),
                 constraints: BoxConstraints(maxHeight: maxHeight),
                 decoration: BoxDecoration(
@@ -94,7 +95,7 @@ extension DialogContextExtension on BuildContext {
     final result = await showCustomDialog<bool>(
       barrierDismissible: barrierDismissible,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(screen.space(16)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -105,9 +106,9 @@ extension DialogContextExtension on BuildContext {
                 this,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 12),
+            const ResponsiveGap(12),
             Text(message, style: Theme.of(this).textTheme.bodyMedium),
-            const SizedBox(height: 24),
+            const ResponsiveGap(24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -118,7 +119,7 @@ extension DialogContextExtension on BuildContext {
                   },
                   child: Text(cancelText ?? LocaleKeys.cancel.tr()),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: screen.space(8)),
                 FilledButton(
                   onPressed: () {
                     Navigator.pop(this, true);

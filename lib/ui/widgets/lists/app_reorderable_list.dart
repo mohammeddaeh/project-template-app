@@ -8,6 +8,7 @@ import 'package:app_template/ui/theme/app_elevation.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// **قائمةٌ تُرتَّب بالسحب** — غلافُ `ReorderableListView.builder`.
 ///
@@ -99,9 +100,9 @@ class AppReorderableList<T> extends StatelessWidget {
                     ReorderableDragStartListener(
                       index: index,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.screen.space(12),
+                          vertical: context.screen.space(8),
                         ),
                         child: Icon(
                           Icons.drag_handle_rounded,

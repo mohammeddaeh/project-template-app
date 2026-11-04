@@ -23,7 +23,10 @@
   ظاهرٌ بالإعدادات — بطاقاتٌ أفقية ترسم التطبيقَ مصغَّراً بألوان كل ثيم (`test/settings_theme_preset_section_test.dart`). كلٌّ يمرّ بفحص التباين بالوضعين.
 - ⚠️ **F38 — لا مسافةَ بعددٍ خامّ** (`check_structure.dart`): `SizedBox(height: 24)` · `EdgeInsets.all(16)` ·
   `16.allPadding` بـ`features/` و`ui/` تُفشل البناء — `ResponsiveGap` · `s.space` · `s.size` · `s.gutter` بدلها. شاشاتُ
-  `features/` كلُّها منقولة، ودَينُ `ui/` (٩٦ مفتاحاً، مكتبة الودجات أساساً) مسجَّلٌ بالأساس.
+  `features/` كلُّها منقولة، ومكتبةُ الودجات وبقيةُ `ui/` كذلك — لا دَينَ F38 بالأساس.
+- ⚠️ **حشواتٌ افتراضيةٌ صارت `null`** تُحَلّ بـ`build()` محمولةً: `AppCard.padding` (١٦) · `SectionTitle.padding` (١٢ تحته) ·
+  `CustomTextField.scrollPadding` (١٢٠). من يمرّر قيمةً لا يتغيّر عليه شيء؛ من **يقرأ** الحقلَ يجد `null`.
+- ⚠️ **`Spacing.*` صارت `Widget` لا `SizedBox`** — `ResponsiveGap` محمولة. و`ResponsiveGap.horizontal(8)` جديدةٌ لفراغٍ أفقيّ `const`.
 - **شاشاتُ القالب بحدّ عرضٍ على اللوح**: الدخول والتسجيل وكلمة المرور وتأكيد البريد بـ`ContentWidth.form` (٤٨٠)، والملف
   الشخصي والإعدادات بـ`ContentWidth.content` (٨٤٠) — والهاتفُ بلا تغيير · `test/responsive_template_screens_test.dart`.
 - ⚠️ **`textMuted` نصٌّ يُقرأ**: بالفاتح كان `gray500` — ٢٫١–٢٫٦:١ على الصفحة والبطاقة بكل هوية، وهو لونُ ١٥٨ موضعاً

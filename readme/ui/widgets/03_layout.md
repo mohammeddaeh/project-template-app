@@ -177,18 +177,19 @@ SectionTitle(titleText: 'معلومات التوصيل', action: TextButton(...)
 
 ## §24 · Spacing — مسافات
 
-> **Import مباشر مطلوب:**
-> ```dart
-> import 'package:app_template/ui/extensions/app_padding_extension.dart';
-> ```
+> **Import:** `package:app_template/ui/responsive/responsive.dart`
 
 ```dart
-4.widthBox              // SizedBox(width: 4)
-16.heightBox            // SizedBox(height: 16)
-16.allPadding           // EdgeInsets.all(16)
-16.horizontalPadding    // EdgeInsets.symmetric(horizontal: 16)
-16.verticalPadding      // EdgeInsets.symmetric(vertical: 16)
+const ResponsiveGap(16)              // فراغٌ رأسيّ بمقاس التصميم، محمولاً للشاشة
+const ResponsiveGap.horizontal(8)    // فراغٌ أفقيّ داخل صفّ
+EdgeInsets.all(s.space(16))          // حشوة — s = context.screen
+EdgeInsets.symmetric(horizontal: s.gutter)   // هامشُ الصفحة
+Spacing.vertical16                   // الثوابتُ الجاهزة نفسُها، محمولةً (Widget)
 ```
+
+⛔ **ولا رقمَ خامّاً** — `16.heightBox` · `16.allPadding` · `SizedBox(height: 16)` · `EdgeInsets.all(16)`
+تُفشل `check_structure` (F38): تبقى ١٦ على لوحٍ بضعف العرض. وامتداداتُ `app_padding_extension.dart`
+تبقى لقيمةٍ محسوبة (`s.space(16).allPadding`)، لا لعدد.
 
 
 ---

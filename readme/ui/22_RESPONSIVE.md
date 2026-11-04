@@ -104,7 +104,7 @@ ResponsiveBuilder(                   // حين يختلف **التركيب** ل�
 | الرقم الذي بيدك | اكتب | لا تكتب |
 |---|---|---|
 | فراغٌ رأسيّ بين عنصرَين | `ResponsiveGap(24)` | `SizedBox(height: 24)` · `24.heightBox` |
-| فراغٌ أفقيّ داخل صفّ | `SizedBox(width: s.space(8))` | `8.widthBox` |
+| فراغٌ أفقيّ داخل صفّ | `const ResponsiveGap.horizontal(8)` · أو `SizedBox(width: s.space(8))` | `8.widthBox` |
 | هامشُ الصفحة الأفقي | `s.gutter` | `16` · `EdgeInsets.all(16)` |
 | حشوةٌ داخل بطاقة أو حقل | `EdgeInsets.all(s.space(16))` | `16.allPadding` |
 | قطرُ دائرة · ارتفاعُ زرّ · مقاسُ أيقونة | `s.size(115)` | `115` |
@@ -348,8 +348,8 @@ LayoutBuilder(
 | `AppBottomSheet` — عرضٌ محدود موسَّط (٦٤٠) | ✅ مركزيّ: كل ورقةٍ بالتطبيق تكسبه بلا تعديل |
 | **حدُّ العرض** بشاشات القالب: الدخول · التسجيل · نسيان كلمة المرور وتعيينها · تغييرها · تأكيد البريد · الدخول بحسابٍ محفوظ (`ContentWidth.form`) · الملف الشخصي · الإعدادات (`ContentWidth.content`) · الترحيب (`form`) | ✅ منقول — `test/responsive_template_screens_test.dart`. نماذجُ الحساب كلُّها عبر `AuthFormBody` (`features/auth/shared/presentation/`): النموذجُ محدودٌ داخل `SingleChildScrollView` العريض، فالتمرير يعمل من الهامش أيضاً |
 | `home_screen.dart` | — جسدٌ مؤقّت يستبدله المشروع، أو جولة الـshowcase بتخطيطها |
-| **أرقامُ المسافات** بـ`features/` | ✅ منقولة — و**F38** يُفشل أيَّ رقمٍ خامٍّ جديد بـ`features/` و`ui/` |
-| مكتبةُ الودجات (`ui/widgets/`) وبقيةُ `ui/` | ⬜ دَينٌ مسجَّلٌ بالأساس (`.structure_baseline.txt`) — يُنظَّف الملفُّ كاملاً حين يُلمس |
+| **أرقامُ المسافات** بـ`features/` | ✅ منقولة — و**F38** يُفشل أيَّ رقمٍ خامٍّ بـ`features/` و`ui/` |
+| مكتبةُ الودجات (`ui/widgets/`) وبقيةُ `ui/` | ✅ منقولة — لا دَينَ F38 بالأساس. والحشواتُ الافتراضية (`AppCard.padding` · `SectionTitle.padding` · `CustomTextField.scrollPadding`) `null` تُحَلّ بـ`build()` محمولةً |
 | `BrandNavRail` — الشريط الجانبي فوق ٨٤٠ | ⬜ **غير مبنيّ** — راجع §٤‑ج |
 
 > ⚠️ **والطبقة موصولة والشاشات لم تُنقل** — وهذا مقصود: `ResponsiveScope`

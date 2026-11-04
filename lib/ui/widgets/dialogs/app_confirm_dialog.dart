@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/extensions/dialog_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Dialog تأكيد موحّد — يُستخدم قبل أي عملية خطرة (حذف، تسجيل خروج، ...).
 ///
@@ -94,7 +95,7 @@ class _AppConfirmDialogContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(context.screen.space(20)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +109,7 @@ class _AppConfirmDialogContent extends StatelessWidget {
                   color: context.colors.stateError,
                   size: 22,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: context.screen.space(8)),
               ],
               Expanded(
                 child: Text(
@@ -123,7 +124,7 @@ class _AppConfirmDialogContent extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const ResponsiveGap(12),
 
           // الرسالة
           Text(
@@ -133,7 +134,7 @@ class _AppConfirmDialogContent extends StatelessWidget {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 24),
+          const ResponsiveGap(24),
 
           // الأزرار
           Row(
@@ -150,7 +151,7 @@ class _AppConfirmDialogContent extends StatelessWidget {
                   style: TextStyle(color: context.colors.textMuted),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: context.screen.space(8)),
 
               // تأكيد
               FilledButton(

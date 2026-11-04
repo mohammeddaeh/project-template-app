@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/placeholders/shimmer_loading_widget.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// أنماط مؤشر تحميل الصفحة التالية في القائمة.
 enum PageLoadingStyle {
@@ -129,10 +130,10 @@ class _Spinner extends StatelessWidget {
   const _Spinner();
 
   @override
-  Widget build(BuildContext context) => const AppProgress.circular(
+  Widget build(BuildContext context) => AppProgress.circular(
     dimension: 28,
     centered: true,
-    padding: EdgeInsets.symmetric(vertical: 16),
+    padding: EdgeInsets.symmetric(vertical: context.screen.space(16)),
   );
 }
 
@@ -142,9 +143,9 @@ class _LinearBar extends StatelessWidget {
   const _LinearBar();
 
   @override
-  Widget build(BuildContext context) => const AppProgress.linear(
+  Widget build(BuildContext context) => AppProgress.linear(
     height: 3,
-    padding: EdgeInsets.symmetric(vertical: 10),
+    padding: EdgeInsets.symmetric(vertical: context.screen.space(10)),
   );
 }
 
@@ -155,7 +156,7 @@ class _ShimmerBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
+    padding: EdgeInsets.symmetric(vertical: context.screen.space(8)),
     child: ShimmerLoadingWidget(
       child: Container(
         height: 44,
@@ -181,7 +182,7 @@ class _DotsWave extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.colorScheme.primary;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(16)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
@@ -189,7 +190,9 @@ class _DotsWave extends StatelessWidget {
           (i) => AnimatedBuilder(
             animation: controllers[i],
             builder: (ctx, _) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(4),
+              ),
               child: Transform.translate(
                 offset: Offset(0, -9 * controllers[i].value),
                 child: Container(
@@ -220,12 +223,12 @@ class _TextSpinner extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = context.colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(14)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const AppProgress.circular(size: AppProgressSize.sm),
-          const SizedBox(width: 10),
+          SizedBox(width: context.screen.space(10)),
           Text(
             loadingText ?? 'Loading more…',
             style: context.textTheme.bodySmall?.copyWith(
@@ -251,7 +254,7 @@ class _PulseDots extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.colorScheme.primary;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(16)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
@@ -259,7 +262,9 @@ class _PulseDots extends StatelessWidget {
           (i) => AnimatedBuilder(
             animation: controllers[i],
             builder: (ctx, _) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(5),
+              ),
               child: Opacity(
                 opacity: 0.2 + 0.8 * controllers[i].value,
                 child: Transform.scale(

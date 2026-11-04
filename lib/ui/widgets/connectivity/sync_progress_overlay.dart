@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// مربع حوار يعرض تقدم المزامنة — لا يمكن إغلاقه بالضغط خارجه.
 ///
@@ -42,12 +43,14 @@ class SyncProgressOverlay extends StatelessWidget {
           color: context.colors.scrim.withValues(alpha: 0.54),
           child: Center(
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 32),
+              margin: EdgeInsets.symmetric(
+                horizontal: context.screen.space(32),
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(context.screen.space(24)),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -56,15 +59,15 @@ class SyncProgressOverlay extends StatelessWidget {
                       size: 32,
                       color: context.colors.primary,
                     ),
-                    const SizedBox(height: 16),
+                    const ResponsiveGap(16),
                     Text(
                       LocaleKeys.syncing.tr(),
                       style: context.textTheme.titleSmall,
                     ),
-                    const SizedBox(height: 12),
+                    const ResponsiveGap(12),
                     AppProgress.linear(value: progress),
                     if (total > 0) ...[
-                      const SizedBox(height: 8),
+                      const ResponsiveGap(8),
                       Text(
                         '$done / $total',
                         style: context.textTheme.bodySmall?.copyWith(

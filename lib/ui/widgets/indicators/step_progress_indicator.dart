@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/misc/glyph_center.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// نوع عرض مؤشر الخطوات.
 enum StepIndicatorType {
@@ -148,7 +149,7 @@ class _Bar extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        const ResponsiveGap(6),
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: TweenAnimationBuilder<double>(
@@ -208,12 +209,12 @@ class _Dots extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              if (i < totalSteps) const SizedBox(width: 6),
+              if (i < totalSteps) SizedBox(width: context.screen.space(6)),
             ],
           ],
         ),
         if (stepLabelResolver != null) ...[
-          const SizedBox(height: 6),
+          const ResponsiveGap(6),
           Text(
             stepLabelResolver!(currentStep) ?? '',
             style: textTheme.labelSmall?.copyWith(color: activeColor),
@@ -330,7 +331,7 @@ class _StepCircle extends StatelessWidget {
           ),
         ),
         if (label != null) ...[
-          const SizedBox(height: 4),
+          const ResponsiveGap(4),
           SizedBox(
             width: labelWidth,
             child: Text(

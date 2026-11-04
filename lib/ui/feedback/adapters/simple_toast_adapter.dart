@@ -9,6 +9,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/misc/app_text.dart';
 import 'motion_toast_adapter.dart';
 import 'snackbar_adapter.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// [AppFeedbackService] adapter using FToast for a minimal bottom toast.
 ///
@@ -161,8 +162,11 @@ class SimpleToastAdapter implements AppFeedbackService {
       gravity: ToastGravity.BOTTOM,
       toastDuration: Duration(seconds: seconds),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        margin: const EdgeInsets.only(bottom: 24),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(20),
+          vertical: context.screen.space(12),
+        ),
+        margin: EdgeInsets.only(bottom: context.screen.space(24)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: bgColor,

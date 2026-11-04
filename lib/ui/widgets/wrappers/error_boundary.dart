@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/misc/app_text.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// نقطة تركيب واحدة: [install] تُنادى مرّة من `main.dart` قبل `runApp`،
 /// فتستبدل شاشة فلاتر الرمادية الافتراضية (`ErrorWidget.builder`) ببديلٍ
@@ -50,12 +51,12 @@ class ErrorFallback extends StatelessWidget {
       color: context.colors.error.withValues(alpha: 0.08),
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.screen.space(16)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.error_outline, color: context.colors.error, size: 32),
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               // نصّ الاستثناء الحقيقي بالتطوير وحده — لا يصل مستخدماً حقيقياً
               // أبداً، تماماً كسياسة `NetworkLogInterceptor._redact` الأخرى.
               if (debug)

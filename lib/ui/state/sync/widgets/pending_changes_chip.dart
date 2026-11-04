@@ -8,6 +8,7 @@ import 'package:app_template/modules/sync/sync_plugin.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import '../offline_ux_cubit.dart';
 import '../sync_manager_cubit.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Compact badge showing pending change count + sync trigger button.
 ///
@@ -65,16 +66,18 @@ class _PendingChangesBadge extends StatelessWidget {
           builder: (context, syncState) {
             final isRunning = syncState is SyncRunning;
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(8),
+              ),
               child: GestureDetector(
                 onTap: isRunning
                     ? null
                     : () => context.read<SyncManagerCubit>().triggerSync(),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.screen.space(10),
+                    vertical: context.screen.space(4),
                   ),
                   decoration: BoxDecoration(
                     color: context.colors.statusWarningBg,
@@ -99,7 +102,7 @@ class _PendingChangesBadge extends StatelessWidget {
                           size: 14,
                           color: context.colors.statusWarningFg,
                         ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: context.screen.space(4)),
                       Text(
                         '$pendingCount',
                         style: context.textTheme.labelSmall?.copyWith(

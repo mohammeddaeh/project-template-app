@@ -6,6 +6,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 
 import '../offline_ux_cubit.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Animated banner displayed at the top (or bottom) of a screen when the device
 /// is offline or has pending unsynced changes.
@@ -86,11 +87,14 @@ class _BannerTile extends StatelessWidget {
     return ColoredBox(
       color: color.withValues(alpha: 0.15),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(16),
+          vertical: context.screen.space(8),
+        ),
         child: Row(
           children: [
             Icon(icon, size: 16, color: color),
-            const SizedBox(width: 8),
+            SizedBox(width: context.screen.space(8)),
             Expanded(
               child: Text(
                 message,

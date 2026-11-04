@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// شريط بحث موحّد مع debounce تلقائي.
 ///
@@ -136,9 +137,9 @@ class _AppSearchBarState extends State<AppSearchBar> {
         ),
         filled: true,
         fillColor: bg,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 16,
+        contentPadding: EdgeInsets.symmetric(
+          vertical: context.screen.space(12),
+          horizontal: context.screen.space(16),
         ),
         border: _border(context.colors.borderSubtle),
         enabledBorder: _border(context.colors.borderSubtle),
@@ -155,7 +156,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
   Widget? _buildSuffix(BuildContext context) {
     if (widget.isLoading) {
       return Padding(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(context.screen.space(12)),
         child: const AppProgress.circular(size: AppProgressSize.sm),
       );
     }
