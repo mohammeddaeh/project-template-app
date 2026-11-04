@@ -3,8 +3,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/feedback/selection_haptic.dart';
 import 'package:app_template/ui/theme/app_theme_mode.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/theme/theme_reveal.dart';
 
 /// Light · Dark · System, as three cards in one row.
 ///
@@ -44,9 +46,13 @@ class ThemeSwitcher extends StatelessWidget {
                 icon: _iconFor(mode),
                 label: _labelKeyFor(mode).tr(),
                 isSelected: current == mode,
-                // Routes through `AppTheme` in the DI graph, which no-ops when
-                // the mode is unchanged.
-                onTap: () => context.setThemeMode(mode),
+                // Revealed from the tapped card (`ThemeReveal`); the same
+                // mode again changes nothing, so it plays nothing either.
+                onTap: (card) {
+                  if (current == mode) return;
+                  selectionHaptic();
+                  ThemeReveal.run(card, () => context.setThemeMode(mode));
+                },
               ),
             ),
           ],
@@ -81,7 +87,9 @@ class _ThemeOptionCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isSelected;
-  final VoidCallback onTap;
+
+  /// Called with the card's own context — the reveal starts at its centre.
+  final ValueSetter<BuildContext> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +100,7 @@ class _ThemeOptionCard extends StatelessWidget {
       button: true,
       selected: isSelected,
       child: InkWell(
-        onTap: onTap,
+        onTap: () => onTap(context),
         borderRadius: BorderRadius.circular(12),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),

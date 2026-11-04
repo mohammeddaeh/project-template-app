@@ -24,7 +24,7 @@ lib/ui/widgets/
 
 Barrel: `lib/ui/widgets/widgets.dart`
 
-Examples: `primary_button.dart`, `custom_text_field.dart`, `pagination_builder_wdg.dart`, error/loading/empty states.
+Examples: `primary_button.dart`, `custom_text_field.dart`, `pagination_builder.dart`, error/loading/empty states.
 
 ## 3) Presentation Layer (Not Feature, Not Shared)
 
@@ -32,7 +32,7 @@ Some UI infrastructure lives in `lib/ui/`:
 
 | Path | Content |
 |------|---------|
-| `ui/theme/` | Colors, palette, theme, `ThemeExtensions`, `AppRadius`/`AppMotion`/`AppElevation` (design tokens — راجع [`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) بند #16) |
+| `ui/theme/` | Colors, palette, theme, `AppThemePresets` (one user-selectable theme per `palettes/*.json`), `ThemeReveal` (circular reveal on a theme or mode switch — mounted once in `app.dart`), `ThemeExtensions`, `AppRadius`/`AppMotion`/`AppElevation` (design tokens — راجع [`_template/roadmap.md`](https://github.com/mohammeddaeh/project-template-app/blob/master/_template/roadmap.md) بند #16) |
 | `ui/extensions/` | BuildContext helpers — padding, screen size, dialog, bottom sheet |
 | `ui/error/` | `FailureUiMapper`, `UiAction` |
 | `ui/feedback/` | `AppFeedbackService` (abstract), adapters (MotionToast/SnackBar/Toast), `context.feedback.*` |
@@ -92,7 +92,7 @@ lib/
     widgets/
       layout/primary_button.dart
       inputs/custom_text_field.dart
-      lists/pagination_builder_wdg.dart
+      lists/pagination_builder.dart
     theme/
     extensions/
     error/

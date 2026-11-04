@@ -104,10 +104,16 @@ class XCubit extends Cubit<XState> { }       // ❌
 
 الفاحص: `test/safe_cubit_test.dart`.
 
-### R05 · `@freezed` لكل state — بلا استثناء 👁
+### R05 · كلُّ state صنفٌ `sealed` — و`@freezed` بـ`features/` 👁
 
 الشمولية هي الغرض: حالةٌ تُضاف لاحقاً تصبح **خطأ ترجمة** بكل مستهلك، لا فرعاً
-منسيّاً بصمت.
+منسيّاً بصمت. و`sealed` يعطيها وحده؛ `@freezed` يزيد `copyWith` والمساواة.
+
+| أين | الشكل | لماذا |
+|---|---|---|
+| `lib/features/` | `@freezed` — إلزامي | شرائح المشروع، و`gen_code` يعمل عليها أصلاً |
+| `lib/modules/` · `lib/ui/state/sync/` | `sealed` مكتوبٌ باليد، وفوقه سطرٌ يقول ذلك | الموديول يُشحن مطفأً، فلا يُلزم مشروعاً لا يُشعله بملفات توليد |
+| `RefreshState` | صنفٌ عاديّ **بلا مساواة** | كل `emit(RefreshState())` يجب أن يُعاد البناء به؛ `@freezed` يجعل النسختين متساويتين فيُسقطه الـcubit |
 
 ### R06 · `context.mounted` بعد كل `await` 👁
 
@@ -170,7 +176,7 @@ context.locale;
 ### R12 · لا لون ولا حجم خطّ خامّين 👁
 
 ```
-Figma hex → AppPalette (خام) → AppColors.light/dark (دلالي) → context.colors.X
+Figma hex → palettes/*.json ⇒ AppPalette (خام، مولَّد) → AppColors.light/dark (دلالي) → context.colors.X
 ```
 
 **ممنوع**: `Color(0xFF...)` بالـUI · `Colors.blue` · `AppPalette.X` خارج
@@ -197,8 +203,15 @@ Figma hex → AppPalette (خام) → AppColors.light/dark (دلالي) → cont
 > **لماذا**: شريطٌ يجلس **فوق** الجسد يُخفي آخر عنصرٍ بكل قائمة، والعطلُ صامت —
 > الشاشة تُبنى وتُمرَّر ولا يُرمى شيء. وحشوةٌ تُطلب من كل قائمة تُنسى في واحدة.
 
+**والاستثناءُ الوحيد شريطٌ نافذ** (`ShellAppearance(translucent: true)`، مطفأٌ
+افتراضاً): المحتوى يمرّ تحت الشريط ليُرى من خلاله، فالقشرةُ تُشغّل `extendBody`،
+ويصل ارتفاعُ الشريط إلى الجسد بـ`context.bottomContentInset`. `ListView` بلا
+`padding` يحشو نفسه به؛ **وكلُّ شاشة تبويبٍ تحدّد `padding` أو تثبّت زرّاً بأسفلها
+تضيف `context.bottomContentInset` بيدها** — ثمنُ الخيار على من يُشعله.
+
 الفاحص: `test/bottom_content_inset_test.dart` — يبني القشرةَ ويقيس أن الجسد ينتهي
-عند الشريط.
+عند الشريط، ونافذاً أنّ ارتفاعَ الشريط يصله حشوةً. ولا `extendBody` بالقشرة إلا
+`look.translucent`.
 
 ### R34 · افحص `lib/ui/widgets/` ومستهلكيها قبل بناء أي ودجة جديدة 👁
 

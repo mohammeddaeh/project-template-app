@@ -168,7 +168,9 @@ void main() {
     final names = {
       for (final m in RegExp(
         r"(?:Enum|Choice|Bool|Text|Number|OptionalNumber|color|callback)Knob"
-        r"(?:<[^>]*>)?\(\s*'(\w+)'",
+        // `[^(]*`, not `[^>]*`: a nested type (`Map<String, String>?`) closes
+        // more than once before the call opens.
+        r"(?:<[^(]*>)?\(\s*'(\w+)'",
       ).allMatches(tour))
         m[1]!,
     };
@@ -200,6 +202,12 @@ const _exempt = <String, String>{
   'ResponsiveScope':
       'mounted once in MaterialApp.builder — every page of the tour renders '
       'under it',
+  'BentoPlacement':
+      'data, not a widget — what placeBentoTiles returns; AppBentoGrid is '
+      'in the tour',
+  'ThemeReveal':
+      'mounted once in MaterialApp.builder; the ThemeSwitcher in the tour '
+      'plays it',
   'AppOverlayHost':
       'mounted once in MaterialApp.builder; it draws only the layers that '
       'modules register',

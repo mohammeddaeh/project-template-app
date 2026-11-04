@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:app_template/ui/theme/app_palette.dart';
+import 'package:app_template/ui/theme/app_palette.g.dart';
+
+/// كم يُرى من [AppColors.bgTranslucent] — وما بقي (١٨٪) للمحتوى تحته.
+///
+/// ٠٫٨٢ لا أقلّ: فوق أسوأ خلفيةٍ (أسود تحت الفاتح، أبيض تحت الداكن) يبقى
+/// `textSecondary` عليه بتباين ٤٫٥:١ بكل بالتٍ بالقالب (أشدُّها يحتاج ٠٫٨) —
+/// `test/color_contrast_test.dart` يفحصه لكل بالت.
+const _translucency = 0.82;
 
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
@@ -30,6 +37,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.bgCard,
     required this.bgElevated,
     required this.bgElevated2,
+    required this.bgTranslucent,
     required this.bgNeutral,
     required this.bgInverse,
     required this.textPrimary,
@@ -101,6 +109,10 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color bgCard;
   final Color bgElevated;
   final Color bgElevated2;
+
+  /// [bgCard] نافذاً قليلاً — لسطحٍ يمرّ المحتوى تحته (الشريط السفلي فوق
+  /// القائمة). لونٌ بلا تمويه: يبقى ثابتاً فيُفحص تباينُه، ولا يكلّف إطاراً.
+  final Color bgTranslucent;
   final Color bgNeutral;
   final Color bgInverse;
   final Color textPrimary;
@@ -168,145 +180,148 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color iconAction;
   final Color iconSubtle;
 
-  factory AppColors.light() {
+  /// الربطُ نفسُه لكل بالت — بالتٌ جديدة بـ`palettes/` تمرّ من هنا كما هي.
+  factory AppColors.light(AppPalette p) {
     return AppColors(
-      primary: AppPalette.primaryMain,
-      primaryContainer: AppPalette.secondary24,
-      onPrimaryContainer: AppPalette.gray900,
-      secondary: AppPalette.secondaryMain,
-      onSecondary: AppPalette.white,
-      secondaryContainer: AppPalette.primary24,
-      onSecondaryContainer: AppPalette.gray900,
-      tertiary: AppPalette.primary40,
-      onTertiary: AppPalette.gray900,
-      tertiaryContainer: AppPalette.primary16,
-      onTertiaryContainer: AppPalette.gray900,
+      primary: p.primaryMain,
+      primaryContainer: p.secondary24,
+      onPrimaryContainer: p.gray900,
+      secondary: p.secondaryMain,
+      onSecondary: p.white,
+      secondaryContainer: p.primary24,
+      onSecondaryContainer: p.gray900,
+      tertiary: p.primary40,
+      onTertiary: p.gray900,
+      tertiaryContainer: p.primary16,
+      onTertiaryContainer: p.gray900,
 
-      error: AppPalette.errorMain,
-      onError: AppPalette.white,
-      errorContainer: AppPalette.error24,
-      onErrorContainer: AppPalette.gray900,
-      outlineVariant: AppPalette.gray400,
-      shadow: AppPalette.black,
-      scrim: AppPalette.black,
-      surfaceTint: AppPalette.secondaryMain,
-      shadowColor: AppPalette.black.withValues(alpha: 0.2),
-      bgPage: AppPalette.gray100,
-      bgCard: AppPalette.white,
-      bgElevated: AppPalette.gray50,
-      bgElevated2: AppPalette.gray200,
-      bgNeutral: AppPalette.gray100,
-      bgInverse: AppPalette.gray900,
-      textPrimary: AppPalette.gray900,
-      textSecondary: AppPalette.gray700,
-      textMuted: AppPalette.gray500,
-      textOnPrimary: AppPalette.white,
-      textOnAccent: AppPalette.white,
-      bgDisabled: AppPalette.gray300,
-      textDisabled: AppPalette.gray700, // 6.59:1 over bgDisabled
-      bgBrand: AppPalette.brandSurface,
-      feedbackSuccess: AppPalette.successMain,
-      feedbackError: AppPalette.errorMain,
-      feedbackWarning: AppPalette.warningMain,
-      feedbackInfo: AppPalette.infoMain,
-      onBrand: AppPalette.white,
-      onBrandAccent: AppPalette.secondaryMain,
-      borderSubtle: AppPalette.gray200,
-      borderFocus: AppPalette.primaryMain,
-      dividerSubtle: AppPalette.gray200,
-      stateError: AppPalette.errorMain,
-      logo: AppPalette.primaryMain,
+      error: p.errorMain,
+      onError: p.white,
+      errorContainer: p.error24,
+      onErrorContainer: p.gray900,
+      outlineVariant: p.gray400,
+      shadow: p.black,
+      scrim: p.black,
+      surfaceTint: p.secondaryMain,
+      shadowColor: p.black.withValues(alpha: 0.2),
+      bgPage: p.gray100,
+      bgCard: p.white,
+      bgElevated: p.gray50,
+      bgElevated2: p.gray200,
+      bgTranslucent: p.white.withValues(alpha: _translucency),
+      bgNeutral: p.gray100,
+      bgInverse: p.gray900,
+      textPrimary: p.gray900,
+      textSecondary: p.gray700,
+      textMuted: p.gray500,
+      textOnPrimary: p.white,
+      textOnAccent: p.white,
+      bgDisabled: p.gray300,
+      textDisabled: p.gray700, // 6.59:1 over bgDisabled
+      bgBrand: p.brandSurface,
+      feedbackSuccess: p.successMain,
+      feedbackError: p.errorMain,
+      feedbackWarning: p.warningMain,
+      feedbackInfo: p.infoMain,
+      onBrand: p.white,
+      onBrandAccent: p.secondaryMain,
+      borderSubtle: p.gray200,
+      borderFocus: p.primaryMain,
+      dividerSubtle: p.gray200,
+      stateError: p.errorMain,
+      logo: p.primaryMain,
       // Toast
-      primaryToastError: AppPalette.white,
-      secondaryToastError: AppPalette.errorMain,
+      primaryToastError: p.white,
+      secondaryToastError: p.errorMain,
       // Avatar
-      avatarBg: AppPalette.gray300,
-      avatarFg: AppPalette.gray600,
+      avatarBg: p.gray300,
+      avatarFg: p.gray600,
       // Status chips / badges
-      statusSuccessBg: AppPalette.success16,
-      statusSuccessFg: AppPalette.successDarker, // 6.79:1 over success16
-      statusWarningBg: AppPalette.warning16,
-      statusWarningFg: AppPalette.warningDarker, // 6.34:1 over warning16
-      statusErrorBg: AppPalette.error16,
-      statusErrorFg: AppPalette.errorDark,
-      statusInfoBg: AppPalette.info16,
-      statusInfoFg: AppPalette.infoDark,
-      statusNeutralBg: AppPalette.gray200,
-      statusNeutralFg: AppPalette.gray700,
+      statusSuccessBg: p.success16,
+      statusSuccessFg: p.successDarker, // 6.79:1 over success16
+      statusWarningBg: p.warning16,
+      statusWarningFg: p.warningDarker, // 6.34:1 over warning16
+      statusErrorBg: p.error16,
+      statusErrorFg: p.errorDark,
+      statusInfoBg: p.info16,
+      statusInfoFg: p.infoDark,
+      statusNeutralBg: p.gray200,
+      statusNeutralFg: p.gray700,
       // Icons
-      iconAction: AppPalette.gray700,
-      iconSubtle: AppPalette.gray400,
+      iconAction: p.gray700,
+      iconSubtle: p.gray400,
     );
   }
 
-  factory AppColors.dark() {
+  factory AppColors.dark(AppPalette p) {
     return AppColors(
-      primary: AppPalette.secondaryLight,
-      primaryContainer: AppPalette.secondary32,
-      onPrimaryContainer: AppPalette.gray900,
-      secondary: AppPalette.primaryLighter,
-      onSecondary: AppPalette.gray900,
-      secondaryContainer: AppPalette.primary32,
-      onSecondaryContainer: AppPalette.gray900,
-      tertiary: AppPalette.secondary40,
-      onTertiary: AppPalette.gray900,
-      tertiaryContainer: AppPalette.secondary24,
-      onTertiaryContainer: AppPalette.gray50,
+      primary: p.secondaryLight,
+      primaryContainer: p.secondary32,
+      onPrimaryContainer: p.gray900,
+      secondary: p.primaryLighter,
+      onSecondary: p.gray900,
+      secondaryContainer: p.primary32,
+      onSecondaryContainer: p.gray900,
+      tertiary: p.secondary40,
+      onTertiary: p.gray900,
+      tertiaryContainer: p.secondary24,
+      onTertiaryContainer: p.gray50,
 
-      error: AppPalette.errorLight,
-      onError: AppPalette.gray900,
-      errorContainer: AppPalette.error32,
-      onErrorContainer: AppPalette.gray50,
-      outlineVariant: AppPalette.gray500,
-      shadow: AppPalette.black,
-      scrim: AppPalette.black,
-      surfaceTint: AppPalette.secondaryLight,
-      shadowColor: AppPalette.white.withValues(alpha: 0.2),
-      bgPage: AppPalette.gray900,
-      bgCard: AppPalette.gray800,
-      bgElevated: AppPalette.gray800,
-      bgElevated2: AppPalette.gray72,
-      bgNeutral: AppPalette.gray800,
-      bgInverse: AppPalette.gray50,
-      textPrimary: AppPalette.gray50,
-      textSecondary: AppPalette.gray200,
-      textMuted: AppPalette.gray400,
-      textOnPrimary: AppPalette.gray900,
-      textOnAccent: AppPalette.gray900,
-      bgDisabled: AppPalette.gray700,
-      textDisabled: AppPalette.gray300, // 6.59:1 over bgDisabled
-      bgBrand: AppPalette.brandSurface,
-      feedbackSuccess: AppPalette.successMain,
-      feedbackError: AppPalette.errorMain,
-      feedbackWarning: AppPalette.warningMain,
-      feedbackInfo: AppPalette.infoMain,
-      onBrand: AppPalette.white,
-      onBrandAccent: AppPalette.secondaryMain,
-      borderSubtle: AppPalette.gray700,
-      borderFocus: AppPalette.primaryLight,
-      dividerSubtle: AppPalette.gray700,
-      stateError: AppPalette.errorLight,
-      logo: AppPalette.white,
+      error: p.errorLight,
+      onError: p.gray900,
+      errorContainer: p.error32,
+      onErrorContainer: p.gray50,
+      outlineVariant: p.gray500,
+      shadow: p.black,
+      scrim: p.black,
+      surfaceTint: p.secondaryLight,
+      shadowColor: p.white.withValues(alpha: 0.2),
+      bgPage: p.gray900,
+      bgCard: p.gray800,
+      bgElevated: p.gray800,
+      bgElevated2: p.gray72,
+      bgTranslucent: p.gray800.withValues(alpha: _translucency),
+      bgNeutral: p.gray800,
+      bgInverse: p.gray50,
+      textPrimary: p.gray50,
+      textSecondary: p.gray200,
+      textMuted: p.gray400,
+      textOnPrimary: p.gray900,
+      textOnAccent: p.gray900,
+      bgDisabled: p.gray700,
+      textDisabled: p.gray300, // 6.59:1 over bgDisabled
+      bgBrand: p.brandSurface,
+      feedbackSuccess: p.successMain,
+      feedbackError: p.errorMain,
+      feedbackWarning: p.warningMain,
+      feedbackInfo: p.infoMain,
+      onBrand: p.white,
+      onBrandAccent: p.secondaryMain,
+      borderSubtle: p.gray700,
+      borderFocus: p.primaryLight,
+      dividerSubtle: p.gray700,
+      stateError: p.errorLight,
+      logo: p.white,
       // Toast
-      primaryToastError: AppPalette.primaryMain,
-      secondaryToastError: AppPalette.errorLight,
+      primaryToastError: p.primaryMain,
+      secondaryToastError: p.errorLight,
       // Avatar
-      avatarBg: AppPalette.gray700,
-      avatarFg: AppPalette.gray300,
+      avatarBg: p.gray700,
+      avatarFg: p.gray300,
       // Status chips / badges
-      statusSuccessBg: AppPalette.success32,
-      statusSuccessFg: AppPalette.successDarker, // 6.11:1 over success32
-      statusWarningBg: AppPalette.warning32,
-      statusWarningFg: AppPalette.warningDarker, // 4.87:1 over warning32
-      statusErrorBg: AppPalette.error32,
-      statusErrorFg: AppPalette.errorDarker, // 6.13:1 over error32
-      statusInfoBg: AppPalette.info32,
-      statusInfoFg: AppPalette.infoDarker, // 7.82:1 over info32
-      statusNeutralBg: AppPalette.gray700,
-      statusNeutralFg: AppPalette.gray200,
+      statusSuccessBg: p.success32,
+      statusSuccessFg: p.successDarker, // 6.11:1 over success32
+      statusWarningBg: p.warning32,
+      statusWarningFg: p.warningDarker, // 4.87:1 over warning32
+      statusErrorBg: p.error32,
+      statusErrorFg: p.errorDarker, // 6.13:1 over error32
+      statusInfoBg: p.info32,
+      statusInfoFg: p.infoDarker, // 7.82:1 over info32
+      statusNeutralBg: p.gray700,
+      statusNeutralFg: p.gray200,
       // Icons
-      iconAction: AppPalette.gray300,
-      iconSubtle: AppPalette.gray500,
+      iconAction: p.gray300,
+      iconSubtle: p.gray500,
     );
   }
 
@@ -336,6 +351,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? bgCard,
     Color? bgElevated,
     Color? bgElevated2,
+    Color? bgTranslucent,
     Color? bgNeutral,
     Color? bgInverse,
     Color? textPrimary,
@@ -404,6 +420,7 @@ class AppColors extends ThemeExtension<AppColors> {
       bgCard: bgCard ?? this.bgCard,
       bgElevated: bgElevated ?? this.bgElevated,
       bgElevated2: bgElevated2 ?? this.bgElevated2,
+      bgTranslucent: bgTranslucent ?? this.bgTranslucent,
       bgNeutral: bgNeutral ?? this.bgNeutral,
       bgInverse: bgInverse ?? this.bgInverse,
       textPrimary: textPrimary ?? this.textPrimary,
@@ -499,6 +516,7 @@ class AppColors extends ThemeExtension<AppColors> {
       bgCard: Color.lerp(bgCard, other.bgCard, t)!,
       bgElevated: Color.lerp(bgElevated, other.bgElevated, t)!,
       bgElevated2: Color.lerp(bgElevated2, other.bgElevated2, t)!,
+      bgTranslucent: Color.lerp(bgTranslucent, other.bgTranslucent, t)!,
       bgNeutral: Color.lerp(bgNeutral, other.bgNeutral, t)!,
       bgInverse: Color.lerp(bgInverse, other.bgInverse, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,

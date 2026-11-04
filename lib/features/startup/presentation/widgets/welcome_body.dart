@@ -84,7 +84,7 @@ class _Enter extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => ListItemAppearWdg(
+  Widget build(BuildContext context) => ListItemEntrance(
     staggerIndex: order,
     stagger: const Duration(milliseconds: 120),
     duration: const Duration(milliseconds: 450),

@@ -57,7 +57,7 @@ class _MotionDemoState extends State<MotionDemo> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         DemoPlayground(
-          call: 'ListItemAppearWdg',
+          call: 'ListItemEntrance',
           knobs: [
             EnumKnob(
               'animation',
@@ -90,7 +90,7 @@ class _MotionDemoState extends State<MotionDemo> {
                 ),
                 children: [
                   for (var i = 0; i < _items; i++)
-                    ListItemAppearWdg(
+                    ListItemEntrance(
                       staggerIndex: i,
                       animation: k('animation'),
                       enabled: k('enabled'),

@@ -43,7 +43,7 @@
 | `StatCard` | عرض بيانات | [§14](widgets/04_display.md) |
 | `StepProgressIndicator` | عرض بيانات | [§15](widgets/04_display.md) |
 | `AppLabel` | تصنيف | [§16](widgets/04_display.md) |
-| `PaginationBuilderWdg` | قوائم | [§17](widgets/05_states.md) |
+| `PaginationBuilder` | قوائم | [§17](widgets/05_states.md) |
 | `ShimmerLoadingWidget / SkeletonWidget` | تحميل | [§18](widgets/05_states.md) |
 | `AvatarWidget` | صور | [§19](widgets/04_display.md) |
 | `AppTabBar` | تنقل | [§20](widgets/06_navigation.md) |
@@ -73,6 +73,8 @@
 | `DeviceScan` | مسح · kit | [§44](widgets/02_inputs.md) |
 | `AppVideoPlayer` · `PlaybackBar` | فيديو · kit · شريط تشغيل مشترك | [§45](widgets/04_display.md) |
 | `SignaturePad` · `InkController` · `HandwritingInput` | توقيع · كتابة يدوية (kit) | [§46](widgets/02_inputs.md) |
+| `AppLargeTitleView` | تخطيط · عنوان ينكمش | [§47](widgets/03_layout.md) |
+| `AppBentoGrid` · `BentoTile` | تخطيط · شبكة بطاقات | [§48](widgets/03_layout.md) |
 
 ### §DIRECT-IMPORTS — imports مباشرة (غير موجودة في barrel)
 

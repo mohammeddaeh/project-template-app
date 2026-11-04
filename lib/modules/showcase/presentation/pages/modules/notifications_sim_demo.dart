@@ -107,7 +107,7 @@ class _NotificationsSimDemoState extends State<NotificationsSimDemo> {
                 )
               else
                 for (final item in _items)
-                  ListItemAppearWdg(
+                  ListItemEntrance(
                     key: ValueKey(item.id),
                     child: AppListTile(
                       titleText: item.title!,

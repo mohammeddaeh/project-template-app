@@ -223,7 +223,7 @@ class _TopLine extends StatelessWidget {
           width: config.topLineWidth,
           height: config.topLineHeight,
           decoration: BoxDecoration(
-            color: colors.dividerSubtle,
+            color: colors.outlineVariant,
             borderRadius: BorderRadius.circular(config.topLineHeight / 2),
           ),
         ),

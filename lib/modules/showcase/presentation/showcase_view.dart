@@ -43,7 +43,7 @@ class ShowcaseView extends StatelessWidget {
             16.heightBox,
             SectionTitle(titleKey: group.titleKey),
             for (final (i, page) in group.pages.indexed)
-              ListItemAppearWdg(
+              ListItemEntrance(
                 staggerIndex: i,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 8),

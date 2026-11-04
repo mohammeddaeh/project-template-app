@@ -16,7 +16,7 @@ Reusable infinite-scroll pagination for REST-backed lists.
 | `PaginationQuery` | `core/foundation/contracts/pagination_query.dart` |
 | `PaginationDataEntity` | `core/foundation/contracts/pagination_data_entity.dart` |
 | `PaginationCubit` | `ui/state/pagination/pagination_cubit.dart` |
-| `PaginationBuilderWdg` | `ui/widgets/lists/pagination_builder_wdg.dart` |
+| `PaginationBuilder` | `ui/widgets/lists/pagination_builder.dart` |
 | Feature cubit | `features/<name>/presentation/cubits/` |
 | Feature page | `features/<name>/presentation/pages/` |
 
@@ -24,7 +24,7 @@ Reusable infinite-scroll pagination for REST-backed lists.
 
 1. Domain page entity (items + totalPages)
 2. Cubit extending `PaginationCubit<T>`
-3. Page using `PaginationBuilderWdg`
+3. Page using `PaginationBuilder`
 
 ## 3) Data and Domain
 
@@ -77,14 +77,21 @@ class ItemsCubit extends PaginationCubit<Item> {
 ```dart
 BlocProvider(
   create: (_) => getIt<ItemsCubit>(),
-  child: PaginationBuilderWdg<ItemsCubit, Item>(
+  child: PaginationBuilder<ItemsCubit, Item>(
     loadingItemsWidget: _buildShimmerList(),
-    itemWdg: (item) => _buildItemTile(item),
+    itemBuilder: (item) => _buildItemTile(item),
     separatorWidget: const SizedBox(height: 8),
     contentPadding: EdgeInsets.zero,
   ),
 )
 ```
+
+**Under a collapsing header** (`AppLargeTitleView`, or any `NestedScrollView`):
+the same `PaginationBuilder`, unchanged. It finds the `NestedScrollView` above
+it and scrolls with that view's primary controller instead of
+`cubit.scrollController` — otherwise the header never collapses — and asks for
+the next page from scroll notifications through `cubit.onScrolled(metrics,
+towardEnd:)`, the same check the controller listener runs.
 
 ## 6) Controls
 
@@ -97,12 +104,12 @@ cubit.reset();
 
 ## 7) Error Handling
 
-`PaginationBuilderWdg` uses `FailureUiMapper.toAction()` internally.
+`PaginationBuilder` uses `FailureUiMapper.toAction()` internally.
 `PaginationCubit` handles `CancelledFailure` and `UnauthorizedFailure` at infrastructure level.
 
 ## 8) Page Loading Indicator (Next-Page Loader)
 
-`PaginationBuilderWdg.loadingItemWidget` shows at the bottom of the list when fetching the next page.
+`PaginationBuilder.loadingItemWidget` shows at the bottom of the list when fetching the next page.
 It transitions in/out via `AnimatedSwitcher` (fade + size).
 
 Use `PageLoadingIndicator` from `ui/widgets/widgets.dart` for 6 built-in styles:
@@ -117,7 +124,7 @@ Use `PageLoadingIndicator` from `ui/widgets/widgets.dart` for 6 built-in styles:
 | `PageLoadingStyle.pulseDots` | 3 pulsing/scaling dots |
 
 ```dart
-PaginationBuilderWdg<MyCubit, MyEntity>(
+PaginationBuilder<MyCubit, MyEntity>(
   loadingItemWidget: PageLoadingIndicator(
     style: PageLoadingStyle.dotsWave,
     loadingText: LocaleKeys.loadingMore.tr(), // optional override for textSpinner
@@ -132,7 +139,7 @@ PaginationBuilderWdg<MyCubit, MyEntity>(
 
 - Returning API models to UI instead of domain entities
 - Missing `isMatchedTwoEntity()` → infinite duplicate loads
-- Manual scroll listener while using `PaginationBuilderWdg`
+- Manual scroll listener while using `PaginationBuilder`
 - Putting `PaginationCubit` back in `core/` (it belongs in `ui/state/pagination/`)
 
 ## 9) Quick Checklist
@@ -141,12 +148,12 @@ PaginationBuilderWdg<MyCubit, MyEntity>(
 - [ ] Domain page entity created
 - [ ] Cubit extends `PaginationCubit<T>` in `presentation/cubits/`
 - [ ] `call()` returns `Either<Failure, PaginationDataEntity<T>>`
-- [ ] Page uses `PaginationBuilderWdg`
+- [ ] Page uses `PaginationBuilder`
 - [ ] `dart analyze lib` passes
 
 ## 10) Related Docs
 
 - [`11_CORE.md`](11_CORE.md) — architecture principles
 - [`12_REST_API.md`](12_REST_API.md) — REST flow
-- [`20_WIDGETS.md`](../ui/20_WIDGETS.md) — PaginationBuilderWdg placement
+- [`20_WIDGETS.md`](../ui/20_WIDGETS.md) — PaginationBuilder placement
 

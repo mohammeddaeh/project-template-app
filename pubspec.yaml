@@ -115,7 +115,6 @@ dependencies:
 
 
 dependency_overrides:
-  intl: ^0.19.0
   # ⚠️ **إلزاميّ بالضبط — 4.9.1 وحدها.** `retrofit_generator 10.2` يولّد
   # `ErrorLogger.logError(e, s, options, response)` بأربعة وسائط موضعية لكل خدمة
   # تُعيد `Future<String>` (راجع `readme/architecture/12_REST_API.md` §«النص الخام»): 4.9.0

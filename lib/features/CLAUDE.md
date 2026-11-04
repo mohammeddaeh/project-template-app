@@ -52,7 +52,7 @@ lib/features/{feature}/
 | Domain Entities | Pure Dart, no fromJson, no imports from data layer |
 | Use Case | `@injectable`, wraps a single repository call |
 | Cubit | Depends on Use Case (NOT repository directly) |
-| State | `@freezed` mandatory — لا استثناءات |
+| State | `@freezed` mandatory بـ`features/` (R05) |
 
 ### Auth — مبنيّة، وهي **المثال الحيّ** الذي تُنسخ منه أي feature
 
@@ -566,12 +566,12 @@ CustomTextField(controller: _ctrl, keyboardType: TextInputType.phone, ltr: true)
 CustomTextField(controller: _ctrl, maxLines: 4)
 ```
 
-## PaginationBuilderWdg
+## PaginationBuilder
 
 ```dart
-PaginationBuilderWdg<{Name}Cubit, {Entity}>(
+PaginationBuilder<{Name}Cubit, {Entity}>(
   loadingItemsWidget: _buildShimmerList(),
-  itemWdg: (entity) => {Entity}Item(entity: entity),
+  itemBuilder: (entity) => {Entity}Item(entity: entity),
   separatorWidget: const DashedDivider(),
   notItemsMsg: LocaleKeys.no{Feature}.tr(),
   wantKeepAlive: true,

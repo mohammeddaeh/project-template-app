@@ -61,19 +61,23 @@
 | التمرير لأول حقل ناقص | `formKey.validateAndReveal()` — [`ui/widgets/inputs/form_reveal.dart`](../../lib/ui/widgets/inputs/form_reveal.dart) | `Scrollable.ensureVisible` يدوياً | 👁 |
 | أيقونة SVG بصفّ أو زرّ | `SvgImageWidget.icon(path, size:)` — مربّعٌ ثابت والرسم داخله — [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §34 | `SvgPicture.asset(width:, height:)` | 👁 |
 | صورة شبكة · صورة شخص · SVG · أصل | `CachedImageWidget` · `NetworkImageWidget` · `AvatarWidget` · `SvgImageWidget` · `AppAssetImage` — [`ui/widgets/images/`](../../lib/ui/widgets/images/) | `Image.network(...)` | C05 |
-| حوار · تأكيد · ورقة سفلية | `context.showCustomDialog` · `showConfirmDialog` · `showLoadingDialog` · `context.showAppBottomSheet` — [`ui/extensions/`](../../lib/ui/extensions/) | `showDialog` / `showModalBottomSheet` الإطار | 👁 |
-| قائمة مرقّمة بصفحات | `PaginationCubit` + `PaginationBuilderWdg` / `PaginatedListView` — [`14_PAGINATION.md`](../architecture/14_PAGINATION.md) | `ScrollController` يحسب نهاية القائمة | 👁 |
+| حوار · تأكيد · ورقة سفلية | `context.showCustomDialog` · `showConfirmDialog` · `showLoadingDialog` · `context.showAppBottomSheet` — [`ui/extensions/`](../../lib/ui/extensions/) · `AppBottomSheet.show(detents: [0.4, 0.9])` ورقةٌ تقف بارتفاعات — [`widgets/06_navigation.md`](../ui/widgets/06_navigation.md) §21 | `showDialog` / `showModalBottomSheet` الإطار | 👁 |
+| شبكة بطاقاتٍ بأحجامٍ مختلفة (رئيسية · لوحة) | `AppBentoGrid(tiles: [BentoTile(columns: 2, rows: 2, child: …), …])` — أعمدتها من عرضها هي (خليّةٌ ≥ ١٥٠)، وتتراصّ بلا فراغ — [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §48 | `GridView` بـ`crossAxisCount` ثابت · `Row`/`Column` متداخلة بأحجامٍ يدوية | 👁 |
+| عنوانٌ كبير ينكمش عند التمرير | `AppLargeTitleView(title:, body:)` جسدَ `Scaffold` بلا `appBar` — و`PaginationBuilder` بداخله يعمل كما هو — [`21_WIDGETS_USAGE.md`](../ui/21_WIDGETS_USAGE.md) §47 | `SliverAppBar.large` + `NestedScrollView` بالشاشة | 👁 |
+| قائمة مرقّمة بصفحات | `PaginationCubit` + `PaginationBuilder` / `PaginatedListView` — [`14_PAGINATION.md`](../architecture/14_PAGINATION.md) | `ScrollController` يحسب نهاية القائمة | 👁 |
 | مقاس · مسافة · لوح · تكبير خط | `context.screen` — [`22_RESPONSIVE.md`](../ui/22_RESPONSIVE.md) | `MediaQuery.of(context).size.height * 0.3` | F37 |
 | لون · خط · زاوية · حركة · ظلّ | `context.colors.x` · `context.textTheme.x` · `AppRadius` · `AppMotion` · `AppElevation` — [`20_WIDGETS.md`](../ui/20_WIDGETS.md) §3 | `Color(0xFF…)` · `Colors.x` | F04 |
+| ثيمٌ إضافيّ يختاره المستخدم | `AppThemePresets.all` — بالتٌ بـ`palettes/` ثم `gen_code.dart` ([`40_SCRIPTS.md`](../scripts/40_SCRIPTS.md) §5‑ب)، ومنتقيه بالإعدادات يظهر وحده حين يصير الثيم اثنين | `ThemeData` ثانٍ بالشاشة · `AdaptiveTheme.of(context).setTheme` خارج `app.dart` | 👁 |
 | اتجاه حشوة أو محاذاة | `EdgeInsetsDirectional` · `AlignmentDirectional` | `EdgeInsets.only(left:)` | F10 |
 
 ## الحركة
 
 | الحاجة | استعمل | لا تكتب | الحارس |
 |---|---|---|---|
-| مدّة أو منحنى حركة | `AppMotion.of(context).base` (صفرٌ مع «تقليل الحركة») · `AppMotion.baseCurve` — [`ui/theme/app_motion.dart`](../../lib/ui/theme/app_motion.dart) | `Duration(milliseconds: 300)` بالشاشة | 👁 R41 |
+| مدّة أو منحنى حركة · نابض | `AppMotion.of(context).base` (صفرٌ مع «تقليل الحركة») · `AppMotion.baseCurve` — ولما يُضغط أو يُسحب: `controller.springTo(target, AppMotion.springSnappy)` (`springGentle` بارتدادٍ خفيف) — [`ui/theme/app_motion.dart`](../../lib/ui/theme/app_motion.dart) | `Duration(milliseconds: 300)` بالشاشة · `SpringDescription(...)` بالودجة | 👁 R41 |
+| تبديل الثيم أو الوضع بحركة | `ThemeReveal.run(buttonContext, change)` — دائرةٌ تتّسع من الزرّ، وفوريٌّ مع «تقليل الحركة». `ThemeSwitcher` ومنتقي الثيم يناديانه — [`ui/theme/theme_reveal.dart`](../../lib/ui/theme/theme_reveal.dart) | `setThemeMode` مباشرةً من زرٍّ جديد · `AnimatedTheme` بالشاشة | 👁 |
 | انتقال الصفحات | لا شيء — الثيم: `PredictiveBack` على أندرويد (يتبع إصبع الرجوع) · Cupertino على iOS | `PageRouteBuilder` لكل شاشة | 👁 |
-| ظهور صفوف القائمة | `PaginationBuilderWdg` / `PaginatedListView` (متتالٍ افتراضاً) · `ListAppearTracker` + `ListItemAppearWdg` لقائمةٍ يدوية | `AnimationController` لكل صف | 👁 |
+| ظهور صفوف القائمة | `PaginationBuilder` / `PaginatedListView` (متتالٍ افتراضاً) · `ListAppearTracker` + `ListItemEntrance` لقائمةٍ يدوية | `AnimationController` لكل صف | 👁 |
 | من بطاقةٍ إلى تفاصيلها | `AppOpenContainer` — §35 | `Hero` + مسار مخصّص | 👁 |
 | خطوات داخل شاشة | `AppStepSwitcher` — §36 | `AnimatedSwitcher` بانزلاقٍ يدويّ | 👁 |
 | رقمٌ يتغيّر | `AnimatedCount` — §37 | `TweenAnimationBuilder` بالشاشة | 👁 |
@@ -104,7 +108,7 @@
 | فتح رابط · هاتف · بريد | `UrlLauncherService` | `launchUrl` | C07 |
 | مشاركة | `ShareService` | `SharePlus.instance` | C08 |
 | الموقع | `DeviceLocationService` | `Geolocator.` | C10 |
-| اهتزاز | `HapticService` — و`context.feedback.*` يهتزّ وحده | `HapticFeedback.` | C11 |
+| اهتزاز | `HapticService` — و`context.feedback.*` يهتزّ وحده، و`selectionHaptic()` حين **تتغيّر** قيمةٌ بلمسة (`ChipRow` · `AppRadioGroup` · `AppBottomBar` · `ThemeSwitcher` تناديه وحدها) | `HapticFeedback.` | C11 |
 | نسخ ولصق | `ClipboardService` | `Clipboard.setData` | C12 |
 | كاميرا · معرض | `MediaService` | `ImagePicker()` | C13 |
 | اختيار ملف · فتحه | `FileService` | `FilePicker.` | C14 |

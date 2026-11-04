@@ -201,20 +201,20 @@ final portSignals = <PortSignal>[
   const PortSignal(
     'قائمة بصفحات',
     r'ion-infinite-scroll|onEndReached|InfiniteScroll|infinite-scroll|loadMore|per_page|perPage|pageSize|PagingSource',
-    '§الواجهة — PaginationCubit + PaginationBuilderWdg (14_PAGINATION.md)',
-    covers: ['PaginationCubit', 'PaginationBuilderWdg'],
+    '§الواجهة — PaginationCubit + PaginationBuilder (14_PAGINATION.md)',
+    covers: ['PaginationCubit', 'PaginationBuilder'],
   ),
   const PortSignal(
     'مقاس الشاشة',
     r'@media|Dimensions\.get|useWindowDimensions|MediaQuery|screen\.width|ion-col|breakpoint',
-    '§الواجهة — context.screen (22_RESPONSIVE.md)',
-    covers: ['context.screen'],
+    '§الواجهة — context.screen · AppBentoGrid (22_RESPONSIVE.md)',
+    covers: ['context.screen', 'AppBentoGrid'],
   ),
   const PortSignal(
     'ألوان · ثيم',
     r'--ion-color|:root\s*\{|colors\.xml|ThemeData|createTheme|tailwind|<color name=',
-    '§الواجهة — context.colors · AppPalette (01_SETUP.md)',
-    covers: ['context.colors'],
+    '§الواجهة — context.colors · palettes/*.json · AppThemePresets (01_SETUP.md)',
+    covers: ['context.colors', 'AppThemePresets', 'ThemeReveal'],
   ),
   const PortSignal(
     'اتجاه RTL',
@@ -225,8 +225,8 @@ final portSignals = <PortSignal>[
   const PortSignal(
     'تنقّل بين الشاشات',
     r'NavController|router\.navigate|navigation\.navigate|Navigator\.push|startActivity|pushViewController|createStackNavigator|ion-router-outlet',
-    'auto_route بـroutes/router.dart · انتقال الصفحات من الثيم (§الحركة)',
-    covers: ['PredictiveBack'],
+    'auto_route بـroutes/router.dart · انتقال الصفحات من الثيم (§الحركة) · AppLargeTitleView',
+    covers: ['PredictiveBack', 'AppLargeTitleView'],
   ),
 
   // ── الحركة ─────────────────────────────────────────────────────────────────

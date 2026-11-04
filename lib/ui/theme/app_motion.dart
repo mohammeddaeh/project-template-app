@@ -1,3 +1,4 @@
+import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
 /// مدّة وcurve الحركة — قرارٌ موحَّد لكل micro-interaction بدل قيمةٍ مكتوبة
@@ -33,6 +34,17 @@ abstract final class AppMotion {
   /// أقصى عدد عناصر يتأخّر ظهورُها في دفعةٍ واحدة — العنصر التاسع يظهر مع
   /// الثامن، فلا ينتظر القارئ عموداً فارغاً يمتلئ خلفه.
   static const int staggerCap = 8;
+
+  /// نابضٌ سريع بلا ارتدادٍ يُرى — ضغطة · تبديل · ما يجب أن يصل فوراً.
+  ///
+  /// النابضُ لا مدّةَ له: يستقرّ حين تنفد طاقته، ويحمل سرعةَ ما قبله، فحركةٌ
+  /// تُقطع بأخرى (ضغطٌ ثم إفلاتٌ سريع) تنعطف ولا تقفز. يُحرَّك بـ[SpringTo.springTo].
+  static final SpringDescription springSnappy =
+      SpringDescription.withDampingRatio(mass: 1, stiffness: 1400, ratio: 0.9);
+
+  /// نابضٌ هادئ بارتدادٍ خفيف — رجوعُ ما ضُغط · استقرارُ ما سُحب.
+  static final SpringDescription springGentle =
+      SpringDescription.withDampingRatio(mass: 1, stiffness: 300, ratio: 0.7);
 
   /// المدد **كما يجب أن تُستعمل الآن**: صفرٌ حين فعّل المستخدم «تقليل الحركة»
   /// بالنظام (`MediaQuery.disableAnimations`). كل حركةٍ تُبنى بشاشة أو ودجة
@@ -73,4 +85,14 @@ class MotionValues {
 
   /// هل الحركة مطفأة بطلب المستخدم؟ ما لا مدّةَ له (اهتزاز · عدّاد) يُتخطّى كلّه.
   bool get isReduced => identical(this, reduced);
+}
+
+/// حركةٌ بنابضٍ من [AppMotion] بدل مدّةٍ ومنحنى.
+///
+/// **«تقليل الحركة» على المستدعي**: النابض لا مدّةَ له تُصفَّر، فمع
+/// `AppMotion.of(context).isReduced` تُضبط القيمة مباشرةً (`controller.value =`).
+extension SpringTo on AnimationController {
+  /// من القيمة الحالية إلى [target]، بسرعة الحركة القائمة.
+  TickerFuture springTo(double target, SpringDescription spring) =>
+      animateWith(SpringSimulation(spring, value, target, velocity));
 }

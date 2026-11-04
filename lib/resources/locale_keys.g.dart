@@ -288,6 +288,14 @@ abstract class LocaleKeys {
   static const templateReady = 'templateReady';
   static const themeDark = 'themeDark';
   static const themeLight = 'themeLight';
+  static const themePreset = 'themePreset';
+  static const themePresetStandard = 'themePresetStandard';
+  static const themePresetDawn = 'themePresetDawn';
+  static const themePresetEmerald = 'themePresetEmerald';
+  static const themePresetGraphite = 'themePresetGraphite';
+  static const themePresetLilac = 'themePresetLilac';
+  static const themePresetOcean = 'themePresetOcean';
+  static const themePresetSand = 'themePresetSand';
   static const themeSystem = 'themeSystem';
   static const tooManyRequests = 'tooManyRequests';
   static const transferDisabled = 'transferDisabled';
@@ -888,6 +896,7 @@ abstract class LocaleKeys {
   static const showcaseKnobMaxLength = 'showcaseKnobMaxLength';
   static const showcaseKnobMaxLines = 'showcaseKnobMaxLines';
   static const showcaseKnobMessage = 'showcaseKnobMessage';
+  static const showcaseKnobMessageArgs = 'showcaseKnobMessageArgs';
   static const showcaseKnobMessageKey = 'showcaseKnobMessageKey';
   static const showcaseKnobMethod = 'showcaseKnobMethod';
   static const showcaseKnobMode = 'showcaseKnobMode';
@@ -949,6 +958,7 @@ abstract class LocaleKeys {
   static const showcaseKnobTotalSteps = 'showcaseKnobTotalSteps';
   static const showcaseKnobTrailing = 'showcaseKnobTrailing';
   static const showcaseKnobTransition = 'showcaseKnobTransition';
+  static const showcaseKnobTranslucent = 'showcaseKnobTranslucent';
   static const showcaseKnobType = 'showcaseKnobType';
   static const showcaseKnobValidator = 'showcaseKnobValidator';
   static const showcaseKnobValue = 'showcaseKnobValue';

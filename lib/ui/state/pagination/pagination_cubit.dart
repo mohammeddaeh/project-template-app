@@ -217,22 +217,31 @@ abstract class PaginationCubit<E> extends SafeCubit<PaginationState<E>> {
 
   void _bindScrollController() {
     scrollController.addListener(() {
-      if (state is! PaginationSuccessState<E>) return;
-      final successState = state as PaginationSuccessState<E>;
-
-      // Check both the isLastPage flag from API AND our own _reachedEnd flag
-      final bool isLastPage =
-          successState.paginationEntity.paginationInfo.isLastPage ||
-          _reachedEnd;
-
-      if (isLastPage) return;
-
-      final scrollDir = scrollController.position.userScrollDirection;
-      if (scrollDir == ScrollDirection.reverse &&
-          scrollController.position.extentAfter < 100) {
-        nextPage();
-      }
+      final position = scrollController.position;
+      onScrolled(
+        position,
+        towardEnd: position.userScrollDirection == ScrollDirection.reverse,
+      );
     });
+  }
+
+  /// يطلب الصفحة التالية حين يقترب القارئ من الذيل وهو يمرّر نحوه.
+  ///
+  /// [scrollController] يناديه وحده. ومن يمرّر بمتحكّمٍ غيره (`PaginationBuilder`
+  /// داخل `NestedScrollView`) يناديه من إشعارات التمرير.
+  void onScrolled(ScrollMetrics metrics, {required bool towardEnd}) {
+    if (state is! PaginationSuccessState<E>) return;
+    final successState = state as PaginationSuccessState<E>;
+
+    // Check both the isLastPage flag from API AND our own _reachedEnd flag
+    final bool isLastPage =
+        successState.paginationEntity.paginationInfo.isLastPage || _reachedEnd;
+
+    if (isLastPage) return;
+
+    if (towardEnd && metrics.extentAfter < 100) {
+      nextPage();
+    }
   }
 
   // No `emit` override here: the emit-after-close guard is [SafeCubit]'s, so

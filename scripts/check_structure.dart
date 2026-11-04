@@ -160,19 +160,24 @@ void _writeBaseline() {
 
 // ── الفحوص ────────────────────────────────────────────────────────────────────
 
-/// F04 — لا hex خام، ولا `AppPalette` خارج `app_colors.dart`.
+/// F04 — لا hex خام، ولا `AppPalette`/`AppPalettes` خارج `app_colors.dart`.
 void _checkNoRawColors(String path, List<String?> code) {
   if (path.endsWith('lib/ui/theme/app_colors.dart') ||
-      path.endsWith('lib/ui/theme/app_palette.dart')) {
+      path.endsWith('lib/ui/theme/app_palette.g.dart')) {
     return;
   }
   for (var i = 0; i < code.length; i++) {
     final line = code[i];
     if (line == null) continue;
     if (RegExp(r'Color\(0x').hasMatch(line)) {
-      _flag('F04', path, i + 1, 'لون خام — مرّره عبر AppPalette ثم AppColors');
+      _flag(
+        'F04',
+        path,
+        i + 1,
+        'لون خام — درجةٌ بـpalettes/*.json ثم AppColors',
+      );
     }
-    if (RegExp(r'\bAppPalette\.').hasMatch(line)) {
+    if (RegExp(r'\bAppPalettes?\.').hasMatch(line)) {
       _flag('F04', path, i + 1, 'AppPalette لا يُستورد خارج app_colors.dart');
     }
     if (RegExp(r'\bColors\.(?!transparent\b)[a-z]').hasMatch(line)) {

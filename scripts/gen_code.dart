@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
-/// توليد الكود التلقائي للمشروع (6 خطوات):
+/// توليد الكود التلقائي للمشروع (7 خطوات):
 ///   1. build_runner  — Retrofit · Freezed · Injectable · AutoRoute
+///   1‑ب. sync_palettes.dart — `palettes/*.json` ⇒ `app_palette.g.dart` + `app_theme_presets.g.dart` + أسماؤها بالترجمة
 ///   2. locale_keys.g.dart   — مفاتيح EasyLocalization
 ///   3. codegen_loader.g.dart — runtime loader (CodegenLoader)
 ///   4. assets.gen.dart — مسح assets/ وتوليد صنف Assets
@@ -28,6 +29,15 @@ Future<void> main(List<String> args) async {
     'build_runner',
     'build',
     '--delete-conflicting-outputs',
+  ]);
+
+  // 1‑ب. البالتات — **بعد** build_runner: يمحو `.g.dart` يظنّه مخرَجاً قديماً
+  //      له (كما يفعل بعد حذف `app_palette.dart` اليدويّ)، فيُكتب بعده.
+  //      و**قبل** مفاتيح الترجمة: يكتب أسماء الثيمات بـ`assets/translations/`،
+  //      فتجدها الخطوة 2 بنفس التشغيل.
+  await _stream('🎨  app_palette.g.dart · app_theme_presets.g.dart', 'dart', [
+    'run',
+    'scripts/sync_palettes.dart',
   ]);
 
   // 2. locale_keys.g.dart

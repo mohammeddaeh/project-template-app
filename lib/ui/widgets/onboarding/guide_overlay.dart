@@ -96,9 +96,15 @@ class _GuideOverlayContentState extends State<_GuideOverlayContent>
     duration: AppMotion.base,
   );
 
+  bool _started = false;
+
+  // بـ`didChangeDependencies` لا `initState`: قراءةُ `MediaQuery` قبل اكتمال
+  // `initState` ترمي خطأً.
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
     // "تقليل الحركة" بالنظام — تظهر الفقاعة كاملةً فوراً بلا دخولٍ متحرّك.
     if (MediaQuery.maybeDisableAnimationsOf(context) == true) {
       _entrance.value = 1;

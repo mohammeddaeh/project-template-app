@@ -1,6 +1,9 @@
 part of 'offline_ux_cubit.dart';
 
 /// State emitted by [OfflineUxCubit].
+///
+/// Hand-written `sealed` rather than `@freezed`: it belongs to the sync module,
+/// which ships disabled (R05).
 sealed class OfflineUxState {
   const OfflineUxState();
 }

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/feedback/selection_haptic.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -53,10 +54,16 @@ class ShellAppearance {
   const ShellAppearance({
     this.style = AppBottomBarStyle.material,
     this.transition = AppTabTransition.fadeThrough,
+    this.translucent = false,
   });
 
   final AppBottomBarStyle style;
   final AppTabTransition transition;
+
+  /// The body runs under the bar, and the bar shows it faintly through
+  /// [AppColors.bgTranslucent]. See [AppBottomBar.translucent] for what it
+  /// asks of each tab.
+  final bool translucent;
 
   static final ValueNotifier<ShellAppearance> notifier = ValueNotifier(
     const ShellAppearance(),
@@ -65,19 +72,22 @@ class ShellAppearance {
   ShellAppearance copyWith({
     AppBottomBarStyle? style,
     AppTabTransition? transition,
+    bool? translucent,
   }) => ShellAppearance(
     style: style ?? this.style,
     transition: transition ?? this.transition,
+    translucent: translucent ?? this.translucent,
   );
 
   @override
   bool operator ==(Object other) =>
       other is ShellAppearance &&
       other.style == style &&
-      other.transition == transition;
+      other.transition == transition &&
+      other.translucent == translucent;
 
   @override
-  int get hashCode => Object.hash(style, transition);
+  int get hashCode => Object.hash(style, transition, translucent);
 }
 
 /// **The bottom navigation bar**, in one of [AppBottomBarStyle]'s styles.
@@ -95,12 +105,20 @@ class ShellAppearance {
 /// below it, a [NavItem.badgeCount] shows on its icon (`0` is a dot), and each
 /// tab is a labelled button for screen readers even when its label is not
 /// drawn.
+///
+/// [translucent] draws the bar in [AppColors.bgTranslucent] — a tint, not a
+/// blur, so it costs nothing per frame. It shows only under a
+/// `Scaffold(extendBody: true)`; there the body's bottom padding grows by the
+/// bar's height, which a `ListView` applies by itself — a screen that pins
+/// a button to its bottom edge must read `MediaQuery.paddingOf` to stay
+/// above the bar.
 class AppBottomBar extends StatelessWidget {
   const AppBottomBar({
     required this.items,
     required this.currentIndex,
     required this.onTap,
     this.style = AppBottomBarStyle.material,
+    this.translucent = false,
     super.key,
   });
 
@@ -108,16 +126,25 @@ class AppBottomBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
   final AppBottomBarStyle style;
+  final bool translucent;
 
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_statements — EasyLocalization dependency for reactive .tr()
     context.locale;
+    // The current tab again is not a change, so it does not vibrate.
+    void select(int index) {
+      if (index != currentIndex) selectionHaptic();
+      onTap(index);
+    }
+
     return switch (style) {
       AppBottomBarStyle.material => NavigationBar(
         selectedIndex: currentIndex,
-        onDestinationSelected: onTap,
+        onDestinationSelected: select,
         animationDuration: AppMotion.of(context).base,
+        backgroundColor: translucent ? context.colors.bgTranslucent : null,
+        surfaceTintColor: translucent ? Colors.transparent : null,
         destinations: [
           for (final item in items)
             NavigationDestination(
@@ -130,19 +157,22 @@ class AppBottomBar extends StatelessWidget {
       AppBottomBarStyle.floating => _FloatingBar(
         items: items,
         currentIndex: currentIndex,
-        onTap: onTap,
+        onTap: select,
+        translucent: translucent,
       ),
       AppBottomBarStyle.expanding => _FlatBar(
         items: items,
         currentIndex: currentIndex,
-        onTap: onTap,
+        onTap: select,
         expanding: true,
+        translucent: translucent,
       ),
       AppBottomBarStyle.minimal => _FlatBar(
         items: items,
         currentIndex: currentIndex,
-        onTap: onTap,
+        onTap: select,
         expanding: false,
+        translucent: translucent,
       ),
     };
   }
@@ -282,11 +312,13 @@ class _FloatingBar extends StatelessWidget {
     required this.items,
     required this.currentIndex,
     required this.onTap,
+    required this.translucent,
   });
 
   final List<NavItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool translucent;
 
   @override
   Widget build(BuildContext context) {
@@ -298,14 +330,15 @@ class _FloatingBar extends StatelessWidget {
     final x = n == 1 ? 0.0 : (currentIndex / (n - 1) * 2 - 1) * (rtl ? -1 : 1);
 
     return ColoredBox(
-      color: colors.bgPage,
+      // Translucent, the bar floats over the body itself, not over a strip.
+      color: translucent ? Colors.transparent : colors.bgPage,
       child: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: colors.bgElevated,
+              color: translucent ? colors.bgTranslucent : colors.bgElevated,
               borderRadius: AppRadius.pillRadius,
               boxShadow: [
                 BoxShadow(
@@ -370,7 +403,7 @@ class _IconOverLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final color = selected ? colors.onPrimaryContainer : colors.textMuted;
+    final color = selected ? colors.onPrimaryContainer : colors.textSecondary;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -394,12 +427,14 @@ class _FlatBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     required this.expanding,
+    required this.translucent,
   });
 
   final List<NavItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
   final bool expanding;
+  final bool translucent;
 
   @override
   Widget build(BuildContext context) {
@@ -415,7 +450,7 @@ class _FlatBar extends StatelessWidget {
     ];
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.bgCard,
+        color: translucent ? colors.bgTranslucent : colors.bgCard,
         border: Border(top: BorderSide(color: colors.borderSubtle)),
       ),
       child: SafeArea(
@@ -481,7 +516,7 @@ class _ExpandingTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final motion = AppMotion.of(context);
-    final color = selected ? colors.onPrimaryContainer : colors.textMuted;
+    final color = selected ? colors.onPrimaryContainer : colors.textSecondary;
     return AnimatedContainer(
       duration: motion.base,
       curve: AppMotion.baseCurve,
@@ -542,7 +577,7 @@ class _DotTab extends StatelessWidget {
             child: _BadgedIcon(
               item: item,
               selected: selected,
-              color: selected ? colors.primary : colors.textMuted,
+              color: selected ? colors.primary : colors.textSecondary,
             ),
           ),
           const SizedBox(height: 4),

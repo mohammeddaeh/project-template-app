@@ -763,9 +763,9 @@ class __Feature__ListScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(title: Text(LocaleKeys.__featureCamel__ListTitle.tr())),
         floatingActionButton: __FabWidget__,
-        body: PaginationBuilderWdg<__Feature__ListCubit, __Feature__Entity>(
+        body: PaginationBuilder<__Feature__ListCubit, __Feature__Entity>(
           notItemsMsg: LocaleKeys.__featureCamel__Empty.tr(),
-          itemWdg: (entity) => __Feature__ItemTile(
+          itemBuilder: (entity) => __Feature__ItemTile(
             entity: entity,
             onTap: () => _openForm(context, entity),
           ),

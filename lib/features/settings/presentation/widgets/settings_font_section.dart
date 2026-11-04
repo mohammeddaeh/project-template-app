@@ -30,7 +30,7 @@ class SettingsFontSection extends StatelessWidget {
                     fontSize: 15,
                     color: isSelected
                         ? context.colors.primary
-                        : context.colors.textMuted,
+                        : context.colors.textSecondary,
                   ),
                 ),
                 subtitle: font.arabicFamily != font.latinFamily
@@ -43,7 +43,7 @@ class SettingsFontSection extends StatelessWidget {
                               ? font.latinFamily
                               : font.arabicFamily,
                           fontSize: 12,
-                          color: context.colors.textMuted,
+                          color: context.colors.textSecondary,
                         ),
                       )
                     : null,
@@ -53,7 +53,7 @@ class SettingsFontSection extends StatelessWidget {
                       : Icons.radio_button_off,
                   color: isSelected
                       ? context.colors.primary
-                      : context.colors.textMuted,
+                      : context.colors.textSecondary,
                 ),
                 onTap: () => context.read<FontPreferenceCubit>().setFont(font),
               );

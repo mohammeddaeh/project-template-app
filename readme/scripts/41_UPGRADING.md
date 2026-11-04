@@ -49,6 +49,39 @@ dart run scripts/check_structure.dart && dart run scripts/check_docs.dart
 
 ---
 
+## `3.0.0` ⇐ التالي (غير مُصدَر)
+
+| بمشروعك | البديل | ابحث |
+|---|---|---|
+| درجاتٌ عدّلتها بـ`lib/ui/theme/app_palette.dart` (حُذف) | انقلها إلى `palettes/standard.json` بالاسم نفسه، ثم `dart run scripts/gen_code.dart` | `git log -p -- lib/ui/theme/app_palette.dart` |
+| درجةٌ أضفتها إلى `AppPalette` | مفتاحٌ بـ`colors` في **كل** ملفٍّ بـ`palettes/` | `git show HEAD:lib/ui/theme/app_palette.dart` |
+| `AppPalette.x` بـ`app_colors.dart` · `AppColors.light()`/`dark()` بلا وسيط | `p.x` داخل `AppColors.light(AppPalette p)` · `AppThemePresets.fallback.light` خارجها | `git grep -n "AppPalette\." lib test` · `git grep -n "AppColors\.light()" lib test` |
+| ستُّ هوياتٍ تصل إلى `palettes/` (`dawn` · `emerald` · `graphite` · `lilac` · `ocean` · `sand`)، فيظهر منتقي «ألوان التطبيق» بالإعدادات — ودرجةٌ أضفتَها إلى `standard.json` تُفشل التوليد حتى تُضاف إليها | هويةٌ واحدة: احذف ما عدا `standard.json` ثم `gen_code.dart` · وإلا أضف درجتك إلى كلٍّ منها | `ls palettes/` |
+| التبويبُ غير النشط (`AppBottomBar` · `AppTabBar` · `tabBarTheme` · `bottomNavigationBarTheme`) يُرسم بـ`textSecondary` لا `textMuted` — أغمقُ بالفاتح | لا شيء؛ أو `AppTabBar(inactiveColor:)` لموضعٍ بعينه — بتباين ≥ ٤٫٥:١ | `git grep -n "textMuted" lib/ui/widgets/navigation` |
+
+وأوّلُ `gen_code.dart` بعد التحديث يكتب `app_palette.g.dart`؛ قبله لا يُبنى المشروع.
+
+---
+
+## `2.1.0` ⇐ `3.0.0`
+
+| بمشروعك | البديل | ابحث |
+|---|---|---|
+| `PaginationBuilderWdg` · مسار `pagination_builder_wdg.dart` | `PaginationBuilder` · `pagination_builder.dart` | `git grep -nE "PaginationBuilderWdg\|pagination_builder_wdg" lib` |
+| وسيطا `itemWdg:` · `allItemWdg:` | `itemBuilder:` · `allItemsBuilder:` | `git grep -nE "\b(itemWdg\|allItemWdg):" lib` |
+| `ListItemAppearWdg` | `ListItemEntrance` — و`ListItemAppear` يبقى اسمَ نوع الحركة | `git grep -n ListItemAppearWdg lib` |
+
+والسطرُ الواحد يصلحها كلّها:
+
+```bash
+git grep -lE "PaginationBuilderWdg|ListItemAppearWdg|pagination_builder_wdg|itemWdg|allItemWdg" lib test |
+  xargs sed -i -E 's/PaginationBuilderWdg/PaginationBuilder/g; s/ListItemAppearWdg/ListItemEntrance/g; s/pagination_builder_wdg\.dart/pagination_builder.dart/g; s/\ballItemWdg\b/allItemsBuilder/g; s/\bitemWdg\b/itemBuilder/g'
+```
+
+ولا تغييرَ سلوكٍ صامت.
+
+---
+
 ## `1.0.0` ⇐ `2.0.0`
 
 ### أ) يكسر البناء — المصرِّف يدلّك

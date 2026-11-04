@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/feedback/selection_haptic.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -154,6 +155,7 @@ class ChipRow<T> extends StatelessWidget {
   }
 
   void _handleTap(T item) {
+    selectionHaptic();
     if (multiSelect) {
       final updated = List<T>.from(selectedValues);
       if (updated.contains(item)) {

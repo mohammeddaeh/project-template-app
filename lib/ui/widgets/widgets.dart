@@ -53,6 +53,8 @@ export 'images/avatar_widget.dart';
 
 // Layout
 export 'layout/app_nav_bar.dart';
+export 'layout/app_large_title_view.dart';
+export 'layout/app_bento_grid.dart';
 export 'layout/key_value_row.dart';
 export 'layout/app_list_tile.dart';
 export 'layout/expandable_section.dart';
@@ -70,7 +72,7 @@ export 'layout/primary_button.dart';
 export 'layout/detail_widgets.dart';
 
 // Lists
-export 'lists/pagination_builder_wdg.dart';
+export 'lists/pagination_builder.dart';
 export 'lists/paginated_list_view.dart';
 export 'lists/load_more_widget.dart';
 export 'lists/refresh_wrapper.dart';

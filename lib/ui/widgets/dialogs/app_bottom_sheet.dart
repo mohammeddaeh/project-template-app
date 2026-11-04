@@ -28,6 +28,13 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 ///   maxHeightFraction: 0.5,
 ///   child: ConfirmActionsWidget(),
 /// );
+///
+/// // ارتفاعات توقّف: تُفتح بـ٤٠٪ وتُسحب إلى ٩٠٪، وتحت الأولى تُغلق
+/// AppBottomSheet.show(
+///   context,
+///   detents: const [0.4, 0.9],
+///   child: LongListWidget(),
+/// );
 /// ```
 class AppBottomSheet {
   AppBottomSheet._();
@@ -36,6 +43,9 @@ class AppBottomSheet {
   ///
   /// [maxHeightFraction] — نسبة ارتفاع الشاشة القصوى (0.0 – 1.0)، الافتراضي 0.9.
   /// [showDivider] — خط فاصل بين العنوان والمحتوى.
+  /// [detents] — ارتفاعاتٌ تقف عندها الورقة حين تُفلت (نِسَبٌ تصاعدية من
+  /// ارتفاع الشاشة): تُفتح بأولاها، ولا تعلو آخرَها، وما تحت الأولى يُغلقها.
+  /// معها يُتجاهل [maxHeightFraction] و[isScrollable]: الورقةُ كلُّها تُسحب.
   static Future<T?> show<T>(
     BuildContext context, {
     required Widget child,
@@ -46,7 +56,19 @@ class AppBottomSheet {
     double maxHeightFraction = 0.9,
     bool dismissOnTapOutside = true,
     EdgeInsets? contentPadding,
+    List<double>? detents,
   }) {
+    assert(
+      detents == null ||
+          (detents.isNotEmpty &&
+              detents.first > 0 &&
+              detents.last <= 1 &&
+              [
+                for (var i = 1; i < detents.length; i++)
+                  detents[i] > detents[i - 1],
+              ].every((up) => up)),
+      'AppBottomSheet: detents ascend within (0, 1]',
+    );
     FocusManager.instance.primaryFocus?.unfocus();
 
     // **عرضٌ محدود وموسَّط على اللوح.**
@@ -75,15 +97,20 @@ class AppBottomSheet {
       // تدّعي ارتفاعاً ثلثه السفلي مرسوم تحته. فالسقف يُحسب مع كل إطار من
       // `MediaQuery` الخاص بالمحتوى، فينكمش معه.
       constraints: BoxConstraints(maxWidth: maxWidth),
-      builder: (_) => _AppBottomSheetContent(
-        title: title,
-        titleWidget: titleWidget,
-        isScrollable: isScrollable,
-        showDivider: showDivider,
-        contentPadding: contentPadding,
-        maxHeightFraction: maxHeightFraction,
-        child: child,
-      ),
+      builder: (_) {
+        final sheet = _AppBottomSheetContent(
+          title: title,
+          titleWidget: titleWidget,
+          isScrollable: isScrollable,
+          showDivider: showDivider,
+          contentPadding: contentPadding,
+          maxHeightFraction: maxHeightFraction,
+          child: child,
+        );
+        return detents == null
+            ? sheet
+            : _DetentSheet(detents: detents, sheet: sheet);
+      },
     );
   }
 }
@@ -101,6 +128,7 @@ class _AppBottomSheetContent extends StatelessWidget {
     required this.showDivider,
     required this.maxHeightFraction,
     this.contentPadding,
+    this.scrollController,
   });
 
   final Widget child;
@@ -110,6 +138,21 @@ class _AppBottomSheetContent extends StatelessWidget {
   final bool showDivider;
   final double maxHeightFraction;
   final EdgeInsets? contentPadding;
+
+  /// من [DraggableScrollableSheet] حين تُفتح بارتفاعات توقّف.
+  final ScrollController? scrollController;
+
+  _AppBottomSheetContent scrolledBy(ScrollController controller) =>
+      _AppBottomSheetContent(
+        title: title,
+        titleWidget: titleWidget,
+        isScrollable: isScrollable,
+        showDivider: showDivider,
+        maxHeightFraction: maxHeightFraction,
+        contentPadding: contentPadding,
+        scrollController: controller,
+        child: child,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +172,52 @@ class _AppBottomSheetContent extends StatelessWidget {
                   keyboardInset,
             );
 
+    final header = <Widget>[
+      // Drag handle
+      const _DragHandle(),
+
+      // العنوان + فاصل اختياري
+      if (title != null || titleWidget != null) ...[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child:
+              titleWidget ??
+              Text(
+                title!,
+                style: context.textTheme.titleLarge?.copyWith(
+                  color: context.colors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+        ),
+        if (showDivider)
+          Divider(height: 24, thickness: 1, color: context.colors.dividerSubtle)
+        else
+          const SizedBox(height: 20),
+      ],
+    ];
+
+    final controller = scrollController;
+    if (controller != null) {
+      // **الورقةُ كلُّها بالتمرير، المقبضُ معها**: سحبُ أيِّ موضعٍ يغيّر
+      // ارتفاعها، وخارج التمرير يحرّك المسارَ نفسه لا الورقة.
+      return SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          controller: controller,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...header,
+              Padding(padding: effectivePadding, child: child),
+            ],
+          ),
+        ),
+      );
+    }
+
     final body = Column(
       // **دائماً `min`.**
       //
@@ -139,33 +228,7 @@ class _AppBottomSheetContent extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Drag handle
-        const _DragHandle(),
-
-        // العنوان + فاصل اختياري
-        if (title != null || titleWidget != null) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child:
-                titleWidget ??
-                Text(
-                  title!,
-                  style: context.textTheme.titleLarge?.copyWith(
-                    color: context.colors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-          ),
-          if (showDivider)
-            Divider(
-              height: 24,
-              thickness: 1,
-              color: context.colors.dividerSubtle,
-            )
-          else
-            const SizedBox(height: 20),
-        ],
+        ...header,
 
         // المحتوى
         if (isScrollable)
@@ -204,6 +267,53 @@ class _AppBottomSheetContent extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Detents
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// ورقةٌ تقف عند [detents] — وأدنى توقّفٍ صفرٌ يُغلقها.
+///
+/// `minChildSize: 0` لا الأولى: سحبٌ تحتها يجد ما يقف عنده، فإفلاتٌ قرب
+/// القاع يكمل إلى الصفر ويُغلق، وقربَ الأولى يعود إليها.
+class _DetentSheet extends StatefulWidget {
+  const _DetentSheet({required this.detents, required this.sheet});
+
+  final List<double> detents;
+  final _AppBottomSheetContent sheet;
+
+  @override
+  State<_DetentSheet> createState() => _DetentSheetState();
+}
+
+class _DetentSheetState extends State<_DetentSheet> {
+  bool _closing = false;
+
+  bool _onExtent(DraggableScrollableNotification n) {
+    if (!_closing && n.extent <= 0.001) {
+      _closing = true;
+      Navigator.of(context).pop();
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final d = widget.detents;
+    return NotificationListener<DraggableScrollableNotification>(
+      onNotification: _onExtent,
+      child: DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: d.first,
+        minChildSize: 0,
+        maxChildSize: d.last,
+        snap: true,
+        snapSizes: d.sublist(0, d.length - 1),
+        builder: (_, controller) => widget.sheet.scrolledBy(controller),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Drag handle
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -219,7 +329,7 @@ class _DragHandle extends StatelessWidget {
           width: 40,
           height: 4,
           decoration: BoxDecoration(
-            color: context.colors.dividerSubtle,
+            color: context.colors.outlineVariant,
             borderRadius: BorderRadius.circular(2),
           ),
         ),

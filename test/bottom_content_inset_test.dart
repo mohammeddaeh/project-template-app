@@ -23,11 +23,13 @@ void main() {
     await EasyLocalization.ensureInitialized();
   });
 
-  test('the shell does not extend its body behind the bar', () {
+  test('the shell extends its body behind the bar only when translucent', () {
     final src = File(
       'lib/features/home/presentation/pages/main_shell_screen.dart',
     ).readAsStringSync();
-    expect(src.contains('extendBody: true'), isFalse);
+    expect(RegExp(r'extendBody:\s*([^,]+),').allMatches(src).map((m) => m[1]), [
+      'look.translucent',
+    ]);
   });
 
   final items = [
@@ -46,63 +48,78 @@ void main() {
       ),
   ];
 
-  for (final style in AppBottomBarStyle.values) {
-    testWidgets('${style.name}: the body ends where the bar begins', (
-      tester,
-    ) async {
-      // The surface itself is narrow — a MediaQuery size alone lays out at 800.
-      tester.view.physicalSize = const Size(320, 800);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-      late double contentInset;
-      await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(
-            size: Size(320, 800),
-            padding: EdgeInsets.only(bottom: 24),
-            viewPadding: EdgeInsets.only(bottom: 24),
-          ),
-          child: EasyLocalization(
-            supportedLocales: const [Locale('en')],
-            fallbackLocale: const Locale('en'),
-            path: 'assets/translations',
-            assetLoader: const CodegenLoader(),
-            child: Builder(
-              builder: (context) => MaterialApp(
-                theme: AppThemeData.light(
-                  const Locale('en'),
-                  AppFonts.available.first,
+  /// The body's rect, the bar's rect, and the inset the body is told to pad.
+  Future<(Rect, Rect, double)> pumpShell(
+    WidgetTester tester,
+    AppBottomBarStyle style, {
+    bool translucent = false,
+  }) async {
+    // The surface itself is narrow — a MediaQuery size alone lays out at 800.
+    tester.view.physicalSize = const Size(320, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    late double contentInset;
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(
+          size: Size(320, 800),
+          padding: EdgeInsets.only(bottom: 24),
+          viewPadding: EdgeInsets.only(bottom: 24),
+        ),
+        child: EasyLocalization(
+          supportedLocales: const [Locale('en')],
+          fallbackLocale: const Locale('en'),
+          path: 'assets/translations',
+          assetLoader: const CodegenLoader(),
+          child: Builder(
+            builder: (context) => MaterialApp(
+              theme: AppThemeData.light(
+                const Locale('en'),
+                AppFonts.available.first,
+              ),
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+              home: Scaffold(
+                extendBody: translucent,
+                body: Builder(
+                  key: const Key('body'),
+                  builder: (context) {
+                    contentInset = context.bottomContentInset;
+                    return const SizedBox.expand();
+                  },
                 ),
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: context.locale,
-                home: Scaffold(
-                  body: Builder(
-                    key: const Key('body'),
-                    builder: (context) {
-                      contentInset = context.bottomContentInset;
-                      return const SizedBox.expand();
-                    },
-                  ),
-                  bottomNavigationBar: AppBottomBar(
-                    key: const Key('bar'),
-                    items: items,
-                    currentIndex: 0,
-                    onTap: (_) {},
-                    style: style,
-                  ),
+                bottomNavigationBar: AppBottomBar(
+                  key: const Key('bar'),
+                  items: items,
+                  currentIndex: 0,
+                  onTap: (_) {},
+                  style: style,
+                  translucent: translucent,
                 ),
               ),
             ),
           ),
         ),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      // Five tabs on a narrow phone: no style overflows its bar.
-      expect(tester.takeException(), isNull);
-      final body = tester.getRect(find.byKey(const Key('body')));
-      final bar = tester.getRect(find.byKey(const Key('bar')));
+    // Five tabs on a narrow phone: no style overflows its bar.
+    expect(tester.takeException(), isNull);
+    return (
+      tester.getRect(find.byKey(const Key('body'))),
+      tester.getRect(find.byKey(const Key('bar'))),
+      contentInset,
+    );
+  }
+
+  for (final style in AppBottomBarStyle.values) {
+    testWidgets('${style.name}: the body ends where the bar begins', (
+      tester,
+    ) async {
+      final (body, bar, contentInset) = await pumpShell(tester, style);
+
       expect(body.bottom, lessThanOrEqualTo(bar.top));
       expect(
         contentInset,
@@ -121,6 +138,21 @@ void main() {
         );
         expect(label.width, greaterThan(24));
       }
+    });
+
+    testWidgets('${style.name}: translucent, the bar is owed as padding', (
+      tester,
+    ) async {
+      // R15's one exception: the body runs under the bar, so the bar's height
+      // must reach it as the inset a list already pads by.
+      final (body, bar, contentInset) = await pumpShell(
+        tester,
+        style,
+        translucent: true,
+      );
+
+      expect(body.bottom, greaterThan(bar.top));
+      expect(contentInset, greaterThanOrEqualTo(bar.height - 0.5));
     });
   }
 

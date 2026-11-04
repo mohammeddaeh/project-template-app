@@ -84,8 +84,9 @@ dart run scripts/pull_figma.dart --name "Login"   # اسحب شاشةً بعين
 السلسلة إلزامية بثلاث محطات، ولا يجوز الدخول من المنتصف:
 
 ```
-Figma hex  →  AppPalette (خام)  →  AppColors.light/dark (دلالي)  →  context.colors.X
-             app_palette.dart      app_colors.dart                  الصفحة
+Figma hex  →  AppPalette (خام)          →  AppColors.light/dark (دلالي)  →  context.colors.X
+             palettes/standard.json       app_colors.dart                  الصفحة
+             (يولَّد app_palette.g.dart)
 ```
 
 ```dart
@@ -150,6 +151,8 @@ Container(color: context.colors.bgPage)
 | «تحذير» — داكن | ٤٫٨٧:١ |
 | «خطأ» · «معلومة» — داكن | ٦٫١٣ · ٧٫٨٢:١ |
 | `onPrimaryContainer` · `onSecondaryContainer` — داكن | ٨٫٨٢ · ٨٫٦٨:١ |
+| تبويبٌ غير نشط — `textSecondary` على `bgCard` · `bgElevated` (فاتح؛ و`textMuted` هناك ٢٫٧٣:١) | ٨٫٣٣ · ٨٫١٧:١ |
+| `textPrimary` · `textSecondary` على `bgTranslucent` فوق أسوأ ما تحته (أسود للفاتح · أبيض للداكن) — فاتح · داكن | ١١٫٤٨ · ٨٫٥٢ · ٥٫٤٦ · ٨٫٠١:١ |
 
 **وأخطرُ ما يمسكه الوضعُ الداكن**: خلفيةٌ `XX32` ومقدّمةٌ `XXLighter` — فاتحٌ على
 فاتح، نصٌّ غيرُ مرئيّ عملياً. ولا يمسكه `dart analyze` ولا اختبارُ تخطيط: كلاهما
@@ -611,7 +614,7 @@ class _RecordHeader extends StatelessWidget { ... }
 | تأكيد قبل حذف | `AppConfirmDialog` |
 | شارة حالة ملوّنة | `BadgeWidget` · `TagWidget` · `ChipWidget` |
 | هيكل تحميل لقائمة/بطاقة | `SkeletonListTile` · `SkeletonCard` · `SkeletonStatRow` |
-| صفّ يظهر بتدرّج داخل قائمة | `ListItemAppearWdg` |
+| صفّ يظهر بتدرّج داخل قائمة | `ListItemEntrance` |
 | سحب-للتحديث | `RefreshWrapper` |
 
 ### F35 · مؤشّر التقدّم واحدٌ — `AppProgress` وحده 🔒
@@ -703,7 +706,7 @@ case TargetPlatform.iOS:
 
 > ⬜ **فارغٌ بقصد — هذا موضعُك أنت.**
 >
-> يحمل القالبُ لوحةً محايدة بـ`ui/theme/app_palette.dart`، وهي **نقطةُ بداية لا
+> يحمل القالبُ لوحةً محايدة بـ`palettes/standard.json`، وهي **نقطةُ بداية لا
 > قرارُ تصميم**. وأولُ ما يفعله المشروع بعد وصول الفيغما أن يستبدلها بلوحته
 > المقيسة، ثم يملأ الجدول أدناه.
 
@@ -733,7 +736,7 @@ dart run scripts/pull_figma.dart --all
 
 | القاعدة | لماذا |
 |---|---|
-| **الـhex يسكن `app_palette.dart` وحده** | لا يستورده إلا `app_colors.dart` (F04). وشاشةٌ تصل إلى اللوحة الخام تتخطّى الطبقةَ الدلالية، **وأولُ ما يكسره الوضعُ الداكن** |
+| **الـhex يسكن `palettes/*.json` وحده** (ومنه `app_palette.g.dart` المولَّد) | لا يستورده إلا `app_colors.dart` (F04). وشاشةٌ تصل إلى اللوحة الخام تتخطّى الطبقةَ الدلالية، **وأولُ ما يكسره الوضعُ الداكن** |
 | **اللون يُسمّى بوظيفته لا بمصدره** | `textMuted` لا `warmGray` — فتبديلُ الدرجة لاحقاً لا يجعل الاسمَ يكذب (F05) |
 | **كلُّ زوج (نصّ · خلفية) يمرّ ببوابة التباين** | ٤٫٥:١ للنصّ العاديّ · ٣:١ للكبير. **ولا شفافيةَ لحالةٍ معطّلة**: تخفيفُ لونٍ فوق سطحٍ فاتح ينتج تبايناً حول ٢:١ — لافتةٌ لا تُقرأ، ولا يمسكها شيء (F07) |
 

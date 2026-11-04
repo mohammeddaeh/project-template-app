@@ -17,6 +17,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
+import 'package:app_template/ui/theme/app_theme_presets.dart';
 import 'package:app_template/core/infra/config/env.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 import 'package:app_template/core/platform/observability/app_bloc_observer.dart';
@@ -70,6 +71,9 @@ Future<void> _bootstrap() async {
   final fontKeyFuture = getIt<StorageService>().readString(
     PersistenceKeys.selectedFontKey,
   );
+  final presetIdFuture = getIt<StorageService>().readString(
+    PersistenceKeys.selectedThemePresetKey,
+  );
   final themeModeFuture = AdaptiveTheme.getThemeMode();
   // **الهاتف عموديٌّ وحده، واللوح بالاتجاهين.** وقفلُ الجميع عمودياً لا يُبقي
   // اللوحَ عمودياً بل **يحبسه**: أندرويد يضع النشاطَ المقفول داخل نافذةٍ بنسبة
@@ -80,6 +84,7 @@ Future<void> _bootstrap() async {
   ]);
 
   final fontKey = await fontKeyFuture;
+  final presetId = await presetIdFuture;
   final savedThemeMode = await themeModeFuture;
   await systemUiFuture;
 
@@ -124,6 +129,7 @@ Future<void> _bootstrap() async {
       child: App(
         savedThemeMode: savedThemeMode,
         savedFont: savedFont,
+        savedThemePreset: AppThemePresets.byId(presetId),
         startAt: startAt,
       ),
     ),

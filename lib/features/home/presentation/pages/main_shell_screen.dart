@@ -92,9 +92,12 @@ class _MainShellScreenState extends State<MainShellScreen> {
               valueListenable: ShellAppearance.notifier,
               builder: (context, look, _) => Scaffold(
                 // The body ends at the bar's top edge — every tab screen sees
-                // all of its content without a bottom inset of its own.
+                // all of its content without a bottom inset of its own —
+                // unless the bar is translucent: then the body runs under it,
+                // and the bar's height reaches the tabs as bottom padding.
                 // IndexedStack keeps each tab's state; AppTabSwitcher animates
                 // the switch around it.
+                extendBody: look.translucent,
                 body: AppTabSwitcher(
                   index: state.currentIndex,
                   transition: look.transition,
@@ -108,6 +111,7 @@ class _MainShellScreenState extends State<MainShellScreen> {
                   currentIndex: state.currentIndex,
                   onTap: cubit.onItemTapped,
                   style: look.style,
+                  translucent: look.translucent,
                 ),
               ),
             ),

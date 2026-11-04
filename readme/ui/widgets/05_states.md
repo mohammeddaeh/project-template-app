@@ -88,7 +88,7 @@ context.feedback.show(context, FeedbackConfig(
 
 ---
 
-## §17 · PaginationBuilderWdg — قوائم مرقَّمة
+## §17 · PaginationBuilder — قوائم مرقَّمة
 
 > يتولى جميع حالات التحميل / الخطأ / الفراغ / التمرير للتحميل.
 
@@ -100,9 +100,9 @@ context.feedback.show(context, FeedbackConfig(
 ```dart
 BlocProvider(
   create: (_) => getIt<OrdersCubit>()..load(),
-  child: PaginationBuilderWdg<OrdersCubit, OrderEntity>(
+  child: PaginationBuilder<OrdersCubit, OrderEntity>(
     loadingItemsWidget: const OrdersShimmer(),
-    itemWdg: (order) => OrderCard(order: order),
+    itemBuilder: (order) => OrderCard(order: order),
     separatorWidget: const DashedDivider(),
     notItemsMsg: LocaleKeys.noOrders.tr(),
     contentPadding: const EdgeInsets.symmetric(horizontal: 16),

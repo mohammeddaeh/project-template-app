@@ -121,7 +121,8 @@ BlocBuilder<RefreshCubit, RefreshState>(
 > **يغلّف، لا يستبدل.** يراقب الضغط بـ`Listener` لا `GestureDetector`، فلا
 > يدخل ساحة الإيماءة ولا يتنازع مع `InkWell`/`GestureDetector` الخاص بالابن —
 > الشكل والـripple والـ`onTap` تبقى بيد الابن، هو يُضيف تصغيراً بصرياً فقط
-> أثناء الضغط (`AppMotion.pressedScale` = 0.97). يحترم "تقليل الحركة" بالنظام
+> أثناء الضغط (`AppMotion.pressedScale` = 0.97) — يصغر بـ`springSnappy` ويرجع بـ`springGentle`
+> بارتدادٍ خفيف، وإفلاتٌ سريع ينعطف من موضعه ولا يقفز. يحترم "تقليل الحركة" بالنظام
 > (`MediaQuery.disableAnimations`) — الابن بلا تصغيرٍ حينها.
 
 **Usage**

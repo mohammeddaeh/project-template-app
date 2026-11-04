@@ -26,7 +26,7 @@ class SettingsAboutSection extends StatelessWidget {
             trailing: Text(
               state.appVersion,
               style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colors.textMuted,
+                color: context.colors.textSecondary,
               ),
             ),
           ),

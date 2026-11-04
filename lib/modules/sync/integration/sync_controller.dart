@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
-import 'package:app_template/core/platform/connectivity/connectivity_service.dart';
 import 'package:app_template/core/platform/lifecycle/app_lifecycle_service.dart';
 import 'package:app_template/core/platform/logging/log_service.dart';
 
@@ -21,8 +20,8 @@ import 'sync_gate.dart';
 /// - **لفتةُ المستخدم** — عودةُ التطبيق إلى المقدّمة، أو ضغطةُ تبويبٍ يقرأ
 ///   بيانات. راجع [checkIfStale].
 ///
-/// ✅ Uses [ConnectivityService.isOnline] (template abstraction) instead of
-///    raw `internet_connection_checker` to stay within the platform layer contract.
+/// ✅ Whether a cycle may run is [SyncGate]'s answer — mode, session, network
+///    and wifi-only in one place.
 class SyncController {
   SyncController(
     this._settingsStore,

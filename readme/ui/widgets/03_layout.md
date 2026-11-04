@@ -242,3 +242,48 @@ AppStepSwitcher(
 
 انتقال «shared axis» الأفقي: التقدّم ينزلق باتجاه القراءة والرجوع بعكسه (زيادة
 `step` أو نقصه)، والاتجاه يتبع لغة الواجهة. لا يحفظ حالة الخطوة السابقة — مكانُها الـcubit.
+
+## §47 · `AppLargeTitleView` — عنوانٌ كبير ينكمش عند التمرير
+
+```dart
+Scaffold(
+  body: AppLargeTitleView(
+    title: LocaleKeys.orders.tr(),
+    actions: [IconButton(icon: const Icon(Icons.search), onPressed: …)],
+    body: PaginationBuilder<OrdersCubit, Order>(itemBuilder: …),
+  ),
+)
+```
+
+العنوانُ كبيرٌ أعلى الصفحة، ويصغر حتى يستقرّ بالشريط حين يمرّر القارئ — `SliverAppBar.large`
+فوق `NestedScrollView`. **جسدُ `Scaffold` لا `appBar`**: فيبقى للشاشة زرُّها العائم وشريطُها السفليّ.
+
+- [body] يمرّر **بالمتحكّم الأساسيّ**: `ListView` · `CustomScrollView` بلا `controller` · `PaginatedListView` ·
+  `PaginationBuilder` (يكشف `NestedScrollView` فوقه وحده — [`14_PAGINATION.md`](../../architecture/14_PAGINATION.md) §5).
+- قائمةٌ بـ`controller` خاصّ تمرّر، **لكن العنوان لا ينكمش فوقها**.
+- الانكماشُ يتبع الإصبع ولا مدّةَ له، فلا شيء يُطفأ مع «تقليل الحركة».
+
+## §48 · `AppBentoGrid` — بطاقاتٌ بأحجامٍ مختلفة تتراصّ بلا فراغ
+
+```dart
+AppBentoGrid(
+  tiles: [
+    BentoTile(columns: 2, rows: 2, child: HeroCard()),
+    BentoTile(child: StatCard(value: '12', labelKey: …)),
+    BentoTile(child: StatCard(value: '7', labelKey: …)),
+    BentoTile(columns: 2, child: ActivityCard()),
+  ],
+)
+```
+
+- **الأعمدة من عرض الشبكة نفسها لا الشاشة**: كم خليّةً بعرض `AppBentoGrid.minCellWidth` (١٥٠، مضروباً
+  بـ`context.screen.size`) تسع — ٢ على الهاتف على الأقلّ، وأكثر كلما اتّسعت، **بلا سطرٍ يسأل عن المقاس**.
+  فشبكةٌ داخل عمودٍ ضيّق باللوح لا تُقسَّم بأعمدة الشاشة كلّها فتفيض خلاياها.
+- **تتراصّ بأوّل موضعٍ يسعها**، بترتيب `tiles`: صغيرةٌ بعد عريضةٍ لم تجد مكاناً تملأ ما تركته.
+  وبطاقةٌ أعرض من الشبكة تُقصّ إلى عرضها.
+- **المواضع تتبع اتجاه القراءة** (`PositionedDirectional`).
+- الخليّةُ مربّعة افتراضاً (`cellAspectRatio`)، والمسافة `spacing` (١٢).
+- ⚠️ **الخليّةُ بارتفاعٍ ثابت** (من عرضها و`cellAspectRatio`): محتوى أطولُ منها يفيض — جرّبها
+  بأكبر تكبيرٍ للخطّ. `StatCard` بأيقونته يحتاج خليّةً شبهَ مربّعة؛ و`1.5` تسع الرقمَ ولافتته وحدهما.
+- **تُبنى كاملةً لا كسولة** — للوحةٍ أو رئيسية، لا لقائمةٍ طويلة (تلك لـ`PaginationBuilder`).
+

@@ -11,6 +11,60 @@
 
 ## غير مُصدَر
 
+- ⚠️ **الألوان من `palettes/*.json`**: `lib/ui/theme/app_palette.dart` حُذف، و`app_palette.g.dart` يولَّد من
+  `palettes/standard.json` بـ`gen_code.dart` (خطوة `sync_palettes.dart` بعد `build_runner`) · `AppPalette` صار صنفَ
+  نسخ: `AppColors.light(palette)`/`dark(palette)` بدل `AppPalette.x` الثابت · F04 يمنع `AppPalettes.` خارج `app_colors.dart`.
+- **ثيماتٌ يختارها المستخدم**: كلُّ ملفٍّ بـ`palettes/` ثيمٌ — `AppThemePresets.all` محورٌ مستقلّ عن الوضع، يُحفظ
+  بـ`PersistenceKeys.selectedThemePresetKey`، ومنتقيه بالإعدادات (`SettingsThemePresetSection`) لا يظهر ما دام الثيم
+  واحداً · كلُّ بالتٍ بمفاتيح `standard.json` نفسها، والمخالفةُ تُفشل التوليد · `test/color_contrast_test.dart` يمرّ
+  على كل ثيم · `test/theme_preset_test.dart` · `test/palette_sync_test.dart`. ألوانٌ فقط — الزوايا والحركة ثابتة.
+- ⚠️ **سبعُ هوياتٍ مشحونة**: `standard` · `dawn` · `emerald` · `graphite` · `lilac` · `ocean` · `sand` — كلٌّ بأرضيةٍ فاتحة
+  وداكنة مصبوغة (الرماديّاتُ كلُّها بصبغتها وبإضاءة `standard`) وأساسيٍّ وبارز، فمنتقي «ألوان التطبيق»
+  ظاهرٌ بالإعدادات — بطاقاتٌ أفقية ترسم التطبيقَ مصغَّراً بألوان كل ثيم (`test/settings_theme_preset_section_test.dart`). كلٌّ يمرّ بفحص التباين بالوضعين.
+- **`GuideOverlay` لا يُرسم خطأً**: كان يقرأ `MediaQuery` بـ`initState` فيرمي عند كل فتح — صار
+  بـ`didChangeDependencies` · `test/guide_overlay_test.dart`.
+- **مقبضُ الورقة السفلية يُرى**: `dividerSubtle` على سطح الورقة ١٫٠٨:١، فصار `outlineVariant`
+  (`AppBottomSheet` · `BaseBottomSheet`) · فحصُه بـ`test/color_contrast_test.dart`.
+- **لافتاتُ الإعدادات تُقرأ**: الخطوط وألوان التطبيق ورقم الإصدار بـ`textSecondary` لا `textMuted`.
+- **فحصُ معاني أدوات الجولة يرى النوعَ المتداخل** (`ChoiceKnob<Map<String, String>?>`)، فوجد
+  `showcaseKnobMessageArgs` ناقصاً — أُضيف.
+- **مثالُ `AppBentoGrid` بالجولة بخلايا `cellAspectRatio: 1.5`**، و§48 يحذّر من ارتفاع الخليّة الثابت.
+- ⚠️ **التبويبُ غير النشط يُقرأ**: `textMuted` على سطح الشريط بالفاتح **٢٫٧٣:١** (دون ٤٫٥)، فصار
+  `textSecondary` (٨٫٣٣:١) بـ`AppBottomBar` و`AppTabBar` و`tabBarTheme` و`bottomNavigationBarTheme` ·
+  `test/color_contrast_test.dart` يفحص الزوج على كل سطحٍ يرسمه شريط، ويُفشل `textMuted` بملفَّي الشريطين.
+- **`ShellAppearance(translucent: true)`** · `AppBottomBar(translucent:)` · `AppColors.bgTranslucent` (٨٢٪):
+  شريطٌ سفليّ نافذ بلا تمويه، والمحتوى يمرّ تحته — مطفأ افتراضاً، والاستثناءُ الوحيد لـR15
+  (`test/bottom_content_inset_test.dart`) · تباينُه بـ`test/color_contrast_test.dart` · بجولة الـshowcase.
+- **`AppBottomSheet.show(detents: […])`**: ورقةٌ تقف بارتفاعات توقّف (`DraggableScrollableSheet` بـ`snap`)،
+  وإفلاتُها تحت الأولى يُغلقها · بجولة الـshowcase · `test/app_bottom_sheet_detents_test.dart`.
+- **`AppBentoGrid`** · `BentoTile`: شبكةُ بطاقاتٍ بأحجامٍ مختلفة تتراصّ بلا فراغ، أعمدتها من عرضها
+  هي (خليّةٌ ≥ ١٥٠) وتتبع اتجاه القراءة · بجولة الـshowcase · `test/app_bento_grid_test.dart`.
+- **`AppLargeTitleView`**: عنوانٌ كبير ينكمش عند التمرير (`SliverAppBar.large` + `NestedScrollView`) جسدَ
+  `Scaffold` · `PaginationBuilder` يكشف `NestedScrollView` فوقه فيمرّر بمتحكّمه الأساسيّ ويطلب الصفحة التالية
+  بـ`PaginationCubit.onScrolled` الجديد · بجولة الـshowcase · `test/app_large_title_view_test.dart`.
+- **حركةٌ بنابض**: `AppMotion.springSnappy` · `springGentle` + `controller.springTo(target, spring)` — و`PressableScale`
+  يصغر ويرجع بهما بدل `AnimatedScale` بمدّة.
+- **اهتزازُ تغيّر الاختيار**: `selectionHaptic()` (`ui/feedback/selection_haptic.dart`) فوق `HapticService` القائم ·
+  `ChipRow` · `AppRadioGroup` · `AppBottomBar` · `ThemeSwitcher` · منتقي الثيم يهتزّون حين تتغيّر القيمة وحدها ·
+  `test/selection_haptic_test.dart`.
+- **تبديلُ الثيم والوضع بدائرةٍ تتّسع من الزرّ**: `ThemeReveal` (`ui/theme/theme_reveal.dart`) مركَّبٌ مرّةً
+  بـ`MaterialApp.builder` · `ThemeSwitcher` ومنتقي الثيم يناديان `ThemeReveal.run` · فوريٌّ مع «تقليل الحركة» ·
+  `themeAnimationDuration: Duration.zero` بـ`app.dart` كي لا يظهر تدرّجٌ لونيّ داخل الدائرة · `test/theme_reveal_test.dart`.
+
+## 3.0.0 — 2026-11-03
+
+> **ترقيةُ مشروعٍ من 2.1.0**: [`readme/scripts/41_UPGRADING.md`](../readme/scripts/41_UPGRADING.md) §«2.1.0 ⇐ 3.0.0».
+
+- ⚠️ **لا لاحقة `Wdg`**: `PaginationBuilderWdg` ⇐ `PaginationBuilder` (والملف `pagination_builder.dart`) ·
+  `ListItemAppearWdg` ⇐ `ListItemEntrance` · وسيطا `itemWdg`/`allItemWdg` ⇐ `itemBuilder`/`allItemsBuilder`. بلا
+  أسماءٍ قديمة.
+- **R05 تصف الكود**: `@freezed` إلزاميّ بـ`features/`، وحالاتُ الموديولات و`ui/state/sync/` `sealed` مكتوبةٌ
+  باليد بسببها، و`RefreshState` بلا مساواة عمداً.
+- **شريط «لا اتصال» لا يظهر لحظةَ الإقلاع على جهازٍ متّصل**: `OfflineUxCubit` كان يقرأ حالة المراقب
+  الأولى (`unknown`) انقطاعاً؛ صار يتبع `NetworkStateMonitor` المحقون ويتجاهل `unknown` ·
+  `SyncGate` يسأل `Connectivity` المحقون مرّةً بدل `ConnectivityService` الثابت · `test/sync/offline_ux_cubit_test.dart`.
+- **`intl` بلا `dependency_overrides`**: التجاوز إلى `^0.19.0` كان يناقض `^0.20.2` بلا سبب؛ الحلّ يقع على 0.20.2.
+
 ## 2.1.0 — 2026-11-03
 
 - **`template_update` ينقل مفاتيح الترجمة** مفتاحاً مفتاحاً (`scripts/src/translation_merge.dart` ·

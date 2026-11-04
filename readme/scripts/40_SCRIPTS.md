@@ -30,6 +30,7 @@ dart run scripts/<script_name>.dart
 | **`scaffold_feature.dart`** | **مولّد شريحة CRUD كاملة** — كل الطبقات (dtos → models → datasources → repositories → entities → params → usecases → cubits → pages) بحقلٍ تجريبي واحد، موصولة (`api_urls.dart` · `injection_module.dart` · `router.dart` · الترجمة) ومُختبَرة صحّتُها تلقائياً. ويربط سلسلة المزامنة/الصلاحية تلقائياً إن كانت مُشعَلة بـ`AppFeatures` |
 | **`scaffold_module.dart`** | **مولّد موديول اختياري جديد** — الأركان الثلاثة معاً دائماً: علَم `AppFeatures` · تسجيل `ModulesBootstrap` · صفّ بالجدول الواحد `30_MODULES.md` |
 | `gen_assets.dart` | مسح `assets/` وتوليد `lib/resources/assets.gen.dart` |
+| `sync_palettes.dart` | البالتات من `palettes/*.json` ⇐ `app_palette.g.dart` + `app_theme_presets.g.dart` + أسماء الثيمات بالترجمة — خطوةٌ بـ`gen_code.dart`. راجع §5‑ب |
 | `gen_permission_keys.dart` | يولّد `permission_keys.g.dart` من الصلاحيات التي **يفرضها الخادم** — يرفع كشف المفتاح المطبعي من وقت التشغيل إلى **وقت الترجمة**. اختياري |
 | **الأصول والمنصّة** | |
 | `sync_fonts.dart` | اكتشاف خطوط `assets/fonts/` وتسجيلها في pubspec + `app_fonts.dart` |
@@ -52,9 +53,10 @@ dart run scripts/<script_name>.dart
 dart run scripts/gen_code.dart
 ```
 
-يُشغّل **6 خطوات** بالتسلسل:
+يُشغّل **7 خطوات** بالتسلسل:
 
 1. `build_runner` — Retrofit · Freezed · Injectable · AutoRoute
+1‑ب. `sync_palettes.dart` → `app_palette.g.dart` + `app_theme_presets.g.dart` + أسماءُ الثيمات بملفات الترجمة — من `palettes/*.json` (§5‑ب). **بعد** `build_runner`: يمحو `.g.dart` يظنّه مخرَجاً قديماً له
 2. `easy_localization:generate` → `locale_keys.g.dart`
 3. `easy_localization:generate` → `codegen_loader.g.dart` (القارئ وقت التشغيل)
 4. `gen_assets.dart` → `assets.gen.dart` (+ مسارات `pubspec.yaml` الناقصة)
@@ -82,6 +84,7 @@ dart run scripts/gen_code.dart
 | `ar.json` / `en.json` | تحديث `locale_keys.g.dart` و`codegen_loader.g.dart` |
 | أي ملف بـ`assets/` | تحديث `assets.gen.dart` و`pubspec.yaml` |
 | `permissions.lock.json` | تحديث `permission_keys.g.dart` |
+| أي ملف بـ`palettes/` | تحديث `app_palette.g.dart` و`app_theme_presets.g.dart` وأسماء الثيمات بـ`ar.json`/`en.json` |
 
 ---
 
@@ -266,6 +269,46 @@ assets/fonts/0/NotoSans-Bold.ttf        ← مجلد فرعي بأي اسم
 بوجهٍ خطأ — **وكل الشاشات أثقل، ولا شيء يفشل**. حين يخالف الاسمُ الملفَّ يُطبع
 تحذير ويُسجَّل وزنُ الملف. و`test/font_weights_test.dart` يُفشل أي سطرٍ بـ`pubspec.yaml`
 عُدِّل باليد فخالف ملفَّه.
+
+---
+
+## 5‑ب) `sync_palettes.dart` — البالتات والثيمات
+
+خطوةٌ بـ`gen_code.dart`، فلا يُشغَّل وحده عادةً. **كلُّ ألوان التطبيق من ملفٍّ بـ`palettes/`، وكلُّ ملفٍّ ثيمٌ يختاره المستخدم:**
+
+```
+palettes/
+  standard.json   ← الإلزاميّ: الثيم الافتراضي ومرجعُ المفاتيح
+  lilac.json      ← وكلُّ ملفٍّ آخر ثيمٌ بالإعدادات (dawn · emerald · graphite · lilac · ocean · sand)
+```
+
+```json
+{
+  "name": { "ar": "المحيط", "en": "Ocean" },
+  "colors": { "brandSurface": "#0D3A2F", "primaryMain": "#002623", "…": "…" }
+}
+```
+
+| يكتب | من |
+|---|---|
+| `lib/ui/theme/app_palette.g.dart` — صنفُ `AppPalette` ونسخةٌ بـ`AppPalettes` لكل ملف | `colors` |
+| `lib/ui/theme/app_theme_presets.g.dart` — `standard` أوّلاً ثم البقية بالمعرّف | اسمُ الملف |
+| `themePreset<Id>` بكل ملف بـ`assets/translations/` (بعد `themePreset`) | `name` — لغةٌ لكل ملف ترجمة، والناقصةُ تُفشل |
+
+- **هويةٌ جديدة**: عدّل درجات `standard.json` ثم التوليد. **ثيمٌ ثانٍ**: انسخه باسمٍ جديد (snake_case) وبدّل درجاته واسمه.
+- **كلُّ بالتٍ بمفاتيح `standard.json` نفسها** بلا نقصٍ ولا زيادة — المخالفةُ تُفشل التوليد وتسمّي المفتاح.
+  ودرجةٌ جديدة تُضاف إلى كل الملفات، ثم تُقرأ بـ`AppColors.light`/`dark`.
+- **الربطُ من الدرجات إلى الأدوار واحدٌ** (`app_colors.dart`)، فالبالتُ تغيّر الهوية كاملةً: الأزرار والأسطح والنصوص.
+- **حذفُ الملف يحذف الثيم ومفتاحَ اسمه**، ومستخدمٌ كان اختاره يعود إلى `standard`. واسمُ الملف لا يُغيَّر بعد الشحن: هو ما يُحفظ.
+- ثم `flutter test test/color_contrast_test.dart` — يمرّ على كل بالتٍ بالوضعين.
+- **القالبُ يُشحن بسبع هويات**: `standard` · `dawn` فجر · `emerald` زمرّد · `graphite` غرانيت · `lilac` ليلك ·
+  `ocean` محيط · `sand` صحراء، فالمنتقي ظاهرٌ بالإعدادات من أوّل تشغيل. ومشروعٌ بهويةٍ واحدة يحذف ما عدا
+  `standard.json` ثم التوليد، فيختفي المنتقي.
+- **الهويةُ بالأرضية لا بالأزرار وحدها**: كلُّ هويةٍ أرضيةٌ فاتحة (`gray100`) وداكنة (`gray900`) وأساسيّ وبارز، والرماديّاتُ
+  كلُّها بصبغة الأرضية وبإضاءة `standard.json` نفسها — فالخلفياتُ والبطاقاتُ والنصوصُ تحمل المزاج، والتباينُ كما
+  ضُبط. وألوانُ الحالات كما بـ`standard.json` فلا يتغيّر معناها. تمرّ بفحص التباين بالوضعين، لكنها **بُنيت بقاعدةٍ
+  لا بعين مصمّم**: تُراجَع على الجهاز.
+- **شاشةُ الإقلاع الأصلية بلون `standard` وحده** (`brandSurface` · `splash_background` · `flutter_native_splash.yaml`): النظام يرسمها قبل أن يعرف التطبيقُ اختيارَ المستخدم.
 
 ---
 
@@ -731,7 +774,7 @@ dart run scripts/check_docs.dart
 لا يمسّه تحديث، لأن القائمة تُطبَّق على شجرة القالب.
 
 **`projectEdited`** — ملفاتٌ يملكها القالب **ويُنتظر** أن يعدّلها كل مشروع (`api_urls.dart` ·
-`injection_module.dart` · `app_fonts.dart` · `app_palette.dart` · `app_colors.dart` ·
+`injection_module.dart` · `app_fonts.dart` · `app_colors.dart` ·
 `modules_bootstrap.dart`): تعديلُها ليس ملاحظة، وتحديثُها يُراجَع دائماً.
 
 ### `template_drift.dart` — ما يعود إلى القالب

@@ -9,6 +9,9 @@ final class SyncBlocked extends SyncManagerState {
 }
 
 /// State emitted by [SyncManagerCubit].
+///
+/// Hand-written `sealed` rather than `@freezed`: it belongs to the sync module,
+/// which ships disabled (R05).
 sealed class SyncManagerState {
   const SyncManagerState();
 }

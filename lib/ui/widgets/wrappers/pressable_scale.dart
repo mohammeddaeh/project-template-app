@@ -6,6 +6,9 @@ import 'package:app_template/ui/theme/app_motion.dart';
 /// يراقب الضغط بـ[Listener] لا [GestureDetector]: لا يدخل ساحة الإيماءة، فلا
 /// يتنازع مع `InkWell`/`GestureDetector` الخاص بالابن على التقاط اللمسة —
 /// يُغلَّف حولهما بلا تعديل سلوك النقر نفسه.
+///
+/// **بنابضَين**: يصغر بـ[AppMotion.springSnappy] ويرجع بـ[AppMotion.springGentle]
+/// بارتدادٍ خفيف — وإفلاتٌ قبل أن يكتمل الضغط ينعطف من موضعه ولا يقفز.
 class PressableScale extends StatefulWidget {
   const PressableScale({
     super.key,
@@ -20,18 +23,32 @@ class PressableScale extends StatefulWidget {
   State<PressableScale> createState() => _PressableScaleState();
 }
 
-class _PressableScaleState extends State<PressableScale> {
-  bool _pressed = false;
+class _PressableScaleState extends State<PressableScale>
+    with SingleTickerProviderStateMixin {
+  // In initState, not a lazy `late` initializer: under reduced motion nothing
+  // reads it, and dispose() would then create it on a deactivated element.
+  late final AnimationController _scale;
 
-  void _setPressed(bool value) {
-    if (_pressed == value) return;
-    setState(() => _pressed = value);
+  @override
+  void initState() {
+    super.initState();
+    _scale = AnimationController.unbounded(vsync: this, value: 1);
+  }
+
+  void _setPressed(bool pressed) => pressed
+      ? _scale.springTo(widget.scale, AppMotion.springSnappy)
+      : _scale.springTo(1, AppMotion.springGentle);
+
+  @override
+  void dispose() {
+    _scale.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     // "تقليل الحركة" بالنظام — بلا تصغير، الابن كما هو.
-    if (MediaQuery.maybeDisableAnimationsOf(context) == true) {
+    if (AppMotion.of(context).isReduced) {
       return widget.child;
     }
 
@@ -39,12 +56,7 @@ class _PressableScaleState extends State<PressableScale> {
       onPointerDown: (_) => _setPressed(true),
       onPointerUp: (_) => _setPressed(false),
       onPointerCancel: (_) => _setPressed(false),
-      child: AnimatedScale(
-        scale: _pressed ? widget.scale : 1,
-        duration: AppMotion.fast,
-        curve: AppMotion.fastCurve,
-        child: widget.child,
-      ),
+      child: ScaleTransition(scale: _scale, child: widget.child),
     );
   }
 }
