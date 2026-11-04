@@ -28,7 +28,7 @@ void main() {
       'lib/features/home/presentation/pages/main_shell_screen.dart',
     ).readAsStringSync();
     expect(RegExp(r'extendBody:\s*([^,]+),').allMatches(src).map((m) => m[1]), [
-      'look.translucent',
+      'look.translucent && !side',
     ]);
   });
 

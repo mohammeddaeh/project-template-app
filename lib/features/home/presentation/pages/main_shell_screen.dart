@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:app_template/features/home/presentation/cubits/navigation_cubit.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/dialogs/app_confirm_dialog.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/widgets/navigation/app_bottom_bar.dart';
+import 'package:app_template/ui/widgets/navigation/brand_nav_rail.dart';
 import 'package:app_template/ui/widgets/navigation/nav_item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -90,34 +92,76 @@ class _MainShellScreenState extends State<MainShellScreen> {
             onPopInvokedWithResult: (didPop, result) => cubit.onBackPressed(),
             child: ValueListenableBuilder<ShellAppearance>(
               valueListenable: ShellAppearance.notifier,
-              builder: (context, look, _) => Scaffold(
-                // The body ends at the bar's top edge — every tab screen sees
-                // all of its content without a bottom inset of its own —
-                // unless the bar is translucent: then the body runs under it,
-                // and the bar's height reaches the tabs as bottom padding.
-                // IndexedStack keeps each tab's state; AppTabSwitcher animates
-                // the switch around it.
-                extendBody: look.translucent,
-                body: AppTabSwitcher(
-                  index: state.currentIndex,
-                  transition: look.transition,
-                  child: IndexedStack(
-                    index: state.currentIndex,
-                    children: items.map((e) => e.screenBuilder()).toList(),
-                  ),
-                ),
-                bottomNavigationBar: AppBottomBar(
-                  items: items,
-                  currentIndex: state.currentIndex,
-                  onTap: cubit.onItemTapped,
-                  style: look.style,
-                  translucent: look.translucent,
-                ),
+              builder: (context, look, _) => _ShellScaffold(
+                look: look,
+                items: items,
+                currentIndex: state.currentIndex,
+                onTap: cubit.onItemTapped,
               ),
             ),
           );
         },
       ),
+    );
+  }
+}
+
+/// The bar below the tabs on a phone or a portrait tablet, the rail beside
+/// them from 840 wide (readme/ui/22_RESPONSIVE.md §4-c). The tabs are the same
+/// `IndexedStack` either way, so turning the device loses no tab's state.
+class _ShellScaffold extends StatelessWidget {
+  const _ShellScaffold({
+    required this.look,
+    required this.items,
+    required this.currentIndex,
+    required this.onTap,
+  });
+
+  final ShellAppearance look;
+  final List<NavItem> items;
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final side = context.screen.usesSideNavigation;
+    // IndexedStack keeps each tab's state; AppTabSwitcher animates the switch
+    // around it.
+    final tabs = AppTabSwitcher(
+      index: currentIndex,
+      transition: look.transition,
+      child: IndexedStack(
+        index: currentIndex,
+        children: items.map((e) => e.screenBuilder()).toList(),
+      ),
+    );
+    return Scaffold(
+      // The body ends at the bar's top edge — every tab screen sees all of its
+      // content without a bottom inset of its own — unless the bar is
+      // translucent: then the body runs under it, and the bar's height reaches
+      // the tabs as bottom padding. Beside a rail there is nothing to run under.
+      extendBody: look.translucent && !side,
+      body: side
+          ? Row(
+              children: [
+                BrandNavRail(
+                  items: items,
+                  currentIndex: currentIndex,
+                  onTap: onTap,
+                ),
+                Expanded(child: tabs),
+              ],
+            )
+          : tabs,
+      bottomNavigationBar: side
+          ? null
+          : AppBottomBar(
+              items: items,
+              currentIndex: currentIndex,
+              onTap: onTap,
+              style: look.style,
+              translucent: look.translucent,
+            ),
     );
   }
 }

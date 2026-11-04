@@ -122,7 +122,7 @@ await GuideOverlay.show(
 
 ---
 
-## §41 · `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` — الشريط السفلي
+## §41 · `AppBottomBar` · `AppTabSwitcher` · `ShellAppearance` · `BrandNavRail` — الشريط السفلي والجانبي
 
 ```dart
 // القشرة تقرؤهما — الافتراضُ سطرٌ واحد بـShellAppearance:
@@ -154,6 +154,18 @@ ShellAppearance.notifier.value = ShellAppearance.notifier.value
 
 ```dart
 const ShellAppearance(style: AppBottomBarStyle.floating, translucent: true)
+```
+
+**ومن عرض ٨٤٠ (`context.screen.usesSideNavigation`) تبدّل القشرةُ الشريطَ السفليَّ بـ`BrandNavRail`
+جانبياً** — لوحٌ أفقيّ، حيث العرضُ وافر. التبويباتُ نفسُها والشارةُ والاهتزاز، و`IndexedStack` واحد
+فلا يفقد تبويبٌ حالته بتدوير الجهاز. وبجانب الشريط لا `extendBody` (لا شيء يمرّ تحته).
+السببُ والحدّ: [`22_RESPONSIVE.md`](../22_RESPONSIVE.md) §٤‑ج.
+
+```dart
+Row(children: [
+  BrandNavRail(items: items, currentIndex: i, onTap: cubit.onItemTapped),
+  Expanded(child: body),
+])
 ```
 
 ⚠️ **وهو الاستثناءُ الوحيد لـR15**: شاشةُ تبويبٍ تحدّد `padding` بنفسها أو تثبّت

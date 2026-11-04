@@ -24,6 +24,10 @@
 - ⚠️ **F38 — لا مسافةَ بعددٍ خامّ** (`check_structure.dart`): `SizedBox(height: 24)` · `EdgeInsets.all(16)` ·
   `16.allPadding` بـ`features/` و`ui/` تُفشل البناء — `ResponsiveGap` · `s.space` · `s.size` · `s.gutter` بدلها. شاشاتُ
   `features/` كلُّها منقولة، ومكتبةُ الودجات وبقيةُ `ui/` كذلك — لا دَينَ F38 بالأساس.
+- **`BrandNavRail` — الشريطُ الجانبيّ من عرض ٨٤٠**: القشرةُ تبدّل `AppBottomBar` به على اللوح الأفقيّ
+  (`context.screen.usesSideNavigation`)، بالتبويبات والشارة والاهتزاز نفسها · بجولة الـshowcase ·
+  `test/brand_nav_rail_test.dart` (لوحٌ أفقيّ · عربيّ · تحت شريط حالة). و§٤‑ج بـ`22_RESPONSIVE` يصف الموصول، ومزلقُ
+  `SafeArea` حُذف منه: `NavigationRail` يضع حشوةَ النظام بنفسه.
 - ⚠️ **الموديولات تحت `check_structure`** (كانت خارجه كلَّها): جولةُ الـshowcase وحدها مستثناة. أرقامُ المسافات بها
   نُقلت إلى `context.screen` (١٩ ملفاً)، و`in_app_updates` يفتح رابطَه بـ`UrlLauncherService`. و`data_transfer` يختار ملفَّه
   بـ`FileService.pick` ويشاركه بـ`ShareService.file` — والخدمتان تُسجَّلان متى أُشعل `dataTransfer` أيضاً، لا بعلَمَيهما وحدهما.
