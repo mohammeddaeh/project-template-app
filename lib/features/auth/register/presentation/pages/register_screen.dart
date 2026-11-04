@@ -17,6 +17,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Creating an account — the step this template shipped without.
 ///
@@ -127,14 +128,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
           bloc: _registerCubit,
           listener: _onStateChanged,
           builder: (context, state) => AuthFormBody(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.screen.space(24),
+              vertical: context.screen.space(16),
+            ),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const RegisterHeader(),
-                  const SizedBox(height: 32),
+                  const ResponsiveGap(32),
                   RegisterFields(
                     nameController: _nameController,
                     emailController: _emailController,
@@ -143,14 +147,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onChanged: _refreshCubit.refresh,
                     onSubmitted: _submit,
                   ),
-                  const SizedBox(height: 32),
+                  const ResponsiveGap(32),
                   RegisterSubmitButton(
                     refreshCubit: _refreshCubit,
                     isLoading: state is RegisterLoading,
                     canSubmit: () => _isFormValid,
                     onSubmit: _submit,
                   ),
-                  const SizedBox(height: 16),
+                  const ResponsiveGap(16),
                   const SignInPrompt(),
                 ],
               ),

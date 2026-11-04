@@ -16,6 +16,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Where a `pending_verification` account proves it owns its email address.
 ///
@@ -126,22 +127,25 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
           builder: (context, state) {
             final isLoading = state is VerifyEmailLoading;
             return AuthFormBody(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(24),
+                vertical: context.screen.space(24),
+              ),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     VerifyEmailIntro(email: widget.email),
-                    const SizedBox(height: 24),
+                    const ResponsiveGap(24),
                     const VerifyEmailWhyCard(),
-                    const SizedBox(height: 24),
+                    const ResponsiveGap(24),
                     VerifyEmailCodeField(
                       controller: _codeController,
                       onChanged: _refreshCubit.refresh,
                       onSubmitted: _submit,
                     ),
-                    const SizedBox(height: 28),
+                    const ResponsiveGap(28),
                     VerifyEmailActions(
                       refreshCubit: _refreshCubit,
                       isLoading: isLoading,

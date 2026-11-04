@@ -1,5 +1,6 @@
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// عنوان قسمٍ بشاشة الإعدادات.
 class SettingsSectionHeader extends StatelessWidget {
@@ -9,7 +10,12 @@ class SettingsSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
+      padding: EdgeInsets.fromLTRB(
+        context.screen.space(16),
+        context.screen.space(20),
+        context.screen.space(16),
+        context.screen.space(4),
+      ),
       child: Text(
         title,
         style: context.textTheme.labelMedium?.copyWith(

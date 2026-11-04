@@ -2,6 +2,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The email and password fields of the sign-in form.
 ///
@@ -47,7 +48,7 @@ class LoginFields extends StatelessWidget {
             return null;
           },
         ),
-        const SizedBox(height: 20),
+        const ResponsiveGap(20),
         CustomTextField(
           controller: passwordController,
           labelText: LocaleKeys.password.tr(),

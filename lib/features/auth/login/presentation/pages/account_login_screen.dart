@@ -18,6 +18,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Signing in as an account this device already remembers — password only
 /// (`AppFeatures.rememberedAccounts`).
@@ -99,10 +100,10 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
           listener: _onStateChanged,
           builder: (context, state) => AuthFormBody(
             padding: EdgeInsets.fromLTRB(
-              24,
-              16,
-              24,
-              32 + context.bottomContentInset,
+              context.screen.space(24),
+              context.screen.space(16),
+              context.screen.space(24),
+              context.screen.space(32) + context.bottomContentInset,
             ),
             child: Form(
               key: _formKey,
@@ -110,13 +111,13 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   AccountLoginHeader(account: widget.account),
-                  const SizedBox(height: 32),
+                  const ResponsiveGap(32),
                   _PasswordField(
                     controller: _passwordController,
                     onChanged: _refreshCubit.refresh,
                     onSubmitted: _submit,
                   ),
-                  const SizedBox(height: 8),
+                  const ResponsiveGap(8),
                   BlocBuilder<RefreshCubit, RefreshState>(
                     bloc: _refreshCubit,
                     builder: (context, _) => _AccountLoginActions(
@@ -189,14 +190,14 @@ class _AccountLoginActions extends StatelessWidget {
             onTap: () => context.router.push(const ForgotPasswordRoute()),
           ),
         ),
-        const SizedBox(height: 32),
+        const ResponsiveGap(32),
         PrimaryButton(
           text: LocaleKeys.continueLabel.tr(),
           isLoading: isLoading,
           isEnabled: canSubmit,
           onTap: onSubmit,
         ),
-        const SizedBox(height: 16),
+        const ResponsiveGap(16),
         PrimaryButton(
           text: LocaleKeys.notThisAccount.tr(),
           isTextOnly: true,

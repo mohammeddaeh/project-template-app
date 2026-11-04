@@ -12,6 +12,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Changing your own password while signed in.
 ///
@@ -95,7 +96,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           bloc: _cubit,
           listener: _onStateChanged,
           builder: (context, state) => AuthFormBody(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.screen.space(24),
+              vertical: context.screen.space(24),
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -108,7 +112,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     onChanged: _refreshCubit.refresh,
                     onSubmitted: _submit,
                   ),
-                  const SizedBox(height: 32),
+                  const ResponsiveGap(32),
                   BlocBuilder<RefreshCubit, RefreshState>(
                     bloc: _refreshCubit,
                     builder: (context, _) => SizedBox(

@@ -2,6 +2,7 @@ import 'package:app_template/features/auth/shared/entities/remembered_account.da
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Who is being signed into — avatar, name, and the full address.
 ///
@@ -24,7 +25,7 @@ class AccountLoginHeader extends StatelessWidget {
             radius: 44,
           ),
         ),
-        const SizedBox(height: 16),
+        const ResponsiveGap(16),
         Text(
           account.fullName,
           textAlign: TextAlign.center,
@@ -35,7 +36,7 @@ class AccountLoginHeader extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 6),
+        const ResponsiveGap(6),
         Text(
           account.email,
           // Forced LTR: an address laid out RTL has its parts reordered, so

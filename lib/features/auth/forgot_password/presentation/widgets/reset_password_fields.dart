@@ -3,6 +3,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The reset code, the new password, and its confirmation.
 ///
@@ -40,7 +41,7 @@ class ResetPasswordFields extends StatelessWidget {
               ? LocaleKeys.fieldRequired.tr()
               : null,
         ),
-        const SizedBox(height: 20),
+        const ResponsiveGap(20),
         CustomTextField(
           controller: passwordController,
           labelText: LocaleKeys.newPassword.tr(),
@@ -51,7 +52,7 @@ class ResetPasswordFields extends StatelessWidget {
           onChanged: onChanged,
           validator: _validatePassword,
         ),
-        const SizedBox(height: 20),
+        const ResponsiveGap(20),
         CustomTextField(
           controller: confirmController,
           labelText: LocaleKeys.confirmPassword.tr(),

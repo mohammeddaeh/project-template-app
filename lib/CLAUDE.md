@@ -217,6 +217,10 @@ body: ResponsiveContentBox(
 | `textScaleFactor: 1.0` لإسكات كسرٍ بالتخطيط | `ResponsiveScope` يقيّده أصلاً (سقف ١٫٣ بلا أرضية) — أصلح التخطيط |
 | `setPreferredOrientations` بشاشة | `OrientationPolicy` — الهاتف عموديٌّ واللوح بالاتجاهين، ويُقرَّر مركزياً |
 
+**ولا مسافةَ بعددٍ خامّ — فاحصٌ آليّ (F38):** `SizedBox(height: 24)` · `EdgeInsets.all(16)` ·
+`16.allPadding` تُفشل `check_structure` بأي شاشةٍ أو ودجةٍ جديدة. البديل: `const ResponsiveGap(24)` ·
+`EdgeInsets.all(s.space(16))` · `s.size(108)` · `s.gutter`.
+
 النِّسبةُ من الارتفاع **لا تتقلّص مع الكيبورد**، فتدفع الزرَّ خارج الحدّ على
 الشاشات القصيرة. والتفصيل والأسباب:
 [`readme/ui/22_RESPONSIVE.md`](../readme/ui/22_RESPONSIVE.md).

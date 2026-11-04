@@ -4,6 +4,7 @@ import 'package:app_template/features/auth/shared/entities/remembered_account.da
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// One saved account, compact — avatar, first name, and the way to remove it.
 ///
@@ -46,7 +47,12 @@ class RememberedAccountCard extends StatelessWidget {
             child: Padding(
               // Room at the top-end corner for the remove button, so the
               // avatar never sits under it.
-              padding: const EdgeInsets.fromLTRB(4, 10, 4, 8),
+              padding: EdgeInsets.fromLTRB(
+                context.screen.space(4),
+                context.screen.space(10),
+                context.screen.space(4),
+                context.screen.space(8),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -55,7 +61,7 @@ class RememberedAccountCard extends StatelessWidget {
                     initial: account.fullName,
                     radius: _avatarRadius,
                   ),
-                  const SizedBox(height: 8),
+                  const ResponsiveGap(8),
                   Text(
                     // First name only — a full name wraps or gets cut at this
                     // width, and the picture is doing most of the identifying.
@@ -81,7 +87,7 @@ class RememberedAccountCard extends StatelessWidget {
                 onTap: onRemove,
                 radius: 18,
                 child: Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: EdgeInsets.all(context.screen.space(3)),
                   decoration: BoxDecoration(
                     color: context.colors.bgCard,
                     shape: BoxShape.circle,

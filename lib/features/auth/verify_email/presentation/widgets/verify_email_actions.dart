@@ -6,6 +6,7 @@ import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The three ways out of the screen: verify · request a new code · sign out.
 ///
@@ -46,13 +47,13 @@ class VerifyEmailActions extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const ResponsiveGap(12),
         ResendCodeButton(
           secondsLeft: secondsLeft,
           isLoading: isLoading,
           onResend: onResend,
         ),
-        const SizedBox(height: 32),
+        const ResponsiveGap(32),
         // The way out for someone who registered with the wrong address.
         // Without it this screen is a trap: the code can only arrive somewhere
         // they cannot read.

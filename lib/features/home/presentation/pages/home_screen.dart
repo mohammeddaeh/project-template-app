@@ -6,6 +6,7 @@ import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/modules/showcase/presentation/showcase_view.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The Home tab — a **deliberate placeholder**, and the first screen a signed-in
 /// user of a fresh project sees.
@@ -45,7 +46,7 @@ class _Placeholder extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(context.screen.space(24)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -54,13 +55,13 @@ class _Placeholder extends StatelessWidget {
               size: 56,
               color: context.colors.textMuted,
             ),
-            const SizedBox(height: 16),
+            const ResponsiveGap(16),
             Text(
               LocaleKeys.welcomeBack.tr(),
               style: context.textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             Text(
               LocaleKeys.homeSubtitle.tr(),
               style: context.textTheme.bodySmall?.copyWith(
