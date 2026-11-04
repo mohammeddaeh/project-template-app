@@ -377,7 +377,9 @@ class ShowcasePageScreen extends StatelessWidget {
         child: page.ownsScroll
             ? page.body()
             : ListView(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(
+                  vertical: context.screen.space(16),
+                ),
                 children: [page.body()],
               ),
       ),

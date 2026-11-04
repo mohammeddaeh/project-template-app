@@ -10,7 +10,6 @@ import 'package:app_template/modules/data_transfer/presentation/widgets/transfer
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
@@ -175,7 +174,7 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
                 LocaleKeys.exportFormat.tr(),
                 style: context.textTheme.titleSmall,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               ChipRow<String>(
                 items: _formats.keys.toList(),
                 labelResolver: (f) => _formats[f]!,
@@ -185,7 +184,7 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
                   _ready = false;
                 }),
               ),
-              16.heightBox,
+              const ResponsiveGap(16),
               AnimatedSwitcher(
                 duration: motion.base,
                 child: _progress != null
@@ -207,7 +206,7 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
                       )
                     : const SizedBox.shrink(key: ValueKey('none')),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               AppButton(
                 text: LocaleKeys.exportRun.tr(),
                 leadingIcon: Icons.download_outlined,
@@ -273,7 +272,7 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(LocaleKeys.importReviewTitle.tr(), style: textTheme.titleSmall),
-        8.heightBox,
+        const ResponsiveGap(8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -293,7 +292,7 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
               ),
           ],
         ),
-        12.heightBox,
+        const ResponsiveGap(12),
         ChipRow<_ReviewTab>(
           items: _ReviewTab.values,
           labelResolver: (t) => switch (t) {
@@ -304,9 +303,9 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
           onSelected: (t) => setState(() => _tab = t ?? _tab),
           scrollable: false,
         ),
-        8.heightBox,
+        const ResponsiveGap(8),
         Text(LocaleKeys.showcaseDtFixHint.tr(), style: muted),
-        8.heightBox,
+        const ResponsiveGap(8),
         // Both scroll by themselves — in the app they fill the screen.
         SizedBox(
           height: context.screen.size(320),
@@ -327,9 +326,9 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
             _ReviewTab.problems => ImportErrorTable(report: report),
           },
         ),
-        8.heightBox,
+        const ResponsiveGap(8),
         Text(LocaleKeys.importNothingWritten.tr(), style: muted),
-        12.heightBox,
+        const ResponsiveGap(12),
         AppButton(
           text: LocaleKeys.importConfirm.tr(args: ['${report.validRows}']),
           isEnabled: report.canCommit,
@@ -347,7 +346,7 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
         LocaleKeys.importDoneTitle.tr(),
         style: context.textTheme.titleSmall,
       ),
-      12.heightBox,
+      const ResponsiveGap(12),
       Wrap(
         spacing: 8,
         runSpacing: 8,
@@ -366,7 +365,7 @@ class _DataTransferSimDemoState extends State<DataTransferSimDemo> {
           ),
         ],
       ),
-      12.heightBox,
+      const ResponsiveGap(12),
       AppButton(
         text: LocaleKeys.showcaseReplay.tr(),
         variant: AppButtonVariant.text,

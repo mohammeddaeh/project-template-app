@@ -4,10 +4,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/platform/connectivity/network_state_monitor.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/state/connectivity/connectivity_cubit.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -67,7 +67,7 @@ class _ConnectivityDemoState extends State<ConnectivityDemo> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               hint(LocaleKeys.showcaseConnectivityOverlayHint.tr()),
-              8.heightBox,
+              const ResponsiveGap(8),
               BlocBuilder<ConnectivityCubit, NetworkState>(
                 bloc: _cubit,
                 builder: (context, state) => SwitchListTile.adaptive(
@@ -82,7 +82,7 @@ class _ConnectivityDemoState extends State<ConnectivityDemo> {
                   ),
                 ),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               _Frame(
                 children: [
                   Positioned.fill(
@@ -126,7 +126,7 @@ class _Frame extends StatelessWidget {
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: AppRadius.mdRadius,
     child: SizedBox(
-      height: 120,
+      height: context.screen.size(120),
       child: MediaQuery.removePadding(
         context: context,
         removeTop: true,

@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -169,7 +169,7 @@ class _ReorderPreviewState extends State<_ReorderPreview> {
               : LocaleKeys.showcaseGesturesHintLongPress.tr(),
           style: muted,
         ),
-        8.heightBox,
+        const ResponsiveGap(8),
         AppReorderableList<int>(
           items: _items,
           itemKey: (n) => n,
@@ -183,7 +183,7 @@ class _ReorderPreviewState extends State<_ReorderPreview> {
           onReorder: (from, to) =>
               setState(() => _items.insert(to, _items.removeAt(from))),
         ),
-        8.heightBox,
+        const ResponsiveGap(8),
         Text(
           LocaleKeys.showcaseGesturesOrder.tr(args: [_items.join(' · ')]),
           style: muted,
@@ -299,7 +299,7 @@ class _SwipePreviewState extends State<_SwipePreview> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(LocaleKeys.showcaseGesturesSwipeHint.tr(), style: muted),
-        8.heightBox,
+        const ResponsiveGap(8),
         for (final n in _items)
           AppSwipeActions(
             key: ValueKey(n),
@@ -313,14 +313,14 @@ class _SwipePreviewState extends State<_SwipePreview> {
           ),
         if (_items.isEmpty)
           Padding(
-            padding: 16.verticalPadding,
+            padding: EdgeInsets.symmetric(vertical: context.screen.space(16)),
             child: Text(
               LocaleKeys.noDataFound.tr(),
               textAlign: TextAlign.center,
               style: muted,
             ),
           ),
-        8.heightBox,
+        const ResponsiveGap(8),
         Row(
           children: [
             Expanded(

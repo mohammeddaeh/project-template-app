@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/platform/storage/adapters/in_memory_storage_adapter.dart';
 import 'package:app_template/core/platform/storage/secure_storage_service.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
@@ -17,7 +18,6 @@ import 'package:app_template/modules/token_inspector/presentation/widgets/keyclo
 import 'package:app_template/modules/token_inspector/presentation/widgets/live_session_card.dart';
 import 'package:app_template/modules/token_inspector/token_inspector_config.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -203,7 +203,7 @@ class _TokenInspectorSimDemoState extends State<TokenInspectorSimDemo> {
                   color: colors.textMuted,
                 ),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               Icon(Icons.bug_report_outlined, color: colors.iconSubtle),
             ],
           ),

@@ -23,7 +23,8 @@
   ظاهرٌ بالإعدادات — بطاقاتٌ أفقية ترسم التطبيقَ مصغَّراً بألوان كل ثيم (`test/settings_theme_preset_section_test.dart`). كلٌّ يمرّ بفحص التباين بالوضعين.
 - ⚠️ **F38 — لا مسافةَ بعددٍ خامّ** (`check_structure.dart`): `SizedBox(height: 24)` · `EdgeInsets.all(16)` ·
   `16.allPadding` بـ`features/` و`ui/` تُفشل البناء — `ResponsiveGap` · `s.space` · `s.size` · `s.gutter` بدلها. شاشاتُ
-  `features/` كلُّها منقولة، ومكتبةُ الودجات وبقيةُ `ui/` كذلك — لا دَينَ F38 بالأساس.
+  `features/` كلُّها منقولة، ومكتبةُ الودجات وبقيةُ `ui/` كذلك، وجولةُ الـshowcase — يبلغها F38 وحده من الفاحص،
+  فهي مثالٌ يُنسخ منه — لا دَينَ F38 بالأساس.
 - **`BrandNavRail` — الشريطُ الجانبيّ من عرض ٨٤٠**: القشرةُ تبدّل `AppBottomBar` به على اللوح الأفقيّ
   (`context.screen.usesSideNavigation`)، بالتبويبات والشارة والاهتزاز نفسها · بجولة الـshowcase ·
   `test/brand_nav_rail_test.dart` (لوحٌ أفقيّ · عربيّ · تحت شريط حالة). و§٤‑ج بـ`22_RESPONSIVE` يصف الموصول، ومزلقُ

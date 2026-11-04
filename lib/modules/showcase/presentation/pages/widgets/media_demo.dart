@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/playground_tokens.dart';
@@ -199,7 +200,7 @@ class _MediaDemoState extends State<MediaDemo> {
           child: const Row(
             children: [
               NetworkImageWidget(imageUrl: '', width: 96, height: 72),
-              SizedBox(width: 16),
+              ResponsiveGap.horizontal(16),
               CachedImageWidget(imageUrl: '', width: 96, height: 72),
             ],
           ),
@@ -230,7 +231,7 @@ class _MediaDemoState extends State<MediaDemo> {
           child: photo == null
               ? const AppProgress.circular(centered: true)
               : SizedBox(
-                  height: 120,
+                  height: context.screen.size(120),
                   child: CapturedPhotoImage(photo: photo, fit: BoxFit.contain),
                 ),
         ),
@@ -257,7 +258,7 @@ class _MediaDemoState extends State<MediaDemo> {
             ],
             trailingCode: const ['photo: photo'],
             builder: (context, k) => SizedBox(
-              width: 220,
+              width: context.screen.size(220),
               child: CapturedPhotoTile(
                 photo: photo,
                 onRemove: k('onRemove') ? _remove : null,

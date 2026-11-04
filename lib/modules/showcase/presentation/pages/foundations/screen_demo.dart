@@ -5,7 +5,6 @@ import 'package:app_template/core/infra/config/env.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -35,7 +34,7 @@ class _ScreenDemoState extends State<ScreenDemo> {
         v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
 
     Widget hint(String text) => Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: context.screen.space(12)),
       child: Text(
         text,
         style: context.textTheme.bodySmall?.copyWith(
@@ -70,7 +69,9 @@ class _ScreenDemoState extends State<ScreenDemo> {
                   ),
                 ])
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    padding: EdgeInsets.symmetric(
+                      vertical: context.screen.space(4),
+                    ),
                     child: Row(
                       children: [
                         Expanded(
@@ -81,7 +82,7 @@ class _ScreenDemoState extends State<ScreenDemo> {
                             ),
                           ),
                         ),
-                        8.widthBox,
+                        const ResponsiveGap.horizontal(8),
                         Text(value, style: context.textTheme.headlineSmall),
                       ],
                     ),
@@ -128,13 +129,13 @@ class _ScreenDemoState extends State<ScreenDemo> {
                   ),
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               hint(LocaleKeys.showcaseScreenBoxHint.tr()),
               _BoxLimits(
                 title: LocaleKeys.showcaseScreenThisScreen.tr(),
                 metrics: s,
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               _SimulatedWidth(
                 builder: (metrics) => _BoxLimits(
                   title:
@@ -175,13 +176,13 @@ class _ScreenDemoState extends State<ScreenDemo> {
                       ? Row(
                           children: [
                             Expanded(child: list),
-                            8.widthBox,
+                            const ResponsiveGap.horizontal(8),
                             Expanded(flex: 2, child: detail),
                           ],
                         )
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [list, 8.heightBox, detail],
+                          children: [list, const ResponsiveGap(8), detail],
                         );
                 },
               ),
@@ -207,11 +208,11 @@ class _ScreenDemoState extends State<ScreenDemo> {
                   ]) ...[
                     Text(name, style: context.textTheme.bodySmall),
                     Switch.adaptive(value: value, onChanged: set),
-                    8.widthBox,
+                    const ResponsiveGap.horizontal(8),
                   ],
                 ],
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               _InsetFrame(top: _top, bottom: _bottom),
             ],
           ),
@@ -235,7 +236,9 @@ class _ScreenDemoState extends State<ScreenDemo> {
                           ('.darkIcons', Brightness.dark, Brightness.dark),
                         ])
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            padding: EdgeInsets.symmetric(
+                              vertical: context.screen.space(2),
+                            ),
                             child: Text(
                               '${theme.name} theme · $name → icons: '
                               '${SystemBarStyle.resolve(theme, onLightTheme: onLight, onDarkTheme: onDark).statusBarIconBrightness?.name}',
@@ -260,7 +263,7 @@ class _ScreenDemoState extends State<ScreenDemo> {
                   labelText: LocaleKeys.showcaseName.tr(),
                   onTapOutsideDismissTheKeyboard: false,
                 ),
-                48.heightBox,
+                const ResponsiveGap(48),
               ],
             ),
           ),
@@ -274,7 +277,7 @@ class _ScreenDemoState extends State<ScreenDemo> {
               ClipRRect(
                 borderRadius: AppRadius.mdRadius,
                 child: SizedBox(
-                  height: 96,
+                  height: context.screen.size(96),
                   child: FlavorBanner(
                     child: ColoredBox(
                       color: colors.bgNeutral,
@@ -326,7 +329,7 @@ class _InsetFrame extends StatelessWidget {
     return ClipRRect(
       borderRadius: AppRadius.mdRadius,
       child: SizedBox(
-        height: 140,
+        height: context.screen.size(140),
         child: MediaQuery(
           data: MediaQuery.of(context).copyWith(
             padding: const EdgeInsets.only(top: _inset, bottom: _inset),
@@ -383,7 +386,7 @@ class _BoxLimits extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(title, style: context.textTheme.labelMedium),
-          4.heightBox,
+          const ResponsiveGap(4),
           for (final (name, value) in [
             ('screenClass', metrics.screenClass.name),
             ('formMaxWidth  (ContentWidth.form)', _fmt(metrics.formMaxWidth)),
@@ -484,14 +487,14 @@ class _GapPlaygroundState extends State<_GapPlayground> {
               color: colors.textSecondary,
             ),
           ),
-          12.heightBox,
+          const ResponsiveGap(12),
           _Bar(color: colors.primaryContainer),
           ColoredBox(
             color: colors.feedbackWarning,
             child: ResponsiveGap(_base),
           ),
           _Bar(color: colors.primaryContainer),
-          12.heightBox,
+          const ResponsiveGap(12),
           Row(
             children: [
               Text(

@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -32,7 +32,7 @@ class BackGuardDemo extends StatelessWidget {
                 LocaleKeys.showcaseBackGuardHint.tr(),
                 style: context.textTheme.bodyMedium,
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               AppButton(
                 text: LocaleKeys.showcaseBackGuardOpen.tr(),
                 leadingIcon: Icons.edit_outlined,
@@ -40,7 +40,7 @@ class BackGuardDemo extends StatelessWidget {
                   MaterialPageRoute<void>(builder: (_) => const _GuardedForm()),
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Text(
                 LocaleKeys.showcaseBackGuardPredictive.tr(),
                 style: context.textTheme.bodySmall?.copyWith(
@@ -98,7 +98,7 @@ class _GuardedFormState extends State<_GuardedForm> {
       child: Scaffold(
         appBar: AppBar(title: Text(LocaleKeys.showcaseBackGuardFormTitle.tr())),
         body: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.screen.space(16)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -107,7 +107,7 @@ class _GuardedFormState extends State<_GuardedForm> {
                 labelText: LocaleKeys.showcaseCrudTitle.tr(),
                 onChanged: (_) => setState(() {}),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               AnimatedSwitcher(
                 layoutBuilder: (current, previous) => Align(
                   alignment: AlignmentDirectional.centerStart,

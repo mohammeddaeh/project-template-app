@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart' show Either;
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/core/foundation/extensions/num_extensions.dart';
 import 'package:app_template/core/foundation/utils/arabic_digits.dart';
@@ -12,7 +13,6 @@ import 'package:app_template/core/foundation/utils/validators.dart';
 import 'package:app_template/core/foundation/value_objects/value_objects.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -104,7 +104,7 @@ class _ToolsDemoState extends State<ToolsDemo> {
                 ltr: true,
                 onChanged: _refresh,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               Directionality(
                 textDirection: TextDirection.ltr,
                 child: ChipRow<String>(
@@ -244,7 +244,7 @@ class _ToolsDemoState extends State<ToolsDemo> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(child: _SortedList('list.sort()', plainSorted)),
-              12.widthBox,
+              const ResponsiveGap.horizontal(12),
               Expanded(
                 child: _SortedList(
                   'list.sort(NaturalOrder.compare)',
@@ -311,13 +311,16 @@ class _Tool extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         input,
-        12.heightBox,
+        const ResponsiveGap(12),
         DecoratedBox(
           decoration: BoxDecoration(
             color: context.colors.bgNeutral,
             borderRadius: AppRadius.smRadius,
           ),
-          child: Padding(padding: 12.allPadding, child: result),
+          child: Padding(
+            padding: EdgeInsets.all(context.screen.space(12)),
+            child: result,
+          ),
         ),
       ],
     ),
@@ -345,7 +348,7 @@ class _Verdict extends StatelessWidget {
           icon: ok ? Icons.check_rounded : Icons.close_rounded,
           compact: true,
         ),
-        8.widthBox,
+        const ResponsiveGap.horizontal(8),
         Expanded(child: Text(text, style: context.textTheme.bodyMedium)),
       ],
     );
@@ -364,7 +367,7 @@ class _Lines extends StatelessWidget {
     children: [
       for (final (name, value) in rows)
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
+          padding: EdgeInsets.symmetric(vertical: context.screen.space(2)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -388,7 +391,7 @@ class _SortedList extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       _Code(title),
-      4.heightBox,
+      const ResponsiveGap(4),
       for (final i in items) Text(i, style: context.textTheme.bodyMedium),
     ],
   );
@@ -442,7 +445,7 @@ class _Slider extends StatelessWidget {
         ),
       ),
       SizedBox(
-        width: 32,
+        width: context.screen.size(32),
         child: Text(
           value.toStringAsFixed(0),
           style: context.textTheme.bodySmall,

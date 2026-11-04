@@ -128,7 +128,7 @@ class _PhoneFrameState extends State<_PhoneFrame> {
         removeTop: true,
         removeBottom: true,
         child: SizedBox(
-          height: 320,
+          height: context.screen.size(320),
           child: Scaffold(
             backgroundColor: colors.bgPage,
             extendBody: widget.translucent,
@@ -170,10 +170,10 @@ class _TabBody extends StatelessWidget {
   /// nothing over an empty page.
   @override
   Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.all(16),
+    padding: EdgeInsets.all(context.screen.space(16)),
     children: [
       Icon(icon, size: 48, color: context.colors.textMuted),
-      const SizedBox(height: 8),
+      const ResponsiveGap(8),
       Text(
         labelKey.tr(),
         style: context.textTheme.headlineSmall,
@@ -181,7 +181,7 @@ class _TabBody extends StatelessWidget {
       ),
       for (var i = 0; i < 8; i++)
         Padding(
-          padding: const EdgeInsets.only(top: 12),
+          padding: EdgeInsets.only(top: context.screen.space(12)),
           child: Container(
             height: 48,
             decoration: BoxDecoration(
@@ -212,7 +212,7 @@ class _ApplyToApp extends StatelessWidget {
             color: context.colors.textSecondary,
           ),
         ),
-        const SizedBox(height: 8),
+        const ResponsiveGap(8),
         Directionality(
           textDirection: TextDirection.ltr,
           child: Column(
@@ -228,7 +228,7 @@ class _ApplyToApp extends StatelessWidget {
                   }
                 },
               ),
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               ChipRow<AppTabTransition>(
                 items: AppTabTransition.values,
                 labelResolver: (t) => t.name,
@@ -241,7 +241,7 @@ class _ApplyToApp extends StatelessWidget {
                   }
                 },
               ),
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               ChipRow<bool>(
                 items: const [false, true],
                 labelResolver: (t) => 'translucent: $t',

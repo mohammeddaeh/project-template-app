@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/foundation/formatting/app_formats.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -149,7 +149,7 @@ class _MotionDemoState extends State<MotionDemo> {
                 step: _step,
                 child: _StepCard(step: _step, of: _steps),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Row(
                 children: [
                   Expanded(
@@ -160,7 +160,7 @@ class _MotionDemoState extends State<MotionDemo> {
                       onTap: () => setState(() => _step--),
                     ),
                   ),
-                  8.widthBox,
+                  const ResponsiveGap.horizontal(8),
                   Expanded(
                     child: AppButton(
                       text: LocaleKeys.showcaseNext.tr(),
@@ -170,7 +170,7 @@ class _MotionDemoState extends State<MotionDemo> {
                   ),
                 ],
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               _CountRow(
                 label: LocaleKeys.showcaseMotionSteps.tr(),
                 values: const [2, 3, 5],
@@ -207,7 +207,7 @@ class _MotionDemoState extends State<MotionDemo> {
                 textAlign: k('textAlign'),
                 style: context.textTheme.headlineMedium,
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               _CountRow(
                 label: 'step',
                 values: const [1, 250, 10000],
@@ -223,7 +223,7 @@ class _MotionDemoState extends State<MotionDemo> {
                       onTap: () => setState(() => _count -= _countStep),
                     ),
                   ),
-                  8.widthBox,
+                  const ResponsiveGap.horizontal(8),
                   Expanded(
                     child: AppButton(
                       text: '+ $_countStep',
@@ -255,7 +255,7 @@ class _MotionDemoState extends State<MotionDemo> {
                 child: Column(
                   children: [
                     Icon(Icons.touch_app_outlined, color: colors.textMuted),
-                    6.heightBox,
+                    const ResponsiveGap(6),
                     Text(
                       LocaleKeys.showcaseMotionPressHint.tr(),
                       style: context.textTheme.bodySmall,
@@ -295,7 +295,7 @@ class _MotionDemoState extends State<MotionDemo> {
                             ? colors.textMuted
                             : colors.feedbackError,
                       ),
-                      8.widthBox,
+                      const ResponsiveGap.horizontal(8),
                       Expanded(
                         child: Text(
                           _error ?? '••••',
@@ -310,7 +310,7 @@ class _MotionDemoState extends State<MotionDemo> {
                   ),
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Row(
                 children: [
                   Expanded(
@@ -327,7 +327,7 @@ class _MotionDemoState extends State<MotionDemo> {
                       }),
                     ),
                   ),
-                  8.widthBox,
+                  const ResponsiveGap.horizontal(8),
                   Expanded(
                     child: AppButton(
                       text: LocaleKeys.clear.tr(),
@@ -373,7 +373,7 @@ class _MotionDemoState extends State<MotionDemo> {
                         color: colors.textSecondary,
                       ),
                     ),
-                    12.heightBox,
+                    const ResponsiveGap(12),
                     Directionality(
                       textDirection: TextDirection.ltr,
                       child: Column(
@@ -387,7 +387,9 @@ class _MotionDemoState extends State<MotionDemo> {
                             ('.isReduced', '${m.isReduced}'),
                           ])
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              padding: EdgeInsets.symmetric(
+                                vertical: context.screen.space(2),
+                              ),
                               child: Row(
                                 children: [
                                   Expanded(
@@ -407,7 +409,7 @@ class _MotionDemoState extends State<MotionDemo> {
                         ],
                       ),
                     ),
-                    12.heightBox,
+                    const ResponsiveGap(12),
                     // The same counter under the setting: it jumps, not rolls.
                     Row(
                       children: [
@@ -454,7 +456,7 @@ class _CountRow extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       Text(label, style: context.textTheme.bodySmall),
-      12.widthBox,
+      const ResponsiveGap.horizontal(12),
       Expanded(
         child: ChipRow<int>(
           items: values,

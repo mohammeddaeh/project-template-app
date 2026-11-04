@@ -2,11 +2,11 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:kit_contracts/kit_contracts.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/kit_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -65,14 +65,14 @@ class _SystemDemoState extends State<SystemDemo> {
                   ),
                 ]),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               AppButton(
                 text: LocaleKeys.showcaseShortcutClear.tr(),
                 variant: AppButtonVariant.outlined,
                 isEnabled: _installed,
                 onTap: () => getIt<AppShortcuts>().setShortcuts(const []),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               Text(LocaleKeys.showcaseShortcutHint.tr(), style: muted),
             ],
           ),
@@ -92,7 +92,7 @@ class _SystemDemoState extends State<SystemDemo> {
                       .tr(),
                   style: muted,
                 ),
-                8.heightBox,
+                const ResponsiveGap(8),
               ],
               AppButton(
                 text: LocaleKeys.showcaseReviewRequest.tr(),
@@ -101,7 +101,7 @@ class _SystemDemoState extends State<SystemDemo> {
                 isEnabled: _installed,
                 onTap: () => getIt<AppReview>().request(),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               AppButton(
                 text: LocaleKeys.showcaseReviewStore.tr(),
                 variant: AppButtonVariant.outlined,

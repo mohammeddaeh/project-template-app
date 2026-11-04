@@ -394,7 +394,7 @@ body: ResponsiveContentBox(
 | `EdgeInsets.symmetric(horizontal: 16)` — هامشُ الصفحة | `EdgeInsets.symmetric(horizontal: s.gutter)` |
 | `32 + context.bottomContentInset` | `s.space(32) + context.bottomContentInset` |
 
-`check_structure.dart` يمسكها بـ`features/` و`ui/` (خارجها: طبقةُ المقاس · الثيم ·
+`check_structure.dart` يمسكها بـ`features/` و`modules/` و`ui/` — وجولةُ الـshowcase معها (خارجها: طبقةُ المقاس · الثيم ·
 تعريفُ الامتدادات). والدَّينُ الأقدم منه مسجَّلٌ بالأساس — والسبب والحدّ:
 [`03_RULES.md`](03_RULES.md) §R37.
 

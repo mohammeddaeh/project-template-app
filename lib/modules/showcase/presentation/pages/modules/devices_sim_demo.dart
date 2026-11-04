@@ -5,7 +5,6 @@ import 'package:app_template/modules/multi_device/domain/device_session.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/modules/sim_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
@@ -127,7 +126,7 @@ class _DevicesSimDemoState extends State<DevicesSimDemo> {
                 isEnabled: _others > 0,
                 onTap: _revokeOthers,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               AppButton(
                 text: LocaleKeys.showcaseReplay.tr(),
                 variant: AppButtonVariant.text,
@@ -193,7 +192,7 @@ class _SessionCard extends StatelessWidget {
                 size: s.size(20),
                 color: colors.textMuted,
               ),
-              8.widthBox,
+              const ResponsiveGap.horizontal(8),
               Expanded(child: Text(label, style: context.textTheme.titleSmall)),
               if (session.isCurrent)
                 StatusChip(
@@ -214,7 +213,7 @@ class _SessionCard extends StatelessWidget {
               alignment: AlignmentDirectional.centerEnd,
               child: isRevoking
                   ? Padding(
-                      padding: 8.allPadding,
+                      padding: EdgeInsets.all(context.screen.space(8)),
                       child: const AppProgress.circular(
                         size: AppProgressSize.sm,
                       ),

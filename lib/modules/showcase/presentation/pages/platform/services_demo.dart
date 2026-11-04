@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/clipboard/clipboard_service.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/share/share_service.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -124,7 +124,7 @@ class _ServiceCard extends StatelessWidget {
         ],
       ),
       if (!available) ...[
-        8.heightBox,
+        const ResponsiveGap(8),
         Text(
           LocaleKeys.showcaseServicesUnavailable.tr(args: [flag]),
           style: context.textTheme.bodySmall?.copyWith(
@@ -132,7 +132,7 @@ class _ServiceCard extends StatelessWidget {
           ),
         ),
       ],
-      12.heightBox,
+      const ResponsiveGap(12),
       Wrap(spacing: 8, runSpacing: 8, children: actions),
     ],
   );

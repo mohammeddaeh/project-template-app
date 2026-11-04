@@ -2,13 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/foundation/domain/safe_cubit.dart';
 import 'package:app_template/core/foundation/errors/failure.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/error/failure_ui_mapper.dart';
 import 'package:app_template/ui/error/ui_action.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -195,7 +195,7 @@ class _CrudBodyState extends State<_CrudBody> {
           textInputAction: TextInputAction.done,
           onFieldSubmitted: (_) => _submit(),
         ),
-        8.heightBox,
+        const ResponsiveGap(8),
         Row(
           children: [
             Expanded(
@@ -210,7 +210,7 @@ class _CrudBodyState extends State<_CrudBody> {
               ),
             ),
             if (_editing != null) ...[
-              8.widthBox,
+              const ResponsiveGap.horizontal(8),
               Expanded(
                 child: AppButton(
                   text: LocaleKeys.cancel.tr(),
@@ -224,7 +224,7 @@ class _CrudBodyState extends State<_CrudBody> {
             ],
           ],
         ),
-        12.heightBox,
+        const ResponsiveGap(12),
         BlocBuilder<_NotesCubit, List<_Note>>(
           builder: (context, notes) {
             if (notes.isEmpty) {

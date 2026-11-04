@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/clipboard/clipboard_service.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -99,7 +99,7 @@ class _DemoPlaygroundState extends State<DemoPlayground> {
     });
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: context.screen.space(16)),
       child: AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -117,7 +117,7 @@ class _DemoPlaygroundState extends State<DemoPlayground> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: 12.allPadding,
+                        padding: EdgeInsets.all(context.screen.space(12)),
                         child: Text(
                           _code,
                           style: context.textTheme.bodySmall?.copyWith(
@@ -141,14 +141,14 @@ class _DemoPlaygroundState extends State<DemoPlayground> {
                 ),
               ),
             ),
-            16.heightBox,
+            const ResponsiveGap(16),
             Align(
               alignment: widget.previewAlignment,
               child: widget.builder(context, values),
             ),
-            16.heightBox,
+            const ResponsiveGap(16),
             const DividerWidget(),
-            8.heightBox,
+            const ResponsiveGap(8),
             // The controls name code arguments — laid out as code reads.
             Directionality(
               textDirection: TextDirection.ltr,
@@ -158,7 +158,9 @@ class _DemoPlaygroundState extends State<DemoPlayground> {
                   for (final k in widget.knobs)
                     if (k.control)
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: EdgeInsets.symmetric(
+                          vertical: context.screen.space(4),
+                        ),
                         child: k.buildControl(
                           context,
                           _values[k.name],
@@ -421,7 +423,7 @@ class NumberKnob extends Knob<double> {
         ),
       ),
       SizedBox(
-        width: 40,
+        width: context.screen.size(40),
         child: Text(codeOf(value), style: context.textTheme.bodySmall),
       ),
     ],
@@ -437,7 +439,7 @@ class _Labelled extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [KnobName(name), 4.heightBox, child],
+    children: [KnobName(name), const ResponsiveGap(4), child],
   );
 }
 

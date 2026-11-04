@@ -7,7 +7,6 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/error/error_view.dart';
 import 'package:app_template/ui/error/failure_ui_mapper.dart';
 import 'package:app_template/ui/error/ui_action.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
@@ -111,7 +110,7 @@ class _FailuresDemoState extends State<FailuresDemo> {
                   onSelected: (i) => setState(() => _selected = i ?? _selected),
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               KeyValueRow(
                 labelKey: LocaleKeys.showcaseFailuresAction,
                 ltr: true,

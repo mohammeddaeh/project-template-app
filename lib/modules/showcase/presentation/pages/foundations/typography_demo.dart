@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_colors.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -126,7 +126,7 @@ class _TypographyDemoState extends State<TypographyDemo> {
             children: [
               for (final name in _styleNames)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.only(bottom: context.screen.space(12)),
                   child: Builder(
                     builder: (context) {
                       final style = _styleOf(context.textTheme, name);
@@ -237,7 +237,7 @@ class _TypographyDemoState extends State<TypographyDemo> {
                 ? context.colors.bgInverse
                 : Colors.transparent,
             child: Padding(
-              padding: 8.allPadding,
+              padding: EdgeInsets.all(context.screen.space(8)),
               child: SizedBox(
                 width: double.infinity,
                 child: AppText(
@@ -285,7 +285,7 @@ class _TypographyDemoState extends State<TypographyDemo> {
                 compact: k('compact'),
                 onTap: k<bool>('onTap') ? () => setState(() => _taps++) : null,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               Text(
                 LocaleKeys.showcaseTypographyTapCount.tr(args: ['$_taps']),
                 style: context.textTheme.labelSmall?.copyWith(
@@ -352,7 +352,7 @@ class _GlyphPlaygroundState extends State<_GlyphPlayground> {
               color: colors.textSecondary,
             ),
           ),
-          12.heightBox,
+          const ResponsiveGap(12),
           Center(
             child: Container(
               width: _size,
@@ -373,7 +373,7 @@ class _GlyphPlaygroundState extends State<_GlyphPlayground> {
               ),
             ),
           ),
-          12.heightBox,
+          const ResponsiveGap(12),
           Directionality(
             textDirection: TextDirection.ltr,
             child: Column(
@@ -400,7 +400,7 @@ class _GlyphPlaygroundState extends State<_GlyphPlayground> {
                       ),
                     ),
                     SizedBox(
-                      width: 40,
+                      width: context.screen.size(40),
                       child: Text(_size.toStringAsFixed(0), style: caption),
                     ),
                   ],

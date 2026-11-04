@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -18,18 +18,18 @@ class SimNotice extends StatelessWidget {
     final colors = context.colors;
 
     return Padding(
-      padding: 16.bottomPadding,
+      padding: EdgeInsets.only(bottom: context.screen.space(16)),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.statusInfoBg,
           borderRadius: AppRadius.mdRadius,
         ),
         child: Padding(
-          padding: 12.allPadding,
+          padding: EdgeInsets.all(context.screen.space(12)),
           child: Row(
             children: [
               Icon(Icons.science_outlined, color: colors.statusInfoFg),
-              8.widthBox,
+              const ResponsiveGap.horizontal(8),
               Expanded(
                 child: Text(
                   LocaleKeys.showcaseSimulated.tr(),

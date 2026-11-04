@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/infra/config/app_fonts.dart';
 import 'package:app_template/core/infra/network/interceptors/request_cache_interceptor.dart';
 import 'package:app_template/core/platform/config/app_settings.dart';
@@ -11,7 +12,6 @@ import 'package:app_template/core/platform/storage/persistence_keys.dart';
 import 'package:app_template/core/platform/storage/storage_service.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -290,7 +290,7 @@ class _StorageDemoState extends State<StorageDemo> {
                 ),
               ),
               if (_key == null) ...[
-                12.heightBox,
+                const ResponsiveGap(12),
                 CustomTextField(
                   controller: _customKey,
                   labelText: LocaleKeys.showcaseStorageKey.tr(),
@@ -298,7 +298,7 @@ class _StorageDemoState extends State<StorageDemo> {
                   onChanged: (_) => setState(() {}),
                 ),
               ],
-              12.heightBox,
+              const ResponsiveGap(12),
               _Label(LocaleKeys.showcaseStorageType.tr()),
               Directionality(
                 textDirection: TextDirection.ltr,
@@ -310,14 +310,14 @@ class _StorageDemoState extends State<StorageDemo> {
                   onSelected: (k) => setState(() => _kind = k ?? _kind),
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               CustomTextField(
                 controller: _value,
                 labelText: LocaleKeys.showcaseStorageValue.tr(),
                 hint: 'true · 42 · 1.5 · a, b, c',
                 ltr: true,
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -359,14 +359,14 @@ class _StorageDemoState extends State<StorageDemo> {
                 ],
               ),
               if (_lastCall != null || _lastResult != null) ...[
-                12.heightBox,
+                const ResponsiveGap(12),
                 _CallBox(
                   call: _lastCall,
                   result: _lastResult,
                   failed: _lastFailed,
                 ),
               ],
-              16.heightBox,
+              const ResponsiveGap(16),
               _Label(LocaleKeys.showcaseStorageContents.tr()),
               _ContentsTable(_contents),
             ],
@@ -402,7 +402,7 @@ class _StorageDemoState extends State<StorageDemo> {
                   (v) => _welcomeSeen = v,
                 ),
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               _Label(LocaleKeys.showcaseStorageFont.tr()),
               ChipRow<AppFontOption>(
                 items: AppFonts.available,
@@ -421,7 +421,7 @@ class _StorageDemoState extends State<StorageDemo> {
                   );
                 },
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               _Label(LocaleKeys.showcaseStorageLastTab.tr()),
               ChipRow<int>(
                 items: const [0, 1, 2, 3],
@@ -438,7 +438,7 @@ class _StorageDemoState extends State<StorageDemo> {
                   );
                 },
               ),
-              16.heightBox,
+              const ResponsiveGap(16),
               AppButton(
                 text: LocaleKeys.showcaseStorageRestart.tr(),
                 variant: AppButtonVariant.tonal,
@@ -446,7 +446,7 @@ class _StorageDemoState extends State<StorageDemo> {
                 onTap: _restart,
               ),
               if (_restored.isNotEmpty) ...[
-                12.heightBox,
+                const ResponsiveGap(12),
                 _CallBox(call: _restored.join('\n'), result: null),
               ],
             ],
@@ -508,7 +508,7 @@ class _StorageDemoState extends State<StorageDemo> {
                   ],
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Text(
                 LocaleKeys.showcaseStorageContentsAbove.tr(),
                 style: context.textTheme.bodySmall?.copyWith(
@@ -553,12 +553,12 @@ class _Note extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
+    padding: EdgeInsets.only(bottom: context.screen.space(12)),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(Icons.info_outline, size: 18, color: context.colors.textMuted),
-        8.widthBox,
+        const ResponsiveGap.horizontal(8),
         Expanded(
           child: Text(
             text,
@@ -579,7 +579,7 @@ class _Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 8),
+    padding: EdgeInsets.only(bottom: context.screen.space(8)),
     child: Text(text, style: context.textTheme.labelMedium),
   );
 }
@@ -605,7 +605,7 @@ class _CallBox extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Container(
-        padding: 12.allPadding,
+        padding: EdgeInsets.all(context.screen.space(12)),
         decoration: BoxDecoration(
           color: colors.bgNeutral,
           borderRadius: AppRadius.smRadius,
@@ -616,7 +616,7 @@ class _CallBox extends StatelessWidget {
             if (call != null)
               Text(call!, style: style?.copyWith(color: colors.textSecondary)),
             if (result != null) ...[
-              if (call != null) 4.heightBox,
+              if (call != null) const ResponsiveGap(4),
               Text(
                 result!,
                 style: style?.copyWith(
@@ -653,7 +653,7 @@ class _ContentsTable extends StatelessWidget {
         children: [
           for (final e in contents.entries)
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.symmetric(vertical: context.screen.space(8)),
               decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: colors.dividerSubtle)),
               ),
@@ -667,7 +667,7 @@ class _ContentsTable extends StatelessWidget {
                       style: style?.copyWith(color: colors.primary),
                     ),
                   ),
-                  8.widthBox,
+                  const ResponsiveGap.horizontal(8),
                   Expanded(
                     flex: 6,
                     child: Text(

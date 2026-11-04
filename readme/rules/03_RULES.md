@@ -286,11 +286,11 @@ s.pick(compact: 1, expanded: 2)         // ❌ if (width > 600)
 **والأرقامُ مفحوصةٌ آلياً، والباقي بالعين:**
 
 - **F37** — `context.sh *` مسافةً، و`setPreferredOrientations` خارج `OrientationPolicy`.
-- **F38** — كلُّ مسافةٍ بعددٍ خامّ بـ`features/` و`ui/`: `SizedBox(height: 24)` · `SizedBox(width: 40)` ·
+- **F38** — كلُّ مسافةٍ بعددٍ خامّ بـ`features/` و`modules/` (والـshowcase معها) و`ui/`: `SizedBox(height: 24)` · `SizedBox(width: 40)` ·
   `EdgeInsets.all(16)` · `16.allPadding` · `24.heightBox`. البديل `ResponsiveGap(24)` · `s.space(16)` ·
   `s.size(40)` · `s.gutter`. والصفرُ وما دون الواحد ليسا مسافة.
 
-و`features/` و`ui/` بالقالب **بلا دَينٍ F38** — فأيُّ رقمٍ خامٍّ يُفشِل البناء من أوّل سطر.
+و`features/` و`modules/` و`ui/` بالقالب **بلا دَينٍ F38** — فأيُّ رقمٍ خامٍّ يُفشِل البناء من أوّل سطر.
 ⚠️ **وبمشروعٍ سجّل دَينَه بالأساس** (`41_UPGRADING.md`): المفتاحُ لكل ملف لا لكل سطر،
 فملفٌّ عليه دَينٌ F38 لا يُفشِله رقمٌ مضاف حتى يُنظَّف كلُّه — فنظّف الملفَّ كاملاً حين تلمسه.
 

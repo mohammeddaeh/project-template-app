@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/features/app_features.dart';
 import 'package:app_template/core/platform/haptics/haptic_service.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -50,7 +50,7 @@ class HapticsDemo extends StatelessWidget {
                   ),
                 ],
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Text(
                 haptics == null
                     ? LocaleKeys.showcaseServicesUnavailable.tr(
@@ -61,7 +61,7 @@ class HapticsDemo extends StatelessWidget {
                   color: context.colors.textSecondary,
                 ),
               ),
-              12.heightBox,
+              const ResponsiveGap(12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,

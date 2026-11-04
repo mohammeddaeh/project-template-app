@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/modules/showcase/presentation/pages/widgets/call_playground.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/feedback/feedback.dart';
 import 'package:app_template/ui/feedback/feedback_style.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
@@ -37,7 +37,7 @@ class FeedbackDemo extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.only(bottom: context.screen.space(12)),
           child: Text(
             LocaleKeys.showcaseIndicators.tr(),
             style: context.textTheme.titleMedium,
@@ -189,7 +189,7 @@ class _FeedbackPlayground extends StatelessWidget {
               onTap: () => _show(context, a),
             ),
             if (ignored.isNotEmpty) ...[
-              8.heightBox,
+              const ResponsiveGap(8),
               Text(
                 LocaleKeys.showcaseFeedbackIgnored.tr(
                   args: [ignored.join(', ')],
@@ -201,7 +201,7 @@ class _FeedbackPlayground extends StatelessWidget {
               ),
             ],
             if (!ready) ...[
-              8.heightBox,
+              const ResponsiveGap(8),
               Text(
                 LocaleKeys.showcaseFeedbackNoService.tr(),
                 textAlign: TextAlign.center,
@@ -236,7 +236,10 @@ class _Indicators extends StatelessWidget {
     color: tone == AppProgressTone.onBrand
         ? context.colors.bgBrand
         : Colors.transparent,
-    child: Padding(padding: 12.allPadding, child: child),
+    child: Padding(
+      padding: EdgeInsets.all(context.screen.space(12)),
+      child: child,
+    ),
   );
 
   @override
@@ -352,9 +355,12 @@ class _Indicators extends StatelessWidget {
           builder: (context, k) =>
               ProgressIndicatorWidget(value: k('value'), linear: k('linear')),
         ),
-        const DemoBlock(
+        DemoBlock(
           code: 'AppLoader()',
-          child: SizedBox(height: 48, child: AppLoader()),
+          child: SizedBox(
+            height: context.screen.size(48),
+            child: const AppLoader(),
+          ),
         ),
         DemoPlayground(
           call: 'StatusFeedbackIndicator',
@@ -395,7 +401,7 @@ class _Indicators extends StatelessWidget {
             ),
           ],
           builder: (context, k) => SizedBox(
-            height: 260,
+            height: context.screen.size(260),
             child: InitialLoadingIndicator(
               style: k('style'),
               itemCount: k<double>('itemCount').round(),

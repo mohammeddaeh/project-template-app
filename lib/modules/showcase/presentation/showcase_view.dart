@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:app_template/modules/showcase/presentation/showcase_catalog.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
@@ -26,13 +25,13 @@ class ShowcaseView extends StatelessWidget {
 
     return ResponsiveContentBox(
       child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: context.screen.space(16)),
         children: [
           Text(
             LocaleKeys.showcaseTitle.tr(),
             style: context.textTheme.headlineMedium,
           ),
-          4.heightBox,
+          const ResponsiveGap(4),
           Text(
             LocaleKeys.showcaseHint.tr(),
             style: context.textTheme.bodySmall?.copyWith(
@@ -40,13 +39,13 @@ class ShowcaseView extends StatelessWidget {
             ),
           ),
           for (final group in ShowcaseGroup.values) ...[
-            16.heightBox,
+            const ResponsiveGap(16),
             SectionTitle(titleKey: group.titleKey),
             for (final (i, page) in group.pages.indexed)
               ListItemEntrance(
                 staggerIndex: i,
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: EdgeInsets.only(bottom: context.screen.space(8)),
                   child: _PageCard(page),
                 ),
               ),

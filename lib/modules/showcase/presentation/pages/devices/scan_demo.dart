@@ -2,12 +2,12 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:kit_contracts/kit_contracts.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/media/media_service.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/pages/devices/kit_notice.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 
@@ -60,7 +60,7 @@ class _ScanDemoState extends State<ScanDemo> {
                 isEnabled: DeviceScan.canScanCodes,
                 onTap: _scanCode,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               code == null
                   ? Text(LocaleKeys.showcaseScanNothing.tr(), style: muted)
                   : SelectableText(
@@ -84,7 +84,7 @@ class _ScanDemoState extends State<ScanDemo> {
                 isEnabled: DeviceScan.canReadText,
                 onTap: _readText,
               ),
-              8.heightBox,
+              const ResponsiveGap(8),
               text == null
                   ? Text(LocaleKeys.showcaseScanNothing.tr(), style: muted)
                   : SelectableText(
