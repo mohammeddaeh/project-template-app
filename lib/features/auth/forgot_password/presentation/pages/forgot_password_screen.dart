@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/features/auth/shared/presentation/auth_form_body.dart';
 import 'package:app_template/features/auth/forgot_password/presentation/cubits/forgot_password_cubit.dart';
 import 'package:app_template/features/auth/forgot_password/presentation/widgets/forgot_password_email_field.dart';
 import 'package:app_template/features/auth/forgot_password/presentation/widgets/forgot_password_hint.dart';
@@ -85,36 +86,34 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         child: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
           bloc: _cubit,
           listener: _onStateChanged,
-          builder: (context, state) => KeyboardDismissWidget(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const ForgotPasswordHint(),
-                    const SizedBox(height: 32),
-                    ForgotPasswordEmailField(
-                      controller: _emailController,
-                      onChanged: _refreshCubit.refresh,
-                      onSubmitted: _submit,
-                    ),
-                    const SizedBox(height: 32),
-                    BlocBuilder<RefreshCubit, RefreshState>(
-                      bloc: _refreshCubit,
-                      builder: (context, _) => SizedBox(
-                        width: double.infinity,
-                        child: PrimaryButton(
-                          text: LocaleKeys.sendResetCode.tr(),
-                          isLoading: state is ForgotPasswordLoading,
-                          isEnabled: _isValid,
-                          onTap: _submit,
-                        ),
+          builder: (context, state) => AuthFormBody(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const ForgotPasswordHint(),
+                  const SizedBox(height: 32),
+                  ForgotPasswordEmailField(
+                    controller: _emailController,
+                    onChanged: _refreshCubit.refresh,
+                    onSubmitted: _submit,
+                  ),
+                  const SizedBox(height: 32),
+                  BlocBuilder<RefreshCubit, RefreshState>(
+                    bloc: _refreshCubit,
+                    builder: (context, _) => SizedBox(
+                      width: double.infinity,
+                      child: PrimaryButton(
+                        text: LocaleKeys.sendResetCode.tr(),
+                        isLoading: state is ForgotPasswordLoading,
+                        isEnabled: _isValid,
+                        onTap: _submit,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

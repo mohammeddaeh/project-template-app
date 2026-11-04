@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/features/auth/shared/presentation/auth_form_body.dart';
 import 'package:app_template/features/auth/login/presentation/cubits/login_cubit.dart';
 import 'package:app_template/features/auth/login/presentation/login_outcome.dart';
 import 'package:app_template/features/auth/login/presentation/widgets/debug_skip_login_button.dart';
@@ -89,38 +90,36 @@ class _LoginScreenState extends State<LoginScreen> {
         child: BlocConsumer<LoginCubit, LoginState>(
           bloc: _loginCubit,
           listener: _onStateChanged,
-          builder: (context, state) => KeyboardDismissWidget(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 40),
-                    const LoginHeader(),
-                    const RememberedAccountsSection(),
-                    const SizedBox(height: 40),
-                    LoginFields(
-                      emailController: _emailController,
-                      passwordController: _passwordController,
-                      onChanged: _refreshCubit.refresh,
-                      onSubmitted: _submit,
-                    ),
-                    const SizedBox(height: 8),
-                    const ForgotPasswordLink(),
-                    const SizedBox(height: 32),
-                    LoginSubmitButton(
-                      refreshCubit: _refreshCubit,
-                      isLoading: state is LoginLoading,
-                      canSubmit: () => _isFormValid,
-                      onSubmit: _submit,
-                    ),
-                    const SizedBox(height: 24),
-                    const SignUpPrompt(),
-                    if (kDebugMode) const DebugSkipLoginButton(),
-                  ],
-                ),
+          builder: (context, state) => AuthFormBody(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 40),
+                  const LoginHeader(),
+                  const RememberedAccountsSection(),
+                  const SizedBox(height: 40),
+                  LoginFields(
+                    emailController: _emailController,
+                    passwordController: _passwordController,
+                    onChanged: _refreshCubit.refresh,
+                    onSubmitted: _submit,
+                  ),
+                  const SizedBox(height: 8),
+                  const ForgotPasswordLink(),
+                  const SizedBox(height: 32),
+                  LoginSubmitButton(
+                    refreshCubit: _refreshCubit,
+                    isLoading: state is LoginLoading,
+                    canSubmit: () => _isFormValid,
+                    onSubmit: _submit,
+                  ),
+                  const SizedBox(height: 24),
+                  const SignUpPrompt(),
+                  if (kDebugMode) const DebugSkipLoginButton(),
+                ],
               ),
             ),
           ),

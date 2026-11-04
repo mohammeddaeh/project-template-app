@@ -10,6 +10,7 @@ import 'package:app_template/core/foundation/domain/no_params.dart';
 import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The signed-in user, read-only, plus the way out.
 ///
@@ -55,27 +56,31 @@ class ProfileScreen extends StatelessWidget {
             // Re-reads the account and republishes it; the stream above does the
             // redraw, so there is nothing to await into local state here.
             onRefresh: () => getIt<GetCurrentUserUseCase>()(const NoParams()),
-            child: ListView(
-              // Always scrollable, so pull-to-refresh still works on the empty
-              // state — which is the state most in need of a retry.
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(
-                16,
-                16,
-                16,
-                32 + context.bottomContentInset,
+            child: ResponsiveContentBox(
+              width: ContentWidth.content,
+              horizontalPadding: false,
+              child: ListView(
+                // Always scrollable, so pull-to-refresh still works on the empty
+                // state — which is the state most in need of a retry.
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  16,
+                  16,
+                  32 + context.bottomContentInset,
+                ),
+                children: [
+                  if (user == null)
+                    EmptyStateWidget(
+                      titleKey: LocaleKeys.noDataFound,
+                      icon: Icons.person_off_outlined,
+                    )
+                  else
+                    ProfileHeaderCard(user: user),
+                  const SizedBox(height: 24),
+                  const LogoutSection(),
+                ],
               ),
-              children: [
-                if (user == null)
-                  EmptyStateWidget(
-                    titleKey: LocaleKeys.noDataFound,
-                    icon: Icons.person_off_outlined,
-                  )
-                else
-                  ProfileHeaderCard(user: user),
-                const SizedBox(height: 24),
-                const LogoutSection(),
-              ],
             ),
           );
         },

@@ -21,6 +21,11 @@
 - ⚠️ **سبعُ هوياتٍ مشحونة**: `standard` · `dawn` · `emerald` · `graphite` · `lilac` · `ocean` · `sand` — كلٌّ بأرضيةٍ فاتحة
   وداكنة مصبوغة (الرماديّاتُ كلُّها بصبغتها وبإضاءة `standard`) وأساسيٍّ وبارز، فمنتقي «ألوان التطبيق»
   ظاهرٌ بالإعدادات — بطاقاتٌ أفقية ترسم التطبيقَ مصغَّراً بألوان كل ثيم (`test/settings_theme_preset_section_test.dart`). كلٌّ يمرّ بفحص التباين بالوضعين.
+- **شاشاتُ القالب بحدّ عرضٍ على اللوح**: الدخول والتسجيل وكلمة المرور وتأكيد البريد بـ`ContentWidth.form` (٤٨٠)، والملف
+  الشخصي والإعدادات بـ`ContentWidth.content` (٨٤٠) — والهاتفُ بلا تغيير · `test/responsive_template_screens_test.dart`.
+- ⚠️ **`textMuted` نصٌّ يُقرأ**: بالفاتح كان `gray500` — ٢٫١–٢٫٦:١ على الصفحة والبطاقة بكل هوية، وهو لونُ ١٥٨ موضعاً
+  (تعليقات · تلميحات · أوقات). صار `gray600`، و`gray600` بكل بالتٍ مصبوغة أُغمق بقدر ما يبلغ ٤٫٥:١ ·
+  `test/color_contrast_test.dart` يفحصه على `bgPage` · `bgCard` · `bgElevated` لكل هوية بالوضعين.
 - **`GuideOverlay` لا يُرسم خطأً**: كان يقرأ `MediaQuery` بـ`initState` فيرمي عند كل فتح — صار
   بـ`didChangeDependencies` · `test/guide_overlay_test.dart`.
 - **مقبضُ الورقة السفلية يُرى**: `dividerSubtle` على سطح الورقة ١٫٠٨:١، فصار `outlineVariant`

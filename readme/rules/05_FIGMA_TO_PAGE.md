@@ -151,6 +151,7 @@ Container(color: context.colors.bgPage)
 | «تحذير» — داكن | ٤٫٨٧:١ |
 | «خطأ» · «معلومة» — داكن | ٦٫١٣ · ٧٫٨٢:١ |
 | `onPrimaryContainer` · `onSecondaryContainer` — داكن | ٨٫٨٢ · ٨٫٦٨:١ |
+| `textMuted` (تعليق · تلميح · وقت) على `bgPage` · `bgCard` · `bgElevated` — فاتح، أضيقُ هوية | ٤٫٥٩:١ |
 | تبويبٌ غير نشط — `textSecondary` على `bgCard` · `bgElevated` (فاتح؛ و`textMuted` هناك ٢٫٧٣:١) | ٨٫٣٣ · ٨٫١٧:١ |
 | `textPrimary` · `textSecondary` على `bgTranslucent` فوق أسوأ ما تحته (أسود للفاتح · أبيض للداكن) — فاتح · داكن | ١١٫٤٨ · ٨٫٥٢ · ٥٫٤٦ · ٨٫٠١:١ |
 

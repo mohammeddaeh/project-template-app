@@ -213,7 +213,7 @@ class AppColors extends ThemeExtension<AppColors> {
       bgInverse: p.gray900,
       textPrimary: p.gray900,
       textSecondary: p.gray700,
-      textMuted: p.gray500,
+      textMuted: p.gray600, // 4.5:1 on page, card and sheet — it is text
       textOnPrimary: p.white,
       textOnAccent: p.white,
       bgDisabled: p.gray300,
