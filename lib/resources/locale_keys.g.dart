@@ -290,6 +290,8 @@ abstract class LocaleKeys {
   static const themeLight = 'themeLight';
   static const themePreset = 'themePreset';
   static const themePresetStandard = 'themePresetStandard';
+  static const themePresetOcean = 'themePresetOcean';
+  static const themePresetSand = 'themePresetSand';
   static const themeSystem = 'themeSystem';
   static const tooManyRequests = 'tooManyRequests';
   static const transferDisabled = 'transferDisabled';
@@ -890,6 +892,7 @@ abstract class LocaleKeys {
   static const showcaseKnobMaxLength = 'showcaseKnobMaxLength';
   static const showcaseKnobMaxLines = 'showcaseKnobMaxLines';
   static const showcaseKnobMessage = 'showcaseKnobMessage';
+  static const showcaseKnobMessageArgs = 'showcaseKnobMessageArgs';
   static const showcaseKnobMessageKey = 'showcaseKnobMessageKey';
   static const showcaseKnobMethod = 'showcaseKnobMethod';
   static const showcaseKnobMode = 'showcaseKnobMode';

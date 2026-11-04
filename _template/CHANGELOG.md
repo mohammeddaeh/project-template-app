@@ -18,12 +18,21 @@
   بـ`PersistenceKeys.selectedThemePresetKey`، ومنتقيه بالإعدادات (`SettingsThemePresetSection`) لا يظهر ما دام الثيم
   واحداً · كلُّ بالتٍ بمفاتيح `standard.json` نفسها، والمخالفةُ تُفشل التوليد · `test/color_contrast_test.dart` يمرّ
   على كل ثيم · `test/theme_preset_test.dart` · `test/palette_sync_test.dart`. ألوانٌ فقط — الزوايا والحركة ثابتة.
-- **`palettes/examples/`**: أربعُ بالتاتٍ كاملة (`sand` · `midnight` · `olive` · `ocean`) لا تُقرأ حتى تُنقل إلى
-  `palettes/` — كلٌّ يمرّ بفحص التباين بالوضعين.
+- ⚠️ **ثلاثةُ ثيماتٍ مشحونة**: `palettes/ocean.json` و`palettes/sand.json` بجانب `standard.json`، فمنتقي «ألوان التطبيق»
+  ظاهرٌ بالإعدادات — بطاقاتٌ أفقية ترسم التطبيقَ مصغَّراً بألوان كل ثيم (`test/settings_theme_preset_section_test.dart`).
+  و`palettes/examples/` (`midnight` · `olive`) لا تُقرأ حتى تُنقل. كلٌّ يمرّ بفحص التباين بالوضعين.
+- **`GuideOverlay` لا يُرسم خطأً**: كان يقرأ `MediaQuery` بـ`initState` فيرمي عند كل فتح — صار
+  بـ`didChangeDependencies` · `test/guide_overlay_test.dart`.
+- **مقبضُ الورقة السفلية يُرى**: `dividerSubtle` على سطح الورقة ١٫٠٨:١، فصار `outlineVariant`
+  (`AppBottomSheet` · `BaseBottomSheet`) · فحصُه بـ`test/color_contrast_test.dart`.
+- **لافتاتُ الإعدادات تُقرأ**: الخطوط وألوان التطبيق ورقم الإصدار بـ`textSecondary` لا `textMuted`.
+- **فحصُ معاني أدوات الجولة يرى النوعَ المتداخل** (`ChoiceKnob<Map<String, String>?>`)، فوجد
+  `showcaseKnobMessageArgs` ناقصاً — أُضيف.
+- **مثالُ `AppBentoGrid` بالجولة بخلايا `cellAspectRatio: 1.5`**، و§48 يحذّر من ارتفاع الخليّة الثابت.
 - ⚠️ **التبويبُ غير النشط يُقرأ**: `textMuted` على سطح الشريط بالفاتح **٢٫٧٣:١** (دون ٤٫٥)، فصار
   `textSecondary` (٨٫٣٣:١) بـ`AppBottomBar` و`AppTabBar` و`tabBarTheme` و`bottomNavigationBarTheme` ·
   `test/color_contrast_test.dart` يفحص الزوج على كل سطحٍ يرسمه شريط، ويُفشل `textMuted` بملفَّي الشريطين.
-- **`ShellAppearance(translucent: true)`** · `AppBottomBar(translucent:)` · `AppColors.bgTranslucent`:
+- **`ShellAppearance(translucent: true)`** · `AppBottomBar(translucent:)` · `AppColors.bgTranslucent` (٨٢٪):
   شريطٌ سفليّ نافذ بلا تمويه، والمحتوى يمرّ تحته — مطفأ افتراضاً، والاستثناءُ الوحيد لـR15
   (`test/bottom_content_inset_test.dart`) · تباينُه بـ`test/color_contrast_test.dart` · بجولة الـshowcase.
 - **`AppBottomSheet.show(detents: […])`**: ورقةٌ تقف بارتفاعات توقّف (`DraggableScrollableSheet` بـ`snap`)،

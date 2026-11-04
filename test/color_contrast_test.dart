@@ -119,6 +119,17 @@ void main() {
         });
       });
 
+      test('the sheet handle shows on the sheet', () {
+        // A hint, not the only grip — the whole sheet drags — so it is held to
+        // Material 3's faint handle, not to 3:1. In dividerSubtle it measured
+        // 1.08:1: not there at all.
+        expect(
+          contrast(c.outlineVariant, c.bgCard),
+          greaterThanOrEqualTo(1.5),
+          reason: 'outlineVariant on bgCard',
+        );
+      });
+
       test('text stays readable on the translucent surface over anything', () {
         // What shows through is unknown — a photo, a dark card, a white one —
         // so it is checked against both extremes. Between them, the composite

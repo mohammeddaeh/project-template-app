@@ -168,7 +168,9 @@ void main() {
     final names = {
       for (final m in RegExp(
         r"(?:Enum|Choice|Bool|Text|Number|OptionalNumber|color|callback)Knob"
-        r"(?:<[^>]*>)?\(\s*'(\w+)'",
+        // `[^(]*`, not `[^>]*`: a nested type (`Map<String, String>?`) closes
+        // more than once before the call opens.
+        r"(?:<[^(]*>)?\(\s*'(\w+)'",
       ).allMatches(tour))
         m[1]!,
     };

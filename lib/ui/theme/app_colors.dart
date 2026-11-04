@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/theme/app_palette.g.dart';
 
-/// كم يُرى من [AppColors.bgTranslucent] — وما بقي (١٠٪) للمحتوى تحته.
+/// كم يُرى من [AppColors.bgTranslucent] — وما بقي (١٨٪) للمحتوى تحته.
 ///
-/// ٠٫٩ لا أقلّ: فوق أسوأ خلفيةٍ (أسود تحت الفاتح، أبيض تحت الداكن) يبقى
-/// النصُّ عليه بتباين ٤٫٥:١ — `test/color_contrast_test.dart` يفحصه لكل بالت.
-const _translucency = 0.9;
+/// ٠٫٨٢ لا أقلّ: فوق أسوأ خلفيةٍ (أسود تحت الفاتح، أبيض تحت الداكن) يبقى
+/// `textSecondary` عليه بتباين ٤٫٥:١ بكل بالتٍ بالقالب (أشدُّها يحتاج ٠٫٨) —
+/// `test/color_contrast_test.dart` يفحصه لكل بالت.
+const _translucency = 0.82;
 
 @immutable
 class AppColors extends ThemeExtension<AppColors> {

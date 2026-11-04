@@ -344,8 +344,11 @@ class _DisplayDemoState extends State<DisplayDemo> {
         DemoBlock(
           code:
               'AppBentoGrid(tiles: [BentoTile(columns: 2, rows: 2, …), '
-              'BentoTile(child: StatCard(…)), …])',
+              'BentoTile(child: StatCard(…)), …], cellAspectRatio: 1.5)',
           child: AppBentoGrid(
+            // Wider than tall: a square cell leaves a number card mostly
+            // empty, and a 2×2 tile as tall as the phone is wide.
+            cellAspectRatio: 1.5,
             tiles: [
               BentoTile(
                 columns: 2,
@@ -368,7 +371,6 @@ class _DisplayDemoState extends State<DisplayDemo> {
                 child: StatCard(
                   value: '64',
                   labelText: LocaleKeys.showcaseDisplayItems.tr(),
-                  icon: Icons.trending_up,
                 ),
               ),
             ],

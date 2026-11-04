@@ -11,4 +11,14 @@ final List<AppThemePreset> generatedThemePresets = [
     nameKey: LocaleKeys.themePresetStandard,
     palette: AppPalettes.standard,
   ),
+  AppThemePreset(
+    id: 'ocean',
+    nameKey: LocaleKeys.themePresetOcean,
+    palette: AppPalettes.ocean,
+  ),
+  AppThemePreset(
+    id: 'sand',
+    nameKey: LocaleKeys.themePresetSand,
+    palette: AppPalettes.sand,
+  ),
 ];
