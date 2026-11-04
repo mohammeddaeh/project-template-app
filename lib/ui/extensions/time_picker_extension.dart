@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' as material;
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/ui/extensions/extensions.dart';
 import 'package:app_template/ui/widgets/layout/primary_button.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
@@ -73,7 +74,7 @@ extension TimePickerContextExtension on BuildContext {
           mainAxisSize: material.MainAxisSize.min,
           children: [
             material.SizedBox(
-              height: 200,
+              height: screen.size(200),
               width: sw,
               child: CupertinoDatePicker(
                 initialDateTime: initDate,

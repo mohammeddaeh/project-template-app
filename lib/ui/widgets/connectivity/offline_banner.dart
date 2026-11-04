@@ -1,7 +1,8 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// شريط بارز يظهر في أعلى الشاشة عند انقطاع الاتصال.
 /// يُستخدَم داخل [ConnectivityOverlay] تلقائياً.
@@ -20,11 +21,14 @@ class OfflineBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         color: context.colors.stateError,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.screen.space(16),
+            vertical: context.screen.space(8),
+          ),
           child: Row(
             children: [
               Icon(Icons.wifi_off, color: context.colors.onError, size: 18),
-              const SizedBox(width: 8),
+              SizedBox(width: context.screen.space(8)),
               Expanded(
                 child: Text(
                   LocaleKeys.noInternetConnection.tr(),

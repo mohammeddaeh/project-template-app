@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/core/infra/config/env.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 
@@ -21,8 +22,8 @@ class _EnvBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 50,
-      height: 50,
+      width: context.screen.size(50),
+      height: context.screen.size(50),
       child: CustomPaint(
         painter: BannerPainter(
           message: Env.label,

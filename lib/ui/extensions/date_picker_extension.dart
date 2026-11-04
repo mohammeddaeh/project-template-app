@@ -9,6 +9,7 @@ import 'package:app_template/ui/extensions/screen_sizes_extensions.dart';
 import 'package:app_template/ui/theme/app_theme.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 enum DatePickerDisplayMode { material, calendar, sheet, hijriSheet }
 
@@ -83,13 +84,15 @@ extension DatePickerContextExtension on BuildContext {
             child: material.Material(
               color: material.Colors.transparent,
               child: material.Container(
-                padding: const material.EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10,
+                padding: material.EdgeInsets.symmetric(
+                  vertical: screen.space(10),
+                  horizontal: screen.space(10),
                 ),
                 width: sw,
                 clipBehavior: material.Clip.antiAlias,
-                margin: const material.EdgeInsets.symmetric(horizontal: 24),
+                margin: material.EdgeInsets.symmetric(
+                  horizontal: screen.space(24),
+                ),
                 decoration: material.BoxDecoration(
                   borderRadius: material.BorderRadius.circular(circular),
                   color: cardColor,

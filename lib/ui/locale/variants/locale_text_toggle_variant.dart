@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/core/platform/locale/app_locale.dart';
 import 'package:app_template/ui/locale/locale_extension.dart';
 import 'package:app_template/ui/locale/locale_switcher_controller.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Text-toggle locale switcher — minimal inline style.
 ///
@@ -38,7 +39,9 @@ class LocaleTextToggleVariant extends StatelessWidget {
           ),
           if (locale != AppLocale.values.last)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(8),
+              ),
               child: Text('|', style: TextStyle(color: disabled)),
             ),
         ];

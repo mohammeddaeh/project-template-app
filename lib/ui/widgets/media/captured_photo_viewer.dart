@@ -6,6 +6,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/media/captured_photo.dart';
 import 'package:app_template/ui/widgets/media/captured_photo_image.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// معاينةُ صورةٍ ميدانية بملء الشاشة — تكبيرٌ وسحب، وبياناتها أسفلها.
 ///
@@ -106,7 +107,7 @@ class _MetaPanel extends StatelessWidget {
     if (lines.isEmpty) return const SizedBox.shrink();
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.screen.space(16)),
       color: colors.scrim.withValues(alpha: .55),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,11 +115,11 @@ class _MetaPanel extends StatelessWidget {
         children: [
           for (final line in lines)
             Padding(
-              padding: const EdgeInsets.only(bottom: 6),
+              padding: EdgeInsets.only(bottom: context.screen.space(6)),
               child: Row(
                 children: [
                   Icon(line.$1, size: 16, color: colors.onBrandAccent),
-                  const SizedBox(width: 8),
+                  SizedBox(width: context.screen.space(8)),
                   Expanded(
                     child: Text(
                       line.$2,

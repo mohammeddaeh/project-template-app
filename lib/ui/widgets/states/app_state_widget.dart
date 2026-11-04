@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:lottie/lottie.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// نوع حالة الشاشة — كل نوع له أيقونة ولون ونمط نص افتراضية.
 /// جميع القيم الافتراضية قابلة للتجاوز عبر معاملات [AppStateWidget].
@@ -94,7 +95,7 @@ class AppStateWidget extends StatelessWidget {
   /// override للون الأيقونة الافتراضي
   final Color? iconColor;
 
-  /// override للـ padding الخارجي (الافتراضي: EdgeInsets.all(24))
+  /// override للـ padding الخارجي (الافتراضي: EdgeInsets.all(context.screen.space(24)))
   final EdgeInsets? padding;
 
   /// مسار ملف Lottie (من [Assets.lottie.*]) — عند توفيره يحل محل الأيقونة.
@@ -144,12 +145,12 @@ class AppStateWidget extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: padding ?? const EdgeInsets.all(24),
+        padding: padding ?? EdgeInsets.all(context.screen.space(24)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             visual,
-            const SizedBox(height: 16),
+            const ResponsiveGap(16),
             if (resolvedTitleKey != null)
               Text(
                 resolvedTitleKey.tr(),

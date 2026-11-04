@@ -1,6 +1,7 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 class TagWidget extends StatelessWidget {
   const TagWidget({
@@ -22,7 +23,10 @@ class TagWidget extends StatelessWidget {
     final fg = foregroundColor ?? scheme.onSurface;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.screen.space(8),
+        vertical: context.screen.space(4),
+      ),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(8),

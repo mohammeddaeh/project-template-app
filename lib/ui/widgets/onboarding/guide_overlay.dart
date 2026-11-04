@@ -5,6 +5,7 @@ import 'package:app_template/ui/theme/app_elevation.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Coach-mark عام — يظلّل الشاشة ويترك فتحةً حول العنصر المُشار إليه
 /// بـ[targetKey]، مع فقاعة شرح بجانبه.
@@ -242,7 +243,7 @@ class _Bubble extends StatelessWidget {
         alignment: top != null ? Alignment.topCenter : Alignment.bottomCenter,
         child: Container(
           constraints: BoxConstraints(maxWidth: screenWidth - 40),
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.screen.space(16)),
           decoration: BoxDecoration(
             color: context.colors.bgElevated,
             borderRadius: AppRadius.mdRadius,
@@ -259,14 +260,14 @@ class _Bubble extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 6),
+              const ResponsiveGap(6),
               Text(
                 message,
                 style: context.textTheme.bodyMedium?.copyWith(
                   color: context.colors.textSecondary,
                 ),
               ),
-              const SizedBox(height: 12),
+              const ResponsiveGap(12),
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: TextButton(

@@ -5,6 +5,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/indicators/page_loading_indicator.dart';
 import 'package:app_template/ui/widgets/states/failure_state_view.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// How a finished list announces that it is finished.
 enum ListEndMarker {
@@ -119,7 +120,7 @@ class NextPageStatus extends StatelessWidget {
     } else if (!isLastPage && onLoadMore != null) {
       child = Padding(
         key: const ValueKey('next_more'),
-        padding: const EdgeInsets.only(top: 4),
+        padding: EdgeInsets.only(top: context.screen.space(4)),
         child: Center(
           child: TextButton.icon(
             onPressed: onLoadMore,
@@ -164,19 +165,22 @@ class _EndMarker extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      padding: EdgeInsets.symmetric(
+        vertical: context.screen.space(16),
+        horizontal: context.screen.space(24),
+      ),
       child: Row(
         children: [
           line,
           if (marker == ListEndMarker.label) ...[
-            const SizedBox(width: 12),
+            SizedBox(width: context.screen.space(12)),
             Text(
               LocaleKeys.endOfList.tr(),
               style: context.textTheme.bodySmall?.copyWith(
                 color: colors.textMuted,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: context.screen.space(12)),
           ],
           line,
         ],

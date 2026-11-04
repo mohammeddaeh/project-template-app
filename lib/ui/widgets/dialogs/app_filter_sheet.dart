@@ -4,6 +4,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/layout/primary_button.dart';
 import 'app_bottom_sheet.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Models
@@ -227,7 +228,7 @@ class _FilterSheetContentState<T> extends State<_FilterSheetContent<T>> {
         if (widget.sortOptions.isNotEmpty) ...[
           _SectionTitle(titleKey: LocaleKeys.sortBy),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
             child: Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -243,12 +244,17 @@ class _FilterSheetContentState<T> extends State<_FilterSheetContent<T>> {
               }).toList(),
             ),
           ),
-          const SizedBox(height: 16),
+          const ResponsiveGap(16),
         ],
 
         // ── الأزرار ──
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: EdgeInsets.fromLTRB(
+            context.screen.space(16),
+            context.screen.space(8),
+            context.screen.space(16),
+            context.screen.space(24),
+          ),
           child: Row(
             children: [
               // إعادة تعيين
@@ -258,7 +264,7 @@ class _FilterSheetContentState<T> extends State<_FilterSheetContent<T>> {
                   child: Text(LocaleKeys.reset.tr()),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: context.screen.space(12)),
               // تطبيق
               Expanded(
                 flex: 2,
@@ -292,7 +298,7 @@ class _FilterGroupSection<T> extends StatelessWidget {
       children: [
         _SectionTitle(titleKey: group.titleKey),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -305,7 +311,7 @@ class _FilterGroupSection<T> extends StatelessWidget {
             }).toList(),
           ),
         ),
-        const SizedBox(height: 16),
+        const ResponsiveGap(16),
       ],
     );
   }
@@ -318,7 +324,12 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+      padding: EdgeInsets.fromLTRB(
+        context.screen.space(16),
+        0,
+        context.screen.space(16),
+        context.screen.space(10),
+      ),
       child: Text(
         titleKey.tr(),
         style: context.textTheme.bodySmall?.copyWith(
@@ -348,7 +359,10 @@ class _FilterChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(14),
+          vertical: context.screen.space(8),
+        ),
         decoration: BoxDecoration(
           color: isSelected
               ? context.colors.primary.withValues(alpha: 0.12)
@@ -394,7 +408,10 @@ class _SortChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(14),
+          vertical: context.screen.space(8),
+        ),
         decoration: BoxDecoration(
           color: isSelected
               ? context.colors.primary.withValues(alpha: 0.12)
@@ -420,7 +437,7 @@ class _SortChip extends StatelessWidget {
               ),
             ),
             if (isSelected && isAscending != null) ...[
-              const SizedBox(width: 4),
+              SizedBox(width: context.screen.space(4)),
               Icon(
                 isAscending! ? Icons.arrow_upward : Icons.arrow_downward,
                 size: 14,

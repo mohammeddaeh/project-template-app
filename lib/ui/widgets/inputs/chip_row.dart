@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/feedback/selection_haptic.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ChipRow<T> — صف chips قابلة للتحديد
@@ -204,7 +205,10 @@ class _ChipItem<T> extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(14),
+          vertical: context.screen.space(7),
+        ),
         decoration: BoxDecoration(
           color: isSelected ? bgSelected : Colors.transparent,
           borderRadius: BorderRadius.circular(20),

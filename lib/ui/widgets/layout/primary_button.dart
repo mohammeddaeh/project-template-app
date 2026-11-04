@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Primary call-to-action button.
 ///
@@ -44,8 +45,12 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final resolvedPadding = WidgetStatePropertyAll(
       isLoading
-          ? const EdgeInsets.symmetric(vertical: 10)
-          : padding ?? const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          ? EdgeInsets.symmetric(vertical: context.screen.space(10))
+          : padding ??
+                EdgeInsets.symmetric(
+                  horizontal: context.screen.space(32),
+                  vertical: context.screen.space(16),
+                ),
     );
     final shape = WidgetStatePropertyAll(
       RoundedRectangleBorder(
@@ -144,7 +149,7 @@ class _LabelRow extends StatelessWidget {
       children: [
         if (vector != null) ...[
           SvgPicture.asset(vector!),
-          const SizedBox(width: 8),
+          SizedBox(width: context.screen.space(8)),
         ],
         Text(text, style: style),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/widgets/placeholders/skeleton_templates.dart';
 import 'package:app_template/ui/widgets/placeholders/skeleton_widget.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// أنماط مؤشر التحميل الأول لقائمة (قبل وصول أي بيانات) — استخدمه كـ
 /// [PaginationBuilder.loadingItemsWidget]. مقابل [PageLoadingStyle] الذي
@@ -55,7 +56,7 @@ class InitialLoadingIndicator extends StatelessWidget {
       itemBuilder: (_) => const SkeletonCard(),
     ),
     InitialLoadingStyle.shimmerGrid => GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.screen.space(16)),
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -68,18 +69,21 @@ class InitialLoadingIndicator extends StatelessWidget {
     ),
     InitialLoadingStyle.skeletonRows => _RepeatedList(
       itemCount: itemCount,
-      itemBuilder: (_) => const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      itemBuilder: (_) => Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: context.screen.space(16),
+          vertical: context.screen.space(10),
+        ),
         child: Row(
           children: [
             SkeletonWidget(width: 44, height: 44, borderRadius: 22),
-            SizedBox(width: 12),
+            SizedBox(width: context.screen.space(12)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SkeletonWidget(width: double.infinity, height: 14),
-                  SizedBox(height: 6),
+                  const ResponsiveGap(6),
                   SkeletonWidget(width: 100, height: 10),
                 ],
               ),

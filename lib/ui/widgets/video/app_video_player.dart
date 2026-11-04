@@ -10,6 +10,7 @@ import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/indicators/app_progress.dart';
 import 'package:app_template/ui/widgets/media/playback_bar.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Plays one video file or `https` URL — the picture at its own shape, a
 /// tap on it to play or pause, and the [PlaybackBar] under it.
@@ -89,7 +90,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.videocam_off_outlined, color: colors.textMuted),
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             Text(
               LocaleKeys.videoCannotPlay.tr(),
               style: context.textTheme.bodySmall?.copyWith(
@@ -116,7 +117,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                     shape: BoxShape.circle,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(context.screen.space(12)),
                     child: Icon(
                       Icons.play_arrow_rounded,
                       size: 40,

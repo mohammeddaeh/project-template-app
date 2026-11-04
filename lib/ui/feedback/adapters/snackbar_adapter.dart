@@ -9,6 +9,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'motion_toast_adapter.dart';
 import 'simple_toast_adapter.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// [AppFeedbackService] adapter backed by Material [SnackBar].
 ///
@@ -37,7 +38,7 @@ class SnackbarAdapter implements AppFeedbackService {
         content: Row(
           children: [
             Icon(config.type.icon, color: accentColor, size: 20),
-            const SizedBox(width: 10),
+            SizedBox(width: context.screen.space(10)),
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

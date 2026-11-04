@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/core/di/injection.dart';
 import 'package:app_template/core/platform/clipboard/clipboard_service.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KeyValueRow — صف تسمية + قيمة
@@ -122,7 +123,9 @@ class _KeyValueRowState extends State<KeyValueRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 12),
+          padding:
+              widget.padding ??
+              EdgeInsets.symmetric(vertical: context.screen.space(12)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -134,7 +137,7 @@ class _KeyValueRowState extends State<KeyValueRow> {
                       textTheme.bodyMedium?.copyWith(color: colors.textMuted),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: context.screen.space(8)),
               Flexible(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -146,12 +149,12 @@ class _KeyValueRowState extends State<KeyValueRow> {
                     if (widget.copyable &&
                         widget.value != null &&
                         getIt.isRegistered<ClipboardService>()) ...[
-                      const SizedBox(width: 6),
+                      SizedBox(width: context.screen.space(6)),
                       GestureDetector(
                         onTap: _handleCopy,
                         behavior: HitTestBehavior.opaque,
                         child: Padding(
-                          padding: const EdgeInsets.all(4),
+                          padding: EdgeInsets.all(context.screen.space(4)),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
                             child: _copied
@@ -241,7 +244,7 @@ class KeyValueSection extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
           ],
           Container(
             width: double.infinity,
@@ -250,7 +253,7 @@ class KeyValueSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: colors.borderSubtle),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: context.screen.space(16)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

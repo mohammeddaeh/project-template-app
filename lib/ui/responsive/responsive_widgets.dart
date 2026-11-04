@@ -90,17 +90,25 @@ class ResponsiveBuilder extends StatelessWidget {
   Widget build(BuildContext context) => builder(context, context.screen);
 }
 
-/// فراغٌ رأسيّ بمقاس التصميم، محمولاً إلى الشاشة الحالية.
+/// فراغٌ بمقاس التصميم، محمولاً إلى الشاشة الحالية — رأسيٌّ افتراضاً، و
+/// [ResponsiveGap.horizontal] داخل صفّ.
 ///
 /// `const SizedBox(height: 24)` يبقى ٢٤ على شاشةٍ بارتفاع ٥٦٨ وعلى لوحٍ
 /// بارتفاع ١١٩٤ — أضيقُ ممّا يجب هناك، وأوسعُ ممّا تحتمله الشاشة القصيرة.
 class ResponsiveGap extends StatelessWidget {
-  const ResponsiveGap(this.base, {super.key});
+  const ResponsiveGap(this.base, {super.key}) : _horizontal = false;
+
+  /// فراغٌ أفقيّ بين عنصرَين بصفّ — `const`، بخلاف `SizedBox(width: s.space(8))`.
+  const ResponsiveGap.horizontal(this.base, {super.key}) : _horizontal = true;
 
   /// المسافة كما هي بالتصميم عند عرض ٣٩٠.
   final double base;
 
+  final bool _horizontal;
+
   @override
-  Widget build(BuildContext context) =>
-      SizedBox(height: context.screen.space(base));
+  Widget build(BuildContext context) {
+    final gap = context.screen.space(base);
+    return _horizontal ? SizedBox(width: gap) : SizedBox(height: gap);
+  }
 }

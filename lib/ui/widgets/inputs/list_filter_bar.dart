@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/inputs/app_search_bar.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Search box plus a readable summary of whatever is narrowing a list.
 ///
@@ -60,7 +61,12 @@ class ListFilterBar extends StatelessWidget {
     context.locale;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      padding: EdgeInsets.fromLTRB(
+        context.screen.space(16),
+        0,
+        context.screen.space(16),
+        context.screen.space(12),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -72,9 +78,9 @@ class ListFilterBar extends StatelessWidget {
             onClear: onClearSearch,
           ),
           if (activeFilters.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             SizedBox(
-              height: 32,
+              height: context.screen.size(32),
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
@@ -85,7 +91,7 @@ class ListFilterBar extends StatelessWidget {
                       visualDensity: VisualDensity.compact,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    const SizedBox(width: 6),
+                    SizedBox(width: context.screen.space(6)),
                   ],
                   // Offered beside what it clears, not buried back inside the
                   // sheet the reader would have to reopen.

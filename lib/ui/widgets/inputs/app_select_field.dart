@@ -5,6 +5,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import '../../../resources/assets.dart';
 import '../images/app_asset_image.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AppSelectMode — كيفية عرض قائمة الخيارات
@@ -176,7 +177,7 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
                     ),
                   ),
                   if (widget.showOption) ...[
-                    const SizedBox(width: 5),
+                    SizedBox(width: context.screen.space(5)),
                     Text(
                       '(${LocaleKeys.option.tr()})',
                       style: textTheme.bodyMedium?.copyWith(
@@ -187,7 +188,7 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
                     ),
                   ],
                   if (widget.showRequired) ...[
-                    const SizedBox(width: 5),
+                    SizedBox(width: context.screen.space(5)),
                     Text(
                       '*',
                       style: textTheme.bodyMedium?.copyWith(
@@ -198,7 +199,7 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
                   ],
                 ],
               ),
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
             ],
 
             // ── Input ─────────────────────────────────────────────────────────
@@ -226,7 +227,7 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
 
             // ── Error ─────────────────────────────────────────────────────────
             if (hasError) ...[
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               Offstage(
                 offstage: !hasError,
                 child: Row(
@@ -235,7 +236,7 @@ class _AppSelectFieldState<T> extends State<AppSelectField<T>> {
                       Assets.images.vectors.errorIconSvg,
                       height: 16,
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: context.screen.space(4)),
                     Expanded(
                       child: Text(
                         state.errorText ?? '',
@@ -289,6 +290,7 @@ class _SelectDropdown<T> extends StatelessWidget {
 
     return InputDecorator(
       decoration: _selectInputDecoration(
+        context,
         colors,
         hasError: hasError,
         focused: false,
@@ -369,13 +371,17 @@ class _SelectTapField<T> extends StatelessWidget {
       child: InputDecorator(
         // الأيقونة هنا داخل الـRow لا في الزخرفة.
         decoration: _selectInputDecoration(
+          context,
           colors,
           hasError: hasError,
           focused: false,
         ),
         child: Row(
           children: [
-            if (prefixIcon != null) ...[prefixIcon!, const SizedBox(width: 8)],
+            if (prefixIcon != null) ...[
+              prefixIcon!,
+              SizedBox(width: context.screen.space(8)),
+            ],
             Expanded(
               child: Text(
                 hasValue ? labelResolver(value as T) : (hint ?? ''),
@@ -401,6 +407,7 @@ class _SelectTapField<T> extends StatelessWidget {
 // ── helpers ───────────────────────────────────────────────────────────────────
 
 InputDecoration _selectInputDecoration(
+  BuildContext context,
   AppColors colors, {
   required bool hasError,
   required bool focused,
@@ -417,7 +424,10 @@ InputDecoration _selectInputDecoration(
     borderSide: BorderSide(width: 1, color: borderColor),
   );
   return InputDecoration(
-    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+    contentPadding: EdgeInsets.symmetric(
+      vertical: context.screen.space(12),
+      horizontal: context.screen.space(16),
+    ),
     border: border,
     enabledBorder: border,
     focusedBorder: border,
@@ -457,7 +467,7 @@ class _SelectBottomSheet<T> extends StatelessWidget {
         children: [
           // Handle
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 12),
+            margin: EdgeInsets.symmetric(vertical: context.screen.space(12)),
             width: 36,
             height: 4,
             decoration: BoxDecoration(
@@ -471,9 +481,9 @@ class _SelectBottomSheet<T> extends StatelessWidget {
             return InkWell(
               onTap: () => Navigator.of(context).pop(item),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.screen.space(20),
+                  vertical: context.screen.space(14),
                 ),
                 child: Row(
                   children: [
@@ -501,7 +511,7 @@ class _SelectBottomSheet<T> extends StatelessWidget {
               ),
             );
           }),
-          const SizedBox(height: 8),
+          const ResponsiveGap(8),
         ],
       ),
     );

@@ -9,6 +9,7 @@ import 'package:app_template/ui/widgets/states/loading_widget.dart';
 import 'package:app_template/ui/state/pagination/pagination_cubit.dart';
 import 'package:app_template/ui/widgets/lists/list_appear_tracker.dart';
 import 'package:app_template/ui/widgets/lists/list_item_appear.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 class PaginationBuilder<C extends PaginationCubit<E>, E>
     extends StatefulWidget {
@@ -92,7 +93,7 @@ class _PaginationBuilderState<C extends PaginationCubit<E>, E>
           success: (entity, loading, error) => Padding(
             padding:
                 widget.contentPadding ??
-                const EdgeInsets.symmetric(horizontal: 24.0),
+                EdgeInsets.symmetric(horizontal: context.screen.space(24.0)),
             child: RefreshIndicator(
               onRefresh: () {
                 _appear.reset();
@@ -113,7 +114,7 @@ class _PaginationBuilderState<C extends PaginationCubit<E>, E>
                   primary: nested ? true : null,
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
-                    const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                    const SliverToBoxAdapter(child: ResponsiveGap(12)),
                     if (widget.allItemsBuilder != null)
                       SliverToBoxAdapter(
                         child: widget.allItemsBuilder!(entity.data.cast<E>()),
@@ -136,11 +137,11 @@ class _PaginationBuilderState<C extends PaginationCubit<E>, E>
                         },
                         separatorBuilder: (context, index) {
                           return widget.separatorWidget ??
-                              const SizedBox(height: 12);
+                              const ResponsiveGap(12);
                         },
                         itemCount: entity.data.length,
                       ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                    const SliverToBoxAdapter(child: ResponsiveGap(12)),
                     SliverToBoxAdapter(
                       child: _NextPageTail(
                         loading: loading,
@@ -149,7 +150,7 @@ class _PaginationBuilderState<C extends PaginationCubit<E>, E>
                         onRetry: paginationCubit.getPage,
                       ),
                     ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                    const SliverToBoxAdapter(child: ResponsiveGap(12)),
                   ],
                 ),
               ),

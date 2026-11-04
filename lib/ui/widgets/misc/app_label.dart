@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// أنواع الـ labels الدلالية.
 enum AppLabelVariant { success, warning, error, info, neutral, primary }
@@ -94,7 +95,7 @@ class AppLabel extends StatelessWidget {
       children: [
         if (icon != null) ...[
           Icon(icon, size: compact ? 11 : 13, color: fg),
-          const SizedBox(width: 4),
+          SizedBox(width: context.screen.space(4)),
         ],
         Text(
           label,

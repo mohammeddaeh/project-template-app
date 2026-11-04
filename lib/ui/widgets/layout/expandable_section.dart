@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// قسم قابل للطي والفتح مع رأس ومحتوى.
 ///
@@ -115,12 +116,15 @@ class _ExpandableSectionState extends State<ExpandableSection> {
           child: Padding(
             padding:
                 widget.headerPadding ??
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                EdgeInsets.symmetric(
+                  horizontal: context.screen.space(16),
+                  vertical: context.screen.space(12),
+                ),
             child: Row(
               children: [
                 if (widget.leading != null) ...[
                   widget.leading!,
-                  const SizedBox(width: 12),
+                  SizedBox(width: context.screen.space(12)),
                 ],
                 Expanded(
                   child: Column(
@@ -135,7 +139,7 @@ class _ExpandableSectionState extends State<ExpandableSection> {
                         ),
                       ),
                       if (subtitle != null) ...[
-                        const SizedBox(height: 2),
+                        const ResponsiveGap(2),
                         Text(
                           subtitle,
                           style: textTheme.bodySmall?.copyWith(
@@ -169,10 +173,10 @@ class _ExpandableSectionState extends State<ExpandableSection> {
                   child: Padding(
                     padding:
                         widget.contentPadding ??
-                        const EdgeInsetsDirectional.only(
-                          start: 16,
-                          end: 16,
-                          bottom: 12,
+                        EdgeInsetsDirectional.only(
+                          start: context.screen.space(16),
+                          end: context.screen.space(16),
+                          bottom: context.screen.space(12),
                         ),
                     child: widget.child,
                   ),

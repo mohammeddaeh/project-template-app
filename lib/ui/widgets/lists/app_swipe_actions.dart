@@ -4,6 +4,7 @@ import 'package:flutter/semantics.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/misc/status_chip.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// إجراءٌ يكشفه سحبُ الصفّ — حذف · أرشفة · إخفاء.
 class SwipeAction {
@@ -143,7 +144,7 @@ class _SwipeBackground extends StatelessWidget {
     return ColoredBox(
       color: background,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: context.screen.space(20)),
         child: Align(
           alignment: atStart
               ? AlignmentDirectional.centerStart
@@ -152,7 +153,7 @@ class _SwipeBackground extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(action.icon, color: foreground, size: 22),
-              const SizedBox(width: 8),
+              SizedBox(width: context.screen.space(8)),
               Flexible(
                 child: Text(
                   action.label,

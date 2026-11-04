@@ -6,6 +6,7 @@ import 'package:app_template/ui/error/ui_action.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/states/app_state_widget.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// A [Failure], rendered as the state it actually is.
 ///
@@ -121,11 +122,11 @@ class _CompactRow extends StatelessWidget {
     final tone = isOffline ? colors.statusWarningFg : colors.error;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(12)),
       child: Row(
         children: [
           Icon(icon, size: 18, color: tone),
-          const SizedBox(width: 8),
+          SizedBox(width: context.screen.space(8)),
           Expanded(
             child: Text(
               message,
@@ -135,11 +136,13 @@ class _CompactRow extends StatelessWidget {
             ),
           ),
           if (onRetry != null) ...[
-            const SizedBox(width: 8),
+            SizedBox(width: context.screen.space(8)),
             TextButton(
               onPressed: onRetry,
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.screen.space(12),
+                ),
                 minimumSize: const Size(0, 36),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
 import 'package:app_template/modules/showcase/presentation/demo_block.dart';
 import 'package:app_template/modules/showcase/presentation/demo_playground.dart';
 import 'package:app_template/ui/extensions/app_padding_extension.dart';
@@ -261,7 +262,8 @@ class _SpacingPickerState extends State<_SpacingPicker> {
           ),
           8.heightBox,
           _Caption(
-            '${(vertical ? gap.height : gap.width)?.toStringAsFixed(0)} px',
+            // The design number in the name, carried to this screen.
+            '${context.screen.space(double.parse(_name.replaceAll(RegExp(r'[^0-9]'), ''))).toStringAsFixed(0)} px',
           ),
           8.heightBox,
           Directionality(

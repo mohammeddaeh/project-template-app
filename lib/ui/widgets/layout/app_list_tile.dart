@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:app_template/ui/widgets/misc/shimmer_text.dart';
 import 'package:flutter/material.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// بديل موحَّد لـ [ListTile] يستخدم قيم الثيم الصحيحة.
 ///
@@ -101,12 +102,17 @@ class AppListTile extends StatelessWidget {
           child: Padding(
             padding:
                 padding ??
-                EdgeInsets.symmetric(horizontal: 16, vertical: dense ? 8 : 12),
+                EdgeInsets.symmetric(
+                  horizontal: context.screen.space(16),
+                  vertical: dense
+                      ? context.screen.space(8)
+                      : context.screen.space(12),
+                ),
             child: Row(
               children: [
                 if (resolvedLeading != null) ...[
                   resolvedLeading,
-                  const SizedBox(width: 12),
+                  SizedBox(width: context.screen.space(12)),
                 ],
                 Expanded(
                   child: Column(
@@ -130,7 +136,7 @@ class AppListTile extends StatelessWidget {
                                 ),
                       ),
                       if (subtitleStr != null) ...[
-                        const SizedBox(height: 2),
+                        const ResponsiveGap(2),
                         _TileText(
                           text: subtitleStr,
                           isDynamic: subtitleKey == null,
@@ -143,7 +149,7 @@ class AppListTile extends StatelessWidget {
                   ),
                 ),
                 if (trailing != null) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: context.screen.space(8)),
                   trailing!,
                 ] else if (onTap != null)
                   Icon(

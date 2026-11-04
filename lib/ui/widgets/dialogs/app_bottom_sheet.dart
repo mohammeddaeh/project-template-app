@@ -165,7 +165,12 @@ class _AppBottomSheetContent extends StatelessWidget {
     final keyboardInset = context.keyboardInset;
     final effectivePadding =
         (contentPadding ??
-                EdgeInsets.fromLTRB(24, 0, 24, 24 + context.bottomPadding))
+                EdgeInsets.fromLTRB(
+                  context.screen.space(24),
+                  0,
+                  context.screen.space(24),
+                  context.screen.space(24) + context.bottomPadding,
+                ))
             .copyWith(
               bottom:
                   (contentPadding?.bottom ?? (24 + context.bottomPadding)) +
@@ -179,7 +184,7 @@ class _AppBottomSheetContent extends StatelessWidget {
       // العنوان + فاصل اختياري
       if (title != null || titleWidget != null) ...[
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: context.screen.space(24)),
           child:
               titleWidget ??
               Text(
@@ -194,7 +199,7 @@ class _AppBottomSheetContent extends StatelessWidget {
         if (showDivider)
           Divider(height: 24, thickness: 1, color: context.colors.dividerSubtle)
         else
-          const SizedBox(height: 20),
+          const ResponsiveGap(20),
       ],
     ];
 
@@ -323,7 +328,7 @@ class _DragHandle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(12)),
       child: Center(
         child: Container(
           width: 40,

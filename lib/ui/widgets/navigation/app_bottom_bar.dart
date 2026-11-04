@@ -6,6 +6,7 @@ import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/app_radius.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/navigation/nav_item.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// How the bottom bar draws its tabs.
 enum AppBottomBarStyle {
@@ -335,7 +336,12 @@ class _FloatingBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+          padding: EdgeInsets.fromLTRB(
+            context.screen.space(16),
+            context.screen.space(4),
+            context.screen.space(16),
+            context.screen.space(12),
+          ),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: translucent ? colors.bgTranslucent : colors.bgElevated,
@@ -349,7 +355,7 @@ class _FloatingBar extends StatelessWidget {
               ],
             ),
             child: SizedBox(
-              height: 64,
+              height: context.screen.size(64),
               child: LayoutBuilder(
                 builder: (context, box) => Stack(
                   children: [
@@ -360,7 +366,9 @@ class _FloatingBar extends StatelessWidget {
                       child: Container(
                         width: box.maxWidth / n - 12,
                         height: 48,
-                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: context.screen.space(6),
+                        ),
                         decoration: BoxDecoration(
                           color: colors.primaryContainer,
                           borderRadius: AppRadius.lgRadius,
@@ -408,7 +416,7 @@ class _IconOverLabel extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _BadgedIcon(item: item, selected: selected, color: color),
-        const SizedBox(height: 2),
+        const ResponsiveGap(2),
         Text(
           item.labelKey.tr(),
           maxLines: 1,
@@ -456,7 +464,7 @@ class _FlatBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 64,
+          height: context.screen.size(64),
           child: expanding
               // Idle tabs keep their icon's width, so the selected one has
               // the rest for its label — equal shares leave it none.
@@ -520,7 +528,10 @@ class _ExpandingTab extends StatelessWidget {
     return AnimatedContainer(
       duration: motion.base,
       curve: AppMotion.baseCurve,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.screen.space(12),
+        vertical: context.screen.space(10),
+      ),
       decoration: BoxDecoration(
         color: selected ? colors.primaryContainer : Colors.transparent,
         borderRadius: AppRadius.pillRadius,
@@ -536,7 +547,9 @@ class _ExpandingTab extends StatelessWidget {
               curve: AppMotion.baseCurve,
               child: selected
                   ? Padding(
-                      padding: const EdgeInsetsDirectional.only(start: 8),
+                      padding: EdgeInsetsDirectional.only(
+                        start: context.screen.space(8),
+                      ),
                       child: Text(
                         item.labelKey.tr(),
                         maxLines: 1,
@@ -567,7 +580,7 @@ class _DotTab extends StatelessWidget {
     final colors = context.colors;
     final motion = AppMotion.of(context);
     return SizedBox(
-      width: 56,
+      width: context.screen.size(56),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -580,7 +593,7 @@ class _DotTab extends StatelessWidget {
               color: selected ? colors.primary : colors.textSecondary,
             ),
           ),
-          const SizedBox(height: 4),
+          const ResponsiveGap(4),
           AnimatedContainer(
             duration: motion.base,
             curve: AppMotion.baseCurve,

@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'package:app_template/ui/locale/locale_switcher_controller.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Compact icon-button locale switcher — best for AppBar actions.
 ///
@@ -21,7 +22,9 @@ class LocaleIconButtonVariant extends StatelessWidget {
           children: [
             const Icon(Icons.language_rounded),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(2),
+              ),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(4),

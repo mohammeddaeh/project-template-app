@@ -1,16 +1,19 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
+import 'package:app_template/ui/responsive/responsive.dart';
+
+/// فراغاتٌ جاهزة بمقاس التصميم — محمولةٌ إلى الشاشة كـ[ResponsiveGap].
 class Spacing {
   Spacing._();
 
-  static const SizedBox horizontal4 = SizedBox(width: 4);
-  static const SizedBox horizontal8 = SizedBox(width: 8);
-  static const SizedBox horizontal16 = SizedBox(width: 16);
-  static const SizedBox horizontal24 = SizedBox(width: 24);
+  static const Widget horizontal4 = ResponsiveGap.horizontal(4);
+  static const Widget horizontal8 = ResponsiveGap.horizontal(8);
+  static const Widget horizontal16 = ResponsiveGap.horizontal(16);
+  static const Widget horizontal24 = ResponsiveGap.horizontal(24);
 
-  static const SizedBox vertical4 = SizedBox(height: 4);
-  static const SizedBox vertical8 = SizedBox(height: 8);
-  static const SizedBox vertical12 = SizedBox(height: 12);
-  static const SizedBox vertical16 = SizedBox(height: 16);
-  static const SizedBox vertical24 = SizedBox(height: 24);
+  static const Widget vertical4 = ResponsiveGap(4);
+  static const Widget vertical8 = ResponsiveGap(8);
+  static const Widget vertical12 = ResponsiveGap(12);
+  static const Widget vertical16 = ResponsiveGap(16);
+  static const Widget vertical24 = ResponsiveGap(24);
 }
