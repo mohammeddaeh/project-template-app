@@ -3,6 +3,7 @@ import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The verification code field, and the "check your spam folder" line under it.
 ///
@@ -41,7 +42,7 @@ class VerifyEmailCodeField extends StatelessWidget {
               ? LocaleKeys.verifyEmailCodeRequired.tr()
               : null,
         ),
-        const SizedBox(height: 12),
+        const ResponsiveGap(12),
         Text(
           LocaleKeys.verifyEmailCheckSpam.tr(),
           style: context.textTheme.bodySmall?.copyWith(

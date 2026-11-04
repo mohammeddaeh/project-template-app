@@ -2,6 +2,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Name, email, password, and its confirmation.
 ///
@@ -42,7 +43,7 @@ class RegisterFields extends StatelessWidget {
           // server-side. A required-here/optional-there mismatch is the client
           // inventing a rule.
         ),
-        const SizedBox(height: 20),
+        const ResponsiveGap(20),
         CustomTextField(
           controller: emailController,
           labelText: LocaleKeys.eMail.tr(),
@@ -64,7 +65,7 @@ class RegisterFields extends StatelessWidget {
             return null;
           },
         ),
-        const SizedBox(height: 20),
+        const ResponsiveGap(20),
         CustomTextField(
           controller: passwordController,
           labelText: LocaleKeys.password.tr(),
@@ -83,7 +84,7 @@ class RegisterFields extends StatelessWidget {
             return null;
           },
         ),
-        const SizedBox(height: 20),
+        const ResponsiveGap(20),
         CustomTextField(
           controller: confirmController,
           labelText: LocaleKeys.confirmPassword.tr(),

@@ -12,6 +12,7 @@ import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The saved-accounts row above the login form — or nothing at all.
 ///
@@ -83,16 +84,16 @@ class _RememberedAccountsSectionState extends State<RememberedAccountsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 28),
+        const ResponsiveGap(28),
         Text(
           LocaleKeys.chooseSavedAccount.tr(),
           style: context.textTheme.headlineSmall?.copyWith(
             color: context.colors.textSecondary,
           ),
         ),
-        const SizedBox(height: 12),
+        const ResponsiveGap(12),
         SizedBox(
-          height: 108,
+          height: context.screen.size(108),
           child: ListView.separated(
             // Horizontal, so five accounts never push the email field off the
             // first screen — the form has to stay reachable without scrolling
@@ -100,7 +101,8 @@ class _RememberedAccountsSectionState extends State<RememberedAccountsSection> {
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.zero,
             itemCount: accounts.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            separatorBuilder: (_, _) =>
+                SizedBox(width: context.screen.space(8)),
             itemBuilder: (_, index) {
               final account = accounts[index];
               return RememberedAccountCard(
@@ -111,9 +113,9 @@ class _RememberedAccountsSectionState extends State<RememberedAccountsSection> {
             },
           ),
         ),
-        const SizedBox(height: 20),
+        const ResponsiveGap(20),
         const DashedDivider(),
-        const SizedBox(height: 4),
+        const ResponsiveGap(4),
         Text(
           LocaleKeys.orLoginWithAnotherAccount.tr(),
           style: context.textTheme.bodySmall?.copyWith(

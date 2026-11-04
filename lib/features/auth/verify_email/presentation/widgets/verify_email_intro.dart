@@ -4,6 +4,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// What the screen asks for, and the address the code was sent to.
 class VerifyEmailIntro extends StatelessWidget {
@@ -22,7 +23,7 @@ class VerifyEmailIntro extends StatelessWidget {
             color: context.colors.textMuted,
           ),
         ),
-        const SizedBox(height: 6),
+        const ResponsiveGap(6),
         // LTR and selectable: an address is never Arabic text, and a user
         // comparing it against what they typed needs to be able to read every
         // character of it.

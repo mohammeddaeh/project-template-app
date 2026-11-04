@@ -21,6 +21,7 @@ import 'package:app_template/ui/state/refresh/refresh_cubit.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 @RoutePage()
 class LoginScreen extends StatefulWidget {
@@ -91,32 +92,35 @@ class _LoginScreenState extends State<LoginScreen> {
           bloc: _loginCubit,
           listener: _onStateChanged,
           builder: (context, state) => AuthFormBody(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.screen.space(24),
+              vertical: context.screen.space(32),
+            ),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 40),
+                  const ResponsiveGap(40),
                   const LoginHeader(),
                   const RememberedAccountsSection(),
-                  const SizedBox(height: 40),
+                  const ResponsiveGap(40),
                   LoginFields(
                     emailController: _emailController,
                     passwordController: _passwordController,
                     onChanged: _refreshCubit.refresh,
                     onSubmitted: _submit,
                   ),
-                  const SizedBox(height: 8),
+                  const ResponsiveGap(8),
                   const ForgotPasswordLink(),
-                  const SizedBox(height: 32),
+                  const ResponsiveGap(32),
                   LoginSubmitButton(
                     refreshCubit: _refreshCubit,
                     isLoading: state is LoginLoading,
                     canSubmit: () => _isFormValid,
                     onSubmit: _submit,
                   ),
-                  const SizedBox(height: 24),
+                  const ResponsiveGap(24),
                   const SignUpPrompt(),
                   if (kDebugMode) const DebugSkipLoginButton(),
                 ],

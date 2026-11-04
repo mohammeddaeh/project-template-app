@@ -4,6 +4,7 @@ import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// "Already have an account? Sign in" under the registration form.
 ///
@@ -26,7 +27,7 @@ class SignInPrompt extends StatelessWidget {
         PrimaryButton(
           text: LocaleKeys.signIn.tr(),
           isTextOnly: true,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: context.screen.space(8)),
           onTap: () => context.router.maybePop(),
         ),
       ],

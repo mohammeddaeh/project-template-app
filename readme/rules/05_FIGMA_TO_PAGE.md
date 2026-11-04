@@ -383,6 +383,21 @@ body: ResponsiveContentBox(
 ⚠️ **والنسبةُ من ارتفاع الشاشة ممنوعةٌ مسافةً** — `context.sh * 0.08` لا تتقلّص
 مع الكيبورد، فتدفع الزرَّ خارج الحدّ على شاشةٍ قصيرة. والفاحصُ يردّها (F37).
 
+### F38 · لا مسافةَ بعددٍ خامّ — الفراغُ والحشوةُ يمرّان بـ`context.screen` 🔒
+
+| ❌ | ✅ |
+|---|---|
+| `SizedBox(height: 24)` · `24.heightBox` | `const ResponsiveGap(24)` |
+| `SizedBox(width: 8)` · `8.widthBox` | `SizedBox(width: s.space(8))` |
+| `SizedBox(height: 108, child: …)` — مقاس | `SizedBox(height: s.size(108), child: …)` |
+| `EdgeInsets.all(16)` · `16.allPadding` | `EdgeInsets.all(s.space(16))` |
+| `EdgeInsets.symmetric(horizontal: 16)` — هامشُ الصفحة | `EdgeInsets.symmetric(horizontal: s.gutter)` |
+| `32 + context.bottomContentInset` | `s.space(32) + context.bottomContentInset` |
+
+`check_structure.dart` يمسكها بـ`features/` و`ui/` (خارجها: طبقةُ المقاس · الثيم ·
+تعريفُ الامتدادات). والدَّينُ الأقدم منه مسجَّلٌ بالأساس — والسبب والحدّ:
+[`03_RULES.md`](03_RULES.md) §R37.
+
 ## د) النصّ والخط
 
 ### F12 · مقاس الخط يُقرَّب إلى السلّم — لا يُضاف إليه 🔒
@@ -677,6 +692,7 @@ case TargetPlatform.iOS:
 □ F08  صفر عرض مطلق — Padding/Expanded/double.infinity
 □ F37  صفر رقمِ مقاسٍ خام — context.screen.space/size · صفر `context.sh *` مسافةً
 □ F37  جسدُ الصفحة داخل ResponsiveContentBox — وما يمتدّ للحافة خارجه
+□ F38  صفر مسافةٍ بعددٍ خام — ResponsiveGap · s.space · s.size · s.gutter
 □ F09-م كل خلفية صفحة ملوّنة تملأ فعلاً — لا شريط من لون الـScaffold تحتها
 □ F10  صفر left/right — Directional بكل مكان · وصفر `ltr: true` بلا سبب بنيوي
 □ F10-س صفر `isRtl ? chevron_left : chevron_right` — الأيقونة الاتجاهية تُعكَس وحدها

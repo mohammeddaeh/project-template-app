@@ -2,6 +2,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Explains why the app is asking, in one short card.
 ///
@@ -17,7 +18,7 @@ class VerifyEmailWhyCard extends StatelessWidget {
     final colors = context.colors;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.screen.space(16)),
       decoration: BoxDecoration(
         color: colors.statusInfoBg,
         borderRadius: BorderRadius.circular(12),
@@ -28,7 +29,7 @@ class VerifyEmailWhyCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.info_outline, size: 18, color: colors.statusInfoFg),
-              const SizedBox(width: 8),
+              SizedBox(width: context.screen.space(8)),
               Text(
                 LocaleKeys.verifyEmailWhyTitle.tr(),
                 style: context.textTheme.labelLarge?.copyWith(
@@ -38,7 +39,7 @@ class VerifyEmailWhyCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const ResponsiveGap(8),
           Text(
             LocaleKeys.verifyEmailWhyBody.tr(),
             style: context.textTheme.bodySmall?.copyWith(

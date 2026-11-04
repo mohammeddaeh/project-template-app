@@ -348,7 +348,8 @@ LayoutBuilder(
 | `AppBottomSheet` — عرضٌ محدود موسَّط (٦٤٠) | ✅ مركزيّ: كل ورقةٍ بالتطبيق تكسبه بلا تعديل |
 | **حدُّ العرض** بشاشات القالب: الدخول · التسجيل · نسيان كلمة المرور وتعيينها · تغييرها · تأكيد البريد · الدخول بحسابٍ محفوظ (`ContentWidth.form`) · الملف الشخصي · الإعدادات (`ContentWidth.content`) · الترحيب (`form`) | ✅ منقول — `test/responsive_template_screens_test.dart`. نماذجُ الحساب كلُّها عبر `AuthFormBody` (`features/auth/shared/presentation/`): النموذجُ محدودٌ داخل `SingleChildScrollView` العريض، فالتمرير يعمل من الهامش أيضاً |
 | `home_screen.dart` | — جسدٌ مؤقّت يستبدله المشروع، أو جولة الـshowcase بتخطيطها |
-| **أرقامُ الشاشات الثابتة** (`SizedBox(height: 40)` · حشوة `24`) بالقالب | ⬜ لم تُنقل إلى `context.screen.space(...)` — تُنقل حين تُلمس الشاشة |
+| **أرقامُ المسافات** بـ`features/` | ✅ منقولة — و**F38** يُفشل أيَّ رقمٍ خامٍّ جديد بـ`features/` و`ui/` |
+| مكتبةُ الودجات (`ui/widgets/`) وبقيةُ `ui/` | ⬜ دَينٌ مسجَّلٌ بالأساس (`.structure_baseline.txt`) — يُنظَّف الملفُّ كاملاً حين يُلمس |
 | `BrandNavRail` — الشريط الجانبي فوق ٨٤٠ | ⬜ **غير مبنيّ** — راجع §٤‑ج |
 
 > ⚠️ **والطبقة موصولة والشاشات لم تُنقل** — وهذا مقصود: `ResponsiveScope`
@@ -374,6 +375,7 @@ LayoutBuilder(
 | `if (width > 600)` مكتوبةً بالشاشة | `screen.isTablet` أو `screen.pick(...)` |
 | `textScaleFactor: 1.0` لإسكات الكسر | أصلح التخطيط — النطاق يقيّد أصلاً |
 | نموذجٌ بلا حدّ عرضٍ على اللوح | `ResponsiveContentBox(width: ContentWidth.form)` |
+| `SizedBox(height: 24)` · `EdgeInsets.all(16)` · `16.allPadding` | `ResponsiveGap(24)` · `s.space(16)` — **F38 يفحصها** |
 
 > **و`context.sw`/`context.sh` لم تُحذفا**: تبقيان لقياسٍ حقيقيّ للشاشة
 > (ورقةٌ سفلية بنسبةٍ من الارتفاع، صورةٌ ملءَ العرض). الممنوع استعمالُهما

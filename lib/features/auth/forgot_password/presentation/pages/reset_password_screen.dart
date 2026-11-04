@@ -13,6 +13,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Step two: enter the code and choose a new password.
 ///
@@ -100,14 +101,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           bloc: widget.cubit,
           listener: _onStateChanged,
           builder: (context, state) => AuthFormBody(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.screen.space(24),
+              vertical: context.screen.space(24),
+            ),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ResetCodeSentNotice(email: widget.cubit.email ?? ''),
-                  const SizedBox(height: 32),
+                  const ResponsiveGap(32),
                   ResetPasswordFields(
                     codeController: _codeController,
                     passwordController: _passwordController,
@@ -115,7 +119,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     onChanged: _refreshCubit.refresh,
                     onSubmitted: _submit,
                   ),
-                  const SizedBox(height: 32),
+                  const ResponsiveGap(32),
                   BlocBuilder<RefreshCubit, RefreshState>(
                     bloc: _refreshCubit,
                     builder: (context, _) => SizedBox(

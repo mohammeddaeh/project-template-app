@@ -64,10 +64,10 @@ class ProfileScreen extends StatelessWidget {
                 // state — which is the state most in need of a retry.
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(
-                  16,
-                  16,
-                  16,
-                  32 + context.bottomContentInset,
+                  context.screen.space(16),
+                  context.screen.space(16),
+                  context.screen.space(16),
+                  context.screen.space(32) + context.bottomContentInset,
                 ),
                 children: [
                   if (user == null)
@@ -77,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                     )
                   else
                     ProfileHeaderCard(user: user),
-                  const SizedBox(height: 24),
+                  const ResponsiveGap(24),
                   const LogoutSection(),
                 ],
               ),

@@ -101,6 +101,7 @@ void main(List<String> args) {
     _checkDirectionality(path, code);
     _checkHardcodedArabic(path, code);
     _checkResponsiveNumbers(path, code);
+    _checkRawSpacing(path, code);
 
     _checkCapabilities(path, code);
     _checkRestApiPlacement(path, code);
@@ -630,6 +631,86 @@ void _checkResponsiveNumbers(String path, List<String?> code) {
         path,
         i + 1,
         'قفلُ اتجاهٍ خارج مكانه — القرار بـOrientationPolicy وحدها',
+      );
+    }
+  }
+}
+
+/// F38 — لا مسافةَ بعددٍ خامّ: الفراغُ والحشوةُ يمرّان بـ`context.screen`.
+///
+/// `SizedBox(height: 24)` و`EdgeInsets.all(16)` و`16.allPadding` أرقامٌ صُمّمت
+/// لهاتفٍ بعرض ٣٩٠، فتبقى كما هي على اللوح بينما الشاشة ضعفاها: عناصرُ
+/// متلاصقة، ولا يظهر ذلك على هاتف المطوّر ولا بـ`dart analyze`. والبديل
+/// بـ`readme/ui/22_RESPONSIVE.md` §٣‑ب: `ResponsiveGap(24)` · `s.space(16)` ·
+/// `s.size(108)` · `s.gutter`.
+///
+/// يُفحص `features/` و`ui/` (و`modules/` خارج الفاحص كلِّه — `_skipDirs`). وخارجه
+/// طبقةُ المقاس نفسُها وتعريفُ الثيم (حشواتُ المكوّنات الافتراضية) وتعريفُ الامتدادات.
+/// والصفرُ والكسورُ دون الواحد ليست مسافة (`SizedBox(height: 0.5)` خطّ).
+final _rawGap = RegExp(
+  r'SizedBox\(\s*(?:height|width)\s*:\s*[1-9]\d*(?:\.\d+)?\b',
+);
+final _rawExtension = RegExp(
+  r'\b[1-9]\d*(?:\.\d+)?\s*\.(?:heightBox|widthBox|\w*Padding)\b',
+);
+final _insetsCall = RegExp(r'EdgeInsets(?:Directional)?\.\w+\(');
+final _bareNumber = RegExp(r'(?<![\w.])[1-9]\d*(?:\.\d+)?(?![\w.])');
+
+void _checkRawSpacing(String path, List<String?> code) {
+  if (!path.startsWith('lib/features/') && !path.startsWith('lib/ui/')) return;
+  if (path.startsWith('lib/ui/responsive/') ||
+      path.startsWith('lib/ui/theme/') ||
+      path.endsWith('lib/ui/extensions/app_padding_extension.dart')) {
+    return;
+  }
+  final text = code.map((l) => l ?? '').join('\n');
+  final lineStarts = [0, for (final m in '\n'.allMatches(text)) m.end];
+  int lineOf(int offset) {
+    var line = 0;
+    while (line + 1 < lineStarts.length && lineStarts[line + 1] <= offset) {
+      line++;
+    }
+    return line + 1;
+  }
+
+  for (final m in _rawGap.allMatches(text)) {
+    _flag(
+      'F38',
+      path,
+      lineOf(m.start),
+      'SizedBox بعددٍ خام — ResponsiveGap(…) أو context.screen.space/size(…)',
+    );
+  }
+  for (final m in _rawExtension.allMatches(text)) {
+    _flag(
+      'F38',
+      path,
+      lineOf(m.start),
+      'امتدادُ مسافةٍ على عددٍ خام — ResponsiveGap(…) أو context.screen.space(…)',
+    );
+  }
+  for (final m in _insetsCall.allMatches(text)) {
+    // الأعدادُ داخل نداءٍ متداخل ليست خامّاً: `EdgeInsets.all(s.space(16))`.
+    var depth = 0;
+    var end = m.end - 1;
+    for (var k = m.end - 1; k < text.length; k++) {
+      if (text[k] == '(') depth++;
+      if (text[k] == ')' && --depth == 0) {
+        end = k;
+        break;
+      }
+    }
+    var args = text.substring(m.end, end);
+    final nested = RegExp(r'[\w.]+\([^()]*\)');
+    while (nested.hasMatch(args)) {
+      args = args.replaceAll(nested, '_');
+    }
+    if (_bareNumber.hasMatch(args)) {
+      _flag(
+        'F38',
+        path,
+        lineOf(m.start),
+        'EdgeInsets بعددٍ خام — context.screen.space(…) أو s.gutter',
       );
     }
   }
