@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:app_template/core/di/injection.dart';
+import 'package:app_template/core/platform/files/file_service.dart';
 import 'package:app_template/modules/data_transfer/domain/import_report.dart';
 import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart';
 import 'package:app_template/modules/data_transfer/presentation/cubits/import_cubit.dart';
@@ -197,15 +195,12 @@ class _PickStep extends StatelessWidget {
     ImportCubit cubit,
     TransferResource resource,
   ) async {
-    final result = await FilePicker.pickFiles(
-      type: FileType.custom,
+    final file = await getIt<FileService>().pick(
       allowedExtensions: resource.importFormats.map((f) => f.wire).toList(),
-      allowMultiple: false,
     );
-    final path = result?.files.single.path;
-    if (path == null) return; // Cancelled — not an error.
+    if (file == null) return; // Cancelled — not an error.
     if (!context.mounted) return;
-    await cubit.validate(File(path));
+    await cubit.validate(file);
   }
 }
 

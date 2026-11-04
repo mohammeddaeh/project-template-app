@@ -78,14 +78,17 @@ abstract final class PlatformServicesRegistry {
   // ── P8 — Share ─────────────────────────────────────────────────────────────
 
   static void _registerShare(GetIt getIt) {
-    if (!AppFeatures.shareSheet) return;
+    // data_transfer shares the exported file through it — a module that is on
+    // must not depend on a second flag someone has to remember.
+    if (!AppFeatures.shareSheet && !AppFeatures.dataTransfer) return;
     getIt.registerLazySingleton<ShareService>(() => const ShareServiceImpl());
   }
 
   // ── P9 — File operations ───────────────────────────────────────────────────
 
   static void _registerFileService(GetIt getIt) {
-    if (!AppFeatures.fileOperations) return;
+    // data_transfer picks the file to import through it — same reason as share.
+    if (!AppFeatures.fileOperations && !AppFeatures.dataTransfer) return;
     getIt.registerLazySingleton<FileService>(
       // Plain Dio without auth interceptors — for public file downloads only.
       () => FileServiceImpl(Dio()),

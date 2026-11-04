@@ -347,7 +347,12 @@ const _capabilities = <_Capability>[
   _Capability(
     'C14',
     r'\bFilePicker\.',
-    ['lib/core/platform/files/'],
+    // transfer_file_sheet: `FilePicker.saveFile` — نافذةُ النظام يختار منها المستخدم
+    // مكانَ الحفظ بلا إذن تخزين، ولا مقابلَ لها بـFileService (saveToDownloads سلوكٌ آخر).
+    [
+      'lib/core/platform/files/',
+      'lib/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart',
+    ],
     'اختيار ملفٍّ خامّ — FileService (06_CAPABILITIES §المنصّة)',
   ),
   _Capability(

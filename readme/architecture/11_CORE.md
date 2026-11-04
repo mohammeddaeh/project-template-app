@@ -213,8 +213,8 @@ lib/core/
 │   │   └── adapters/                    ← SharedPrefs, InMemory, FlutterSecureStorage, AES
 │   ├── biometrics/   BiometricsService + impl        [AppFeatures.biometrics]
 │   ├── clipboard/    ClipboardService + impl         [AppFeatures.clipboard]
-│   ├── share/        ShareService + impl             [AppFeatures.shareSheet]
-│   ├── files/        FileService + impl              [AppFeatures.fileOperations]
+│   ├── share/        ShareService + impl             [AppFeatures.shareSheet · dataTransfer]
+│   ├── files/        FileService + impl              [AppFeatures.fileOperations · dataTransfer]
 │   └── lifecycle/    AppLifecycleService + impl      [AppFeatures.appLifecycle]
 │
 ├── infra/                           ← Implementation
