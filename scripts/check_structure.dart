@@ -55,7 +55,10 @@ const _generatedSuffixes = [
   '.gr.dart',
   '.config.dart',
 ];
-const _skipDirs = ['lib/resources/', 'lib/modules/', 'lib/routes/'];
+
+/// الموديولات تُفحص كباقي `lib/` — يُشحن كلٌّ منها مع كل مشروع. وجولةُ الـshowcase
+/// خارجها: صفحاتُها تبني ما تعرضه بيدها (صيغةُ تاريخٍ تُركَّب لتُرى كيف تُركَّب).
+const _skipDirs = ['lib/resources/', 'lib/modules/showcase/', 'lib/routes/'];
 
 const _baselineFile = '.structure_baseline.txt';
 
@@ -278,7 +281,12 @@ const _capabilities = <_Capability>[
     'C04',
     r'(?<![\w.])(print|debugPrint)\s*\(',
     // main.dart: معالجُ الخطأ غير الملتقَط يمرّ بـLogService ثم يطبع، فالطرفيّة تراه دائماً.
-    ['lib/core/platform/logging/', 'lib/main.dart'],
+    // inspector_recorder: `debugPrint` لا `LogService` عمداً — مفتّشُ التوكن لا يمرّ إلى Crashlytics.
+    [
+      'lib/core/platform/logging/',
+      'lib/main.dart',
+      'lib/modules/token_inspector/integration/inspector_recorder.dart',
+    ],
     'طباعةٌ خامّ — LogService.debug/info/error (06_CAPABILITIES §السجلّ)',
   ),
   _Capability(
@@ -339,7 +347,12 @@ const _capabilities = <_Capability>[
   _Capability(
     'C14',
     r'\bFilePicker\.',
-    ['lib/core/platform/files/'],
+    // transfer_file_sheet: `FilePicker.saveFile` — نافذةُ النظام يختار منها المستخدم
+    // مكانَ الحفظ بلا إذن تخزين، ولا مقابلَ لها بـFileService (saveToDownloads سلوكٌ آخر).
+    [
+      'lib/core/platform/files/',
+      'lib/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart',
+    ],
     'اختيار ملفٍّ خامّ — FileService (06_CAPABILITIES §المنصّة)',
   ),
   _Capability(
@@ -644,8 +657,8 @@ void _checkResponsiveNumbers(String path, List<String?> code) {
 /// بـ`readme/ui/22_RESPONSIVE.md` §٣‑ب: `ResponsiveGap(24)` · `s.space(16)` ·
 /// `s.size(108)` · `s.gutter`.
 ///
-/// يُفحص `features/` و`ui/` (و`modules/` خارج الفاحص كلِّه — `_skipDirs`). وخارجه
-/// طبقةُ المقاس نفسُها وتعريفُ الثيم (حشواتُ المكوّنات الافتراضية) وتعريفُ الامتدادات.
+/// يُفحص `features/` و`modules/` و`ui/` (والـshowcase خارج الفاحص كلِّه — `_skipDirs`).
+/// وخارجه طبقةُ المقاس نفسُها وتعريفُ الثيم (حشواتُ المكوّنات الافتراضية) وتعريفُ الامتدادات.
 /// والصفرُ والكسورُ دون الواحد ليست مسافة (`SizedBox(height: 0.5)` خطّ).
 final _rawGap = RegExp(
   r'SizedBox\(\s*(?:height|width)\s*:\s*[1-9]\d*(?:\.\d+)?\b',
@@ -657,7 +670,11 @@ final _insetsCall = RegExp(r'EdgeInsets(?:Directional)?\.\w+\(');
 final _bareNumber = RegExp(r'(?<![\w.])[1-9]\d*(?:\.\d+)?(?![\w.])');
 
 void _checkRawSpacing(String path, List<String?> code) {
-  if (!path.startsWith('lib/features/') && !path.startsWith('lib/ui/')) return;
+  if (!path.startsWith('lib/features/') &&
+      !path.startsWith('lib/modules/') &&
+      !path.startsWith('lib/ui/')) {
+    return;
+  }
   if (path.startsWith('lib/ui/responsive/') ||
       path.startsWith('lib/ui/theme/') ||
       path.endsWith('lib/ui/extensions/app_padding_extension.dart')) {

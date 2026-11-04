@@ -6,6 +6,7 @@ import 'package:app_template/resources/permission_keys.g.dart';
 import 'package:app_template/routes/router.gr.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The module's mounting point for the roles screen — same pattern as
 /// `DevicesSection`, for the same reason: the host writes
@@ -39,8 +40,13 @@ class AccessControlSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              context.screen.space(16),
+              context.screen.space(16),
+              context.screen.space(16),
+              0,
+            ),
             child: SectionTitle(titleKey: LocaleKeys.security),
           ),
           AppListTile(

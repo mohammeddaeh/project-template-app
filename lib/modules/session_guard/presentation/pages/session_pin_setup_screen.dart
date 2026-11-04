@@ -6,6 +6,7 @@ import 'package:app_template/modules/session_guard/presentation/widgets/pin_pad.
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 const _pinLength = 4;
 
@@ -69,7 +70,7 @@ class _SessionPinSetupScreenState extends State<SessionPinSetupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.pin_outlined, size: 48, color: context.colors.primary),
-              const SizedBox(height: 16),
+              const ResponsiveGap(16),
               Text(
                 (_confirming
                         ? LocaleKeys.sessionGuardConfirmPinTitle
@@ -77,7 +78,7 @@ class _SessionPinSetupScreenState extends State<SessionPinSetupScreen> {
                     .tr(),
                 style: context.textTheme.headlineMedium,
               ),
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               Text(
                 LocaleKeys.sessionGuardSetupPinSubtitle.tr(),
                 textAlign: TextAlign.center,
@@ -85,7 +86,7 @@ class _SessionPinSetupScreenState extends State<SessionPinSetupScreen> {
                   color: context.colors.textMuted,
                 ),
               ),
-              const SizedBox(height: 32),
+              const ResponsiveGap(32),
               PinPad(
                 enteredLength: _entered.length,
                 pinLength: _pinLength,

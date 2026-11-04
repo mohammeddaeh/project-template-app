@@ -24,6 +24,10 @@
 - ⚠️ **F38 — لا مسافةَ بعددٍ خامّ** (`check_structure.dart`): `SizedBox(height: 24)` · `EdgeInsets.all(16)` ·
   `16.allPadding` بـ`features/` و`ui/` تُفشل البناء — `ResponsiveGap` · `s.space` · `s.size` · `s.gutter` بدلها. شاشاتُ
   `features/` كلُّها منقولة، ومكتبةُ الودجات وبقيةُ `ui/` كذلك — لا دَينَ F38 بالأساس.
+- ⚠️ **الموديولات تحت `check_structure`** (كانت خارجه كلَّها): جولةُ الـshowcase وحدها مستثناة. أرقامُ المسافات بها
+  نُقلت إلى `context.screen` (١٩ ملفاً)، و`in_app_updates` يفتح رابطَه بـ`UrlLauncherService`. و`data_transfer` يختار ملفَّه
+  بـ`FileService.pick` ويشاركه بـ`ShareService.file` — والخدمتان تُسجَّلان متى أُشعل `dataTransfer` أيضاً، لا بعلَمَيهما وحدهما.
+  والحفظُ وحده يبقى `FilePicker.saveFile` (نافذةُ النظام بلا إذن تخزين — لا مقابل لها بـ`FileService`)، استثناءً موثّقاً بـC14.
 - ⚠️ **حشواتٌ افتراضيةٌ صارت `null`** تُحَلّ بـ`build()` محمولةً: `AppCard.padding` (١٦) · `SectionTitle.padding` (١٢ تحته) ·
   `CustomTextField.scrollPadding` (١٢٠). من يمرّر قيمةً لا يتغيّر عليه شيء؛ من **يقرأ** الحقلَ يجد `null`.
 - ⚠️ **`Spacing.*` صارت `Widget` لا `SizedBox`** — `ResponsiveGap` محمولة. و`ResponsiveGap.horizontal(8)` جديدةٌ لفراغٍ أفقيّ `const`.

@@ -11,6 +11,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// "What did I miss?" — every push notification received in the foreground,
 /// kept for review after its toast/banner is gone.
@@ -157,7 +158,7 @@ class _List extends StatelessWidget {
     final cubit = context.read<NotificationCenterCubit>();
 
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: context.screen.space(8)),
       itemCount: items.length,
       separatorBuilder: (_, _) => const DividerWidget(),
       itemBuilder: (context, index) {

@@ -108,8 +108,8 @@ core/
 │   │                 adapters/ → SharedPrefs, InMemory, FlutterSecureStorage, AES-256-CBC
 │   ├── biometrics/   BiometricsService (interface) + BiometricsServiceImpl [AppFeatures.biometrics]
 │   ├── clipboard/    ClipboardService (interface) + ClipboardServiceImpl [AppFeatures.clipboard]
-│   ├── share/        ShareService (interface) + ShareServiceImpl [AppFeatures.shareSheet]
-│   ├── files/        FileService (interface) + FileServiceImpl [AppFeatures.fileOperations]
+│   ├── share/        ShareService (interface) + ShareServiceImpl [AppFeatures.shareSheet · dataTransfer]
+│   ├── files/        FileService (interface) + FileServiceImpl [AppFeatures.fileOperations · dataTransfer]
 │   └── lifecycle/    AppLifecycleService (interface) + AppLifecycleServiceImpl [AppFeatures.appLifecycle]
 │
 ├── infra/        ← Implementation (depends on foundation + platform)

@@ -407,7 +407,7 @@ static const biometrics = true;  // → يسجّل BiometricsService تلقائ�
 |---|---|
 | `biometrics = true` | `BiometricsService` |
 | `clipboard = true` | `ClipboardService` |
-| `shareSheet = true` | `ShareService` |
-| `fileOperations = true` | `FileService` |
+| `shareSheet = true` (أو `dataTransfer`) | `ShareService` |
+| `fileOperations = true` (أو `dataTransfer`) | `FileService` |
 | `appLifecycle = true` | `AppLifecycleService` |
 | `certificatePinning = true` | `CertificatePinningConfig` on Dio |

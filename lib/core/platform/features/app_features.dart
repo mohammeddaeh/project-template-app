@@ -300,9 +300,11 @@ abstract final class AppFeatures {
   static const clipboard = true;
 
   /// System share sheet (text / URL / file) via `share_plus`.
+  /// Registered also while [dataTransfer] is on — it shares the exported file.
   static const shareSheet = false;
 
   /// File pick / download / open / save via `file_picker` + `open_filex`.
+  /// Registered also while [dataTransfer] is on — it picks the file to import.
   static const fileOperations = false;
 
   /// App foreground/background lifecycle stream — Flutter built-in.

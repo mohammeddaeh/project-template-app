@@ -11,6 +11,7 @@ import 'package:app_template/modules/access_control/presentation/widgets/permiss
 import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// One role's permissions.
 ///
@@ -74,7 +75,7 @@ class RoleEditorScreen extends StatelessWidget {
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(24),
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
+                    padding: EdgeInsets.only(bottom: context.screen.space(6)),
                     child: Text(
                       LocaleKeys.roleEditorTitle.tr(),
                       style: context.textTheme.bodySmall,
@@ -90,7 +91,7 @@ class RoleEditorScreen extends StatelessWidget {
                     Container(
                       width: double.infinity,
                       color: context.colors.secondaryContainer,
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(context.screen.space(12)),
                       child: Text(
                         LocaleKeys.roleEditorReadOnly.tr(),
                         style: context.textTheme.bodySmall,

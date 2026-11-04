@@ -8,6 +8,7 @@ import 'package:app_template/modules/session_guard/presentation/widgets/pin_pad.
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/theme/app_motion.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 const _pinLength = 4;
 
@@ -94,12 +95,12 @@ class _SessionLockScreenState extends State<SessionLockScreen>
                       size: 48,
                       color: context.colors.primary,
                     ),
-                    const SizedBox(height: 16),
+                    const ResponsiveGap(16),
                     Text(
                       LocaleKeys.sessionGuardLockedTitle.tr(),
                       style: context.textTheme.headlineMedium,
                     ),
-                    const SizedBox(height: 8),
+                    const ResponsiveGap(8),
                     Text(
                       (wrongAttempt
                               ? LocaleKeys.sessionGuardWrongPin
@@ -111,7 +112,7 @@ class _SessionLockScreenState extends State<SessionLockScreen>
                             : context.colors.textMuted,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const ResponsiveGap(32),
                     AnimatedBuilder(
                       animation: _shakeController,
                       builder: (context, child) {
@@ -130,7 +131,7 @@ class _SessionLockScreenState extends State<SessionLockScreen>
                       ),
                     ),
                     if (context.read<SessionGuardCubit>().canUseBiometrics) ...[
-                      const SizedBox(height: 24),
+                      const ResponsiveGap(24),
                       TextButton.icon(
                         onPressed: _tryBiometrics,
                         icon: const Icon(Icons.fingerprint),

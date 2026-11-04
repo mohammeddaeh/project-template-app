@@ -11,6 +11,7 @@ import 'package:app_template/ui/feedback/feedback_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Role administration — **the whole of it, for every application built on this
 /// template.**
@@ -97,7 +98,12 @@ class _RolesList extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () => context.read<RolesCubit>().refreshRoles(),
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 88),
+        padding: EdgeInsets.fromLTRB(
+          context.screen.space(12),
+          context.screen.space(8),
+          context.screen.space(12),
+          context.screen.space(88),
+        ),
         itemCount: state.roles.length,
         itemBuilder: (context, index) {
           final role = state.roles[index];
@@ -133,7 +139,7 @@ class _RoleCard extends StatelessWidget {
     final language = context.locale.languageCode;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: context.screen.space(10)),
       child: ListTile(
         // A system role opens read-only rather than not opening: seeing what
         // `super_admin` grants is exactly what an administrator needs, and
@@ -187,9 +193,12 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsetsDirectional.only(start: 8),
+    padding: EdgeInsetsDirectional.only(start: context.screen.space(8)),
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.screen.space(8),
+        vertical: context.screen.space(2),
+      ),
       decoration: BoxDecoration(
         color: color ?? context.colors.secondaryContainer,
         borderRadius: BorderRadius.circular(10),

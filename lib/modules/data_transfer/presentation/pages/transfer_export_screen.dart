@@ -10,11 +10,11 @@ import 'package:app_template/modules/data_transfer/domain/transfer_resource.dart
 import 'package:app_template/modules/data_transfer/presentation/cubits/export_cubit.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_failure_view.dart';
 import 'package:app_template/modules/data_transfer/presentation/widgets/transfer_file_sheet.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/locale/locale_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// Export, for whatever `resource` it is given.
 ///
@@ -142,23 +142,23 @@ class _FormState extends State<_Form> {
     return Stack(
       children: [
         ListView(
-          padding: 16.allPadding,
+          padding: EdgeInsets.all(context.screen.space(16)),
           children: [
             Text(
               resource.label(isArabic: isArabic),
               style: context.textTheme.headlineMedium,
             ),
-            const SizedBox(height: 4),
+            const ResponsiveGap(4),
             Text(
               // Stated up front, not discovered through a 413. A limit the user
               // meets as a refusal is a limit they were never told about.
               LocaleKeys.exportRowLimit.tr(args: ['${resource.maxExportRows}']),
               style: context.textTheme.bodySmall,
             ),
-            const SizedBox(height: 24),
+            const ResponsiveGap(24),
 
             SectionTitle(titleKey: LocaleKeys.exportFormat),
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             SegmentedButton<TransferFormat>(
               segments: [
                 for (final format in resource.exportFormats)
@@ -169,10 +169,10 @@ class _FormState extends State<_Form> {
                   ? null
                   : (s) => cubit.selectFormat(s.first),
             ),
-            const SizedBox(height: 24),
+            const ResponsiveGap(24),
 
             SectionTitle(titleKey: LocaleKeys.exportColumns),
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -192,7 +192,7 @@ class _FormState extends State<_Form> {
             // and all. The section disappears entirely for a resource that
             // declares none, rather than showing an unexplained empty box.
             if (resource.filters.isNotEmpty) ...[
-              const SizedBox(height: 24),
+              const ResponsiveGap(24),
               SectionTitle(titleKey: LocaleKeys.exportFilters),
               Text(
                 // Says what the control is for. "Filters" over a bare text box
@@ -201,10 +201,10 @@ class _FormState extends State<_Form> {
                 LocaleKeys.exportFiltersHint.tr(),
                 style: context.textTheme.bodySmall,
               ),
-              const SizedBox(height: 8),
+              const ResponsiveGap(8),
               for (final filter in resource.filters)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.only(bottom: context.screen.space(12)),
                   child: _FilterField(
                     filter: filter,
                     controller: _controllers[filter.key],
@@ -216,13 +216,13 @@ class _FormState extends State<_Form> {
                 ),
             ],
 
-            const SizedBox(height: 32),
+            const ResponsiveGap(32),
             PrimaryButton(
               text: LocaleKeys.exportRun.tr(),
               isLoading: busy,
               onTap: busy ? null : cubit.run,
             ),
-            const SizedBox(height: 16),
+            const ResponsiveGap(16),
           ],
         ),
         if (busy)

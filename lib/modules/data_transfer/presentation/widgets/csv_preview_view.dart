@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:app_template/modules/data_transfer/data/csv_preview_parser.dart';
-import 'package:app_template/ui/extensions/app_padding_extension.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// The downloaded CSV, as a table.
 ///
@@ -61,7 +61,7 @@ class _CsvPreviewViewState extends State<CsvPreviewView> {
         if (snapshot.hasError) {
           return Center(
             child: Padding(
-              padding: 24.allPadding,
+              padding: EdgeInsets.all(context.screen.space(24)),
               child: ErrorStateWidget(messageKey: LocaleKeys.filePreviewFailed),
             ),
           );
@@ -79,7 +79,9 @@ class _CsvPreviewViewState extends State<CsvPreviewView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: 16.horizontalPadding,
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screen.space(16),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -89,7 +91,7 @@ class _CsvPreviewViewState extends State<CsvPreviewView> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const ResponsiveGap(2),
                   Text(
                     // The count is of what is *shown*, and says so when the
                     // parser stopped early — a number read off a truncated
@@ -106,7 +108,7 @@ class _CsvPreviewViewState extends State<CsvPreviewView> {
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            const ResponsiveGap(8),
             _HeaderRow(
               header: preview.header,
               controller: _horizontal,
@@ -181,7 +183,9 @@ class _HeaderRow extends StatelessWidget {
                   SizedBox(
                     width: columnWidth,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.screen.space(8),
+                      ),
                       child: Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(
@@ -245,7 +249,9 @@ class _DataRow extends StatelessWidget {
                   SizedBox(
                     width: columnWidth,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.screen.space(8),
+                      ),
                       child: Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(

@@ -15,7 +15,7 @@ import 'package:app_template/resources/locale_keys.g.dart';
 import 'package:app_template/ui/widgets/widgets.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:app_template/core/platform/launcher/url_launcher_service.dart';
 import 'package:dio/dio.dart';
 
 /// Entry point for the in-app updates module.
@@ -227,7 +227,7 @@ abstract final class InAppUpdatesPlugin {
     final url = Uri.tryParse(rawUrl);
     if (url == null || !url.hasScheme) return;
     LogService.info('InAppUpdates: opening update URL', tag: 'UPDATE');
-    await launchUrl(url, mode: LaunchMode.externalApplication);
+    await GetIt.I<UrlLauncherService>().launch(rawUrl);
   }
 }
 

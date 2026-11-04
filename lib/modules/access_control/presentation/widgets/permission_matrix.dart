@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app_template/modules/access_control/domain/permission_catalog.dart';
 import 'package:app_template/ui/theme/theme_extensions.dart';
 import 'package:app_template/resources/locale_keys.g.dart';
+import 'package:app_template/ui/responsive/responsive.dart';
 
 /// **The screen the whole module exists to make possible.**
 ///
@@ -47,7 +48,12 @@ class PermissionMatrix extends StatelessWidget {
     final language = context.locale.languageCode;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+      padding: EdgeInsets.fromLTRB(
+        context.screen.space(12),
+        context.screen.space(8),
+        context.screen.space(12),
+        context.screen.space(24),
+      ),
       children: [
         if (!catalog.enforced)
           _Notice(message: LocaleKeys.accessNotEnforced.tr()),
@@ -96,7 +102,7 @@ class _GroupCard extends StatelessWidget {
         real.isNotEmpty && real.every((p) => selected.contains(p.key));
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: context.screen.space(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -193,7 +199,7 @@ class _StaleCard extends StatelessWidget {
   Widget build(BuildContext context) => Card(
     color: context.colors.errorContainer,
     child: Padding(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(context.screen.space(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -201,7 +207,7 @@ class _StaleCard extends StatelessWidget {
             LocaleKeys.roleStaleGrants.tr(args: ['${keys.length}']),
             style: context.textTheme.titleSmall,
           ),
-          const SizedBox(height: 6),
+          const ResponsiveGap(6),
           // The keys verbatim: whoever cleans these up needs the exact string
           // that is in the database, not a friendly name nothing can be looked
           // up by.
@@ -221,11 +227,11 @@ class _Notice extends StatelessWidget {
   Widget build(BuildContext context) => Card(
     color: context.colors.secondaryContainer,
     child: Padding(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(context.screen.space(12)),
       child: Row(
         children: [
           const Icon(Icons.info_outline, size: 18),
-          const SizedBox(width: 8),
+          SizedBox(width: context.screen.space(8)),
           Expanded(child: Text(message, style: context.textTheme.bodySmall)),
         ],
       ),
